@@ -178,7 +178,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_DIRECTION_OFF"> Off
 	                       // <GPIO_DIRECTION_IN"> In
 	                       // <GPIO_DIRECTION_OUT"> Out
-	                       GPIO_DIRECTION_OUT);
+	                       GPIO_DIRECTION_OFF);
 
 	gpio_set_pin_level(DAT_E_U,
 	                   // <y> Initial level
@@ -193,7 +193,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_PULL_OFF"> Off
 	                       // <GPIO_PULL_UP"> Pull-up
 	                       // <GPIO_PULL_DOWN"> Pull-down
-	                       GPIO_PULL_OFF);
+	                       GPIO_PULL_DOWN);
 
 	gpio_set_pin_function(DAT_E_U,
 	                      // <y> Pin function
@@ -223,7 +223,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_DIRECTION_OFF"> Off
 	                       // <GPIO_DIRECTION_IN"> In
 	                       // <GPIO_DIRECTION_OUT"> Out
-	                       GPIO_DIRECTION_OUT);
+	                       GPIO_DIRECTION_OFF);
 
 	gpio_set_pin_level(DAT_O_U,
 	                   // <y> Initial level
@@ -238,7 +238,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_PULL_OFF"> Off
 	                       // <GPIO_PULL_UP"> Pull-up
 	                       // <GPIO_PULL_DOWN"> Pull-down
-	                       GPIO_PULL_OFF);
+	                       GPIO_PULL_DOWN);
 
 	gpio_set_pin_function(DAT_O_U,
 	                      // <y> Pin function
@@ -268,7 +268,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_DIRECTION_OFF"> Off
 	                       // <GPIO_DIRECTION_IN"> In
 	                       // <GPIO_DIRECTION_OUT"> Out
-	                       GPIO_DIRECTION_OUT);
+	                       GPIO_DIRECTION_OFF);
 
 	gpio_set_pin_level(DAT_E_V,
 	                   // <y> Initial level
@@ -283,7 +283,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_PULL_OFF"> Off
 	                       // <GPIO_PULL_UP"> Pull-up
 	                       // <GPIO_PULL_DOWN"> Pull-down
-	                       GPIO_PULL_OFF);
+	                       GPIO_PULL_DOWN);
 
 	gpio_set_pin_function(DAT_E_V,
 	                      // <y> Pin function
@@ -313,7 +313,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_DIRECTION_OFF"> Off
 	                       // <GPIO_DIRECTION_IN"> In
 	                       // <GPIO_DIRECTION_OUT"> Out
-	                       GPIO_DIRECTION_OUT);
+	                       GPIO_DIRECTION_OFF);
 
 	gpio_set_pin_level(DAT_O_V,
 	                   // <y> Initial level
@@ -328,7 +328,7 @@ void QUAD_SPI_0_PORT_init(void)
 	                       // <GPIO_PULL_OFF"> Off
 	                       // <GPIO_PULL_UP"> Pull-up
 	                       // <GPIO_PULL_DOWN"> Pull-down
-	                       GPIO_PULL_OFF);
+	                       GPIO_PULL_DOWN);
 
 	gpio_set_pin_function(DAT_O_V,
 	                      // <y> Pin function
