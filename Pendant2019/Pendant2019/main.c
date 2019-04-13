@@ -35,33 +35,6 @@ static void update_leds()
 		{   0b11111111,	0b11111111, 0b11110000, 0b00000000 }, // 0b1111
 	};
 
-	static uint8_t conv_buffer[(LEDS_TOTAL*LEDS_COMPONENTS*LEDS_RAILS*8)+LEDS_WS2812_LEAD_TIME*LEDS_RAILS*2];
-
-	static bool init = false;
-	if (!init) {
-		init = true;
-		memset(conv_buffer, 0, sizeof(conv_buffer));
-	}
-
-	uint8_t *dst = conv_buffer+LEDS_WS2812_LEAD_TIME*LEDS_RAILS;
-	for (int32_t c = 0; c < LEDS_TOTAL*LEDS_COMPONENTS; c++) {
-		uint8_t p0 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*0+c];
-		uint8_t p1 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*1+c];
-		uint8_t p2 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*2+c];
-		uint8_t p3 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*3+c];
-		for(int32_t d = 7; d >=0; d--) {
-			const uint8_t *src = conv_lookup[
-			((p0&(1<<d))?0x8:0x0)|
-			((p1&(1<<d))?0x4:0x0)|
-			((p2&(1<<d))?0x2:0x0)|
-			((p3&(1<<d))?0x1:0x0)];
-			*dst++ = *src++;
-			*dst++ = *src++;
-			*dst++ = *src++;
-			*dst++ = *src++;
-		}
-	}
-			
 	struct _qspi_command cmd = {
 		.inst_frame.bits.width				= QSPI_INST4_ADDR4_DATA4,
 		.inst_frame.bits.inst_en			= 0,
@@ -76,15 +49,35 @@ static void update_leds()
 		.inst_frame.bits.dummy_cycles		= 0,
 
 		.inst_frame.bits.tfr_type			= QSPI_WRITE_ACCESS,
-		.buf_len							= sizeof(conv_buffer),
-		.tx_buf								= &conv_buffer,
+		.buf_len							= 0,
+		.tx_buf								= 0,
 	};
 	
 	// Need to do this manually as HAL will set data lines to high when done
 	hri_qspi_write_INSTRFRAME_reg(QSPI, cmd.inst_frame.word);
 	uint8_t *qspi_mem = (uint8_t *)QSPI_AHB;
-	for (size_t c = 0; c<sizeof(conv_buffer); c++) {
-		*qspi_mem++ = conv_buffer[c];
+	for (size_t c = 0; c<LEDS_WS2812_LEAD_TIME*LEDS_RAILS; c++) {
+		*qspi_mem++ = 0;
+	}
+	for (int32_t c = 0; c < LEDS_TOTAL*LEDS_COMPONENTS; c++) {
+		uint8_t p0 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*0+c];
+		uint8_t p1 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*1+c];
+		uint8_t p2 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*2+c];
+		uint8_t p3 = led_data[LEDS_TOTAL*LEDS_COMPONENTS*3+c];
+		for(int32_t d = 7; d >=0; d--) {
+			const uint8_t *src = conv_lookup[
+			((p0&(1<<d))?0x8:0x0)|
+			((p1&(1<<d))?0x4:0x0)|
+			((p2&(1<<d))?0x2:0x0)|
+			((p3&(1<<d))?0x1:0x0)];
+			*qspi_mem++ = *src++;
+			*qspi_mem++ = *src++;
+			*qspi_mem++ = *src++;
+			*qspi_mem++ = *src++;
+		}
+	}
+	for (size_t c = 0; c<LEDS_WS2812_LEAD_TIME*LEDS_RAILS; c++) {
+		*qspi_mem++ = 0;
 	}
 	__DSB();
 	__ISB();
@@ -98,7 +91,7 @@ static void TIMER_0_update_leds_cb(const struct timer_task *const timer_task)
 		uint32_t d = ( c + e ) % 17;
 		led_set_color(0,c,d*2+2,d*2+2,d*2+2);
 	}
-	for (uint32_t c=0; c<16; c++) {
+	for (uint32_t c=0; c<17; c++) {
 		uint32_t d = ( c + e ) % 17;
 		led_set_color(1,c,d*2+2,d*2+2,d*2+2);
 	}
@@ -106,12 +99,42 @@ static void TIMER_0_update_leds_cb(const struct timer_task *const timer_task)
 		uint32_t d = ( c + e ) % 17;
 		led_set_color(2,c,d*2+2,d*2+2,d*2+2);
 	}
-	for (uint32_t c=0; c<16; c++) {
+	for (uint32_t c=0; c<17; c++) {
 		uint32_t d = ( c + e ) % 17;
 		led_set_color(3,c,d*2+2,d*2+2,d*2+2);
 	}
 	//memset(led_data, 0x0, sizeof(led_data));
 	update_leds();
+}
+
+static void bq24295_int(void)
+{
+	for(volatile int32_t c=0; c<1024; c++) {}
+}
+
+static void sw2_upper_pressed(void)
+{
+	for(volatile int32_t c=0; c<1024; c++) {}
+}
+
+static void sw2_lower_pressed(void)
+{
+	for(volatile int32_t c=0; c<1024; c++) {}
+}
+
+static void sw1_lower_pressed(void)
+{
+	for(volatile int32_t c=0; c<1024; c++) {}
+}
+
+static void sx1280_busy(void)
+{
+	for(volatile int32_t c=0; c<1024; c++) {}
+}
+
+static void sx1280_dio1(void)
+{
+	for(volatile int32_t c=0; c<1024; c++) {}
 }
 
 static void init_pendant()
@@ -130,6 +153,13 @@ static void init_pendant()
 
 	timer_add_task(&TIMER_0, &TIMER_0_update_leds);
 	timer_start(&TIMER_0);
+
+	ext_irq_register(PIN_PA16, bq24295_int);
+	ext_irq_register(PIN_PA17, sw2_upper_pressed);
+	ext_irq_register(PIN_PA18, sw2_lower_pressed);
+	ext_irq_register(PIN_PA19, sw1_lower_pressed);
+	ext_irq_register(PIN_PB08, sx1280_busy);
+	ext_irq_register(PIN_PB09, sx1280_dio1);
 }
 
 int main(void)
