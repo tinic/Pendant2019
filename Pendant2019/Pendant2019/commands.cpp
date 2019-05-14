@@ -155,10 +155,8 @@ void Commands::Boot() {
 	}
 	led_control::init();
 
-	delay_ms(100);
+	delay_ms(50);
 }
-
-
 
 void Commands::StartTimers() {
 	update_leds_timer_task.interval = 10; // 100fps
@@ -182,6 +180,7 @@ void Commands::StartTimers() {
 void Commands::StopTimers() {
 	timer_remove_task(&TIMER_0, &update_leds_timer_task);
 	timer_remove_task(&TIMER_0, &update_oled_timer_task);
+	timer_remove_task(&TIMER_0, &update_adc_timer_task);
 	timer_stop(&TIMER_0);
 }
 

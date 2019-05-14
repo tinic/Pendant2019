@@ -751,129 +751,68 @@ public:
 			buffer[buf_pos++] = 0;
 		}
 
-		uint8_t p0, p1, p2, p3;
+		auto transfer4 = [](uint8_t p0, uint8_t p1, uint8_t p2, uint8_t p3, uint8_t *buffer, size_t &buf_pos, int32_t brightness) {
+			p0 = ( p0 * brightness ) / 256;
+			p1 = ( p1 * brightness ) / 256;
+			p2 = ( p2 * brightness ) / 256;
+			p3 = ( p3 * brightness ) / 256;
+
+			for(int32_t d = 7; d >=0; d--) {
+				const uint8_t *src = conv_lookup[
+				((p0&(1<<d))?0x8:0x0)|
+				((p1&(1<<d))?0x4:0x0)|
+				((p2&(1<<d))?0x2:0x0)|
+				((p3&(1<<d))?0x1:0x0)];
+				buffer[buf_pos++] = *src++;
+				buffer[buf_pos++] = *src++;
+				buffer[buf_pos++] = *src++;
+				buffer[buf_pos++] = *src++;
+			}
+		};
+
 		for (int32_t c = 0; c < leds_rings_n; c++) {
-			p0 = leds_inner[0][c].g * disabled_inner_leds_top[c];
-			p1 = leds_outer[0][c].g;
-			p2 = leds_inner[1][c].g * disabled_inner_leds_bottom[c];
-			p3 = leds_outer[1][c].g;
+			transfer4(leds_inner[0][c].g * disabled_inner_leds_top[c],
+					  leds_outer[0][c].g,
+					  leds_inner[1][c].g * disabled_inner_leds_bottom[c],
+					  leds_outer[1][c].g,
+					  buffer, buf_pos, brightness);
+			transfer4(leds_inner[0][c].r * disabled_inner_leds_top[c],
+					  leds_outer[0][c].r,
+					  leds_inner[1][c].r * disabled_inner_leds_bottom[c],
+					  leds_outer[1][c].r,
+					  buffer, buf_pos, brightness);
+			transfer4(leds_inner[0][c].b * disabled_inner_leds_top[c],
+					  leds_outer[0][c].b,
+					  leds_inner[1][c].b * disabled_inner_leds_bottom[c],
+					  leds_outer[1][c].b,
+					  buffer, buf_pos, brightness);
+		}
 
+		auto transfer2 = [](uint8_t p0, uint8_t p1, uint8_t *buffer, size_t &buf_pos, int32_t brightness) {
 			p0 = ( p0 * brightness ) / 256;
 			p1 = ( p1 * brightness ) / 256;
-			p2 = ( p2 * brightness ) / 256;
-			p3 = ( p3 * brightness ) / 256;
-
 			for(int32_t d = 7; d >=0; d--) {
 				const uint8_t *src = conv_lookup[
 				((p0&(1<<d))?0x8:0x0)|
-				((p1&(1<<d))?0x4:0x0)|
-				((p2&(1<<d))?0x2:0x0)|
-				((p3&(1<<d))?0x1:0x0)];
+				((p0&(1<<d))?0x4:0x0)|
+				((p1&(1<<d))?0x2:0x0)|
+				((p1&(1<<d))?0x1:0x0)];
 				buffer[buf_pos++] = *src++;
 				buffer[buf_pos++] = *src++;
 				buffer[buf_pos++] = *src++;
 				buffer[buf_pos++] = *src++;
 			}
+		};
 
-			p0 = leds_inner[0][c].r * disabled_inner_leds_top[c];
-			p1 = leds_outer[0][c].r;
-			p2 = leds_inner[1][c].r * disabled_inner_leds_bottom[c];
-			p3 = leds_outer[1][c].r;
-
-			p0 = ( p0 * brightness ) / 256;
-			p1 = ( p1 * brightness ) / 256;
-			p2 = ( p2 * brightness ) / 256;
-			p3 = ( p3 * brightness ) / 256;
-
-			for(int32_t d = 7; d >=0; d--) {
-				const uint8_t *src = conv_lookup[
-				((p0&(1<<d))?0x8:0x0)|
-				((p1&(1<<d))?0x4:0x0)|
-				((p2&(1<<d))?0x2:0x0)|
-				((p3&(1<<d))?0x1:0x0)];
-				buffer[buf_pos++] = *src++;
-				buffer[buf_pos++] = *src++;
-				buffer[buf_pos++] = *src++;
-				buffer[buf_pos++] = *src++;
-			}
-
-			p0 = leds_inner[0][c].b * disabled_inner_leds_top[c];
-			p1 = leds_outer[0][c].b;
-			p2 = leds_inner[1][c].b * disabled_inner_leds_bottom[c];
-			p3 = leds_outer[1][c].b;
-
-			p0 = ( p0 * brightness ) / 256;
-			p1 = ( p1 * brightness ) / 256;
-			p2 = ( p2 * brightness ) / 256;
-			p3 = ( p3 * brightness ) / 256;
-
-			for(int32_t d = 7; d >=0; d--) {
-				const uint8_t *src = conv_lookup[
-				((p0&(1<<d))?0x8:0x0)|
-				((p1&(1<<d))?0x4:0x0)|
-				((p2&(1<<d))?0x2:0x0)|
-				((p3&(1<<d))?0x1:0x0)];
-				buffer[buf_pos++] = *src++;
-				buffer[buf_pos++] = *src++;
-				buffer[buf_pos++] = *src++;
-				buffer[buf_pos++] = *src++;
-			}
-		}
-
-		p0 = leds_centr[0].g;
-		p1 = leds_centr[1].g;
-
-		p0 = ( p0 * brightness ) / 256;
-		p1 = ( p1 * brightness ) / 256;
-
-		for(int32_t d = 7; d >=0; d--) {
-			const uint8_t *src = conv_lookup[
-			((p0&(1<<d))?0x8:0x0)|
-			((p0&(1<<d))?0x4:0x0)|
-			((p1&(1<<d))?0x2:0x0)|
-			((p1&(1<<d))?0x1:0x0)];
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-		}
-
-		p0 = leds_centr[0].r;
-		p1 = leds_centr[1].r;
-
-		p0 = ( p0 * brightness ) / 256;
-		p1 = ( p1 * brightness ) / 256;
-
-		for(int32_t d = 7; d >=0; d--) {
-			const uint8_t *src = conv_lookup[
-			((p0&(1<<d))?0x8:0x0)|
-			((p0&(1<<d))?0x4:0x0)|
-			((p1&(1<<d))?0x2:0x0)|
-			((p1&(1<<d))?0x1:0x0)];
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-		}
-
-		p0 = leds_centr[0].b;
-		p1 = leds_centr[1].b;
-
-		p0 = ( p0 * brightness ) / 256;
-		p1 = ( p1 * brightness ) / 256;
-
-		for(int32_t d = 7; d >=0; d--) {
-			const uint8_t *src = conv_lookup[
-			((p0&(1<<d))?0x8:0x0)|
-			((p0&(1<<d))?0x4:0x0)|
-			((p1&(1<<d))?0x2:0x0)|
-			((p1&(1<<d))?0x1:0x0)];
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-			buffer[buf_pos++] = *src++;
-		}
-
+		transfer2(leds_centr[0].g,
+				  leds_centr[1].g,
+				  buffer, buf_pos, brightness);
+		transfer2(leds_centr[0].r,
+				  leds_centr[1].r,
+				  buffer, buf_pos, brightness);
+		transfer2(leds_centr[0].b,
+				  leds_centr[1].b,
+				  buffer, buf_pos, brightness);
 	
 		for (size_t c = 0; c < ws2812_commit_time; c++) {
 			buffer[buf_pos++] = 0;
@@ -894,7 +833,6 @@ public:
 			pending = false;
 		}
 
-		// Need to do this manually as HAL will set data lines to high when done
 		hri_qspi_write_INSTRFRAME_reg(QSPI, cmd.inst_frame.word);
 		volatile uint8_t *qspi_mem = (volatile uint8_t *)QSPI_AHB;
 
