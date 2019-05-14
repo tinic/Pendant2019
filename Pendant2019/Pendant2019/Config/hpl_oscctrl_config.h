@@ -451,7 +451,7 @@
 // <i> Indicates whether DCO Filter Enable is enabled or not
 // <id> fdpll0_arch_dcoen
 #ifndef CONF_FDPLL0_DCOEN
-#define CONF_FDPLL0_DCOEN 0
+#define CONF_FDPLL0_DCOEN 1
 #endif
 
 // <o> Sigma-Delta DCO Filter Selection <0x0-0x7>

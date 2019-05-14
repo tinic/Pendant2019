@@ -10,6 +10,7 @@
 #include "driver_init.h"
 #include "utils.h"
 
+#if 0
 /**
  * Example of using DIGITAL_GLUE_LOGIC_0.
  */
@@ -72,7 +73,7 @@ void HASH_ALGORITHM_0_example(void)
 	int32_t       i;
 
 	sha_sync_enable(&HASH_ALGORITHM_0);
-	sha_sync_sha1_compute(&HASH_ALGORITHM_0, &context, "abc", 3, sha_output);
+	sha_sync_sha1_compute(&HASH_ALGORITHM_0, &context, (const uint8_t *)"abc", 3, sha_output);
 	for (i = 0; i < 20; i++) {
 		while (sha_output[i] != sha1_digest[i])
 			;
@@ -228,3 +229,5 @@ void WDT_0_example(void)
 	wdt_set_timeout_period(&WDT_0, clk_rate, timeout_period);
 	wdt_enable(&WDT_0);
 }
+
+#endif  // #if 0
