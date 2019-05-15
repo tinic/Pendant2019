@@ -3,13 +3,12 @@
 #include "sx1280.h"
 
 #include <algorithm>
-
-static SX1280 sx1280;
 			
 SX1280::SX1280() {
 }
 
 SX1280 &SX1280::instance() {
+	static SX1280 sx1280;
 	if (!sx1280.Initialized) {
 		sx1280.Initialized = true;
 		sx1280.init();

@@ -48,9 +48,9 @@ void Commands::Boot() {
 		SX1280::instance().SetTxDoneCallback([=](void) {
 		});
 		
-		SX1280::instance().SetRxDoneCallback([=](const uint8_t *payload, uint8_t size, SX1280::PacketStatus packetStatus) {
+		SX1280::instance().SetRxDoneCallback([=](const uint8_t *payload, uint8_t size, SX1280::PacketStatus) {
 			// Do V2 messages
-			if (memcmp(payload, "DUCK!!", 6) == 0) {
+			if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
 				static const uint32_t radio_colors[] = {
 					0x808080UL,
 					0xA00000UL,
@@ -98,10 +98,10 @@ void Commands::Boot() {
 								SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
 							}
 						};
-						span.commitFunc = [=](Timeline::Span &span) {
+						span.commitFunc = [=](Timeline::Span &) {
 							SDD1306::instance().Display();
 						};
-						span.doneFunc = [=](Timeline::Span &span) {
+						span.doneFunc = [=](Timeline::Span &) {
 							SDD1306::instance().SetVerticalShift(0);
 						};
 						Timeline::instance().Add(span);
@@ -111,7 +111,7 @@ void Commands::Boot() {
 			}
 		});
 
-		SX1280::instance().SetRxErrorCallback([=](SX1280::IrqErrorCode errCode) {
+		SX1280::instance().SetRxErrorCallback([=](SX1280::IrqErrorCode) {
 		});
 
 		SX1280::instance().SetTxTimeoutCallback([=](void) {
@@ -126,10 +126,10 @@ void Commands::Boot() {
 		SX1280::instance().SetRxHeaderDoneCallback([=](void) {
 		});
 
-		SX1280::instance().SetRangingDoneCallback([=](SX1280::IrqRangingCode errCode, float value) {
+		SX1280::instance().SetRangingDoneCallback([=](SX1280::IrqRangingCode, float) {
 		});
 
-		SX1280::instance().SetCadDoneCallback([=](bool cadFlag) {
+		SX1280::instance().SetCadDoneCallback([=](bool) {
 		});
 	}
 
@@ -138,17 +138,17 @@ void Commands::Boot() {
 		span.type = Timeline::Span::Display;
 		span.time = Model::instance().CurrentTime();
 		span.duration = std::numeric_limits<double>::infinity();
-		span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 			char str[64];
 			sprintf(str,"%05d %05d ", int(Model::instance().CurrentBatteryVoltage() * 1000), int(Model::instance().CurrentSystemVoltage() * 1000) );
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
 			sprintf(str,"%05d %05d ", int(Model::instance().CurrentVbusVoltage() * 1000), int(Model::instance().CurrentChargeCurrent()) );
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 		};
-		span.commitFunc = [=](Timeline::Span &span) {
+		span.commitFunc = [=](Timeline::Span &) {
 			SDD1306::instance().Display();
 		};
-		span.doneFunc = [=](Timeline::Span &span) {
+		span.doneFunc = [=](Timeline::Span &) {
 			SDD1306::instance().SetAsciiScrollMessage(0,0);
 		};
 		Timeline::instance().Add(span);
