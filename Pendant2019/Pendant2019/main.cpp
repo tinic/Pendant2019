@@ -2,6 +2,7 @@
 
 #include "commands.h"
 #include "model.h"
+#include "sdd1306.h"
 
 extern "C" {
 

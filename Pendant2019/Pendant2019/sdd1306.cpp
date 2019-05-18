@@ -252,21 +252,20 @@ void SDD1306::Init() {
 void SDD1306::DisplayCenterFlip() {
 	(void)duck_font_raw_len;
 		
-	uint8_t buf[65];
+	uint8_t buf[0x61];
 	buf[0] = 0x40;
 	for (uint32_t y=0; y<4; y++) {
 		WriteCommand(0xB0+y);
-		uint32_t sx = 32;
-		WriteCommand(0x0f&(sx   )); // 0x20 offset
-		WriteCommand(0x10|(sx>>4)); // 0x20 offset
-		for (uint32_t x = 0; x < 64; x++) {
+		WriteCommand(0x0f&(0   ));
+		WriteCommand(0x10|(0>>4));
+		for (uint32_t x = 0; x < 96; x++) {
 			if (center_flip_screen == 32) {
 				buf[x+1] = 0x00;
-				} else {
+			} else {
 				int32_t rx = ( ( ( int32_t(x) - 32 ) * 32 ) / int32_t(32 - center_flip_screen) ) + 32;
-				if (rx < 0 || rx > 63) {
+				if (rx < 0 || rx > 95) {
 					buf[x+1] = 0x00;
-					} else {
+				} else {
 					uint8_t a = text_attr_screen[y*12+rx/8];
 					uint8_t r = (a & 4) ? (7-(rx&7)) : (rx&7);
 					uint8_t v = duck_font_raw[text_buffer_screen[y*12+rx/8]*8+r];
@@ -280,7 +279,7 @@ void SDD1306::DisplayCenterFlip() {
 				}
 			}
 		}
-		io_write(I2C_0_io, buf, 0x41);
+		io_write(I2C_0_io, buf, 0x61);
 	}
 }
 	

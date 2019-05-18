@@ -140,9 +140,9 @@ void Commands::Boot() {
 		span.duration = std::numeric_limits<double>::infinity();
 		span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 			char str[64];
-			sprintf(str,"%05d %05d ", int(Model::instance().CurrentBatteryVoltage() * 1000), int(Model::instance().CurrentSystemVoltage() * 1000) );
+			sprintf(str,"%sV %sV    ", Model::instance().CurrentBatteryVoltageString().c_str(), Model::instance().CurrentSystemVoltageString().c_str());
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			sprintf(str,"%05d %05d ", int(Model::instance().CurrentVbusVoltage() * 1000), int(Model::instance().CurrentChargeCurrent()) );
+			sprintf(str,"%sV %smA   ", Model::instance().CurrentVbusVoltageString().c_str(), Model::instance().CurrentChargeCurrentString().c_str());
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 		};
 		span.commitFunc = [=](Timeline::Span &span) {
@@ -180,7 +180,6 @@ void Commands::StartTimers() {
 void Commands::StopTimers() {
 	timer_remove_task(&TIMER_0, &update_leds_timer_task);
 	timer_remove_task(&TIMER_0, &update_oled_timer_task);
-	timer_remove_task(&TIMER_0, &update_adc_timer_task);
 	timer_stop(&TIMER_0);
 }
 

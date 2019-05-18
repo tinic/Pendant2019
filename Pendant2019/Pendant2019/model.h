@@ -1,6 +1,8 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
+#include <string>
+
 class Model {
 public:
 	static Model &instance();
@@ -20,15 +22,19 @@ public:
 
 	float CurrentBatteryVoltage() const  { return current_battery_voltage; }
 	void SetCurrentBatteryVoltage(float voltage) { current_battery_voltage = voltage; }
+	std::string CurrentBatteryVoltageString();
 
 	float CurrentSystemVoltage() const  { return current_system_voltage; }
 	void SetCurrentSystemVoltage(float voltage) { current_system_voltage = voltage; }
+	std::string CurrentSystemVoltageString();
 
 	float CurrentVbusVoltage() const  { return current_vbus_voltage; }
 	void SetCurrentVbusVoltage(float voltage) { current_vbus_voltage = voltage; }
+	std::string CurrentVbusVoltageString();
 
 	float CurrentChargeCurrent() const  { return current_charge_current; }
 	void SetCurrentChargeCurrent(float current) { current_charge_current = current; }
+	std::string CurrentChargeCurrentString();
 
 private:
 	void init();
