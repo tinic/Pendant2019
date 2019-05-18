@@ -56,6 +56,8 @@ static void timer_process_counted(struct _timer_device *device);
  */
 int32_t timer_init(struct timer_descriptor *const descr, void *const hw, struct _timer_hpl_interface *const func)
 {
+	(void)func;
+	
 	ASSERT(descr && hw);
 	_timer_init(&descr->device, hw);
 	descr->time                           = 0;

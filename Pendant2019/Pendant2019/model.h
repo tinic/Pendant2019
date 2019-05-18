@@ -8,7 +8,7 @@ public:
 	static Model &instance();
 	 
 	uint32_t CurrentEffect() { return current_effect; }
-	uint32_t SetCurrentEffect(uint32_t effect) { current_effect = effect; }
+	void SetCurrentEffect(uint32_t effect) { current_effect = effect; }
 	uint32_t EffectCount() const { return 4; }
 
 	double CurrentTime() const { return current_time; }

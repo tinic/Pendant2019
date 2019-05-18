@@ -5,8 +5,10 @@
 extern "C" {
 #endif
 
+#define register
 #include "driver_init.h"
 #include "usb_start.h"
+#undef register
 
 /**
  * Initializes MCU, drivers and middleware in the project

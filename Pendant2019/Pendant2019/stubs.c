@@ -17,6 +17,7 @@ int __attribute__((weak)) _read (int file, char * ptr, int len)
 
 int __attribute__((weak)) _write (int file, const char *ptr, int len)
 {
+	(void) ptr;
 	int nChars = 0;
 
 	if ((file != 1) && (file != 2) && (file!=3)) {

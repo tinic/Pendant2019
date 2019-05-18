@@ -10,7 +10,7 @@ void WDT_Handler() {
 	while (1) { }
 }
 
-};
+}
 
 int main(void)
 {

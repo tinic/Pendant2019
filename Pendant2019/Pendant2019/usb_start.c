@@ -245,6 +245,8 @@ static uint8_t *msc_get_capacity(uint8_t lun)
 
 void mscdf_demo_init(uint8_t *ramd_buf, uint8_t *usbdisk_buf)
 {
+	(void)usbdisk_buf;
+	
 	ram_disk_buf = ramd_buf;
 	mscdf_register_callback(MSCDF_CB_INQUIRY_DISK, (FUNC_PTR)msc_inquiry_info);
 	mscdf_register_callback(MSCDF_CB_GET_DISK_CAPACITY, (FUNC_PTR)msc_get_capacity);

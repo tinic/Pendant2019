@@ -153,11 +153,33 @@ static inline int32_t _usb_d_trans(const uint8_t ep, const bool dir, const uint8
  * \param[in] unused2 Unused parameter.
  * \return Always \c false.
  */
-static bool usb_d_dummy_cb_false(uint32_t unused0, uint32_t unused1, uint32_t unused2)
+static bool usb_d_dummy_cb_false(const uint32_t unused0, const uint32_t unused1, const uint32_t unused2)
 {
 	(void)unused0;
 	(void)unused1;
 	(void)unused2;
+	return false;
+}
+
+static bool usb_d_dummy_cb_setup_false(const uint8_t ep, const uint8_t *req)
+{
+	(void)ep;
+	(void)req;
+	return false;
+}
+
+static bool usb_d_dummy_cb_more_false(const uint8_t ep, const uint32_t count)
+{
+	(void)ep;
+	(void)count;
+	return false;
+}
+
+static bool usb_d_dummy_cb_xfer_false(const uint8_t ep, const enum usb_xfer_code code, void *param)
+{
+	(void)ep;
+	(void)code;
+	(void)param;
 	return false;
 }
 
@@ -281,9 +303,9 @@ int32_t usb_d_init(void)
 	memset(usb_d_inst.ep, 0x00, sizeof(struct usb_d_ep) * CONF_USB_D_NUM_EP_SP);
 	for (i = 0; i < CONF_USB_D_NUM_EP_SP; i++) {
 		usb_d_inst.ep[i].xfer.hdr.ep    = 0xFF;
-		usb_d_inst.ep[i].callbacks.req  = (usb_d_ep_cb_setup_t)usb_d_dummy_cb_false;
-		usb_d_inst.ep[i].callbacks.more = (usb_d_ep_cb_more_t)usb_d_dummy_cb_false;
-		usb_d_inst.ep[i].callbacks.xfer = (usb_d_ep_cb_xfer_t)usb_d_dummy_cb_false;
+		usb_d_inst.ep[i].callbacks.req  = (usb_d_ep_cb_setup_t)usb_d_dummy_cb_setup_false;
+		usb_d_inst.ep[i].callbacks.more = (usb_d_ep_cb_more_t)usb_d_dummy_cb_more_false;
+		usb_d_inst.ep[i].callbacks.xfer = (usb_d_ep_cb_xfer_t)usb_d_dummy_cb_xfer_false;
 	}
 	/* Handles device driver endpoint callbacks to build transfer. */
 	_usb_d_dev_register_ep_callback(USB_D_DEV_EP_CB_SETUP, (FUNC_PTR)usb_d_cb_trans_setup);

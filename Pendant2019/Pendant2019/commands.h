@@ -36,9 +36,9 @@ private:
 
 	bool initialized = false;
 
-	struct timer_task update_leds_timer_task = {0};
-	struct timer_task update_oled_timer_task = {0};
-	struct timer_task update_adc_timer_task = {0};
+	struct timer_task update_leds_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
+	struct timer_task update_oled_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
+	struct timer_task update_adc_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
 };
 
 #endif /* COMMANDS_H_ */

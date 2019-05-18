@@ -2,12 +2,9 @@
 
 #include "bq25895.h"
 
-static BQ25895 bq25895;
-
-
 BQ25895 &BQ25895::instance() {
+	static BQ25895 bq25895;
 	i2c_m_sync_get_io_descriptor(&I2C_0, &bq25895.I2C_0_io);
-
 	if (!bq25895.deviceChecked) {
 		bq25895.deviceChecked = true;
 		int32_t wstatus = 0;
@@ -21,7 +18,6 @@ BQ25895 &BQ25895::instance() {
 		}
 		ext_irq_register(PIN_PA16, PinInterrupt_C);
 	}
-
 	return bq25895;
 }
 
@@ -84,7 +80,7 @@ void BQ25895::StartContinousADC() {
 }
 
 bool BQ25895::ADCActive() {
-	( getRegister(0x02) & (1 << 7) ) ? true : false;
+	return ( getRegister(0x02) & (1 << 7) ) ? true : false;
 }
 
 void BQ25895::OneShotADC() {
@@ -139,8 +135,6 @@ uint8_t BQ25895::getRegister(uint8_t address) {
 }
 
 void BQ25895::setRegister(uint8_t address, uint8_t value) {
-	int32_t wstatus = 0;
-	int32_t rstatus = 0;
 	i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 	uint8_t set[2];
 	set[0] = address;

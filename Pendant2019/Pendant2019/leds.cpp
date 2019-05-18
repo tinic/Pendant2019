@@ -509,6 +509,7 @@ namespace colors {
 		}
 	}
 
+#if 0
 	static rgb ip(const rgb &a, const rgb &b, float i) {
 		if ( i <= 0.0f ) {
 			return a;
@@ -542,18 +543,22 @@ namespace colors {
 					   a.v * (1.0f - i) + b.v * i);
 		}
 	}
+#endif  // #if 0
 	
-};
+}
 
 static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 {
+	if (count < 1) {
+		return;
+	}
 	__asm volatile (
+		"sub %[count], #1\n\t"
 		"1:\n\t"
 		"ldrb r1, [%[src]], #1\n\t"
 		"strb r1, [%[dst]], #1\n\t"
-		"sub %[count], #1\n\t"
-		"cmp %[count], #0\n\r"
-		"bne 1b\n\t"
+		"subs %[count], #1\n\t"
+		"bhs 1b\n\t"
 		:
 		: [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
 		: "r1", "cc", "memory"
@@ -601,7 +606,7 @@ public:
 		span.time = 0;
 		span.duration = std::numeric_limits<double>::infinity();
 
-		span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 
 			if ( current_effect != Model::instance().CurrentEffect() ) {
 				previous_effect = current_effect;
@@ -662,7 +667,7 @@ public:
 			}
 
 		};
-		span.commitFunc = [=](Timeline::Span &span) {
+		span.commitFunc = [=](Timeline::Span &) {
 			led_bank::instance().update_leds();
 		};
 
@@ -734,7 +739,8 @@ public:
 		};
 #endif  // #if 0
 
-		struct _qspi_command cmd = { 0 };
+		struct _qspi_command cmd;
+		memset(&cmd, 0, sizeof(cmd));
 		cmd.inst_frame.bits.width = QSPI_INST4_ADDR4_DATA4;
 		cmd.inst_frame.bits.data_en = 1;
 		cmd.inst_frame.bits.tfr_type = QSPI_WRITE_ACCESS;
@@ -770,7 +776,7 @@ public:
 			}
 		};
 
-		for (int32_t c = 0; c < leds_rings_n; c++) {
+		for (size_t c = 0; c < leds_rings_n; c++) {
 			transfer4(leds_inner[0][c].g * disabled_inner_leds_top[c],
 					  leds_outer[0][c].g,
 					  leds_inner[1][c].g * disabled_inner_leds_bottom[c],
@@ -855,7 +861,7 @@ public:
 		leds_centr[0] = col8;
 		leds_centr[1] = col8;
 
-		for (int32_t c = 0; c < leds_rings_n; c++) {
+		for (size_t c = 0; c < leds_rings_n; c++) {
 			leds_inner[0][c] = col8;
 			leds_inner[1][c] = col8;
 		}
@@ -1055,7 +1061,7 @@ public:
 	// MESSAGE
 	//
 
-	void voltage(Timeline::Span &span, Timeline::Span &below) {
+	void voltage(Timeline::Span &, Timeline::Span &) {
 		led_bank::set_bird_color(colors::rgb(Model::instance().CurrentBirdColor()));
 
 
@@ -1065,13 +1071,13 @@ public:
 		}
 
 		int32_t nl = int32_t(Model::instance().CurrentVbusVoltage());
-		for (size_t c = 0; c < nl; c++) {
+		for (int32_t c = 0; c < nl; c++) {
 			leds_outer[0][c+1] = colors::rgb(1.0f, 1.0f, 1.0f);
 			leds_outer[1][c+1] = colors::rgb(1.0f, 1.0f, 1.0f);
 		}
 
 		int32_t nr = int32_t(Model::instance().CurrentSystemVoltage());
-		for (size_t c = 0; c < nr; c++) {
+		for (int32_t c = 0; c < nr; c++) {
 			leds_outer[0][15-c] = colors::rgb(1.0f, 1.0f, 1.0f);
 			leds_outer[1][15-c] = colors::rgb(1.0f, 1.0f, 1.0f);
 		}
@@ -1141,7 +1147,7 @@ void led_control::PerformVoltageDisplay() {
 	voltage.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 		led_bank::instance().voltage(span, below);
 	};
-	voltage.commitFunc = [=](Timeline::Span &span) {
+	voltage.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();
 	};
 
@@ -1161,7 +1167,7 @@ void led_control::PerformV2MessageEffect(uint32_t color) {
 	message.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 		led_bank::instance().message(color, span, below);
 	};
-	message.commitFunc = [=](Timeline::Span &span) {
+	message.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();
 	};
 

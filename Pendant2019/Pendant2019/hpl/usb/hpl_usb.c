@@ -51,6 +51,35 @@ static bool _dummy_func_no_return(uint32_t unused0, uint32_t unused1)
 	return false;
 }
 
+static void _dummy_func_dev_sof_cb(void)
+{
+}
+
+static void _dummy_func_dev_event_cb(const enum usb_event event, const uint32_t param)
+{
+	(void)event;
+	(void)param;
+}
+
+static void _dummy_func_dev_ep_cb_setup(const uint8_t ep)
+{
+	(void)ep;
+}
+
+static bool _dummy_func_dev_ep_cb_more(const uint8_t ep, const uint32_t transfered)
+{
+	(void)ep;
+	(void)transfered;
+	return false;
+}
+
+static void _dummy_func_dev_ep_cb_done(const uint8_t ep, const int32_t code, const uint32_t transfered)
+{
+	(void)ep;
+	(void)code;
+	(void)transfered;
+}
+
 /**
  * \brief Load USB calibration value from NVM
  */
@@ -1460,12 +1489,12 @@ int32_t _usb_d_dev_init(void)
 	}
 	hri_usbdevice_wait_for_sync(hw, USB_SYNCBUSY_SWRST);
 
-	dev_inst.callbacks.sof   = (_usb_d_dev_sof_cb_t)_dummy_func_no_return;
-	dev_inst.callbacks.event = (_usb_d_dev_event_cb_t)_dummy_func_no_return;
+	dev_inst.callbacks.sof   = (_usb_d_dev_sof_cb_t)_dummy_func_dev_sof_cb;
+	dev_inst.callbacks.event = (_usb_d_dev_event_cb_t)_dummy_func_dev_event_cb;
 
-	dev_inst.ep_callbacks.setup = (_usb_d_dev_ep_cb_setup_t)_dummy_func_no_return;
-	dev_inst.ep_callbacks.more  = (_usb_d_dev_ep_cb_more_t)_dummy_func_no_return;
-	dev_inst.ep_callbacks.done  = (_usb_d_dev_ep_cb_done_t)_dummy_func_no_return;
+	dev_inst.ep_callbacks.setup = (_usb_d_dev_ep_cb_setup_t)_dummy_func_dev_ep_cb_setup;
+	dev_inst.ep_callbacks.more  = (_usb_d_dev_ep_cb_more_t)_dummy_func_dev_ep_cb_more;
+	dev_inst.ep_callbacks.done  = (_usb_d_dev_ep_cb_done_t)_dummy_func_dev_ep_cb_done;
 
 	_usb_d_dev_reset_epts();
 
