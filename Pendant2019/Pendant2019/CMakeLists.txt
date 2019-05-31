@@ -11,8 +11,6 @@ set(CMAKE_SYSTEM_VERSION 1)
 
 cmake_minimum_required(VERSION 3.14)
 
-include (CMakeForceCompiler)
-
 project(${PRJ_NAME} C CXX ASM)
 
 if(NOT CMAKE_BUILD_TYPE) 
@@ -92,3 +90,6 @@ add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
         COMMAND ${CMAKE_OBJCOPY} -O ihex -R .eeprom -R .fuse -R .lock -R .signature $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
         COMMAND ${CMAKE_SIZE} ${PROJECT_NAME}.elf
         COMMENT "Building ${HEX_FILE} \nBuilding ${BIN_FILE}")
+
+set(PROGRAM_CMD "openocd -f ${PROJECT_SOURCE_DIR}/openocd.cfg -c \"program ${PROJECT_NAME}.elf verify reset exit\"")
+install(CODE "execute_process(COMMAND ${PROGRAM_CMD})")
