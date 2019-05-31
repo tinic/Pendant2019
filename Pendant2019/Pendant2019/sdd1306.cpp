@@ -29,11 +29,11 @@ static const uint8_t rev_bits[] =
 static SDD1306 sdd1306;
 
 SDD1306::SDD1306() {
-	initialized = false;
-	devicePresent = false;
-	display_scroll_message = false;
-	scroll_message_offset = 0;
-	I2C_0_io = 0;
+	memset(text_buffer_cache, 0, sizeof(text_buffer_cache));
+	memset(text_buffer_screen, 0, sizeof(text_buffer_screen));
+	memset(text_attr_cache, 0, sizeof(text_attr_cache));
+	memset(text_attr_screen, 0, sizeof(text_attr_screen));
+	memset(scroll_message, 0, sizeof(scroll_message));
 }
 	
 SDD1306 &SDD1306::instance() {
@@ -212,15 +212,13 @@ void SDD1306::Init() {
 	gpio_set_pin_level(OLED_RESET, true);
 	delay_ms(20);
 
-	int32_t wstatus = 0;
-	int32_t rstatus = 0;
 	i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 
 	uint8_t status = 0x8;
 	uint8_t value = 0x0;
 
-	if ((wstatus=io_write(I2C_0_io, &status, 1)) == 1 &&
-		(rstatus=io_read(I2C_0_io, &value, 1)) == 1) {
+	if ((io_write(I2C_0_io, &status, 1)) == 1 &&
+		(io_read(I2C_0_io, &value, 1)) == 1) {
 		devicePresent = true;
 	} else {
 		return;

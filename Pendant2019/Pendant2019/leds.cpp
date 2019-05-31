@@ -40,11 +40,11 @@ namespace colors {
 			b(from.b) {
 		}
 
-		rgb(const uint32_t color);
-		rgb(const rgb8 &from);
-		rgb(const hsl &from);
-		rgb(const hsv &from);
-		rgb(const hsp &from);
+		explicit rgb(const uint32_t color);
+		explicit rgb(const rgb8 &from);
+		explicit rgb(const hsl &from);
+		explicit rgb(const hsv &from);
+		explicit rgb(const hsp &from);
 
 		rgb(float _r, float _g, float _b) :
 			r(_r),
@@ -160,14 +160,14 @@ namespace colors {
 			x(0) {
 		}
 
-		rgb8(const rgb &from) {
+		explicit rgb8(const rgb &from) {
 			r = sat8(from.r * global_limit_factor);
 			g = sat8(from.g * global_limit_factor);
 			b = sat8(from.b * global_limit_factor);
 			x = 0;
 		}
 
-		rgb8(uint8_t _r, uint8_t _g, uint8_t _b) :
+		explicit rgb8(uint8_t _r, uint8_t _g, uint8_t _b) :
 			r(_r),
 			g(_g),
 			b(_b),
@@ -217,7 +217,7 @@ namespace colors {
 			l(from.l) {
 		}
 	
-		hsl(const rgb &from) {
+		explicit hsl(const rgb &from) {
 			float hi = std::max(std::max(from.r, from.g), from.b);
 			float lo = std::min(std::max(from.r, from.g), from.b);
 			float d = fabs(hi - lo);
@@ -265,7 +265,7 @@ namespace colors {
 			v(from.v) {
 		}
 	
-		hsv(const rgb &from) {
+		explicit hsv(const rgb &from) {
 			float hi = std::max(std::max(from.r, from.g), from.b);
 			float lo = std::min(std::max(from.r, from.g), from.b);
 			float d = hi - lo;
@@ -315,7 +315,7 @@ namespace colors {
 			p(from.p) {
 		}
 	
-		hsp(const rgb &from) {
+		explicit hsp(const rgb &from) {
 			RGBtoHSP(from.r, from.g, from.b, &h, &s, &p);
 		}
 	
@@ -339,7 +339,7 @@ namespace colors {
 		  }
 		  if (R >= G && R >= B) { //  R is largest
 			if (B >= G) {
-			  *H = 6.0f / 6.0f - 1.0f / 6.0f * (B - G) / (R - G);
+			  *H =        1.0f - 1.0f / 6.0f * (B - G) / (R - G);
 			  *S = 1.0f - G / R;
 			} else {
 			  *H = 0.0f / 6.0f + 1.0f / 6.0f * (G - B) / (R - B);
@@ -366,42 +366,42 @@ namespace colors {
 
 		void HSPtoRGB(float H, float S, float P, float *R, float *G, float *B) const {
 
-		  float part, minOverMax = 1.0f - S;
+		  float minOverMax = 1.0f - S;
 
 		  if (minOverMax > 0.0f) {
 			if (H < 1.0f / 6.0f) { //  R>G>B
 			  H = 6.0f * (H - 0.0f / 6.0f);
-			  part = 1.0f + H * (1.0f / minOverMax - 1.0f);
+			  float part = 1.0f + H * (1.0f / minOverMax - 1.0f);
 			  *B = P / sqrtf(Pr / minOverMax / minOverMax + Pg * part * part + Pb);
 			  *R = (*B) / minOverMax;
 			  *G = (*B) + H * ((*R) - (*B));
 			} else if (H < 2.0f / 6.0f) { //  G>R>B
 			  H = 6.0f * (-H + 2.0f / 6.0f);
-			  part = 1.0f + H * (1.0f / minOverMax - 1.0f);
+			  float part = 1.0f + H * (1.0f / minOverMax - 1.0f);
 			  *B = P / sqrtf(Pg / minOverMax / minOverMax + Pr * part * part + Pb);
 			  *G = (*B) / minOverMax;
 			  *R = (*B) + H * ((*G) - (*B));
 			} else if (H < 3.0f / 6.0f) { //  G>B>R
 			  H = 6.0f * (H - 2.0f / 6.0f);
-			  part = 1.0f + H * (1.0f / minOverMax - 1.0f);
+			  float part = 1.0f + H * (1.0f / minOverMax - 1.0f);
 			  *R = P / sqrtf(Pg / minOverMax / minOverMax + Pb * part * part + Pr);
 			  *G = (*R) / minOverMax;
 			  *B = (*R) + H * ((*G) - (*R));
 			} else if (H < 4.0f / 6.0f) { //  B>G>R
 			  H = 6.0f * (-H + 4.0f / 6.0f);
-			  part = 1.0f + H * (1.0f / minOverMax - 1.0f);
+			  float part = 1.0f + H * (1.0f / minOverMax - 1.0f);
 			  *R = P / sqrtf(Pb / minOverMax / minOverMax + Pg * part * part + Pr);
 			  *B = (*R) / minOverMax;
 			  *G = (*R) + H * ((*B) - (*R));
 			} else if (H < 5.0f / 6.0f) { //  B>R>G
 			  H = 6.0f * (H - 4.0f / 6.0f);
-			  part = 1.0f + H * (1.0f / minOverMax - 1.0f);
+			  float part = 1.0f + H * (1.0f / minOverMax - 1.0f);
 			  *G = P / sqrtf(Pb / minOverMax / minOverMax + Pr * part * part + Pg);
 			  *B = (*G) / minOverMax;
 			  *R = (*G) + H * ((*B) - (*G));
 			} else { //  R>B>G
-			  H = 6.0f * (-H + 6.0f / 6.0f);
-			  part = 1.0f + H * (1.0f / minOverMax - 1.0f);
+			  H = 6.0f * (-H + 1.0f       );
+			  float part = 1.0f + H * (1.0f / minOverMax - 1.0f);
 			  *G = P / sqrtf(Pr / minOverMax / minOverMax + Pb * part * part + Pg);
 			  *R = (*G) / minOverMax;
 			  *B = (*G) + H * ((*R) - (*G));
@@ -433,7 +433,7 @@ namespace colors {
 			  *R = (*B) * H;
 			  *G = 0.0f;
 			} else { //  R>B>G
-			  H = 6.0f * (-H + 6.0f / 6.0f);
+			  H = 6.0f * (-H + 1.0f       );
 			  *R = sqrtf(P * P / (Pr + Pb * H * H));
 			  *B = (*R) * H;
 			  *G = 0.0f;
@@ -1072,14 +1072,14 @@ public:
 
 		int32_t nl = int32_t(Model::instance().CurrentVbusVoltage());
 		for (int32_t c = 0; c < nl; c++) {
-			leds_outer[0][c+1] = colors::rgb(1.0f, 1.0f, 1.0f);
-			leds_outer[1][c+1] = colors::rgb(1.0f, 1.0f, 1.0f);
+			leds_outer[0][c+1] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
+			leds_outer[1][c+1] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
 		}
 
 		int32_t nr = int32_t(Model::instance().CurrentSystemVoltage());
 		for (int32_t c = 0; c < nr; c++) {
-			leds_outer[0][15-c] = colors::rgb(1.0f, 1.0f, 1.0f);
-			leds_outer[1][15-c] = colors::rgb(1.0f, 1.0f, 1.0f);
+			leds_outer[0][15-c] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
+			leds_outer[1][15-c] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
 		}
 	}
 

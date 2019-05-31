@@ -28,7 +28,7 @@ public:
 		Type type = None;
 		double time = 0.0f;
 		double duration = 0.0f;
-
+		
 		std::function<void (Span &span)> startFunc;
 		std::function<void (Span &span, Span &below)> calcFunc;
 		std::function<void (Span &span)> commitFunc;
@@ -48,7 +48,7 @@ public:
 
 		friend class Timeline;
 		bool active = false;
-		Span *next;
+		Span *next = 0;
 	};
 
 	static Timeline &instance();

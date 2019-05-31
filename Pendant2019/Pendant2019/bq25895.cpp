@@ -7,13 +7,11 @@ BQ25895 &BQ25895::instance() {
 	i2c_m_sync_get_io_descriptor(&I2C_0, &bq25895.I2C_0_io);
 	if (!bq25895.deviceChecked) {
 		bq25895.deviceChecked = true;
-		int32_t wstatus = 0;
-		int32_t rstatus = 0;
 		i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 		uint8_t status = 0x8;
 		uint8_t value = 0x0;
-		if ((wstatus=io_write(bq25895.I2C_0_io, &status, 1)) == 1 &&
-			(rstatus=io_read(bq25895.I2C_0_io, &value, 1)) == 1) {
+		if ((io_write(bq25895.I2C_0_io, &status, 1)) == 1 &&
+			(io_read(bq25895.I2C_0_io, &value, 1)) == 1) {
 			bq25895.devicePresent = true;
 		}
 		ext_irq_register(PIN_PA16, PinInterrupt_C);
@@ -123,12 +121,10 @@ bool BQ25895::IsInFaultState() {
 }
 	 
 uint8_t BQ25895::getRegister(uint8_t address) {
-	int32_t wstatus = 0;
-	int32_t rstatus = 0;
 	i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 	uint8_t value = 0x0;
-	if ((wstatus=io_write(I2C_0_io, &address, 1)) == 1 &&
-		(rstatus=io_read(I2C_0_io, &value, 1)) == 1) {
+	if ((io_write(I2C_0_io, &address, 1)) == 1 &&
+		(io_read(I2C_0_io, &value, 1)) == 1) {
 		return value;
 	}
 	return 0;

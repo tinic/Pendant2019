@@ -37,22 +37,22 @@ private:
 	void WriteCommand(uint8_t v) const;
 	void BulkTransfer(const uint8_t *buf, size_t size) const;
 
-	bool devicePresent;
+	bool devicePresent = false;
 
-	int8_t center_flip_screen;
-	int8_t center_flip_cache;
+	int8_t center_flip_screen = 0;
+	int8_t center_flip_cache = 0;
 	uint16_t text_buffer_cache[12*2];
 	uint16_t text_buffer_screen[12*2];
 	uint8_t text_attr_cache[12*2];
 	uint8_t text_attr_screen[12*2];
 	
-	bool display_scroll_message;
+	bool display_scroll_message = false;
 	uint8_t scroll_message[64];
-	int32_t scroll_message_offset;
-	int32_t scroll_message_len;
-	bool initialized;
+	int32_t scroll_message_offset = 0;
+	int32_t scroll_message_len = 0;
+	bool initialized = false;
 
-	struct io_descriptor *I2C_0_io;
+	struct io_descriptor *I2C_0_io = 0;
 
 };  // class SDD1306
 

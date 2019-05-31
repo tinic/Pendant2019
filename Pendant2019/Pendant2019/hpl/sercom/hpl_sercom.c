@@ -1188,7 +1188,7 @@ static int32_t _sercom_i2c_send_address(struct _i2c_m_async_device *const i2c_de
 		                                  | (hri_sercomi2cm_read_ADDR_reg(hw) & SERCOM_I2CM_ADDR_HS));
 	} else {
 		hri_sercomi2cm_write_ADDR_reg(hw,
-		                              ((msg->addr & SEVEN_ADDR_MASK) << 1) | (msg->flags & I2C_M_RD ? I2C_M_RD : 0x0)
+		                              ((msg->addr & SEVEN_ADDR_MASK) << 1) | ((msg->flags & I2C_M_RD) ? I2C_M_RD : 0x0)
 		                                  | (hri_sercomi2cm_read_ADDR_reg(hw) & SERCOM_I2CM_ADDR_HS));
 	}
 
@@ -1467,7 +1467,7 @@ static int32_t _sercom_i2c_sync_send_address(struct _i2c_m_sync_device *const i2
 		                                  | (hri_sercomi2cm_read_ADDR_reg(hw) & SERCOM_I2CM_ADDR_HS));
 	} else {
 		hri_sercomi2cm_write_ADDR_reg(hw,
-		                              ((msg->addr & SEVEN_ADDR_MASK) << 1) | (msg->flags & I2C_M_RD ? I2C_M_RD : 0x0)
+		                              ((msg->addr & SEVEN_ADDR_MASK) << 1) | ((msg->flags & I2C_M_RD) ? I2C_M_RD : 0x0)
 		                                  | (hri_sercomi2cm_read_ADDR_reg(hw) & SERCOM_I2CM_ADDR_HS));
 	}
 

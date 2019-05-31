@@ -130,7 +130,7 @@ void SX1280::ReadCommand(RadioCommand command, uint8_t *buffer, uint32_t size ) 
 
 	spi_csel_low();
 	if( command == RADIO_GET_STATUS ) {
-		buffer[0] = spi_write( ( uint8_t )command );
+		buffer[0] = spi_write( RADIO_GET_STATUS );
 		spi_write( 0 );
 		spi_write( 0 );
 	} else {
