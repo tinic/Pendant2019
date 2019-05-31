@@ -1,6 +1,6 @@
-#include <atmel_start.h>
+#include "./bq25895.h"
 
-#include "bq25895.h"
+#include <atmel_start.h>
 
 BQ25895 &BQ25895::instance() {
 	static BQ25895 bq25895;

@@ -9,6 +9,7 @@
 #ifndef TIMELINE_H_
 #define TIMELINE_H_
 
+#include <cstdint>
 #include <functional>
 
 class Timeline {
@@ -29,6 +30,7 @@ public:
 		double time = 0.0f;
 		double duration = 0.0f;
 		
+
 		std::function<void (Span &span)> startFunc;
 		std::function<void (Span &span, Span &below)> calcFunc;
 		std::function<void (Span &span)> commitFunc;

@@ -1,10 +1,11 @@
+#include "./sdd1306.h"
+
 #include <atmel_start.h>
 
-#include "sdd1306.h"
+#include <cstring>
+#include <algorithm>
 
 #include "font/duck_font.h"
-
-#include <string.h>
 
 static const uint8_t rev_bits[] =
 {
@@ -103,7 +104,7 @@ void SDD1306::SetAttr(uint32_t x, uint32_t y, uint8_t attr) {
 	
 void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
 	if (str) {
-		size_t len = min(strlen(str), sizeof(scroll_message));
+		size_t len = std::min(strlen(str), sizeof(scroll_message));
 		memset(scroll_message, 0, sizeof(scroll_message));
 		for (size_t c=0; c<len; c++) {
 			uint8_t ch = uint8_t(str[c]);

@@ -1,13 +1,12 @@
+#include "./timeline.h"
+
 #include <atmel_start.h>
 
-#include "timeline.h"
-#include "model.h"
-
-#include "sdd1306.h"
-
 #include <limits>
-
 #include <array>
+
+#include "./model.h"
+#include "./sdd1306.h"
 
 Timeline &Timeline::instance() {
 	static Timeline timeline;
@@ -27,8 +26,7 @@ bool Timeline::Scheduled(Timeline::Span &span) {
 	return false;
 }
 
-void Timeline::Add(Timeline::Span &span)
-{
+void Timeline::Add(Timeline::Span &span) {
 	for (Span *i = head; i ; i = i->next) {
 		if ( i == &span ) {
 			return;
@@ -50,7 +48,7 @@ void Timeline::Process(Span::Type type) {
 				i->active = true;
 				i->Start();
 			}
-			if (i->duration != std::numeric_limits<double>::infinity() && ((i->time + i->duration) < time ) ) {
+			if (i->duration != std::numeric_limits<double>::infinity() && ((i->time + i->duration) < time)) {
 				if (p) {
 					p->next = i->next;
 				} else {

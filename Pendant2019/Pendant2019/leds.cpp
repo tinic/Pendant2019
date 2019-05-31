@@ -1,17 +1,17 @@
-﻿#include <atmel_start.h>
+﻿#include "./leds.h"
 
-#include <stdint.h>
-#include <stdio.h>
-#include <math.h>
-#include <float.h>
+#include <atmel_start.h>
+
 #include <algorithm>
 #include <array>
 #include <random>
 #include <limits>
+#include <stdio.h>
+#include <cmath>
+#include <cfloat>
 
-#include "model.h"
-#include "timeline.h"
-#include "leds.h"
+#include "./model.h"
+#include "./timeline.h"
 
 namespace colors {
 

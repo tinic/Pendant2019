@@ -1,7 +1,7 @@
 #ifndef SX1280_H_
 #define SX1280_H_
 
-#include <stdint.h>
+#include <cstdint>
 #include <functional>
 
 class SX1280 {

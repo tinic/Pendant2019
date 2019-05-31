@@ -1,7 +1,6 @@
+#include "./system_time.h"
 
 #include <atmel_start.h>
-
-#include "system_time.h"
 
 // Generate system time based on 32-bit cycle count
 static uint64_t large_dwt_cyccnt() {

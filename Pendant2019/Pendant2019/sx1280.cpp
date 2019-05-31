@@ -1,6 +1,6 @@
-#include <atmel_start.h>
+#include "./sx1280.h"
 
-#include "sx1280.h"
+#include <atmel_start.h>
 
 #include <algorithm>
 			

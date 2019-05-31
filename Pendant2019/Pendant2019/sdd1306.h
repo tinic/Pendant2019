@@ -1,6 +1,9 @@
 #ifndef SDD1306_H_
 #define SDD1306_H_
 
+#include <cstdint>
+#include <cstddef>
+
 class SDD1306 {
 public:
 	

@@ -1,16 +1,17 @@
+#include "./commands.h"
+
 #include <atmel_start.h>
 
-#include "commands.h"
-#include "model.h"
-#include "sx1280.h"
-#include "bq25895.h"
-#include "sdd1306.h"
-#include "timeline.h"
-#include "leds.h"
-#include "system_time.h"
-
-#include <string.h>
+#include <cstring>
 #include <limits>
+
+#include "./model.h"
+#include "./sx1280.h"
+#include "./bq25895.h"
+#include "./sdd1306.h"
+#include "./timeline.h"
+#include "./leds.h"
+#include "./system_time.h"
 
 Commands::Commands() {
 }
@@ -72,7 +73,7 @@ void Commands::Boot() {
 						span.duration = 8.0f;
 						span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 							char str[64];
-							sprintf(str,"%8.8s : %8.8s", &payload[16], &payload[8] );
+							snprintf(str, 64, "%8.8s : %8.8s", &payload[16], &payload[8] );
 							const double speed = 128.0;
 							float text_walk = float(Model::instance().CurrentTime() - span.time) * speed - 96;
 							float interp = 0;
@@ -140,9 +141,9 @@ void Commands::Boot() {
 		span.duration = std::numeric_limits<double>::infinity();
 		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 			char str[64];
-			sprintf(str,"%sV %sV    ", Model::instance().CurrentBatteryVoltageString().c_str(), Model::instance().CurrentSystemVoltageString().c_str());
+			snprintf(str, 64, "%sV %sV    ", Model::instance().CurrentBatteryVoltageString().c_str(), Model::instance().CurrentSystemVoltageString().c_str());
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			sprintf(str,"%sV %smA   ", Model::instance().CurrentVbusVoltageString().c_str(), Model::instance().CurrentChargeCurrentString().c_str());
+			snprintf(str, 64, "%sV %smA   ", Model::instance().CurrentVbusVoltageString().c_str(), Model::instance().CurrentChargeCurrentString().c_str());
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 		};
 		span.commitFunc = [=](Timeline::Span &) {

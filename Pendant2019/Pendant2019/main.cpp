@@ -1,8 +1,8 @@
-#include <atmel_start.h>
+#include "./commands.h"
+#include "./model.h"
+#include "./sdd1306.h"
 
-#include "commands.h"
-#include "model.h"
-#include "sdd1306.h"
+#include <atmel_start.h>
 
 extern "C" {
 

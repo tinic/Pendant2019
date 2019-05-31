@@ -1,6 +1,8 @@
 #ifndef BQ25895_H_
 #define BQ25895_H_
 
+#include <cstdint>
+
 class BQ25895 {
 	 
 public:

@@ -1,9 +1,9 @@
+#include "./model.h"
+
 #include <atmel_start.h>
 
-#include "model.h"
-
 #include <string>
-#include <math.h>
+#include <cmath>
 #include <algorithm>
 
 Model &Model::instance() {
