@@ -184,7 +184,7 @@ void Commands::StopTimers() {
 }
 
 void Commands::SendV2Message(const char *name, const char *message, uint8_t color) {
-	static uint8_t buf[24];
+	static uint8_t buf[32];
 	memcpy(&buf[0],"DUCK!!",6);
 	buf[7] = color;
 	memset(&buf[8],0x20,16);

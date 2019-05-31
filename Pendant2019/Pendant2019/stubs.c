@@ -1,4 +1,5 @@
 
+
 int __attribute__((weak)) _read (int file, char * ptr, int len)
 {
 	int nChars = 0;

@@ -12,7 +12,8 @@ static uint64_t large_dwt_cyccnt() {
 	static uint32_t PREV_DWT_CYCCNT = 0;
 	static uint64_t LARGE_DWT_CYCCNT = 0;
 
-	if (static bool init = false; !init) {
+	static bool init = false;
+	if (!init) {
 
 		init = true;
 		*SCB_DEMCR   = *SCB_DEMCR | 0x01000000;
