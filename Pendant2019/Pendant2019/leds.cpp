@@ -569,6 +569,7 @@ static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 			  "s12", "s13", "s14", "s15",
 			  "cc", "memory"
 		);
+		count &= ~0x3FUL;
 	}
 #endif  // #if 0
 	__asm volatile (
