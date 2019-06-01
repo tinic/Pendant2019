@@ -552,6 +552,25 @@ static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 	if (count < 1) {
 		return;
 	}
+#if 0
+	if (count >= 64) {
+		__asm volatile (
+			"1:\n\t"
+			"vldm %[src]!, {s0-s15}\n\t"
+			"vstm %[dst]!, {s0-s15}\n\t"
+			"subs %[count], #64\n\t"
+			"bge 1b\n\t"
+			:
+			: [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
+			: "r1", 
+			  "s0", "s1", "s2", "s3",
+			  "s4", "s5", "s6", "s7",
+			  "s8", "s9", "s10", "s11",
+			  "s12", "s13", "s14", "s15",
+			  "cc", "memory"
+		);
+	}
+#endif  // #if 0
 	__asm volatile (
 		"sub %[count], #1\n\t"
 		"1:\n\t"
