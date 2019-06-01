@@ -570,15 +570,17 @@ static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 			  "cc", "memory"
 		);
 		count &= ~0x3FUL;
+		if (count < 1) {
+			return;
+		}
 	}
 #endif  // #if 0
 	__asm volatile (
-		"sub %[count], #1\n\t"
 		"1:\n\t"
 		"ldrb r1, [%[src]], #1\n\t"
 		"strb r1, [%[dst]], #1\n\t"
 		"subs %[count], #1\n\t"
-		"bhs 1b\n\t"
+		"bge 1b\n\t"
 		:
 		: [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
 		: "r1", "cc", "memory"
