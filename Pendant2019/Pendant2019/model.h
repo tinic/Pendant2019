@@ -7,7 +7,7 @@
 class Model {
 public:
 	static Model &instance();
-	 
+	
 	uint32_t CurrentEffect() { return current_effect; }
 	void SetCurrentEffect(uint32_t effect) { current_effect = effect; }
 	uint32_t EffectCount() const { return 4; }
@@ -37,13 +37,20 @@ public:
 	void SetCurrentChargeCurrent(float current) { current_charge_current = current; }
 	std::string CurrentChargeCurrentString();
 
-private:
-	void init();
+	void save();
 
-	double current_time = 0;
+private:
+
+	void init();
+	void load();
+
 	float current_brightness = 1.0f;
 	uint32_t current_effect = 3;
 	uint32_t current_bird_color = 0x00FFFF00;
+	uint8_t current_messages[8][16];
+
+	double current_time = 0;
+
 	float current_battery_voltage = 0;
 	float current_system_voltage = 0;
 	float current_vbus_voltage = 0;

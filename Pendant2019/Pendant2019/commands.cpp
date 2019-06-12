@@ -227,9 +227,11 @@ void Commands::OnADCTimer() {
 
 void Commands::Switch1_Pressed() {
 	Model::instance().SetCurrentEffect((Model::instance().CurrentEffect() + 1) % Model::instance().EffectCount());
+	Model::instance().save();
 }
 
 void Commands::Switch2_Pressed() {
+	Model::instance().save();
 }
 
 void Commands::Switch3_Pressed() {
