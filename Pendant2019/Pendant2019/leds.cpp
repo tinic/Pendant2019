@@ -708,7 +708,7 @@ public:
 		gpio_set_pin_level(ENABLE_O, false);
 	}
 
-	void update_leds() {
+	void update_leds(bool hide_non_covered = true) {
 
 		enable_leds();
 
@@ -731,35 +731,42 @@ public:
 			{   0b11111111,	0b11111111, 0b11110000, 0b00000000 }, // 0b1111
 		};
 
-#if 1
-		static const uint8_t disabled_inner_leds_top[16] = {
+
+		static const uint8_t disabled_inner_leds_top_off[16] = {
 			0x1, 0x0, 0x0, 0x1,
 			0x0, 0x0, 0x0, 0x0,
 			0x1, 0x0, 0x0, 0x0,
 			0x0, 0x1, 0x0, 0x0
 		};
 
-		static const uint8_t disabled_inner_leds_bottom[16] = {
+		static const uint8_t disabled_inner_leds_bottom_off[16] = {
 			0x1, 0x0, 0x0, 0x1,
 			0x0, 0x0, 0x0, 0x0,
 			0x1, 0x0, 0x0, 0x0,
 			0x0, 0x1, 0x0, 0x0
 		};
-#else  // #if 0
-		static const uint8_t disabled_inner_leds_top[16] = {
+
+		static const uint8_t disabled_inner_leds_top_all_on[16] = {
 			0x1, 0x1, 0x1, 0x1,
 			0x1, 0x1, 0x1, 0x1,
 			0x1, 0x1, 0x1, 0x1,
 			0x1, 0x1, 0x1, 0x1,
 		};
 
-		static const uint8_t disabled_inner_leds_bottom[16] = {
+		static const uint8_t disabled_inner_leds_bottom_all_on[16] = {
 			0x1, 0x1, 0x1, 0x1,
 			0x1, 0x1, 0x1, 0x1,
 			0x1, 0x1, 0x1, 0x1,
 			0x1, 0x1, 0x1, 0x1,
 		};
-#endif  // #if 0
+
+		const uint8_t *disabled_inner_leds_top = disabled_inner_leds_top_all_on;
+		const uint8_t *disabled_inner_leds_bottom = disabled_inner_leds_bottom_all_on;
+
+		if (hide_non_covered) {
+			disabled_inner_leds_top = disabled_inner_leds_top_off;
+			disabled_inner_leds_bottom = disabled_inner_leds_bottom_off;
+		}
 
 		struct _qspi_command cmd;
 		memset(&cmd, 0, sizeof(cmd));
