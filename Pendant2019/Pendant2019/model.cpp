@@ -79,6 +79,13 @@ void Model::load() {
 		return ret;
 	};
 
+	auto read_uint16 = [](uint8_t *buf, size_t &buf_pos) {
+		uint16_t ret = (uint32_t(buf[buf_pos+0]) <<  8)|
+					   (uint32_t(buf[buf_pos+1]) <<  0);
+		buf_pos += 2;
+		return ret;
+	};
+
 	auto read_float = [](uint8_t *buf, size_t &buf_pos) {
 		uint32_t val = (uint32_t(buf[buf_pos+0]) << 24)|
 					   (uint32_t(buf[buf_pos+1]) << 16)|
@@ -92,6 +99,24 @@ void Model::load() {
 		buf_pos += 4;
 		return a.float32;
 	};
+
+	auto read_double = [](uint8_t *buf, size_t &buf_pos) {
+		uint64_t val = (uint64_t(buf[buf_pos+0]) << 56)|
+					   (uint64_t(buf[buf_pos+0]) << 48)|
+					   (uint64_t(buf[buf_pos+0]) << 40)|
+					   (uint64_t(buf[buf_pos+0]) << 32)|
+					   (uint64_t(buf[buf_pos+0]) << 24)|
+					   (uint64_t(buf[buf_pos+1]) << 16)|
+					   (uint64_t(buf[buf_pos+2]) <<  8)|
+					   (uint64_t(buf[buf_pos+3]) <<  0);
+		union {
+			uint64_t int64;
+			double float64;
+		} a;
+		a.int64 = val;
+		buf_pos += 8;
+		return a.float64;
+	};
 	
 	auto read_buf = [](uint8_t *dst, size_t len, uint8_t *buf, size_t &buf_pos) {
 		for (size_t c=0; c<len; c++) {
@@ -103,13 +128,27 @@ void Model::load() {
 		current_bird_color = read_uint32(buf, buf_pos);
 		current_message_color = read_uint32(buf, buf_pos);
 		current_effect = read_uint32(buf, buf_pos);
-		current_message_count = read_uint32(buf, buf_pos);
+		current_sent_message_count = read_uint32(buf, buf_pos);
 
 		current_brightness = read_float(buf, buf_pos);
 		current_time_zone_offset = read_float(buf, buf_pos);
 
 		read_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
 		read_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
+
+		current_revc_messages_pos = read_uint32(buf, buf_pos);
+		
+		for (size_t c=0; c<messageRecvCount; c++) {
+			current_recv_messages[c].datetime = read_double(buf, buf_pos);
+
+			current_recv_messages[c].uid = read_uint32(buf, buf_pos);
+			current_recv_messages[c].col = read_uint32(buf, buf_pos);
+			current_recv_messages[c].flg = read_uint32(buf, buf_pos);
+			current_recv_messages[c].cnt = read_uint16(buf, buf_pos);
+
+			read_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].name), sizeof(current_recv_messages[c].name), buf, buf_pos);
+			read_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].message), sizeof(current_recv_messages[c].message), buf, buf_pos);
+		}
 	} else {
 		memcpy(
 			current_messages,
@@ -140,6 +179,11 @@ void Model::save() {
 		buf[buf_pos++] = (val >>  0) & 0xFF;
 	};
 
+	auto write_uint16 = [](uint16_t val, uint8_t *buf, size_t &buf_pos) {
+		buf[buf_pos++] = (val >>  8) & 0xFF;
+		buf[buf_pos++] = (val >>  0) & 0xFF;
+	};
+
 	auto write_float = [](float val, uint8_t *buf, size_t &buf_pos) {
 		union {
 			uint32_t int32;
@@ -152,6 +196,23 @@ void Model::save() {
 		buf[buf_pos++] = (a.int32 >>  0) & 0xFF;
 	};
 
+	auto write_double = [](double val, uint8_t *buf, size_t &buf_pos) {
+		union {
+			uint64_t int64;
+			double float64;
+		} a;
+		a.float64 = val;
+		buf[buf_pos++] = (a.int64 >> 56) & 0xFF;
+		buf[buf_pos++] = (a.int64 >> 48) & 0xFF;
+		buf[buf_pos++] = (a.int64 >> 40) & 0xFF;
+		buf[buf_pos++] = (a.int64 >> 32) & 0xFF;
+		buf[buf_pos++] = (a.int64 >> 24) & 0xFF;
+		buf[buf_pos++] = (a.int64 >> 16) & 0xFF;
+		buf[buf_pos++] = (a.int64 >>  8) & 0xFF;
+		buf[buf_pos++] = (a.int64 >>  0) & 0xFF;
+	};
+
+
 	auto write_buf = [](uint8_t *src, size_t len, uint8_t *buf, size_t &buf_pos) {
 		for (size_t c=0; c<len; c++) {
 			buf[buf_pos++] = *src++;
@@ -163,13 +224,27 @@ void Model::save() {
 	write_uint32(current_bird_color, buf, buf_pos);
 	write_uint32(current_message_color, buf, buf_pos);
 	write_uint32(current_effect, buf, buf_pos);
-	write_uint32(current_message_count, buf, buf_pos);
+	write_uint32(current_sent_message_count, buf, buf_pos);
 
 	write_float(current_brightness, buf, buf_pos);
 	write_float(current_time_zone_offset, buf, buf_pos);
 
 	write_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
 	write_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
+
+	write_uint32(current_revc_messages_pos, buf, buf_pos);
+
+	for (size_t c=0; c<messageRecvCount; c++) {
+		write_double(current_recv_messages[c].datetime, buf, buf_pos);
+
+		write_uint32(current_recv_messages[c].uid, buf, buf_pos);
+		write_uint32(current_recv_messages[c].col, buf, buf_pos);
+		write_uint32(current_recv_messages[c].flg, buf, buf_pos);
+		write_uint16(current_recv_messages[c].cnt, buf, buf_pos);
+
+		write_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].name), sizeof(current_recv_messages[c].name), buf, buf_pos);
+		write_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].message), sizeof(current_recv_messages[c].message), buf, buf_pos);
+	}
 	
 	flash_write(&FLASH_0, model_page * page_size, buf, page_size);
 }

@@ -151,28 +151,32 @@ void Commands::Boot() {
 				}
 				led_control::PerformV2MessageEffect(radio_colors[payload[7]]);
 			} else if (size >= 42 && memcmp(payload, "DUCK", 4) == 0) {
-				uint32_t uid = ( uint32_t(payload[ 3]) << 24 )|
-							   ( uint32_t(payload[ 4]) << 16 )|
-							   ( uint32_t(payload[ 5]) <<  8 )| 
-							   ( uint32_t(payload[ 6]) <<  0 );
-				(void)uid;
+				Model::Message msg;
+				
+				msg.datetime = Model::instance().CurrentDateTime();
+				
+				msg.uid = ( uint32_t(payload[ 4]) << 24 )|
+					      ( uint32_t(payload[ 5]) << 16 )|
+						  ( uint32_t(payload[ 6]) <<  8 )| 
+						  ( uint32_t(payload[ 7]) <<  0 );
+						  
+				msg.col = ( uint32_t(payload[ 8]) << 24 )|
+						  ( uint32_t(payload[ 9]) << 16 )|
+						  ( uint32_t(payload[10]) <<  8 )| 
+						  ( uint32_t(payload[11]) <<  0 );
+						  
+				msg.flg = ( uint32_t(payload[12]) << 24 )|
+						  ( uint32_t(payload[13]) << 16 )|
+						  ( uint32_t(payload[14]) <<  8 )| 
+						  ( uint32_t(payload[15]) <<  0 );
+						  
+				msg.cnt = ( uint16_t(payload[16]) <<  8 )| 
+						  ( uint16_t(payload[17]) <<  0 );
+						  
+				memcpy(&msg.name[0], &payload[18], 12);
+				memcpy(&msg.message[0], &payload[30], 12);
 
-				uint32_t col = ( uint32_t(payload[ 7]) << 24 )|
-							   ( uint32_t(payload[ 8]) << 16 )|
-							   ( uint32_t(payload[ 9]) <<  8 )| 
-							   ( uint32_t(payload[10]) <<  0 );
-				(void)col;
-
-				uint32_t flg = ( uint32_t(payload[11]) << 24 )|
-							   ( uint32_t(payload[12]) << 16 )|
-							   ( uint32_t(payload[13]) <<  8 )| 
-							   ( uint32_t(payload[14]) <<  0 );
-				(void)flg;
-
-				uint32_t cnt = ( uint32_t(payload[15]) <<  8 )| 
-							   ( uint32_t(payload[16]) <<  0 );
-							   
-				(void)cnt;
+				Model::instance().PushCurrentRecvMessage(msg);
 			}
 		});
 
@@ -248,28 +252,29 @@ void Commands::SendV3Message(const char *msg, const char *nam, uint32_t col) {
 	memcpy(&buf[0], "DUCK", 4);
 	
 	uint32_t uid = Model::instance().UID();
-	buf[ 3] = (uid >> 24 ) & 0xFF;
-	buf[ 4] = (uid >> 16 ) & 0xFF;
-	buf[ 5] = (uid >>  8 ) & 0xFF;
-	buf[ 6] = (uid >>  0 ) & 0xFF;
+	
+	buf[ 4] = (uid >> 24 ) & 0xFF;
+	buf[ 5] = (uid >> 16 ) & 0xFF;
+	buf[ 6] = (uid >>  8 ) & 0xFF;
+	buf[ 7] = (uid >>  0 ) & 0xFF;
 
-	buf[ 7] = (col >> 24 ) & 0xFF;
-	buf[ 8] = (col >> 16 ) & 0xFF;
-	buf[ 9] = (col >>  8 ) & 0xFF;
-	buf[10] = (col >>  0 ) & 0xFF;
+	buf[ 8] = (col >> 24 ) & 0xFF;
+	buf[ 9] = (col >> 16 ) & 0xFF;
+	buf[10] = (col >>  8 ) & 0xFF;
+	buf[11] = (col >>  0 ) & 0xFF;
 
 	uint32_t flg = 0;
-	buf[11] = (flg >> 24 ) & 0xFF;
-	buf[12] = (flg >> 16 ) & 0xFF;
-	buf[13] = (flg >>  8 ) & 0xFF;
-	buf[14] = (flg >>  0 ) & 0xFF;
+	buf[12] = (flg >> 24 ) & 0xFF;
+	buf[13] = (flg >> 16 ) & 0xFF;
+	buf[14] = (flg >>  8 ) & 0xFF;
+	buf[15] = (flg >>  0 ) & 0xFF;
 
 	uint32_t cnt = Model::instance().CurrentMessageCount();
-	buf[15] = (cnt >> 24 ) & 0xFF;
-	buf[16] = (cnt >> 16 ) & 0xFF;
+	buf[16] = (cnt >>  8 ) & 0xFF;
+	buf[17] = (cnt >>  0 ) & 0xFF;
 
-	strncpy((char *)&buf[42-12-12-1], nam, 12);
-	strncpy((char *)&buf[42-12   -1], msg, 12);
+	strncpy((char *)&buf[42-12-12], nam, 12);
+	strncpy((char *)&buf[42-12   ], msg, 12);
 
 	SX1280::instance().TxStart(buf, 42);
 	

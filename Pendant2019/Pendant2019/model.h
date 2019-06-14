@@ -5,11 +5,13 @@
 #include <cstring>
 #include <string>
 #include <ctime>
+#include <array>
 
 class Model {
 	static constexpr size_t messageCount = 8;
 	static constexpr size_t messageLength = 12;
 	static constexpr size_t nameLength = 12;
+	static constexpr size_t messageRecvCount = 8;
 
 public:
 	static Model &instance();
@@ -62,10 +64,23 @@ public:
 	double CurrentTimeZoneOffset() const { return current_time_zone_offset; }
 	void SetCurrentTimeZoneOffset(double time_zone_offset) { current_time_zone_offset = time_zone_offset; }
 
-	uint32_t CurrentMessageCount() const { return current_message_count; }
-	void IncCurrentMessageCount() { current_message_count++; save(); }
+	uint32_t CurrentMessageCount() const { return current_sent_message_count; }
+	void IncCurrentMessageCount() { current_sent_message_count++; save(); }
 	
 	uint32_t UID() const { return uid; }
+	
+	struct Message {
+		double datetime;
+		uint32_t uid;
+		uint32_t col;
+		uint32_t flg;
+		uint16_t cnt;
+		uint8_t message[messageLength];
+		uint8_t name[nameLength];
+	};
+
+	const Message &CurrentRecvMessage(size_t index) { index %= messageRecvCount; return current_recv_messages[index]; }
+	void PushCurrentRecvMessage(Message &msg) { current_recv_messages[current_revc_messages_pos++] = msg; current_revc_messages_pos %= messageRecvCount; }
 
 	void save();
 
@@ -86,7 +101,10 @@ private:
 	uint8_t current_name[nameLength];
 
 	// Persistent
-	uint32_t current_message_count = 0;
+	uint32_t current_sent_message_count = 0;
+	
+	uint32_t current_revc_messages_pos = 0;
+	std::array<Message, messageRecvCount> current_recv_messages;
 	
 	// Volatile
 	double current_time = 0;
