@@ -9,11 +9,8 @@ public:
 	static void PerformV2MessageEffect(uint32_t color);
 	static void PerformVoltageDisplay();
 
-	static void PerformColorRingDisplay(uint32_t color);
-	static void RemoveColorRingDisplay();
-
-	static void PerformColorBirdDisplay(uint32_t color);
-	static void RemoveColorBirdDisplay();
+	static void PerformColorRingDisplay(uint32_t color, bool remove = false);
+	static void PerformColorBirdDisplay(uint32_t color, bool remove = false);
 };
 
 #endif /* LEDS_H_ */

@@ -1105,6 +1105,74 @@ public:
 		}
 	}
 
+	void bird_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
+		float blend = 0.0f;
+
+		// Continue to run effect below
+		below.Calc();
+
+		if (span.InBeginPeriod(blend, 0.25f)) {
+		} else if (span.InEndPeriod(blend, 0.25f)) {
+			blend = 1.0f - blend;
+		}
+		
+		colors::rgb8 out = colors::rgb8(colors::rgb(color));
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			if (blend) {
+				leds_inner[0][c] = colors::ip(leds_inner[0][c], out, blend);
+				leds_inner[1][c] = colors::ip(leds_inner[1][c], out, blend);
+			} else {
+				leds_inner[0][c] = out;
+				leds_inner[1][c] = out;
+			}
+		}
+		if (blend) {
+			leds_centr[0] = colors::ip(leds_centr[0], out, blend);
+			leds_centr[1] = colors::ip(leds_centr[1], out, blend);
+		} else {
+			leds_centr[0] = out;
+			leds_centr[1] = out;
+		}
+	}
+
+	void ring_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
+
+		float blend = 0.0f;
+		if (span.InBeginPeriod(blend, 0.25f)) {
+			below.Calc();
+		} else if (span.InEndPeriod(blend, 0.25f)) {
+			below.Calc();
+			blend = 1.0f - blend;
+		}
+
+		colors::rgb8 out = colors::rgb8(colors::rgb(color));
+
+		for (size_t c = 0; c < leds_rings_n; c++) {
+
+			if (blend) {
+				leds_outer[0][c] = colors::ip(leds_outer[0][c], out, blend);
+				leds_outer[1][c] = colors::ip(leds_outer[1][c], out, blend);
+
+				leds_inner[0][c] = colors::ip(leds_inner[0][c], out, blend);
+				leds_inner[1][c] = colors::ip(leds_inner[1][c], out, blend);
+
+			} else {
+				leds_outer[0][c] = out;
+				leds_outer[1][c] = out;
+
+				leds_inner[0][c] = out;
+				leds_inner[1][c] = out;
+			}
+		}
+
+		if (blend) {
+			leds_centr[0] = colors::ip(leds_centr[0], out, blend);
+			leds_centr[1] = colors::ip(leds_centr[1], out, blend);
+		} else {
+			leds_centr[0] = out;
+			leds_centr[1] = out;
+		}
+	}
 
 	void message(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
 
@@ -1196,14 +1264,54 @@ void led_control::PerformV2MessageEffect(uint32_t color) {
 	Timeline::instance().Add(message);
 }
 
-void led_control::PerformColorBirdDisplay(uint32_t) {
+void led_control::PerformColorBirdDisplay(uint32_t color, bool remove) {
+	static Timeline::Span span;
+
+	if (remove) {
+		span.time = Model::instance().CurrentTime();
+		span.duration = 0.25f;
+		return;
+	}
+
+	if (Timeline::instance().Scheduled(span)) {
+		return;
+	}
+
+	span.type = Timeline::Span::Effect;
+	span.time = Model::instance().CurrentTime();
+	span.duration = std::numeric_limits<double>::infinity();
+	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		led_bank::instance().bird_color(color, span, below);
+	};
+	span.commitFunc = [=](Timeline::Span &) {
+		led_bank::instance().update_leds();
+	};
+
+	Timeline::instance().Add(span);
 }
 
-void led_control::RemoveColorBirdDisplay() {
-}
+void led_control::PerformColorRingDisplay(uint32_t color, bool remove) {
+	static Timeline::Span span;
 
-void led_control::PerformColorRingDisplay(uint32_t) {
-}
+	if (remove) {
+		span.time = Model::instance().CurrentTime();
+		span.duration = 0.25f;
+		return;
+	}
 
-void led_control::RemoveColorRingDisplay() {
+	if (Timeline::instance().Scheduled(span)) {
+		return;
+	}
+
+	span.type = Timeline::Span::Effect;
+	span.time = Model::instance().CurrentTime();
+	span.duration = std::numeric_limits<double>::infinity();
+	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		led_bank::instance().ring_color(color, span, below);
+	};
+	span.commitFunc = [=](Timeline::Span &) {
+		led_bank::instance().update_leds();
+	};
+
+	Timeline::instance().Add(span);
 }

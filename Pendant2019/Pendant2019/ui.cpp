@@ -119,7 +119,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 		SDD1306::instance().Display();
 	};
 	span.doneFunc = [=](Timeline::Span &) {
-		led_control::RemoveColorRingDisplay();
+		led_control::PerformColorRingDisplay(currentColor, true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
 		span.time = Model::instance().CurrentTime(); // reset timeout
@@ -161,7 +161,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 			case 3: {
 				Model::instance().SetCurrentMessageColor(currentColor);
 				Model::instance().save();
-				led_control::RemoveColorRingDisplay();
+				led_control::PerformColorRingDisplay(currentColor, true);
 				Timeline::instance().Remove(span);
 				Timeline::instance().ProcessDisplay();
 			} break;
@@ -282,7 +282,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 		SDD1306::instance().Display();
 	};
 	span.doneFunc = [=](Timeline::Span &) {
-		led_control::RemoveColorBirdDisplay();
+		led_control::PerformColorBirdDisplay(currentColor, true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
 		span.time = Model::instance().CurrentTime(); // reset timeout
@@ -324,7 +324,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 			case 3: {
 				Model::instance().SetCurrentBirdColor(currentColor);
 				Model::instance().save();
-				led_control::RemoveColorBirdDisplay();
+				led_control::PerformColorBirdDisplay(currentColor, true);
 				Timeline::instance().Remove(span);
 				Timeline::instance().ProcessDisplay();
 			} break;
