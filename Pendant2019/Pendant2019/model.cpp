@@ -94,7 +94,8 @@ void Model::load() {
 		current_message_color = read_uint32(buf, buf_pos);
 		current_effect = read_uint32(buf, buf_pos);
 		current_brightness = read_float(buf, buf_pos);
-		
+		current_time_zone_offset = read_float(buf, buf_pos);
+
 		read_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
 		read_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
 	} else {
@@ -146,12 +147,13 @@ void Model::save() {
 	};
 
 	write_uint32(marker, buf, buf_pos);	
-	
+
 	write_uint32(current_bird_color, buf, buf_pos);
 	write_uint32(current_message_color, buf, buf_pos);
 	write_uint32(current_effect, buf, buf_pos);
 	write_float(current_brightness, buf, buf_pos);
-	
+	write_float(current_time_zone_offset, buf, buf_pos);
+
 	write_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
 	write_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
 	

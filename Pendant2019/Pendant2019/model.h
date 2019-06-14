@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <ctime>
 
 class Model {
 	static constexpr size_t messageCount = 8;
@@ -44,6 +45,9 @@ public:
 	void SetCurrentSystemVoltage(float voltage) { current_system_voltage = voltage; }
 	std::string CurrentSystemVoltageString();
 
+	float MinBatteryVoltage() const { return 3.5; }
+	float MaxBatteryVoltage() const { return 4.2; }
+
 	float CurrentVbusVoltage() const  { return current_vbus_voltage; }
 	void SetCurrentVbusVoltage(float voltage) { current_vbus_voltage = voltage; }
 	std::string CurrentVbusVoltageString();
@@ -51,6 +55,12 @@ public:
 	float CurrentChargeCurrent() const  { return current_charge_current; }
 	void SetCurrentChargeCurrent(float current) { current_charge_current = current; }
 	std::string CurrentChargeCurrentString();
+	
+	double CurrentDateTime() const { if (current_date_time_offset == 0.0) { return -1.0; } return current_time + current_date_time_offset; };
+	void SetCurrentDateTime(double date_time) { current_date_time_offset = date_time - current_time; }
+
+	double CurrentTimeZoneOffset() const { return current_time_zone_offset; }
+	void SetCurrentTimeZoneOffset(double time_zone_offset) { current_time_zone_offset = time_zone_offset; }
 
 	void save();
 
@@ -59,14 +69,20 @@ private:
 	void init();
 	void load();
 
+	// Settings
 	float current_brightness = 1.0f;
+	float current_time_zone_offset = -7.0f;
+
 	uint32_t current_effect = 3;
 	uint32_t current_bird_color = 0x00FFFF00;
 	uint32_t current_message_color = 0x00FFFF00;
+
 	uint8_t current_messages[messageCount][messageLength];
 	uint8_t current_name[nameLength];
-
+	
+	// Volatile
 	double current_time = 0;
+	double current_date_time_offset = 0;
 
 	float current_battery_voltage = 0;
 	float current_system_voltage = 0;

@@ -92,13 +92,13 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[12];
-		sprintf(str, " R:%03d", int((Model::instance().CurrentMessageColor() >> 16) & 0xFF));
+		snprintf(str, 12, " R:%03d", int((Model::instance().CurrentMessageColor() >> 16) & 0xFF));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		sprintf(str, " G:%03d", int((Model::instance().CurrentMessageColor() >>  8) & 0xFF));
+		snprintf(str, 12, " G:%03d", int((Model::instance().CurrentMessageColor() >>  8) & 0xFF));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
-		sprintf(str, " B:%03d", int((Model::instance().CurrentMessageColor() >>  0) & 0xFF));
+		snprintf(str, 12, " B:%03d", int((Model::instance().CurrentMessageColor() >>  0) & 0xFF));
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
-		sprintf(str, " SAVE!");
+		snprintf(str, 12, " SAVE!");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		switch(currentSelection) {
 			case 0: {
@@ -255,13 +255,13 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[12];
-		sprintf(str, " R:%03d", int((Model::instance().CurrentBirdColor() >> 16) & 0xFF));
+		snprintf(str, 12, " R:%03d", int((Model::instance().CurrentBirdColor() >> 16) & 0xFF));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		sprintf(str, " G:%03d", int((Model::instance().CurrentBirdColor() >>  8) & 0xFF));
+		snprintf(str, 12, " G:%03d", int((Model::instance().CurrentBirdColor() >>  8) & 0xFF));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
-		sprintf(str, " B:%03d", int((Model::instance().CurrentBirdColor() >>  0) & 0xFF));
+		snprintf(str, 12, " B:%03d", int((Model::instance().CurrentBirdColor() >>  0) & 0xFF));
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
-		sprintf(str, " SAVE!");
+		snprintf(str, 12, " SAVE!");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		switch(currentSelection) {
 			case 0: {
@@ -562,11 +562,68 @@ void UI::init() {
 		span.time = Model::instance().CurrentTime();
 		span.duration = std::numeric_limits<double>::infinity();
 		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-			char str[64];
-			snprintf(str, 64, "%sV %sV    ", Model::instance().CurrentBatteryVoltageString().c_str(), Model::instance().CurrentSystemVoltageString().c_str());
+			char str[12];
+			snprintf(str, 12, "#%02d/%02d", int(Model::instance().CurrentEffect()), int(Model::instance().EffectCount()));
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			snprintf(str, 64, "%sV %smA   ", Model::instance().CurrentVbusVoltageString().c_str(), Model::instance().CurrentChargeCurrentString().c_str());
+			if (Model::instance().CurrentDateTime() >= 0.0) {
+				// display time
+				int64_t dateTime = Model::instance().CurrentDateTime();
+				int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
+				int32_t min = ( ( dateTime / 1000 )      ) % 60;
+				snprintf(str, 12, "O%02d:%02d", int(hrs), int(min));
+			} else {
+				snprintf(str, 12, "DUCKPD");
+			}
+			SDD1306::instance().PlaceAsciiStr(6, 0, str);
+			auto gc = [](int32_t ch_index, float val) {
+				val *= 6.0f;
+				switch (ch_index) {
+					case	0: {
+						if (val >= 1.0f) {
+							return '=';
+						} else {
+							return ' ';
+						}
+					} break;
+					case	1: {
+						if (val >= 2.0f) {
+							return '=';
+						} else {
+							return ' ';
+						}
+					} break;
+					case	2: {
+						if (val >= 3.0f) {
+							return '=';
+						} else {
+							return ' ';
+						}
+					} break;
+					case	3: {
+						if (val >= 4.0f) {
+							return '=';
+						} else {
+							return ' ';
+						}
+					} break;
+					case	4: {
+						if (val >= 5.0f) {
+							return '=';
+						} else {
+							return ' ';
+						}
+					} break;
+				}
+				return ' ';
+			};
+			float b = Model::instance().CurrentBrightness();
+			snprintf(str, 12, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
+			float l = ( Model::instance().CurrentBatteryVoltage()    - Model::instance().MinBatteryVoltage() ) / 
+						Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage();
+			l = std::max(0.0f, std::min(1.0f, l));
+			snprintf(str, 12, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
+			SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		};
 		span.commitFunc = [=](Timeline::Span &) {
 			SDD1306::instance().Display();

@@ -3,6 +3,7 @@
 #include <atmel_start.h>
 
 #include <cstring>
+#include <cmath>
 #include <limits>
 
 #include "./model.h"
@@ -46,13 +47,51 @@ void Commands::Boot() {
 	delay_ms(50);
 
 	if (SX1280::instance().DevicePresent()) {
+	
+		SendDateTimeRequest();
 
 		SX1280::instance().SetTxDoneCallback([=](void) {
 		});
 		
 		SX1280::instance().SetRxDoneCallback([=](const uint8_t *payload, uint8_t size, SX1280::PacketStatus) {
 			// Do V2 messages
-			if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
+			if (size >= 24 && memcmp(payload, "UTC", 3) == 0) {
+			   	struct tm tm;
+			   	memset(&tm, 0, sizeof(tm));
+			   	sscanf((const char *)&payload[3],"%04d-%02d-%02dT%02d:%02d:%02dZ", &tm.tm_year, &tm.tm_mon, &tm.tm_mday, &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
+		   		tm.tm_year -= 1900;
+
+		   		if (tm.tm_year < 0) {
+		   			return;
+		   		}
+		   		if (tm.tm_mon  < 0 || tm.tm_mon  > 11) {
+		   			return;
+		   		}
+		   		if (tm.tm_mday < 0 || tm.tm_mday > 31) {
+		   			return;
+		   		}
+		   		if (tm.tm_hour < 0 || tm.tm_hour > 23) {
+		   			return;
+		   		}
+		   		if (tm.tm_min  < 0 || tm.tm_min  > 59) {
+		   			return;
+		   		}
+		   		if (tm.tm_sec  < 0 || tm.tm_sec  > 61) {
+		   			return;
+		   		}
+
+		   		double intPart = 0;
+
+				tm.tm_min += 60;
+		   		tm.tm_min += int(modf(Model::instance().CurrentTimeZoneOffset(), &intPart));
+		   		tm.tm_min %= 60;
+
+				tm.tm_hour += 24;
+		   		tm.tm_hour += int(intPart);
+		   		tm.tm_hour %= 24;
+
+				Model::instance().SetCurrentDateTime((double(tm.tm_hour) * 24.0 * 60.0 + double(tm.tm_min) * 60.0 + double(tm.tm_sec)));
+			} else if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
 				static const uint32_t radio_colors[] = {
 					0x808080UL,
 					0xA00000UL,
@@ -178,6 +217,10 @@ void Commands::SendV2Message(const char *name, const char *message, uint8_t colo
 }
 
 void Commands::SendV3Message(const char *, const char *, uint32_t) {
+}
+
+void Commands::SendDateTimeRequest() {
+	SX1280::instance().TxStart((const uint8_t *)"PLEASEPLEASEDATETIMENOW!",24);
 }
 
 void Commands::OnLEDTimer() {
