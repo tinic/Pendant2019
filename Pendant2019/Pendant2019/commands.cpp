@@ -91,6 +91,7 @@ void Commands::Boot() {
 		   		tm.tm_hour %= 24;
 
 				Model::instance().SetCurrentDateTime((double(tm.tm_hour) * 24.0 * 60.0 + double(tm.tm_min) * 60.0 + double(tm.tm_sec)));
+				
 			} else if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
 				static const uint32_t radio_colors[] = {
 					0x808080UL,
@@ -149,6 +150,29 @@ void Commands::Boot() {
 					}
 				}
 				led_control::PerformV2MessageEffect(radio_colors[payload[7]]);
+			} else if (size >= 42 && memcmp(payload, "DUCK", 4) == 0) {
+				uint32_t uid = ( uint32_t(payload[ 3]) << 24 )|
+							   ( uint32_t(payload[ 4]) << 16 )|
+							   ( uint32_t(payload[ 5]) <<  8 )| 
+							   ( uint32_t(payload[ 6]) <<  0 );
+				(void)uid;
+
+				uint32_t col = ( uint32_t(payload[ 7]) << 24 )|
+							   ( uint32_t(payload[ 8]) << 16 )|
+							   ( uint32_t(payload[ 9]) <<  8 )| 
+							   ( uint32_t(payload[10]) <<  0 );
+				(void)col;
+
+				uint32_t flg = ( uint32_t(payload[11]) << 24 )|
+							   ( uint32_t(payload[12]) << 16 )|
+							   ( uint32_t(payload[13]) <<  8 )| 
+							   ( uint32_t(payload[14]) <<  0 );
+				(void)flg;
+
+				uint32_t cnt = ( uint32_t(payload[15]) <<  8 )| 
+							   ( uint32_t(payload[16]) <<  0 );
+							   
+				(void)cnt;
 			}
 		});
 
@@ -216,7 +240,40 @@ void Commands::SendV2Message(const char *name, const char *message, uint8_t colo
 	SX1280::instance().TxStart(buf,24);
 }
 
-void Commands::SendV3Message(const char *, const char *, uint32_t) {
+void Commands::SendV3Message(const char *msg, const char *nam, uint32_t col) {
+	uint8_t buf[42];
+
+	memset(&buf[0], 0, sizeof(buf));
+
+	memcpy(&buf[0], "DUCK", 4);
+	
+	uint32_t uid = Model::instance().UID();
+	buf[ 3] = (uid >> 24 ) & 0xFF;
+	buf[ 4] = (uid >> 16 ) & 0xFF;
+	buf[ 5] = (uid >>  8 ) & 0xFF;
+	buf[ 6] = (uid >>  0 ) & 0xFF;
+
+	buf[ 7] = (col >> 24 ) & 0xFF;
+	buf[ 8] = (col >> 16 ) & 0xFF;
+	buf[ 9] = (col >>  8 ) & 0xFF;
+	buf[10] = (col >>  0 ) & 0xFF;
+
+	uint32_t flg = 0;
+	buf[11] = (flg >> 24 ) & 0xFF;
+	buf[12] = (flg >> 16 ) & 0xFF;
+	buf[13] = (flg >>  8 ) & 0xFF;
+	buf[14] = (flg >>  0 ) & 0xFF;
+
+	uint32_t cnt = Model::instance().CurrentMessageCount();
+	buf[15] = (cnt >> 24 ) & 0xFF;
+	buf[16] = (cnt >> 16 ) & 0xFF;
+
+	strncpy((char *)&buf[42-12-12-1], nam, 12);
+	strncpy((char *)&buf[42-12   -1], msg, 12);
+
+	SX1280::instance().TxStart(buf, 42);
+	
+	Model::instance().IncCurrentMessageCount();
 }
 
 void Commands::SendDateTimeRequest() {

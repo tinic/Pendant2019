@@ -62,6 +62,11 @@ public:
 	double CurrentTimeZoneOffset() const { return current_time_zone_offset; }
 	void SetCurrentTimeZoneOffset(double time_zone_offset) { current_time_zone_offset = time_zone_offset; }
 
+	uint32_t CurrentMessageCount() const { return current_message_count; }
+	void IncCurrentMessageCount() { current_message_count++; save(); }
+	
+	uint32_t UID() const { return uid; }
+
 	void save();
 
 private:
@@ -79,6 +84,9 @@ private:
 
 	uint8_t current_messages[messageCount][messageLength];
 	uint8_t current_name[nameLength];
+
+	// Persistent
+	uint32_t current_message_count = 0;
 	
 	// Volatile
 	double current_time = 0;
@@ -88,6 +96,8 @@ private:
 	float current_system_voltage = 0;
 	float current_vbus_voltage = 0;
 	float current_charge_current = 0;
+
+	uint32_t uid;
 
 	bool initialized = false;
 };

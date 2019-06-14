@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <alloca.h>
 
+#include "./murmur_hash3.h"
+
 static const uint32_t marker = 0x99acfc2d;
 
 Model &Model::instance() {
@@ -20,6 +22,14 @@ Model &Model::instance() {
 
 void Model::init() {
 	load();
+	
+	uint32_t uid128[4];
+	uid128[0] = *((uint32_t *)(0x008061FC));
+	uid128[1] = *((uint32_t *)(0x00806010));
+	uid128[2] = *((uint32_t *)(0x00806014));
+	uid128[3] = *((uint32_t *)(0x00806018));
+
+	uid = MurmurHash3_32(uid128, sizeof(uid128), 0x5cfed374);
 }
 
 std::string Model::CurrentBatteryVoltageString() {
@@ -93,6 +103,8 @@ void Model::load() {
 		current_bird_color = read_uint32(buf, buf_pos);
 		current_message_color = read_uint32(buf, buf_pos);
 		current_effect = read_uint32(buf, buf_pos);
+		current_message_count = read_uint32(buf, buf_pos);
+
 		current_brightness = read_float(buf, buf_pos);
 		current_time_zone_offset = read_float(buf, buf_pos);
 
@@ -151,6 +163,8 @@ void Model::save() {
 	write_uint32(current_bird_color, buf, buf_pos);
 	write_uint32(current_message_color, buf, buf_pos);
 	write_uint32(current_effect, buf, buf_pos);
+	write_uint32(current_message_count, buf, buf_pos);
+
 	write_float(current_brightness, buf, buf_pos);
 	write_float(current_time_zone_offset, buf, buf_pos);
 

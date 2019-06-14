@@ -30,7 +30,7 @@ void SX1280::init() {
 
 	SetStandby(STDBY_RC);
 
-	SetDefaultLoraMode(24);
+	SetDefaultLoraMode(42);
 	
 	SetRfFrequency( RF_FREQUENCY );
 	SetBufferBaseAddresses( 0x00, 0x00 );
