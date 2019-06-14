@@ -16,6 +16,7 @@ public:
 	void StopTimers();
 
 	void SendV2Message(const char *name, const char *message, uint8_t color = 0);
+	void SendV3Message(const char *name, const char *message, uint32_t color = 0);
 
 private:
 

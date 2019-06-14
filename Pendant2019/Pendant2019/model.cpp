@@ -91,22 +91,26 @@ void Model::load() {
 
 	if (read_uint32(buf, buf_pos) == marker) {
 		current_bird_color = read_uint32(buf, buf_pos);
+		current_message_color = read_uint32(buf, buf_pos);
 		current_effect = read_uint32(buf, buf_pos);
 		current_brightness = read_float(buf, buf_pos);
+		
 		read_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
+		read_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
 	} else {
 		memcpy(
 			current_messages,
-			"0123456789ABCDEF"
-			"0123456789ABCDEF"
-			"0123456789ABCDEF"
-			"0123456789ABCDEF"
-			"0123456789ABCDEF"
-			"0123456789ABCDEF"
-			"0123456789ABCDEF"
-			"0123456789ABCDEF",
+			"0123456789AB"
+			"0123456789AB"
+			"0123456789AB"
+			"0123456789AB"
+			"0123456789AB"
+			"0123456789AB"
+			"0123456789AB"
+			"0123456789AB",
 			sizeof(current_messages)
 		);
+		memcpy(current_name, "DUCK\0\0\0\0\0\0\0\0", nameLength);
 	}
 }
 
@@ -144,9 +148,12 @@ void Model::save() {
 	write_uint32(marker, buf, buf_pos);	
 	
 	write_uint32(current_bird_color, buf, buf_pos);
+	write_uint32(current_message_color, buf, buf_pos);
 	write_uint32(current_effect, buf, buf_pos);
 	write_float(current_brightness, buf, buf_pos);
+	
 	write_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
+	write_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
 	
 	flash_write(&FLASH_0, model_page * page_size, buf, page_size);
 }

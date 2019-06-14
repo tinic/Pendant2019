@@ -1195,3 +1195,15 @@ void led_control::PerformV2MessageEffect(uint32_t color) {
 
 	Timeline::instance().Add(message);
 }
+
+void led_control::PerformColorBirdDisplay(uint32_t) {
+}
+
+void led_control::RemoveColorBirdDisplay() {
+}
+
+void led_control::PerformColorRingDisplay(uint32_t) {
+}
+
+void led_control::RemoveColorRingDisplay() {
+}

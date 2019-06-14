@@ -12,6 +12,7 @@
 #include "./timeline.h"
 #include "./leds.h"
 #include "./system_time.h"
+#include "./ui.h"
 
 Commands::Commands() {
 }
@@ -134,26 +135,8 @@ void Commands::Boot() {
 		});
 	}
 
-	if (SDD1306::instance().DevicePresent()) {
-		static Timeline::Span span;
-		span.type = Timeline::Span::Display;
-		span.time = Model::instance().CurrentTime();
-		span.duration = std::numeric_limits<double>::infinity();
-		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-			char str[64];
-			snprintf(str, 64, "%sV %sV    ", Model::instance().CurrentBatteryVoltageString().c_str(), Model::instance().CurrentSystemVoltageString().c_str());
-			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			snprintf(str, 64, "%sV %smA   ", Model::instance().CurrentVbusVoltageString().c_str(), Model::instance().CurrentChargeCurrentString().c_str());
-			SDD1306::instance().PlaceAsciiStr(0, 1, str);
-		};
-		span.commitFunc = [=](Timeline::Span &) {
-			SDD1306::instance().Display();
-		};
-		span.doneFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetAsciiScrollMessage(0,0);
-		};
-		Timeline::instance().Add(span);
-	}
+	UI::instance();
+
 	led_control::init();
 
 	delay_ms(50);
@@ -194,6 +177,9 @@ void Commands::SendV2Message(const char *name, const char *message, uint8_t colo
 	SX1280::instance().TxStart(buf,24);
 }
 
+void Commands::SendV3Message(const char *, const char *, uint32_t) {
+}
+
 void Commands::OnLEDTimer() {
 	Model::instance().SetCurrentTime(system_time());
 
@@ -226,16 +212,24 @@ void Commands::OnADCTimer() {
 }
 
 void Commands::Switch1_Pressed() {
-	Model::instance().SetCurrentEffect((Model::instance().CurrentEffect() + 1) % Model::instance().EffectCount());
-	Model::instance().save();
+	Timeline::instance().ProcessDisplay();
+	if (Timeline::instance().TopDisplay().Valid()) {
+		Timeline::instance().TopDisplay().ProcessSwitch1();
+	}
 }
 
 void Commands::Switch2_Pressed() {
-	Model::instance().save();
+	Timeline::instance().ProcessDisplay();
+	if (Timeline::instance().TopDisplay().Valid()) {
+		Timeline::instance().TopDisplay().ProcessSwitch2();
+	}
 }
 
 void Commands::Switch3_Pressed() {
-	Commands::instance().SendV2Message("DUCK","HELLO!",0);
+	Timeline::instance().ProcessDisplay();
+	if (Timeline::instance().TopDisplay().Valid()) {
+		Timeline::instance().TopDisplay().ProcessSwitch3();
+	}
 }
 
 void Commands::OnLEDTimer_C(const timer_task *) {

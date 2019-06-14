@@ -37,6 +37,23 @@ void Timeline::Add(Timeline::Span &span) {
 	head = &span;
 }
 
+void Timeline::Remove(Timeline::Span &span) {
+	Span *p = 0;
+	for (Span *i = head; i ; i = i->next) {
+		if ( i == &span ) {
+			if (p) {
+				p->next = i->next;
+			} else {
+				head = i->next;
+			}
+			i->next = 0;
+			i->Done();
+			return;
+		}
+		p = i;
+	}
+}
+
 void Timeline::Process(Span::Type type) {
 	static std::array<Span *, 64> collected;
 	size_t collected_num = 0;

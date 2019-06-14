@@ -29,17 +29,24 @@ public:
 		Type type = None;
 		double time = 0.0f;
 		double duration = 0.0f;
-		
 
 		std::function<void (Span &span)> startFunc;
 		std::function<void (Span &span, Span &below)> calcFunc;
 		std::function<void (Span &span)> commitFunc;
 		std::function<void (Span &span)> doneFunc;
 
+		std::function<void (Span &span)> switch1Func;
+		std::function<void (Span &span)> switch2Func;
+		std::function<void (Span &span)> switch3Func;
+
 		void Start() { if (startFunc) startFunc(*this); }
 		void Calc() { if (calcFunc) calcFunc(*this, Timeline::instance().Below(this, type)); }
 		void Commit() { if (commitFunc) commitFunc(*this); }
 		void Done() { if (doneFunc) doneFunc(*this); }
+		
+		void ProcessSwitch1() { if (switch1Func) switch1Func(*this); }
+		void ProcessSwitch2() { if (switch2Func) switch2Func(*this); }
+		void ProcessSwitch3() { if (switch3Func) switch3Func(*this); }
 
 		bool Valid() const { return type != None; }
 
@@ -56,6 +63,7 @@ public:
 	static Timeline &instance();
 
 	void Add(Timeline::Span &span);
+	void Remove(Timeline::Span &span);
 	bool Scheduled(Timeline::Span &span);
 
 	void ProcessEffect();

@@ -2,11 +2,26 @@
 #define MODEL_H_
 
 #include <cstdint>
+#include <cstring>
 #include <string>
 
 class Model {
+	static constexpr size_t messageCount = 8;
+	static constexpr size_t messageLength = 12;
+	static constexpr size_t nameLength = 12;
+
 public:
 	static Model &instance();
+	
+	const char *CurrentMessage(size_t index) { index %= messageCount; return (const char *)&current_messages[index][0]; }
+	void SetCurrentMessage(size_t index, const char *message) { index %= messageCount; strncpy((char *)&current_messages[index][0], message, messageLength); }
+	uint32_t MessageCount() const { return messageCount; }
+
+	uint32_t CurrentMessageColor() const { return current_message_color; }
+	void SetCurrentMessageColor(uint32_t color) { current_message_color = color; }
+
+	const char *CurrentName() const { return (const char *)current_name; }
+	void SetCurrentName(const char *name) { strncpy((char *)current_name, name, nameLength); }
 	
 	uint32_t CurrentEffect() { return current_effect; }
 	void SetCurrentEffect(uint32_t effect) { current_effect = effect; }
@@ -47,7 +62,9 @@ private:
 	float current_brightness = 1.0f;
 	uint32_t current_effect = 3;
 	uint32_t current_bird_color = 0x00FFFF00;
-	uint8_t current_messages[8][16];
+	uint32_t current_message_color = 0x00FFFF00;
+	uint8_t current_messages[messageCount][messageLength];
+	uint8_t current_name[nameLength];
 
 	double current_time = 0;
 
