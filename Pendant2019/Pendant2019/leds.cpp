@@ -1080,30 +1080,8 @@ public:
 	}
 
 	//
-	// MESSAGE
+	// BIRD COLOR MODIFIER
 	//
-
-	void voltage(Timeline::Span &, Timeline::Span &) {
-		led_bank::set_bird_color(colors::rgb(Model::instance().CurrentBirdColor()));
-
-
-		for (size_t c = 0; c < leds_rings_n; c++) {
-			leds_outer[0][c] = colors::rgb8();
-			leds_outer[1][c] = colors::rgb8();
-		}
-
-		int32_t nl = int32_t(Model::instance().CurrentVbusVoltage());
-		for (int32_t c = 0; c < nl; c++) {
-			leds_outer[0][c+1] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
-			leds_outer[1][c+1] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
-		}
-
-		int32_t nr = int32_t(Model::instance().CurrentSystemVoltage());
-		for (int32_t c = 0; c < nr; c++) {
-			leds_outer[0][15-c] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
-			leds_outer[1][15-c] = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f));
-		}
-	}
 
 	void bird_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
 		float blend = 0.0f;
@@ -1134,8 +1112,12 @@ public:
 			leds_centr[1] = out;
 		}
 	}
+	
+	//
+	// MESSAGE COLOR MODIFIER
+	// 
 
-	void ring_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
+	void message_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
 
 		float blend = 0.0f;
 		if (span.InBeginPeriod(blend, 0.25f)) {
@@ -1174,7 +1156,11 @@ public:
 		}
 	}
 
-	void message(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
+	//
+	// V2 MESSAGE
+	//
+	
+	void message_v2(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
 
 		float blend = 0.0f;
 		if (span.InBeginPeriod(blend, 0.25f)) {
@@ -1224,44 +1210,30 @@ void led_control::init () {
 	led_bank::instance();
 }
 
-void led_control::PerformVoltageDisplay() {
-	static Timeline::Span voltage;
+void led_control::PerformV2MessageEffect(uint32_t color, bool remove) {
+	static Timeline::Span span;
 
-	if (Timeline::instance().Scheduled(voltage)) {
+	if (Timeline::instance().Scheduled(span)) {
 		return;
 	}
 
-	voltage.type = Timeline::Span::Effect;
-	voltage.time = Model::instance().CurrentTime();
-	voltage.duration = 0.5f;
-	voltage.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-		led_bank::instance().voltage(span, below);
-	};
-	voltage.commitFunc = [=](Timeline::Span &) {
-		led_bank::instance().update_leds();
-	};
-
-	Timeline::instance().Add(voltage);
-}
-
-void led_control::PerformV2MessageEffect(uint32_t color) {
-	static Timeline::Span message;
-
-	if (Timeline::instance().Scheduled(message)) {
+	if (remove) {
+		span.time = Model::instance().CurrentTime();
+		span.duration = 0.25f;
 		return;
 	}
 
-	message.type = Timeline::Span::Effect;
-	message.time = Model::instance().CurrentTime();
-	message.duration = 8.0f;
-	message.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-		led_bank::instance().message(color, span, below);
+	span.type = Timeline::Span::Effect;
+	span.time = Model::instance().CurrentTime();
+	span.duration = 8.0f;
+	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		led_bank::instance().message_v2(color, span, below);
 	};
-	message.commitFunc = [=](Timeline::Span &) {
+	span.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();
 	};
 
-	Timeline::instance().Add(message);
+	Timeline::instance().Add(span);
 }
 
 void led_control::PerformColorBirdDisplay(uint32_t color, bool remove) {
@@ -1290,7 +1262,7 @@ void led_control::PerformColorBirdDisplay(uint32_t color, bool remove) {
 	Timeline::instance().Add(span);
 }
 
-void led_control::PerformColorRingDisplay(uint32_t color, bool remove) {
+void led_control::PerformMessageColorDisplay(uint32_t color, bool remove) {
 	static Timeline::Span span;
 
 	if (remove) {
@@ -1307,7 +1279,7 @@ void led_control::PerformColorRingDisplay(uint32_t color, bool remove) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = std::numeric_limits<double>::infinity();
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-		led_bank::instance().ring_color(color, span, below);
+		led_bank::instance().message_color(color, span, below);
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();

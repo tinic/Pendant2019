@@ -85,7 +85,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 
 	currentColor = Model::instance().CurrentMessageColor();
 	
-	led_control::PerformColorRingDisplay(currentColor);
+	led_control::PerformMessageColorDisplay(currentColor);
 
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
@@ -119,7 +119,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 		SDD1306::instance().Display();
 	};
 	span.doneFunc = [=](Timeline::Span &) {
-		led_control::PerformColorRingDisplay(currentColor, true);
+		led_control::PerformMessageColorDisplay(currentColor, true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
 		span.time = Model::instance().CurrentTime(); // reset timeout
@@ -142,26 +142,26 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				uint8_t comp = (currentColor >> 16) & 0xFF;
 				comp += 16;
 				currentColor = (currentColor & 0x00FFFF) | uint32_t(comp);
-				led_control::PerformColorRingDisplay(currentColor);
+				led_control::PerformMessageColorDisplay(currentColor);
 			} break;
 			case 1: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
 				uint8_t comp = (currentColor >>  8) & 0xFF;
 				comp += 16;
 				currentColor = (currentColor & 0xFF00FF) | uint32_t(comp);
-				led_control::PerformColorRingDisplay(currentColor);
+				led_control::PerformMessageColorDisplay(currentColor);
 			} break;
 			case 2: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
 				uint8_t comp = (currentColor >>  0) & 0xFF;
 				comp += 16;
 				currentColor = (currentColor & 0xFFFF00) | uint32_t(comp);
-				led_control::PerformColorRingDisplay(currentColor);
+				led_control::PerformMessageColorDisplay(currentColor);
 			} break;
 			case 3: {
 				Model::instance().SetCurrentMessageColor(currentColor);
 				Model::instance().save();
-				led_control::PerformColorRingDisplay(currentColor, true);
+				led_control::PerformMessageColorDisplay(currentColor, true);
 				Timeline::instance().Remove(span);
 				Timeline::instance().ProcessDisplay();
 			} break;
