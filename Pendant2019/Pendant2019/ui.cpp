@@ -146,7 +146,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				if (currentColor.h > 1.0f) {
 					currentColor.h = 0.0f;
 				}
-				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
+				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 1: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
@@ -154,7 +154,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				if (currentColor.s > 1.0f) {
 					currentColor.s = 0.0f;
 				}
-				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
+				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 2: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
@@ -162,7 +162,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				if (currentColor.v > 1.0f) {
 					currentColor.v = 0.0f;
 				}
-				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
+				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 3: {
 				Model::instance().SetCurrentMessageColor(colors::rgb8(colors::rgb(currentColor)));

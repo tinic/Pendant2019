@@ -190,13 +190,16 @@ void SDD1306::Display() {
 #else  // #ifndef EMULATOR
     std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
 
+	printf("\x1b[%d;%df.------------.",17,1);
+	printf("\x1b[%d;%df.------------.",20,1);
 	for (uint32_t y=0; y<2; y++) {
-		printf("\x1b[%d;%df",18+y,0);
+		printf("\x1b[%d;%df|",18+y,1);
 		for (uint32_t x=0; x<12; x++) {
 			text_buffer_screen[y*12+x] = text_buffer_cache[y*12+x];
 			text_attr_screen[y*12+x] = text_attr_cache[y*12+x];
 			printf("%c",text_buffer_screen[y*12+x] + 0x20);
 		}
+		printf("|");
 	}
 #endif  // #ifndef EMULATOR
 }
