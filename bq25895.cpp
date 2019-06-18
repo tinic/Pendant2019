@@ -1,21 +1,15 @@
 #include "./bq25895.h"
+#include "./emulator.h"
 #include "./system_time.h"
 
 #include <atmel_start.h>
 #include <math.h>
 
-#ifdef EMULATOR
-#include <stdio.h>
-#endif  // #ifdef EMULATOR
-
 BQ25895 &BQ25895::instance() {
 	static BQ25895 bq25895;
-#ifndef EMULATOR
 	i2c_m_sync_get_io_descriptor(&I2C_0, &bq25895.I2C_0_io);
-#endif  // #ifndef EMULATOR
 	if (!bq25895.deviceChecked) {
 		bq25895.deviceChecked = true;
-#ifndef EMULATOR
 		i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 		uint8_t status = 0x8;
 		uint8_t value = 0x0;
@@ -24,7 +18,6 @@ BQ25895 &BQ25895::instance() {
 			bq25895.devicePresent = true;
 		}
 		ext_irq_register(PIN_PA16, PinInterrupt_C);
-#endif  // #ifndef EMULATOR
 	}
 	return bq25895;
 }
@@ -97,41 +90,23 @@ void BQ25895::OneShotADC() {
 }
 
 float BQ25895::BatteryVoltage() {
-#ifndef EMULATOR
 	uint8_t reg = getRegister(0x0E) & 0x7F;
 	return 2.304f + ( float(reg) * 2.540f ) * ( 1.0f / 127.0f);
-#else  // #ifndef EMULATOR
-	double intpart = 0.0;
-	double frac = modf(system_time() / 13.0, &intpart);
-	return 3.2f + float(frac);
-#endif  // #ifndef EMULATOR
 }
 
 float BQ25895::SystemVoltage() {
-#ifndef EMULATOR
 	uint8_t reg = getRegister(0x0F) & 0x7F;
 	return 2.304f + ( float(reg) * 2.540f ) * ( 1.0f / 127.0f);
-#else  // #ifndef EMULATOR
-	return 3.6f;
-#endif  // #ifndef EMULATOR
 }
 
 float BQ25895::VBUSVoltage() {
-#ifndef EMULATOR
 	uint8_t reg = getRegister(0x11) & 0x7F;
 	return 2.6f + ( float(reg) * 12.7f ) * ( 1.0f / 127.0f);
-#else  // #ifndef EMULATOR
-	return 5.1f;
-#endif  // #ifndef EMULATOR
 }
 
 float BQ25895::ChargeCurrent() {
-#ifndef EMULATOR
 	uint8_t reg = getRegister(0x12) & 0x7F;
 	return ( float(reg) * 6350.0f ) * ( 1.0f / 127.0f);
-#else  // #ifndef EMULATOR
-	return 0.0f;
-#endif  // #ifndef EMULATOR
 }
 
 uint8_t BQ25895::GetStatus() {
@@ -149,25 +124,21 @@ bool BQ25895::IsInFaultState() {
 }
 	 
 uint8_t BQ25895::getRegister(uint8_t address) {
-#ifndef EMULATOR
 	i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 	uint8_t value = 0x0;
 	if ((io_write(I2C_0_io, &address, 1)) == 1 &&
 		(io_read(I2C_0_io, &value, 1)) == 1) {
 		return value;
 	}
-#endif // #ifndef EMULATOR
 	return 0;
 }
 
 void BQ25895::setRegister(uint8_t address, uint8_t value) {
-#ifndef EMULATOR
 	i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 	uint8_t set[2];
 	set[0] = address;
 	set[1] = value;
 	io_write(I2C_0_io, set, 2);
-#endif  // #ifndef EMULATOR
 }
 
 void BQ25895::setRegisterBits(uint8_t address, uint8_t mask) {

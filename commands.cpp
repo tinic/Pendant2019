@@ -303,11 +303,15 @@ void Commands::OnOLEDTimer() {
 		Timeline::instance().TopDisplay().Calc();
 		Timeline::instance().TopDisplay().Commit();
 	}
+	
+#ifdef EMULATOR
+	display_debug_area(0);
+#endif  // #ifdef EMULATOR
 }
 
 void Commands::OnADCTimer() {
 	Model::instance().SetCurrentTime(system_time());
-	
+
 	Model::instance().SetCurrentBatteryVoltage(BQ25895::instance().BatteryVoltage());
 	Model::instance().SetCurrentSystemVoltage(BQ25895::instance().SystemVoltage());
 	Model::instance().SetCurrentVbusVoltage(BQ25895::instance().VBUSVoltage());
@@ -362,9 +366,7 @@ void Commands::Switch3_Pressed_C() {
 }
 
 void Commands::init() {
-#ifndef EMULATOR
 	ext_irq_register(PIN_PA17, Switch1_Pressed_C);
 	ext_irq_register(PIN_PA18, Switch2_Pressed_C);
 	ext_irq_register(PIN_PA19, Switch3_Pressed_C);
-#endif  // #ifndef EMULATOR
 }

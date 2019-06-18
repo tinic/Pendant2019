@@ -1,4 +1,5 @@
 #include "./sx1280.h"
+#include "./emulator.h"
 
 #include <atmel_start.h>
 
@@ -89,7 +90,11 @@ void SX1280::Wakeup() {
 }
 
 bool SX1280::DevicePresent()  {
+#ifdef EMULATOR
+	return true;
+#else // #ifdef EMULATOR
 	return GetFirmwareVersion() == 0x0000a9b5;
+#endif  // #ifdef EMULATOR
 }
 
 uint16_t SX1280::GetFirmwareVersion( void )
@@ -1232,69 +1237,50 @@ void SX1280::OnBusyIrq_C() {
 }
 
 void SX1280::disableIRQ() {
-#ifndef EMULATOR
 	__disable_irq();
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::enableIRQ() {
-#ifndef EMULATOR
 	__enable_irq();
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::delayMS(uint32_t ms) {
-#ifndef EMULATOR
 	delay_ms(ms);
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::do_wait_for_busy_pin() {
-#ifndef EMULATOR
 	while (gpio_get_pin_level(SX1280_BUSY)) { }
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::do_pin_reset()
 {
-#ifndef EMULATOR
 	delay_ms(50);
 	gpio_set_pin_level(SX1280_RESET, false);
 	delay_ms(50);
 	gpio_set_pin_level(SX1280_RESET, true);
 	delay_ms(50);
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::pins_init()
 {
-#ifndef EMULATOR
 	spi_m_sync_enable(&SPI_0);
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::pin_irq_init()
 {
-#ifndef EMULATOR
 	ext_irq_register(PIN_PB08, OnBusyIrq_C);
 	ext_irq_register(PIN_PB09, OnDioIrq_C);
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::spi_csel_low() {
-#ifndef EMULATOR
 	gpio_set_pin_level(SX1280_SSEL, false);
-#endif  // #ifndef EMULATOR
 }
 
 void SX1280::spi_csel_high() {
-#ifndef EMULATOR
 	gpio_set_pin_level(SX1280_SSEL, true);
-#endif  // #ifndef EMULATOR
 }
 
 uint8_t SX1280::spi_write(uint8_t write_value) {
-#ifndef EMULATOR
 	spi_xfer xfer;
 	uint8_t read_value = 0;
 	xfer.rxbuf = &read_value;
@@ -1302,7 +1288,4 @@ uint8_t SX1280::spi_write(uint8_t write_value) {
 	xfer.size = 1;
 	spi_m_sync_transfer(&SPI_0, &xfer);
 	return read_value;
-#else  // #ifndef EMULATOR
-	return 0;
-#endif  //#ifndef EMULATOR
 }

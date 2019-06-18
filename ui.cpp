@@ -33,8 +33,8 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		if (currentMessage >= 0) {
-			char str[13];
-			snprintf(str, 13, "%02d/%02d Send:", int(currentMessage), int(Model::instance().MessageCount()));
+			char str[20];
+			snprintf(str, 20, "%02d/%02d Send:", int(currentMessage), int(Model::instance().MessageCount()));
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
 			SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().CurrentMessage(size_t(currentMessage)));
 		} else {

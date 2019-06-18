@@ -20,13 +20,23 @@ void WDT_Handler() {
 
 int main(void)
 {
+#ifdef EMULATOR
+	static struct termios tty_opts_backup, tty_opts_raw;
+    // Back up current TTY settings
+    tcgetattr(STDIN_FILENO, &tty_opts_backup);
+
+    // Change TTY settings to raw mode
+    cfmakeraw(&tty_opts_raw);
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty_opts_raw);
+
+	printf("\x1b[2J\x1b[?25l");
+#endif  // #ifdef EMULATOR
+
 	/* Initializes MCU, drivers and middleware */
 	atmel_start_init();
 
-#ifndef EMULATOR
 	/* Enable I2C bus */
 	i2c_m_sync_enable(&I2C_0);
-#endif  // #ifndef EMULATOR
 
 	Commands::instance().Boot();
 
@@ -37,15 +47,6 @@ int main(void)
 		__WFI();
 	}
 #else  // #ifndef EMULATOR
-	static struct termios tty_opts_backup, tty_opts_raw;
-    // Back up current TTY settings
-    tcgetattr(STDIN_FILENO, &tty_opts_backup);
-
-    // Change TTY settings to raw mode
-    cfmakeraw(&tty_opts_raw);
-    tcsetattr(STDIN_FILENO, TCSANOW, &tty_opts_raw);
-
-	printf("\x1b[2J\x1b[?25l");
 	while (1) {
 		int key = getc(stdin);
 		switch (key) {

@@ -39,9 +39,7 @@ SDD1306::SDD1306() {
 }
 	
 SDD1306 &SDD1306::instance() {
-#ifndef EMULATOR
 	i2c_m_sync_get_io_descriptor(&I2C_0, &sdd1306.I2C_0_io);
-#endif  // #ifndef EMULATOR
 
 	if (!sdd1306.initialized) {
 		sdd1306.initialized = true;
@@ -129,7 +127,7 @@ void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
 
 
 void SDD1306::Display() {
-#ifndef EMULATOR
+
 	bool display_center_flip = false;
 	if (center_flip_cache || center_flip_screen) {
 		center_flip_screen = center_flip_cache;
@@ -187,21 +185,19 @@ void SDD1306::Display() {
 	if (display_center_flip) {
 		DisplayCenterFlip();
 	}
-#else  // #ifndef EMULATOR
-    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
 
+#ifdef EMULATOR
+    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
 	printf("\x1b[%d;%df.------------.",17,1);
 	printf("\x1b[%d;%df.------------.",20,1);
 	for (uint32_t y=0; y<2; y++) {
 		printf("\x1b[%d;%df|",18+y,1);
 		for (uint32_t x=0; x<12; x++) {
-			text_buffer_screen[y*12+x] = text_buffer_cache[y*12+x];
-			text_attr_screen[y*12+x] = text_attr_cache[y*12+x];
 			printf("%c",text_buffer_screen[y*12+x] + 0x20);
 		}
 		printf("|");
 	}
-#endif  // #ifndef EMULATOR
+#endif  // #ifdef EMULATOR
 }
 	
 void SDD1306::SetVerticalShift(int8_t val) {
@@ -223,7 +219,6 @@ void SDD1306::DisplayOff() {
 }
 
 void SDD1306::Init() {
-#ifndef EMULATOR
 	// Reset OLED screen
 	gpio_set_pin_level(OLED_RESET, true);
 	delay_ms(1);
@@ -265,9 +260,6 @@ void SDD1306::Init() {
 	for (size_t c = 0; c < sizeof(startup_sequence); c++) {
 		WriteCommand(startup_sequence[c]);
 	}
-#else // #ifndef EMULATOR
-	devicePresent = true;
-#endif  // #ifndef EMULATOR
 }
 
 void SDD1306::DisplayCenterFlip() {
@@ -300,9 +292,7 @@ void SDD1306::DisplayCenterFlip() {
 				}
 			}
 		}
-#ifndef EMULATOR
 		io_write(I2C_0_io, buf, 0x61);
-#endif  // #ifndef EMULATOR
 	}
 }
 	
@@ -361,17 +351,13 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 			}
 		}
 	}
-#ifndef EMULATOR
 	io_write(I2C_0_io, buf, 9);
-#endif  // #ifndef EMULATOR
 }
 
 void SDD1306::WriteCommand(uint8_t cmd_val) const {
-#ifndef EMULATOR
 	uint8_t cmd[2];
 	cmd[0] = 0;
 	cmd[1] = cmd_val;
 	i2c_m_sync_set_slaveaddr(&I2C_0, i2caddr, I2C_M_SEVEN);
 	io_write(I2C_0_io, cmd, sizeof(cmd));
-#endif  // #ifndef EMULATOR
 }

@@ -341,12 +341,12 @@ namespace colors {
 	
 }
 
-#ifndef EMULATOR
 static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 {
 	if (count < 1) {
 		return;
 	}
+#ifndef EMULATOR
 #if 0
 	if (count >= 64) {
 		__asm volatile (
@@ -380,8 +380,8 @@ static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 		: [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
 		: "r1", "cc", "memory"
 	);
-}
 #endif  // #ifndef EMULATOR
+}
 
 class led_bank {
 	static constexpr size_t ws2812_commit_time = 384;
@@ -412,9 +412,7 @@ public:
 	}
 
 	void init() {
-#ifndef EMULATOR
 		qspi_sync_enable(&QUAD_SPI_0);
-#endif  // #ifndef EMULATOR
 
 		static Timeline::Span span;
 
@@ -497,77 +495,14 @@ public:
 	}
 
 	void enable_leds() {
-#ifndef EMULATOR
 		gpio_set_pin_level(ENABLE_E, true);
 		gpio_set_pin_level(ENABLE_O, true);
-#endif  // #ifndef EMULATOR
 	}
 
 	void disable_leds() {
-#ifndef EMULATOR
 		gpio_set_pin_level(ENABLE_E, false);
 		gpio_set_pin_level(ENABLE_O, false);
-#endif  // #ifndef EMULATOR
 	}
-
-#ifdef EMULATOR
-	void print_leds(int32_t pos_x, int32_t pos_y, const std::vector<colors::rgb> &leds) {
-	    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
-
-		const char *layout = 
-
-/////////01234567890123456789012345
-		"            00            " // 0
-		"      01          15      " // 1
-		"                          " // 2
-		"  02        16       14   " // 3
-		"        17      31        " // 4
-		" 03   18          30   13 " // 5
-		"     19            29     " // 6
-		"04   20     32     28   12" // 7
-		"     21            27     " // 8
-		" 05   22          26   11 " // 9
-		"        23      25        " // 0
-		"  06        24       10   " // 1
-		"                          " // 2
-		"      07          09      " // 3
-		"            08            ";// 4
-
-		const int w = 26;
-		const int h = 15;
-		
-		for(int y=0; y<h; y++) {
-			printf("\x1b[%d;%df",pos_y+y+1,pos_x);
-			for (int x=0; x<w; x++) {
-				char ch0 = layout[y*w + x];
-				if (ch0 == ' ') {
-					putchar(' ');
-				} else {
-					char ch1 = layout[y*w + x + 1];
-					char str[3];
-					str[0] = ch0;
-					str[1] = ch1;
-					str[2] = 0;
-					int32_t n = atoi(str);
-					if ( n >= 0 && n < int(leds.size())) {
-#ifdef __APPLE__
-						printf("\x1b[48;5;%dm  \x1b[0m", 16 + 
-							int(std::min(std::max(leds[n].r, 0.0f), 1.0f) *   5.0f)*36+ 
-							int(std::min(std::max(leds[n].g, 0.0f), 1.0f) *   5.0f)* 6+ 
-		    				int(std::min(std::max(leds[n].b, 0.0f), 1.0f) *   5.0f)* 1);
-#else
-						printf("\x1b[48;2;%d;%d;%dm  \x1b[0m", 
-							int(std::min(std::max(leds[n].r, 0.0f), 1.0f) * 255.0f), 
-							int(std::min(std::max(leds[n].g, 0.0f), 1.0f) * 255.0f), 
-		    				int(std::min(std::max(leds[n].b, 0.0f), 1.0f) * 255.0f));
-#endif
-					}
-					x++;
-				}
-			}
-		}
-	}
-#endif  // #ifdef EMULATOR
 
 	void update_leds(bool hide_non_covered = true) {
 
@@ -631,14 +566,6 @@ public:
 
 		int32_t brightness = int32_t(Model::instance().CurrentBrightness() * 256);
 
-#ifndef EMULATOR
-
-		struct _qspi_command cmd;
-		memset(&cmd, 0, sizeof(cmd));
-		cmd.inst_frame.bits.width = QSPI_INST4_ADDR4_DATA4;
-		cmd.inst_frame.bits.data_en = 1;
-		cmd.inst_frame.bits.tfr_type = QSPI_WRITE_ACCESS;
-	
 		size_t buf_pos = 0;
 		static uint8_t buffer[leds_buffer_size];
 
@@ -719,7 +646,15 @@ public:
 			buffer[buf_pos++] = 0;
 		}
 
+#ifndef EMULATOR
 		static bool pending = false;
+
+		struct _qspi_command cmd;
+		memset(&cmd, 0, sizeof(cmd));
+		cmd.inst_frame.bits.width = QSPI_INST4_ADDR4_DATA4;
+		cmd.inst_frame.bits.data_en = 1;
+		cmd.inst_frame.bits.tfr_type = QSPI_WRITE_ACCESS;
+	
 
 		if (pending) {
 			hri_qspi_write_CTRLA_reg(QSPI, QSPI_CTRLA_ENABLE | QSPI_CTRLA_LASTXFER);
@@ -744,7 +679,66 @@ public:
 		__enable_irq();
 
 		pending = true;
-#else  // #ifndef EMULATOR
+#endif  // #ifndef EMULATOR
+
+#ifdef EMULATOR
+		auto print_leds = [](int32_t pos_x, int32_t pos_y, const std::vector<colors::rgb> &leds) {
+			std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
+
+			const char *layout = 
+
+	/////////01234567890123456789012345
+			"            00            " // 0
+			"      01          15      " // 1
+			"                          " // 2
+			"  02        16       14   " // 3
+			"        17      31        " // 4
+			" 03   18          30   13 " // 5
+			"     19            29     " // 6
+			"04   20     32     28   12" // 7
+			"     21            27     " // 8
+			" 05   22          26   11 " // 9
+			"        23      25        " // 0
+			"  06        24       10   " // 1
+			"                          " // 2
+			"      07          09      " // 3
+			"            08            ";// 4
+
+			const int w = 26;
+			const int h = 15;
+		
+			for(int y=0; y<h; y++) {
+				printf("\x1b[%d;%df",pos_y+y+1,pos_x);
+				for (int x=0; x<w; x++) {
+					char ch0 = layout[y*w + x];
+					if (ch0 == ' ') {
+						putchar(' ');
+					} else {
+						char ch1 = layout[y*w + x + 1];
+						char str[3];
+						str[0] = ch0;
+						str[1] = ch1;
+						str[2] = 0;
+						int32_t n = atoi(str);
+						if ( n >= 0 && n < int(leds.size())) {
+#ifdef __APPLE__
+							printf("\x1b[48;5;%dm  \x1b[0m", 16 + 
+								int(std::min(std::max(leds[n].r, 0.0f), 1.0f) *   5.0f)*36+ 
+								int(std::min(std::max(leds[n].g, 0.0f), 1.0f) *   5.0f)* 6+ 
+								int(std::min(std::max(leds[n].b, 0.0f), 1.0f) *   5.0f)* 1);
+#else
+							printf("\x1b[48;2;%d;%d;%dm  \x1b[0m", 
+								int(std::min(std::max(leds[n].r, 0.0f), 1.0f) * 255.0f), 
+								int(std::min(std::max(leds[n].g, 0.0f), 1.0f) * 255.0f), 
+								int(std::min(std::max(leds[n].b, 0.0f), 1.0f) * 255.0f));
+#endif
+						}
+						x++;
+					}
+				}
+			}
+		};
+
 		std::vector<colors::rgb> leds_top;
 		for (size_t c = 0; c < leds_rings_n; c++) {
 			uint32_t r = (leds_outer[0][c].r * brightness ) / 256;
@@ -782,7 +776,7 @@ public:
 				(leds_centr[1].g * brightness) / 256,
 				(leds_centr[1].b * brightness) / 256)));
 		print_leds(30, 0, leds_btm);
-#endif  // #ifndef EMULATOR
+#endif  // #ifdef EMULATOR
 	}
 
 	void set_bird_color(const colors::rgb &col) {

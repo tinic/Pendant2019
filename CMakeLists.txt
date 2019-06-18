@@ -2,7 +2,7 @@ set(PRJ_NAME Pendant2019)
 
 cmake_minimum_required(VERSION 3.10)
 
-set(EMULATOR TRUE)
+set(EMULATOR FALSE)
 
 project(${PRJ_NAME} C CXX ASM)
 

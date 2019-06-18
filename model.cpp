@@ -71,13 +71,8 @@ std::string Model::CurrentChargeCurrentString() {
 }
 
 void Model::load() {
-#ifndef EMULATOR
 	uint32_t page_size = flash_get_page_size(&FLASH_0);
 	uint32_t model_page = flash_get_total_pages(&FLASH_0) - 1;
-#else  // #ifndef EMULATOR
-	uint32_t page_size = 512;
-	uint32_t model_page = 0;
-#endif  // #ifndef EMULATOR
 	uint8_t *buf = static_cast<uint8_t *>(alloca(page_size));
 	size_t buf_pos = 0;
 	flash_read(&FLASH_0, model_page * page_size, buf, page_size);
@@ -179,13 +174,8 @@ void Model::load() {
 }
 
 void Model::save() {
-#ifndef EMULATOR
 	uint32_t page_size = flash_get_page_size(&FLASH_0);
 	uint32_t model_page = flash_get_total_pages(&FLASH_0) - 1;
-#else  // #ifndef EMULATOR
-	uint32_t page_size = 512;
-	uint32_t model_page = 0;
-#endif  // #ifndef EMULATOR
 	uint8_t *buf = static_cast<uint8_t *>(alloca(page_size));
 	size_t buf_pos = 0;
 
