@@ -81,22 +81,22 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 
 	currentSelection = 0;
 
-	static uint32_t currentColor = 0;
+	static colors::hsv currentColor;
 
-	currentColor = Model::instance().CurrentMessageColor();
+	currentColor = colors::hsv(colors::rgb(Model::instance().CurrentMessageColor()));
 	
-	led_control::PerformMessageColorDisplay(currentColor);
+	led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[12];
-		snprintf(str, 12, " R:%03d", int((Model::instance().CurrentMessageColor() >> 16) & 0xFF));
+		snprintf(str, 12, " H:%03d", int(currentColor.h * 100.f));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		snprintf(str, 12, " G:%03d", int((Model::instance().CurrentMessageColor() >>  8) & 0xFF));
+		snprintf(str, 12, " S:%03d", int(currentColor.s * 100.f));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
-		snprintf(str, 12, " B:%03d", int((Model::instance().CurrentMessageColor() >>  0) & 0xFF));
+		snprintf(str, 12, " V:%03d", int(currentColor.v * 100.f));
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
 		snprintf(str, 12, " SAVE!");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
@@ -119,7 +119,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 		SDD1306::instance().Display();
 	};
 	span.doneFunc = [=](Timeline::Span &) {
-		led_control::PerformMessageColorDisplay(currentColor, true);
+		led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
 		span.time = Model::instance().CurrentTime(); // reset timeout
@@ -135,33 +135,39 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 			currentSelection = 0;
 		}
 	};
+	
 	span.switch3Func = [=](Timeline::Span &span) {
+		const float step_size = 0.05f;
+		span.time = Model::instance().CurrentTime(); // reset timeout
 		switch(currentSelection) {
 			case 0: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				uint8_t comp = (currentColor >> 16) & 0xFF;
-				comp += 16;
-				currentColor = (currentColor & 0x00FFFF) | uint32_t(comp);
-				led_control::PerformMessageColorDisplay(currentColor);
+				currentColor.h += step_size;
+				if (currentColor.h > 1.0f) {
+					currentColor.h = 0.0f;
+				}
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 1: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				uint8_t comp = (currentColor >>  8) & 0xFF;
-				comp += 16;
-				currentColor = (currentColor & 0xFF00FF) | uint32_t(comp);
-				led_control::PerformMessageColorDisplay(currentColor);
+				currentColor.s += step_size;
+				if (currentColor.s > 1.0f) {
+					currentColor.s = 0.0f;
+				}
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 2: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				uint8_t comp = (currentColor >>  0) & 0xFF;
-				comp += 16;
-				currentColor = (currentColor & 0xFFFF00) | uint32_t(comp);
-				led_control::PerformMessageColorDisplay(currentColor);
+				currentColor.v += step_size ;
+				if (currentColor.v > 1.0f) {
+					currentColor.v = 0.0f;
+				}
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 3: {
-				Model::instance().SetCurrentMessageColor(currentColor);
+				Model::instance().SetCurrentMessageColor(colors::rgb8(colors::rgb(currentColor)));
 				Model::instance().save();
-				led_control::PerformMessageColorDisplay(currentColor, true);
+				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 				Timeline::instance().Remove(span);
 				Timeline::instance().ProcessDisplay();
 			} break;
@@ -244,22 +250,22 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 
 	currentSelection = 0;
 
-	static uint32_t currentColor = 0;
+	static colors::hsv currentColor;
 
-	currentColor = Model::instance().CurrentBirdColor();
+	currentColor = colors::hsv(colors::rgb(Model::instance().CurrentMessageColor()));
 	
-	led_control::PerformColorBirdDisplay(currentColor);
+	led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[12];
-		snprintf(str, 12, " R:%03d", int((Model::instance().CurrentBirdColor() >> 16) & 0xFF));
+		snprintf(str, 12, " H:%03d", int(currentColor.h * 100.f));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		snprintf(str, 12, " G:%03d", int((Model::instance().CurrentBirdColor() >>  8) & 0xFF));
+		snprintf(str, 12, " S:%03d", int(currentColor.s * 100.f));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
-		snprintf(str, 12, " B:%03d", int((Model::instance().CurrentBirdColor() >>  0) & 0xFF));
+		snprintf(str, 12, " V:%03d", int(currentColor.v * 100.f));
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
 		snprintf(str, 12, " SAVE!");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
@@ -282,7 +288,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 		SDD1306::instance().Display();
 	};
 	span.doneFunc = [=](Timeline::Span &) {
-		led_control::PerformColorBirdDisplay(currentColor, true);
+		led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
 		span.time = Model::instance().CurrentTime(); // reset timeout
@@ -299,32 +305,37 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 		}
 	};
 	span.switch3Func = [=](Timeline::Span &span) {
+		const float step_size = 0.05f;
+		span.time = Model::instance().CurrentTime(); // reset timeout
 		switch(currentSelection) {
 			case 0: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				uint8_t comp = (currentColor >> 16) & 0xFF;
-				comp += 16;
-				currentColor = (currentColor & 0x00FFFF) | uint32_t(comp);
-				led_control::PerformColorBirdDisplay(currentColor);
+				currentColor.h += step_size;
+				if (currentColor.h > 1.0f) {
+					currentColor.h = 0.0f;
+				}
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 1: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				uint8_t comp = (currentColor >>  8) & 0xFF;
-				comp += 16;
-				currentColor = (currentColor & 0xFF00FF) | uint32_t(comp);
-				led_control::PerformColorBirdDisplay(currentColor);
+				currentColor.s += step_size;
+				if (currentColor.s > 1.0f) {
+					currentColor.s = 0.0f;
+				}
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 2: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				uint8_t comp = (currentColor >>  0) & 0xFF;
-				comp += 16;
-				currentColor = (currentColor & 0xFFFF00) | uint32_t(comp);
-				led_control::PerformColorBirdDisplay(currentColor);
+				currentColor.v += step_size;
+				if (currentColor.v > 1.0f) {
+					currentColor.v = 0.0f;
+				}
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 3: {
-				Model::instance().SetCurrentBirdColor(currentColor);
+				Model::instance().SetCurrentBirdColor(colors::rgb8(colors::rgb(currentColor)));
 				Model::instance().save();
-				led_control::PerformColorBirdDisplay(currentColor, true);
+				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 				Timeline::instance().Remove(span);
 				Timeline::instance().ProcessDisplay();
 			} break;
@@ -621,9 +632,6 @@ void UI::init() {
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 			float l = ( Model::instance().CurrentBatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
 					  ( Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage() );
-
-			printf("\x1b[%d;%df%g",1,60,l);
-			
 			l = std::max(0.0f, std::min(1.0f, l));
 			snprintf(str, 12, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
 			SDD1306::instance().PlaceAsciiStr(6, 1, str);

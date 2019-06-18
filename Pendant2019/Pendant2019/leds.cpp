@@ -3,13 +3,10 @@
 
 #include <atmel_start.h>
 
-#include <algorithm>
 #include <array>
 #include <random>
 #include <limits>
 #include <stdio.h>
-#include <cmath>
-#include <cfloat>
 
 #ifdef EMULATOR
 #include <stdio.h>
@@ -21,129 +18,7 @@
 
 namespace colors {
 
-#ifndef EMULATOR
-	static constexpr float global_limit_factor = 0.606f;
-#else  // #ifndef EMULATOR
-	static constexpr float global_limit_factor = 1.000f;
-#endif  // #ifndef EMULATOR
-
-	class rgb8;
-	class hsl;
-	class hsv;
-	class hsp;
-
-	class rgb {
-	public:
-		float r;
-		float g;
-		float b;
-
-		rgb() :
-			r(0.0f),
-			g(0.0f),
-			b(0.0f){
-		}
-	
-		rgb(const rgb &from) :
-			r(from.r),
-			g(from.g),
-			b(from.b) {
-		}
-
-		explicit rgb(const uint32_t color);
-		explicit rgb(const rgb8 &from);
-		explicit rgb(const hsl &from);
-		explicit rgb(const hsv &from);
-		explicit rgb(const hsp &from);
-
-		rgb(float _r, float _g, float _b) :
-			r(_r),
-			g(_g),
-			b(_b) {
-		}
-
-		void set(float _r, float _g, float _b) {
-			r = _r;
-			g = _g;
-			b = _b;
-		}
-
-		rgb &operator+=(const rgb &v) {
-			r += v.r;
-			g += v.g;
-			b += v.b;
-			return *this;
-		}
-
-		friend rgb operator+(rgb a, const rgb &b) {
-			a += b;
-			return a;
-		}
-
-		rgb &operator-=(const rgb &v) {
-			r -= v.r;
-			g -= v.g;
-			b -= v.b;
-			return *this;
-		}
-
-		friend rgb operator-(rgb a, const rgb &b) {
-			a -= b;
-			return a;
-		}
-
-		rgb &operator*=(const rgb &v) {
-			r *= v.r;
-			g *= v.g;
-			b *= v.b;
-			return *this;
-		}
-
-		friend rgb operator*(rgb a, const rgb &b) {
-			a *= b;
-			return a;
-		}
-
-		rgb &operator*=(float v) {
-			r *= v;
-			g *= v;
-			b *= v;
-			return *this;
-		}
-
-		friend rgb operator*(rgb a, float v) {
-			a *= v;
-			return a;
-		}
-
-		rgb &operator/=(const rgb &v) {
-			r /= v.r;
-			g /= v.g;
-			b /= v.b;
-			return *this;
-		}
-
-		friend rgb operator/(rgb a, const rgb &b) {
-			a /= b;
-			return a;
-		}
-
-		rgb &operator/=(float v) {
-			r /= v;
-			g /= v;
-			b /= v;
-			return *this;
-		}
-
-		friend rgb operator/(rgb a, float v) {
-			a /= v;
-			return a;
-		}
-	
-	private:
-	};
-
-	class rgb8 {
+	class rgb8out {
 	public:
 
 		union {
@@ -156,28 +31,28 @@ namespace colors {
 			uint32_t rgbx;
 		};
 
-		rgb8() :
+		rgb8out() :
 			r(0),
 			g(0),
 			b(0),
 			x(0){
 		}
 	
-		rgb8(const rgb8 &from) :
+		rgb8out(const rgb8out &from) :
 			r(from.r),
 			g(from.g),
 			b(from.b),
 			x(0) {
 		}
 
-		explicit rgb8(const rgb &from) {
+		explicit rgb8out(const rgb &from) {
 			r = sat8(from.r * global_limit_factor);
 			g = sat8(from.g * global_limit_factor);
 			b = sat8(from.b * global_limit_factor);
 			x = 0;
 		}
 
-		explicit rgb8(uint8_t _r, uint8_t _g, uint8_t _b) :
+		explicit rgb8out(uint8_t _r, uint8_t _g, uint8_t _b) :
 			r(_r),
 			g(_g),
 			b(_b),
@@ -197,109 +72,6 @@ namespace colors {
 
 	};
 
-	rgb::rgb(const rgb8 &from) {
-		r = float(from.r) * (1.0f/255.0f);
-		g = float(from.g) * (1.0f/255.0f);
-		b = float(from.b) * (1.0f/255.0f);
-	}
-
-	class hsl {
-	public:
-		float h;
-		float s;
-		float l;
-	
-		hsl() :
-			h(0.0f),
-			s(0.0f),
-			l(0.0f) {
-		}
-
-		hsl(float _h, float _s, float _l) :
-			h(_h),
-			s(_s),
-			l(_l) {
-		}
-
-		hsl(const hsl &from) :
-			h(from.h),
-			s(from.s),
-			l(from.l) {
-		}
-	
-		explicit hsl(const rgb &from) {
-			float hi = std::max(std::max(from.r, from.g), from.b);
-			float lo = std::min(std::max(from.r, from.g), from.b);
-			float d = fabs(hi - lo);
-		
-			h = 0;
-			s = 0;
-			l = (hi + lo) * 0.5f;
-		
-			if (d > 0.00001f) {
-				s = d / ( 1.0f - fabs( 2.0f * l - 1.0f ) );
-				if( hi == from.r ) {
-					h = (60.0f/360.0f) * (from.g - from.b) / d + (from.g < from.b ? 1.0f : 0.0f);
-				}
-				if( hi == from.g ) {
-					h = (60.0f/360.0f) * (from.b - from.r) / d + (120.0f/360.0f);
-				}
-				if( hi == from.b ) {
-					h = (60.0f/360.0f) * (from.r - from.g) / d + (240.0f/360.0f);
-				}
-			}
-		}
-	};
-
-	class hsv {
-	public:
-		float h;
-		float s;
-		float v;
-
-		hsv() :
-			h(0.0f),
-			s(0.0f),
-			v(0.0f) {
-		}
-
-		hsv(float _h, float _s, float _v) :
-			h(_h),
-			s(_s),
-			v(_v) {
-		}
-
-		hsv(const hsv &from) :
-			h(from.h),
-			s(from.s),
-			v(from.v) {
-		}
-	
-		explicit hsv(const rgb &from) {
-			float hi = std::max(std::max(from.r, from.g), from.b);
-			float lo = std::min(std::max(from.r, from.g), from.b);
-			float d = hi - lo;
-
-			h = 0.0f;
-			s = 0.0f;
-			v = hi;
-
-			if ( ( v > 0.00001f ) &&
-				 ( d > 0.00001f ) ) {
-				s = d / v;
-				if( hi == from.r ) {
-					h = (60.0f/360.0f) * (from.g - from.b) / d + (from.g < from.b ? 1.0f : 0.0f);
-				}
-				if( hi == from.g ) {
-					h = (60.0f/360.0f) * (from.b - from.r) / d + (120.0f/360.0f);
-				}
-				if( hi == from.b ) {
-					h = (60.0f/360.0f) * (from.r - from.g) / d + (240.0f/360.0f);
-				}
-			}
-		}
-	};
-	
 	class hsp {
 
 	public:
@@ -452,6 +224,18 @@ namespace colors {
 		};
 	};
 
+	rgb::rgb(const rgb8 &from) {
+		r = float(from.r) * (1.0f/255.0f);
+		g = float(from.g) * (1.0f/255.0f);
+		b = float(from.b) * (1.0f/255.0f);
+	}
+
+	rgb::rgb(const rgb8out &from) {
+		r = float(from.r) * (1.0f/255.0f);
+		g = float(from.g) * (1.0f/255.0f);
+		b = float(from.b) * (1.0f/255.0f);
+	}
+
 	static float value(  float const &p, float const &q, float const &t ) {
 		if( t < 1.0f/6.0f ) return ( p + ( q - p ) * 6.0f * t );
 		if( t < 1.0f/2.0f ) return ( q );
@@ -504,14 +288,14 @@ namespace colors {
 		from.HSPtoRGB(from.h, from.s, from.p, &r, &g, &b);
 	}
 
-	static rgb8 ip(const rgb8 &a, const rgb8 &b, float i) {
+	static rgb8out ip(const rgb8out &a, const rgb8out &b, float i) {
 		if ( i <= 0.0f ) {
 			return a;
 		} else if ( i >= 1.0f) {
 			return b;
 		} else {
 			int32_t ii = int32_t(i * 256.0f);
-			return rgb8(
+			return rgb8out(
 				( ( a.r * ( 256 - ii ) ) + ( b.r * ii ) ) / 256,
 				( ( a.g * ( 256 - ii ) ) + ( b.g * ii ) ) / 256,
 				( ( a.b * ( 256 - ii ) ) + ( b.b * ii ) ) / 256
@@ -609,10 +393,10 @@ class led_bank {
 
 	static constexpr size_t leds_buffer_size = ws2812_commit_time * ws2812_rails * 2 + ( leds_rings_n + 1 ) * ws2812_rails * leds_components * 8;
 
-	colors::rgb8 leds_centr[2];
+	colors::rgb8out leds_centr[2];
 
-	colors::rgb8 leds_outer[2][leds_rings_n];
-	colors::rgb8 leds_inner[2][leds_rings_n];
+	colors::rgb8out leds_outer[2][leds_rings_n];
+	colors::rgb8out leds_inner[2][leds_rings_n];
 
 	bool initialized = false;
 
@@ -676,9 +460,9 @@ public:
 			if ((now - switch_time) < blend_duration) {
 				calc_effect(previous_effect);
 
-				colors::rgb8 leds_centr_prev[2];
-				colors::rgb8 leds_outer_prev[2][leds_rings_n];
-				colors::rgb8 leds_inner_prev[2][leds_rings_n];
+				colors::rgb8out leds_centr_prev[2];
+				colors::rgb8out leds_outer_prev[2][leds_rings_n];
+				colors::rgb8out leds_inner_prev[2][leds_rings_n];
 
 				memcpy(leds_centr_prev, leds_centr, sizeof(leds_centr));
 				memcpy(leds_outer_prev, leds_outer, sizeof(leds_outer));
@@ -959,15 +743,15 @@ public:
 			uint32_t r = (leds_outer[0][c].r * brightness ) / 256;
 			uint32_t g = (leds_outer[0][c].g * brightness ) / 256;
 			uint32_t b = (leds_outer[0][c].b * brightness ) / 256;
-			leds_top.push_back(colors::rgb(colors::rgb8(r,g,b)));
+			leds_top.push_back(colors::rgb(colors::rgb8out(r,g,b)));
 		}
 		for (size_t c = 0; c < leds_rings_n; c++) {
 			uint32_t r = (leds_inner[0][c].r * brightness * disabled_inner_leds_top[c]) / 256;
 			uint32_t g = (leds_inner[0][c].g * brightness * disabled_inner_leds_top[c]) / 256;
 			uint32_t b = (leds_inner[0][c].b * brightness * disabled_inner_leds_top[c]) / 256;
-			leds_top.push_back(colors::rgb(colors::rgb8(r,g,b)));
+			leds_top.push_back(colors::rgb(colors::rgb8out(r,g,b)));
 		}
-		leds_top.push_back(colors::rgb(colors::rgb8(
+		leds_top.push_back(colors::rgb(colors::rgb8out(
 				(leds_centr[0].r * brightness) / 256,
 				(leds_centr[0].g * brightness) / 256,
 				(leds_centr[0].b * brightness) / 256)));
@@ -978,15 +762,15 @@ public:
 			uint32_t r = (leds_outer[1][c].r * brightness ) / 256;
 			uint32_t g = (leds_outer[1][c].g * brightness ) / 256;
 			uint32_t b = (leds_outer[1][c].b * brightness ) / 256;
-			leds_btm.push_back(colors::rgb(colors::rgb8(r,g,b)));
+			leds_btm.push_back(colors::rgb(colors::rgb8out(r,g,b)));
 		}
 		for (size_t c = 0; c < leds_rings_n; c++) {
 			uint32_t r = (leds_inner[0][c].r * brightness * disabled_inner_leds_bottom[c]) / 256;
 			uint32_t g = (leds_inner[0][c].g * brightness * disabled_inner_leds_bottom[c]) / 256;
 			uint32_t b = (leds_inner[0][c].b * brightness * disabled_inner_leds_bottom[c]) / 256;
-			leds_btm.push_back(colors::rgb(colors::rgb8(r,g,b)));
+			leds_btm.push_back(colors::rgb(colors::rgb8out(r,g,b)));
 		}
-		leds_btm.push_back(colors::rgb(colors::rgb8(
+		leds_btm.push_back(colors::rgb(colors::rgb8out(
 				(leds_centr[1].r * brightness) / 256,
 				(leds_centr[1].g * brightness) / 256,
 				(leds_centr[1].b * brightness) / 256)));
@@ -996,7 +780,7 @@ public:
 
 	void set_bird_color(const colors::rgb &col) {
 
-		const colors::rgb8 col8(col);
+		const colors::rgb8out col8(col);
 
 		leds_centr[0] = col8;
 		leds_centr[1] = col8;
@@ -1100,7 +884,7 @@ public:
 		band_mapper(band_b, rgb_band_b_walk, rgb_band_b_walk + (1.0f / 3.0f));
 
 		for (size_t c = 0; c < leds_rings_n; c++) {
-			colors::rgb8 out = colors::rgb8(colors::rgb(band_r[c], band_g[c], band_b[c])); 		
+			colors::rgb8out out = colors::rgb8out(colors::rgb(band_r[c], band_g[c], band_b[c])); 		
 			leds_outer[0][c] = out;
 			leds_outer[1][leds_rings_n-1-c] = out;
 		}
@@ -1132,7 +916,7 @@ public:
 			}
 			col.p = std::min(1.0f, mod_walk);
 
-			colors::rgb8 out = colors::rgb8(colors::rgb(col)); 		
+			colors::rgb8out out = colors::rgb8out(colors::rgb(col)); 		
 
 			leds_outer[0][c] = out;
 			leds_outer[1][leds_rings_n-1-c] = out;
@@ -1164,7 +948,7 @@ public:
 			col.s = 1.0f - std::min(1.0f, mod_walk);
 			col.v = std::min(1.0f, mod_walk);
 
-			colors::rgb8 out = colors::rgb8(colors::rgb(col)); 		
+			colors::rgb8out out = colors::rgb8out(colors::rgb(col)); 		
 
 			leds_outer[0][c] = out;
 			leds_outer[1][leds_rings_n-1-c] = out;
@@ -1187,7 +971,7 @@ public:
 			burn_test_flip *= -1.0f;
 //			burn_test_flip = disf(gen);
 
-			colors::rgb8 out = colors::rgb8(colors::rgb(1.0f, 1.0f, 1.0f) * burn_test_flip );
+			colors::rgb8out out = colors::rgb8out(colors::rgb(1.0f, 1.0f, 1.0f) * burn_test_flip );
 
 			leds_outer[0][c] = out;
 			leds_outer[1][c] = out;
@@ -1201,7 +985,7 @@ public:
 	// BIRD COLOR MODIFIER
 	//
 
-	void bird_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
+	void bird_color(colors::rgb8 color, Timeline::Span &span, Timeline::Span &below) {
 		float blend = 0.0f;
 
 		// Continue to run effect below
@@ -1212,7 +996,8 @@ public:
 			blend = 1.0f - blend;
 		}
 		
-		colors::rgb8 out = colors::rgb8(colors::rgb(color));
+		colors::rgb8out out = colors::rgb8out(colors::rgb(color));
+		
 		for (size_t c = 0; c < leds_rings_n; c++) {
 			if (blend) {
 				leds_inner[0][c] = colors::ip(leds_inner[0][c], out, blend);
@@ -1235,7 +1020,7 @@ public:
 	// MESSAGE COLOR MODIFIER
 	// 
 
-	void message_color(uint32_t color, Timeline::Span &span, Timeline::Span &below) {
+	void message_color(colors::rgb8 color, Timeline::Span &span, Timeline::Span &below) {
 
 		float blend = 0.0f;
 		if (span.InBeginPeriod(blend, 0.25f)) {
@@ -1245,7 +1030,7 @@ public:
 			blend = 1.0f - blend;
 		}
 
-		colors::rgb8 out = colors::rgb8(colors::rgb(color));
+		colors::rgb8out out = colors::rgb8out(colors::rgb(color));
 
 		for (size_t c = 0; c < leds_rings_n; c++) {
 
@@ -1293,7 +1078,7 @@ public:
 		int32_t direction = int32_t((now - span.time)  * speed) & 1;
 		float color_walk = float(fmod((now - span.time) * speed, 1.0));
 
-		colors::rgb8 out = colors::rgb8(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
+		colors::rgb8out out = colors::rgb8out(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
 
 		for (size_t c = 0; c < leds_rings_n; c++) {
 
@@ -1354,8 +1139,12 @@ void led_control::PerformV2MessageEffect(uint32_t color, bool remove) {
 	Timeline::instance().Add(span);
 }
 
-void led_control::PerformColorBirdDisplay(uint32_t color, bool remove) {
+void led_control::PerformColorBirdDisplay(colors::rgb8 color, bool remove) {
 	static Timeline::Span span;
+
+	static colors::rgb8 passThroughColor;
+
+	passThroughColor = color;
 
 	if (remove) {
 		span.time = Model::instance().CurrentTime();
@@ -1371,7 +1160,7 @@ void led_control::PerformColorBirdDisplay(uint32_t color, bool remove) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = std::numeric_limits<double>::infinity();
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-		led_bank::instance().bird_color(color, span, below);
+		led_bank::instance().bird_color(passThroughColor, span, below);
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();
@@ -1380,8 +1169,12 @@ void led_control::PerformColorBirdDisplay(uint32_t color, bool remove) {
 	Timeline::instance().Add(span);
 }
 
-void led_control::PerformMessageColorDisplay(uint32_t color, bool remove) {
+void led_control::PerformMessageColorDisplay(colors::rgb8 color, bool remove) {
 	static Timeline::Span span;
+
+	static colors::rgb8 passThroughColor;
+	
+	passThroughColor = color;
 
 	if (remove) {
 		span.time = Model::instance().CurrentTime();
@@ -1397,7 +1190,7 @@ void led_control::PerformMessageColorDisplay(uint32_t color, bool remove) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = std::numeric_limits<double>::infinity();
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-		led_bank::instance().message_color(color, span, below);
+		led_bank::instance().message_color(passThroughColor, span, below);
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();

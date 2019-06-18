@@ -1,6 +1,8 @@
 #ifndef MODEL_H_
 #define MODEL_H_
 
+#include "./leds.h"
+
 #include <cstdint>
 #include <cstring>
 #include <string>
@@ -20,8 +22,8 @@ public:
 	void SetCurrentMessage(size_t index, const char *message) { index %= messageCount; strncpy((char *)&current_messages[index][0], message, messageLength); }
 	uint32_t MessageCount() const { return messageCount; }
 
-	uint32_t CurrentMessageColor() const { return current_message_color; }
-	void SetCurrentMessageColor(uint32_t color) { current_message_color = color; }
+	colors::rgb8 CurrentMessageColor() const { return current_message_color; }
+	void SetCurrentMessageColor(colors::rgb8 color) { current_message_color = color; }
 
 	const char *CurrentName() const { return (const char *)current_name; }
 	void SetCurrentName(const char *name) { strncpy((char *)current_name, name, nameLength); }
@@ -33,8 +35,8 @@ public:
 	double CurrentTime() const { return current_time; }
 	void SetCurrentTime(double time) { current_time = time; }
 
-	uint32_t CurrentBirdColor() const { return current_bird_color; }
-	void SetCurrentBirdColor(uint32_t color) { current_bird_color = color; }
+	colors::rgb8 CurrentBirdColor() const { return current_bird_color; }
+	void SetCurrentBirdColor(colors::rgb8 color) { current_bird_color = color; }
 
 	float CurrentBrightness() const { return current_brightness; }
 	void SetCurrentBrightness(float brightness) { current_brightness = brightness; }
@@ -72,7 +74,7 @@ public:
 	struct Message {
 		double datetime;
 		uint32_t uid;
-		uint32_t col;
+		colors::rgb8 col;
 		uint32_t flg;
 		uint16_t cnt;
 		uint8_t message[messageLength];
@@ -94,8 +96,9 @@ private:
 	float current_time_zone_offset = -7.0f;
 
 	uint32_t current_effect = 3;
-	uint32_t current_bird_color = 0x00FFFF00;
-	uint32_t current_message_color = 0x00FFFF00;
+	
+	colors::rgb8 current_bird_color = colors::rgb8(0xFF, 0xFF, 0x00);
+	colors::rgb8 current_message_color = colors::rgb8(0xFF, 0xFF, 0x00);
 
 	uint8_t current_messages[messageCount][messageLength];
 	uint8_t current_name[nameLength];

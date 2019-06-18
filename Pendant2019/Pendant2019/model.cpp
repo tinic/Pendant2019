@@ -137,8 +137,8 @@ void Model::load() {
 	};
 
 	if (read_uint32(buf, buf_pos) == marker) {
-		current_bird_color = read_uint32(buf, buf_pos);
-		current_message_color = read_uint32(buf, buf_pos);
+		current_bird_color.rgbx = read_uint32(buf, buf_pos);
+		current_message_color.rgbx = read_uint32(buf, buf_pos);
 		current_effect = read_uint32(buf, buf_pos);
 		current_sent_message_count = read_uint32(buf, buf_pos);
 
@@ -154,7 +154,7 @@ void Model::load() {
 			current_recv_messages[c].datetime = read_double(buf, buf_pos);
 
 			current_recv_messages[c].uid = read_uint32(buf, buf_pos);
-			current_recv_messages[c].col = read_uint32(buf, buf_pos);
+			current_recv_messages[c].col.rgbx = read_uint32(buf, buf_pos);
 			current_recv_messages[c].flg = read_uint32(buf, buf_pos);
 			current_recv_messages[c].cnt = read_uint16(buf, buf_pos);
 
@@ -238,8 +238,8 @@ void Model::save() {
 
 	write_uint32(marker, buf, buf_pos);	
 
-	write_uint32(current_bird_color, buf, buf_pos);
-	write_uint32(current_message_color, buf, buf_pos);
+	write_uint32(current_bird_color.rgbx, buf, buf_pos);
+	write_uint32(current_message_color.rgbx, buf, buf_pos);
 	write_uint32(current_effect, buf, buf_pos);
 	write_uint32(current_sent_message_count, buf, buf_pos);
 
@@ -255,7 +255,7 @@ void Model::save() {
 		write_double(current_recv_messages[c].datetime, buf, buf_pos);
 
 		write_uint32(current_recv_messages[c].uid, buf, buf_pos);
-		write_uint32(current_recv_messages[c].col, buf, buf_pos);
+		write_uint32(current_recv_messages[c].col.rgbx, buf, buf_pos);
 		write_uint32(current_recv_messages[c].flg, buf, buf_pos);
 		write_uint16(current_recv_messages[c].cnt, buf, buf_pos);
 

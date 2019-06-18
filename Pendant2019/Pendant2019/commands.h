@@ -5,6 +5,7 @@
 #include <atmel_start.h>
 
 #include "./emulator.h"
+#include "./leds.h"
 
 class Commands {
 public:
@@ -18,7 +19,7 @@ public:
 	void StopTimers();
 
 	void SendV2Message(const char *name, const char *message, uint8_t color = 0);
-	void SendV3Message(const char *name, const char *message, uint32_t color = 0);
+	void SendV3Message(const char *name, const char *message, colors::rgb8 color = colors::rgb8());
 	void SendDateTimeRequest();
 
 private:

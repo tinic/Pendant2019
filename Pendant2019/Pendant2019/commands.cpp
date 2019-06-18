@@ -160,10 +160,9 @@ void Commands::Boot() {
 						  ( uint32_t(payload[ 6]) <<  8 )| 
 						  ( uint32_t(payload[ 7]) <<  0 );
 						  
-				msg.col = ( uint32_t(payload[ 8]) << 24 )|
-						  ( uint32_t(payload[ 9]) << 16 )|
-						  ( uint32_t(payload[10]) <<  8 )| 
-						  ( uint32_t(payload[11]) <<  0 );
+				msg.col.r = uint32_t(payload[ 8]);
+				msg.col.g = uint32_t(payload[ 9]);
+				msg.col.b = uint32_t(payload[10]);
 						  
 				msg.flg = ( uint32_t(payload[12]) << 24 )|
 						  ( uint32_t(payload[13]) << 16 )|
@@ -245,7 +244,7 @@ void Commands::SendV2Message(const char *name, const char *message, uint8_t colo
 	SX1280::instance().TxStart(buf,24);
 }
 
-void Commands::SendV3Message(const char *msg, const char *nam, uint32_t col) {
+void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col) {
 	uint8_t buf[42];
 
 	memset(&buf[0], 0, sizeof(buf));
@@ -259,10 +258,10 @@ void Commands::SendV3Message(const char *msg, const char *nam, uint32_t col) {
 	buf[ 6] = (uid >>  8 ) & 0xFF;
 	buf[ 7] = (uid >>  0 ) & 0xFF;
 
-	buf[ 8] = (col >> 24 ) & 0xFF;
-	buf[ 9] = (col >> 16 ) & 0xFF;
-	buf[10] = (col >>  8 ) & 0xFF;
-	buf[11] = (col >>  0 ) & 0xFF;
+	buf[ 8] = (col.r) & 0xFF;
+	buf[ 9] = (col.g) & 0xFF;
+	buf[10] = (col.b) & 0xFF;
+	buf[11] = (0    ) & 0xFF;
 
 	uint32_t flg = 0;
 	buf[12] = (flg >> 24 ) & 0xFF;
