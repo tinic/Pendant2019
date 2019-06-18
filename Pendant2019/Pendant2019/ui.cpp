@@ -33,8 +33,10 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		if (currentMessage >= 0) {
-			SDD1306::instance().PlaceAsciiStr(0, 0, Model::instance().CurrentMessage(size_t(currentMessage)));
-			SDD1306::instance().PlaceAsciiStr(0, 1, "->[ Send ]<-");
+			char str[12];
+			snprintf(str, 12, "%02d/%02d Send:", currentMessage, Model::instance().MessageCount());
+			SDD1306::instance().PlaceAsciiStr(0, 0, str);
+			SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().CurrentMessage(size_t(currentMessage)));
 		} else {
 			SDD1306::instance().PlaceAsciiStr(0, 0, "            ");
 			SDD1306::instance().PlaceAsciiStr(0, 1, "->[Cancel]<-");
@@ -194,6 +196,8 @@ void UI::enterShowHistory(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -216,6 +220,8 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -238,6 +244,8 @@ void UI::enterChangeName(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -362,6 +370,8 @@ void UI::enterRangeOthers(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -384,6 +394,8 @@ void UI::enterShowStats(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -406,6 +418,8 @@ void UI::enterTestDevice(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -428,6 +442,8 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 	span.switch2Func = [=](Timeline::Span &) {
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -435,10 +451,30 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 
 void UI::enterResetEverything(Timeline::Span &parent) {
 	static Timeline::Span span;
+
+	static int32_t currentSelection = 0;
+
+	currentSelection = 0;
+
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		char str[12];
+		snprintf(str, 12, "Are U Sure? ");
+		SDD1306::instance().PlaceAsciiStr(0, 0, str);
+		snprintf(str, 12, "  No! ");
+		SDD1306::instance().PlaceAsciiStr(0, 1, str);
+		snprintf(str, 12, "  Yes ");
+		SDD1306::instance().PlaceAsciiStr(6, 1, str);
+		switch(currentSelection) {
+			case 0: {
+				SDD1306::instance().PlaceAsciiStr(0, 1, ">");
+			} break;
+			case 1: {
+				SDD1306::instance().PlaceAsciiStr(6, 1, ">");
+			} break;
+		}		
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		SDD1306::instance().Display();
@@ -446,10 +482,28 @@ void UI::enterResetEverything(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection --;
+		if (currentSelection < 0) {
+			currentSelection = 1;
+		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection ++;
+		if (currentSelection > 1) {
+			currentSelection = 0;
+		}
 	};
 	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
+		switch(currentSelection) {
+			case 0: {
+			} break;
+			case 1: {
+			} break;
+		}
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -463,37 +517,37 @@ void UI::enterPrefs(Timeline::Span &) {
 	const int32_t maxPage = 11;
 	
 	const char *pageText[] = {
-		"    Send    "		// 1
+		"01/11 Send  "		// 1
 		"  Message!  ",
 
-		"   Change   "		// 2
+		"02/11 Change"		// 2
 		"Message Col.",
 
-		"   Change   "		// 3
+		"03/11 Change"		// 3
 		"    Name    ",
 
-		"   Change   "		// 4
+		"04/11 Change"		// 4
 		"  Messages  ",
 
-		"   Change   "		// 5
+		"05/11 Change"		// 5
 		" Bird Color ",
 
-		"    Show    "		// 6
+		"06/11  Show "		// 6
 		"   History  ",
 
-		"   Range    "		// 7
+		"07/11 Range "		// 7
 		"   Others   ",
 
-		"    Show    "		// 8
+		"08/11 Show  "		// 8
 		" Statistics ",
 
-		"    Test    "		// 9
+		"09/11 Test  "		// 9
 		"   Device   ",
 
-		"    Show    "		// 10
+		"10/11 Show  "		// 10
 		"  Version   ",
 
-		"   Reset    "		// 11
+		"11/11 Reset "		// 11
 		" Everything "
 	};
 
@@ -583,7 +637,7 @@ void UI::init() {
 				int32_t min = ( ( dateTime / 1000 )      ) % 60;
 				snprintf(str, 12, "O%02d:%02d", int(hrs), int(min));
 			} else {
-				snprintf(str, 12, "DUCKPD");
+				snprintf(str, 12, "$**__*");
 			}
 			SDD1306::instance().PlaceAsciiStr(6, 0, str);
 			auto gc = [](int32_t ch_index, float val) {

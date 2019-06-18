@@ -78,7 +78,7 @@ void SDD1306::SetCenterFlip(int8_t progression) {
 void SDD1306::PlaceAsciiStr(uint32_t x, uint32_t y, const char *str) {
 	if (y>1 || x>11) return;
 	size_t len = strlen(str);
-	if (x+len > 12) len = 11-x;
+	if (x+len > 12) len = 12-x;
 	for (size_t c=0; c<len; c++) {
 		uint8_t ch = uint8_t(str[c]);
 		if ((ch < 0x20) || (ch >= 0x7D)) {
