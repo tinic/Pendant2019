@@ -550,10 +550,17 @@ public:
 					str[2] = 0;
 					int32_t n = atoi(str);
 					if ( n >= 0 && n < int(leds.size())) {
-						printf("\x1b[$48;5;%dm  \x1b[0m", 16 + 
+#ifdef __APPLE__
+						printf("\x1b[48;5;%dm  \x1b[0m", 16 + 
 							int(std::min(std::max(leds[n].r, 0.0f), 1.0f) *   5.0f)*36+ 
 							int(std::min(std::max(leds[n].g, 0.0f), 1.0f) *   5.0f)* 6+ 
 		    				int(std::min(std::max(leds[n].b, 0.0f), 1.0f) *   5.0f)* 1);
+#else
+						printf("\x1b[48;2;%d;%d;%dm  \x1b[0m", 
+							int(std::min(std::max(leds[n].r, 0.0f), 1.0f) * 255.0f), 
+							int(std::min(std::max(leds[n].g, 0.0f), 1.0f) * 255.0f), 
+		    				int(std::min(std::max(leds[n].b, 0.0f), 1.0f) * 255.0f));
+#endif
 					}
 					x++;
 				}

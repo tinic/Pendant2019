@@ -73,6 +73,7 @@ if (NOT ${EMULATOR})
 else (NOT ${EMULATOR})
 
 	add_definitions(-DEMULATOR)
+	set(CMAKE_EXE_LINKER_FLAGS "-pthread")
 
 endif (NOT ${EMULATOR})
 
