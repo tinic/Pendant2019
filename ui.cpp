@@ -13,6 +13,12 @@
 #include "./leds.h"
 #include "./commands.h"
 
+const int32_t version_number = 1;
+
+const int32_t build_number =
+#include "./build_number"
+;
+
 #define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
 
 #define BYTE_TO_BINARY(byte)  \
@@ -459,6 +465,10 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		char str[20];
+		snprintf(str,20,"    %01d.%02d    ", version_number, build_number);
+		SDD1306::instance().PlaceAsciiStr(0, 0, str);
+		SDD1306::instance().PlaceAsciiStr(0, 1, "    [OK]    ");
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		SDD1306::instance().Display();
@@ -466,8 +476,12 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	span.switch2Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
 	};
 	span.switch3Func = [=](Timeline::Span &) {
 		Timeline::instance().Remove(span);
