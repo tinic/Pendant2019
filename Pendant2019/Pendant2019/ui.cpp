@@ -33,8 +33,8 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		if (currentMessage >= 0) {
-			char str[12];
-			snprintf(str, 12, "%02d/%02d Send:", currentMessage, Model::instance().MessageCount());
+			char str[13];
+			snprintf(str, 13, "%02d/%02d Send:", currentMessage, Model::instance().MessageCount());
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
 			SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().CurrentMessage(size_t(currentMessage)));
 		} else {
@@ -93,14 +93,14 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-		char str[12];
-		snprintf(str, 12, " H:%03d", int(currentColor.h * 360.f));
+		char str[13];
+		snprintf(str, 13, " H:%03d", int(currentColor.h * 360.f));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		snprintf(str, 12, " S:%03d", int(currentColor.s * 100.f));
+		snprintf(str, 13, " S:%03d", int(currentColor.s * 100.f));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
-		snprintf(str, 12, " V:%03d", int(currentColor.v * 100.f));
+		snprintf(str, 13, " V:%03d", int(currentColor.v * 100.f));
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
-		snprintf(str, 12, " SAVE!");
+		snprintf(str, 13, " SAVE!");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		switch(currentSelection) {
 			case 0: {
@@ -268,14 +268,14 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-		char str[12];
-		snprintf(str, 12, " H:%03d", int(currentColor.h * 360.f));
+		char str[13];
+		snprintf(str, 13, " H:%03d", int(currentColor.h * 360.f));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		snprintf(str, 12, " S:%03d", int(currentColor.s * 100.f));
+		snprintf(str, 13, " S:%03d", int(currentColor.s * 100.f));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
-		snprintf(str, 12, " V:%03d", int(currentColor.v * 100.f));
+		snprintf(str, 13, " V:%03d", int(currentColor.v * 100.f));
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
-		snprintf(str, 12, " SAVE!");
+		snprintf(str, 13, " SAVE!");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		switch(currentSelection) {
 			case 0: {
@@ -460,12 +460,12 @@ void UI::enterResetEverything(Timeline::Span &parent) {
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-		char str[12];
-		snprintf(str, 12, "Are U Sure? ");
+		char str[13];
+		snprintf(str, 13, "Are U Sure? ");
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		snprintf(str, 12, "  No! ");
+		snprintf(str, 13, "  No! ");
 		SDD1306::instance().PlaceAsciiStr(0, 1, str);
-		snprintf(str, 12, "  Yes ");
+		snprintf(str, 13, "  Yes ");
 		SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		switch(currentSelection) {
 			case 0: {
@@ -627,17 +627,17 @@ void UI::init() {
 		span.time = Model::instance().CurrentTime();
 		span.duration = std::numeric_limits<double>::infinity();
 		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-			char str[12];
-			snprintf(str, 12, "#%02d/%02d", int(Model::instance().CurrentEffect()), int(Model::instance().EffectCount()));
+			char str[13];
+			snprintf(str, 13, "#%02d/%02d", int(Model::instance().CurrentEffect()), int(Model::instance().EffectCount()));
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
 			if (Model::instance().CurrentDateTime() >= 0.0) {
 				// display time
 				int64_t dateTime = Model::instance().CurrentDateTime();
 				int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
 				int32_t min = ( ( dateTime / 1000 )      ) % 60;
-				snprintf(str, 12, "O%02d:%02d", int(hrs), int(min));
+				snprintf(str, 13, "O%02d:%02d", int(hrs), int(min));
 			} else {
-				snprintf(str, 12, "$**__*");
+				snprintf(str, 13, "$**__*");
 			}
 			SDD1306::instance().PlaceAsciiStr(6, 0, str);
 			auto gc = [](int32_t ch_index, float val) {
@@ -682,12 +682,12 @@ void UI::init() {
 				return ' ';
 			};
 			float b = Model::instance().CurrentBrightness();
-			snprintf(str, 12, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
+			snprintf(str, 13, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 			float l = ( Model::instance().CurrentBatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
 					  ( Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage() );
 			l = std::max(0.0f, std::min(1.0f, l));
-			snprintf(str, 12, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
+			snprintf(str, 13, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
 			SDD1306::instance().PlaceAsciiStr(6, 1, str);
 		};
 		span.commitFunc = [=](Timeline::Span &) {
