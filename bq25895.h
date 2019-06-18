@@ -43,6 +43,8 @@ public:
 	 bool IsInFaultState();
 	 bool DevicePresent() const { return devicePresent; }
 
+	 uint8_t getRegister(uint8_t address);
+
  private:
 
 	 void PinInterrupt();
@@ -50,7 +52,6 @@ public:
 
 	 static constexpr uint32_t i2caddr = 0x6A;
 
-	 uint8_t getRegister(uint8_t address);
 	 void setRegister(uint8_t address, uint8_t value);
 	 void setRegisterBits(uint8_t address, uint8_t mask);
 	 void clearRegisterBits(uint8_t address, uint8_t mask);

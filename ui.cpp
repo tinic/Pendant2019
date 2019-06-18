@@ -8,9 +8,22 @@
 
 #include "./model.h"
 #include "./sdd1306.h"
+#include "./bq25895.h"
 #include "./timeline.h"
 #include "./leds.h"
 #include "./commands.h"
+
+#define BYTE_TO_BINARY_PATTERN "%c%c%c%c%c%c%c%c"
+
+#define BYTE_TO_BINARY(byte)  \
+  (byte & 0x80 ? '1' : '0'), \
+  (byte & 0x40 ? '1' : '0'), \
+  (byte & 0x20 ? '1' : '0'), \
+  (byte & 0x10 ? '1' : '0'), \
+  (byte & 0x08 ? '1' : '0'), \
+  (byte & 0x04 ? '1' : '0'), \
+  (byte & 0x02 ? '1' : '0'), \
+  (byte & 0x01 ? '1' : '0') 
 
 UI &UI::instance() {
 	static UI ui;
@@ -403,6 +416,11 @@ void UI::enterShowStats(Timeline::Span &parent) {
 
 void UI::enterTestDevice(Timeline::Span &parent) {
 	static Timeline::Span span;
+
+	static int32_t currentSelection = 0;
+
+	currentSelection = 0;
+
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
@@ -414,8 +432,18 @@ void UI::enterTestDevice(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection --;
+		if (currentSelection < 0) {
+			currentSelection = 3;
+		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection ++;
+		if (currentSelection > 3) {
+			currentSelection = 0;
+		}
 	};
 	span.switch3Func = [=](Timeline::Span &) {
 		Timeline::instance().Remove(span);
@@ -440,6 +468,58 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 	span.switch1Func = [=](Timeline::Span &) {
 	};
 	span.switch2Func = [=](Timeline::Span &) {
+	};
+	span.switch3Func = [=](Timeline::Span &) {
+		Timeline::instance().Remove(span);
+		Timeline::instance().ProcessDisplay();
+	};
+	Timeline::instance().Remove(parent);
+	Timeline::instance().Add(span);
+}
+
+void UI::enterDebug(Timeline::Span &parent) {
+	static Timeline::Span span;
+
+	static int32_t currentSelection = 0;
+
+	currentSelection = 0;
+	
+	const int32_t maxSelection = 0x12;
+
+	span.type = Timeline::Span::Display;
+	span.time = Model::instance().CurrentTime();
+	span.duration = 10.0f; // timeout
+	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		char str[20];
+		snprintf(str, 20, "%02d          ", int(currentSelection));
+		SDD1306::instance().PlaceAsciiStr(0, 0, str);
+		if (currentSelection >= 0 && currentSelection < 0x12) {
+			SDD1306::instance().PlaceAsciiStr(5, 0, "BQ25895");
+			snprintf(str, 20, "%02x b", currentSelection);
+			SDD1306::instance().PlaceAsciiStr(0, 1, str);
+			uint8_t val = BQ25895::instance().getRegister(currentSelection);
+			snprintf(str, 20, BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(val));
+			SDD1306::instance().PlaceAsciiStr(4, 1, str);
+		}
+	};
+	span.commitFunc = [=](Timeline::Span &) {
+		SDD1306::instance().Display();
+	};
+	span.doneFunc = [=](Timeline::Span &) {
+	};
+	span.switch1Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection --;
+		if (currentSelection < 0) {
+			currentSelection = maxSelection;
+		}
+	};
+	span.switch2Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection ++;
+		if (currentSelection >= maxSelection) {
+			currentSelection = 0;
+		}
 	};
 	span.switch3Func = [=](Timeline::Span &) {
 		Timeline::instance().Remove(span);
@@ -514,40 +594,43 @@ void UI::enterPrefs(Timeline::Span &) {
 
 	static int32_t currentPage = 0;
 	
-	const int32_t maxPage = 11;
+	const int32_t maxPage = 12;
 	
 	const char *pageText[] = {
-		"01/11 Send  "		// 1
+		"01/12 Send  "		// 1
 		"  Message!  ",
 
-		"02/11 Change"		// 2
+		"02/12 Change"		// 2
 		"Message Col.",
 
-		"03/11 Change"		// 3
+		"03/12 Change"		// 3
 		"    Name    ",
 
-		"04/11 Change"		// 4
+		"04/12 Change"		// 4
 		"  Messages  ",
 
-		"05/11 Change"		// 5
+		"05/12 Change"		// 5
 		" Bird Color ",
 
-		"06/11  Show "		// 6
+		"06/12  Show "		// 6
 		"   History  ",
 
-		"07/11 Range "		// 7
+		"07/12 Range "		// 7
 		"   Others   ",
 
-		"08/11 Show  "		// 8
+		"08/12 Show  "		// 8
 		" Statistics ",
 
-		"09/11 Test  "		// 9
+		"09/12 Test  "		// 9
 		"   Device   ",
 
-		"10/11 Show  "		// 10
+		"10/12 Show  "		// 10
 		"  Version   ",
 
-		"11/11 Reset "		// 11
+		"11/12 Debug "		// 10
+		"Information ",
+
+		"12/12 Reset "		// 11
 		" Everything "
 	};
 
@@ -613,6 +696,9 @@ void UI::enterPrefs(Timeline::Span &) {
 				enterShowVersion(span);
 			} break;
 			case 10: {
+				enterDebug(span);
+			} break;
+			case 11: {
 				enterResetEverything(span);
 			} break;
 		}
