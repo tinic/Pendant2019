@@ -466,7 +466,7 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[20];
-		snprintf(str,20,"    %01d.%02d    ", version_number, build_number);
+		snprintf(str,20,"    %01d.%02d    ", int(version_number), int(build_number));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
 		SDD1306::instance().PlaceAsciiStr(0, 1, "    [OK]    ");
 	};
@@ -509,7 +509,7 @@ void UI::enterDebug(Timeline::Span &parent) {
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
 		if (currentSelection >= 0 && currentSelection < 0x12) {
 			SDD1306::instance().PlaceAsciiStr(5, 0, "BQ25895");
-			snprintf(str, 20, "%02x b", currentSelection);
+			snprintf(str, 20, "%02x b", int(currentSelection));
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 			uint8_t val = BQ25895::instance().getRegister(currentSelection);
 			snprintf(str, 20, BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(val));
