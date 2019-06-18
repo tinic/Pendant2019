@@ -51,7 +51,7 @@ int main(void)
 		int key = getc(stdin);
 		switch (key) {
 			case	0x03:
-					printf("\x1b[2J\x1b[?25h\n");
+					printf("\x1b[2J\x1b[?25h\x1b[0;0f\n");
 					tcsetattr(STDIN_FILENO, TCSANOW, &tty_opts_backup);
 					exit(0);
 					break;

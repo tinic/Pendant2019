@@ -2,7 +2,7 @@ set(PRJ_NAME Pendant2019)
 
 cmake_minimum_required(VERSION 3.10)
 
-set(EMULATOR FALSE)
+option(EMULATOR_BUILD "Emulator Build" OFF)
 
 project(${PRJ_NAME} C CXX ASM)
 
@@ -10,7 +10,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif(NOT CMAKE_BUILD_TYPE)
 
-if (NOT ${EMULATOR})
+if (NOT EMULATOR_BUILD)
 	set(MCU_MODEL SAMD51G18A)
 	set(MCU_ARCH cortex-m4)
 	set(MCU_FPU fpv4-sp-d16)
@@ -70,12 +70,12 @@ if (NOT ${EMULATOR})
 	include_directories(usb/class/msc/device)
 	include_directories(samd51a/include)
 	include_directories(CMSIS_5-5.0.1/CMSIS/Core/Include)
-else (NOT ${EMULATOR})
+else (NOT EMULATOR_BUILD)
 
 	add_definitions(-DEMULATOR)
 	set(CMAKE_EXE_LINKER_FLAGS "-pthread")
 
-endif (NOT ${EMULATOR})
+endif (NOT EMULATOR_BUILD)
 
 set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -std=c++17 -fno-rtti -fno-exceptions")
 SET(CMAKE_CXX_FLAGS_RELEASE "-Os")
