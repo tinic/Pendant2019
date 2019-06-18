@@ -94,7 +94,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[12];
-		snprintf(str, 12, " H:%03d", int(currentColor.h * 100.f));
+		snprintf(str, 12, " H:%03d", int(currentColor.h * 360.f));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
 		snprintf(str, 12, " S:%03d", int(currentColor.s * 100.f));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
@@ -144,8 +144,8 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 		switch(currentSelection) {
 			case 0: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				currentColor.h += step_size;
-				if (currentColor.h > 1.0f) {
+				currentColor.h += step_size / 3.6f;
+				if (currentColor.h > 1.01f) {
 					currentColor.h = 0.0f;
 				}
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
@@ -153,7 +153,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 			case 1: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
 				currentColor.s += step_size;
-				if (currentColor.s > 1.0f) {
+				if (currentColor.s > 1.01f) {
 					currentColor.s = 0.0f;
 				}
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
@@ -161,7 +161,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 			case 2: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
 				currentColor.v += step_size ;
-				if (currentColor.v > 1.0f) {
+				if (currentColor.v >= 1.01f) {
 					currentColor.v = 0.0f;
 				}
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
@@ -269,7 +269,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[12];
-		snprintf(str, 12, " H:%03d", int(currentColor.h * 100.f));
+		snprintf(str, 12, " H:%03d", int(currentColor.h * 360.f));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
 		snprintf(str, 12, " S:%03d", int(currentColor.s * 100.f));
 		SDD1306::instance().PlaceAsciiStr(6, 0, str);
@@ -318,8 +318,8 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 		switch(currentSelection) {
 			case 0: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
-				currentColor.h += step_size;
-				if (currentColor.h > 1.0f) {
+				currentColor.h += step_size / 3.6f;
+				if (currentColor.h > 1.01f) {
 					currentColor.h = 0.0f;
 				}
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
@@ -327,7 +327,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 			case 1: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
 				currentColor.s += step_size;
-				if (currentColor.s > 1.0f) {
+				if (currentColor.s > 1.01f) {
 					currentColor.s = 0.0f;
 				}
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
@@ -335,7 +335,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 			case 2: {
 				span.time = Model::instance().CurrentTime(); // reset timeout
 				currentColor.v += step_size;
-				if (currentColor.v > 1.0f) {
+				if (currentColor.v > 1.01f) {
 					currentColor.v = 0.0f;
 				}
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
