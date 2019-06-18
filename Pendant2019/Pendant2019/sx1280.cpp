@@ -3,6 +3,7 @@
 #include <atmel_start.h>
 
 #include <algorithm>
+#include <memory.h>
 			
 SX1280::SX1280() {
 }

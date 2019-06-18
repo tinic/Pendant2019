@@ -7,6 +7,7 @@
 #include <list>
 #include <thread>
 #include <algorithm>
+#include <memory.h>
 
 std::recursive_mutex g_print_mutex;
 
