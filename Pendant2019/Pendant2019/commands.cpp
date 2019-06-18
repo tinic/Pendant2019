@@ -231,6 +231,7 @@ void Commands::StartTimers() {
 void Commands::StopTimers() {
 	timer_remove_task(&TIMER_0, &update_leds_timer_task);
 	timer_remove_task(&TIMER_0, &update_oled_timer_task);
+	
 	timer_stop(&TIMER_0);
 }
 
@@ -307,7 +308,7 @@ void Commands::OnOLEDTimer() {
 
 void Commands::OnADCTimer() {
 	Model::instance().SetCurrentTime(system_time());
-
+	
 	Model::instance().SetCurrentBatteryVoltage(BQ25895::instance().BatteryVoltage());
 	Model::instance().SetCurrentSystemVoltage(BQ25895::instance().SystemVoltage());
 	Model::instance().SetCurrentVbusVoltage(BQ25895::instance().VBUSVoltage());
@@ -362,7 +363,9 @@ void Commands::Switch3_Pressed_C() {
 }
 
 void Commands::init() {
+#ifndef EMULATOR
 	ext_irq_register(PIN_PA17, Switch1_Pressed_C);
 	ext_irq_register(PIN_PA18, Switch2_Pressed_C);
 	ext_irq_register(PIN_PA19, Switch3_Pressed_C);
+#endif  // #ifndef EMULATOR
 }

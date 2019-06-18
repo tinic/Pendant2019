@@ -14,6 +14,8 @@
 extern "C" {
 #endif
 
+#ifndef EMULATOR
+
 #include <hal_atomic.h>
 #include <hal_delay.h>
 #include <hal_gpio.h>
@@ -63,6 +65,8 @@ extern struct usart_sync_descriptor USART_0;
 extern struct rand_sync_desc RAND_0;
 
 extern struct wdt_descriptor WDT_0;
+
+#endif  // #ifndef EMULATOR
 
 void DIGITAL_GLUE_LOGIC_0_PORT_init(void);
 void DIGITAL_GLUE_LOGIC_0_CLOCK_init(void);

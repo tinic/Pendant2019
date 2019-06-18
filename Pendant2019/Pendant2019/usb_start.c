@@ -8,6 +8,8 @@
 #include "atmel_start.h"
 #include "usb_start.h"
 
+#ifndef EMULATOR
+
 /* Max LUN number */
 #define CONF_USB_MSC_MAX_LUN 0
 
@@ -313,9 +315,13 @@ void usbd_msc_example(uint8_t *ramd_buf, uint8_t *usbdisk_buf)
 #endif
 	}
 }
+#endif // #ifndef EMULATOR
 
 void usb_init(void)
 {
-
+#ifndef EMULATOR
 	usbd_msc_init();
+#endif // #ifndef EMULATOR
 }
+
+

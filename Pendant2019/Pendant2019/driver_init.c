@@ -7,6 +7,9 @@
  */
 
 #include "driver_init.h"
+
+#ifndef EMULATOR
+
 #include <peripheral_clk_config.h>
 #include <utils.h>
 #include <hal_init.h>
@@ -740,3 +743,6 @@ void system_init(void)
 
 	WDT_0_init();
 }
+
+#endif  // #ifndef EMULATOR
+

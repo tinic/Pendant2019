@@ -8,7 +8,9 @@
 #ifndef ATMEL_START_PINS_H_INCLUDED
 #define ATMEL_START_PINS_H_INCLUDED
 
+#ifndef EMULATOR
 #include <hal_gpio.h>
+#endif  // #ifndef EMULATOR
 
 // SAMD51 has 14 pin functions
 

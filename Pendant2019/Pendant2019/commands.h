@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <atmel_start.h>
 
+#include "./emulator.h"
+
 class Commands {
 public:
 	Commands();
@@ -20,6 +22,7 @@ public:
 	void SendDateTimeRequest();
 
 private:
+	friend int main();
 
 	void OnLEDTimer();
 	void OnOLEDTimer();
@@ -29,9 +32,6 @@ private:
 	void Switch2_Pressed();
 	void Switch3_Pressed();
 
-	static void OnLEDTimer_C(const timer_task *);
-	static void OnOLEDTimer_C(const timer_task *);
-	static void OnADCTimer_C(const timer_task *);
 
 	static void Switch1_Pressed_C();
 	static void Switch2_Pressed_C();
@@ -40,6 +40,10 @@ private:
 	void init();
 
 	bool initialized = false;
+
+	static void OnLEDTimer_C(const timer_task *);
+	static void OnOLEDTimer_C(const timer_task *);
+	static void OnADCTimer_C(const timer_task *);
 
 	struct timer_task update_leds_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
 	struct timer_task update_oled_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};

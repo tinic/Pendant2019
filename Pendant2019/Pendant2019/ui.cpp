@@ -619,8 +619,11 @@ void UI::init() {
 			float b = Model::instance().CurrentBrightness();
 			snprintf(str, 12, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
-			float l = ( Model::instance().CurrentBatteryVoltage()    - Model::instance().MinBatteryVoltage() ) / 
-						Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage();
+			float l = ( Model::instance().CurrentBatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
+					  ( Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage() );
+
+			printf("\x1b[%d;%df%g",1,60,l);
+			
 			l = std::max(0.0f, std::min(1.0f, l));
 			snprintf(str, 12, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
 			SDD1306::instance().PlaceAsciiStr(6, 1, str);

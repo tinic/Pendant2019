@@ -10,7 +10,9 @@ public:
 		 devicePresent = false;
 		 deviceChecked = false;
 		 fault_state = 0;
+#ifndef EMULATOR
 		 I2C_0_io = 0;
+#endif  // #ifndef EMULATOR
 	 }
 	 
 	 static BQ25895 &instance();
@@ -54,7 +56,10 @@ public:
 	 bool devicePresent;
 	 bool deviceChecked;
 	 uint8_t fault_state;
+	 
+#ifndef EMULATOR
 	 struct io_descriptor *I2C_0_io;
+#endif  // #ifndef EMULATOR
 };
 
 #endif /* BQ25895_H_ */

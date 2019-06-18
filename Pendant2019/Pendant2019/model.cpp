@@ -1,4 +1,5 @@
 #include "./model.h"
+#include "./emulator.h"
 
 #include <atmel_start.h>
 
@@ -22,12 +23,18 @@ Model &Model::instance() {
 
 void Model::init() {
 	load();
+
 	
 	uint32_t uid128[4];
+	
+#ifndef EMULATOR
 	uid128[0] = *((uint32_t *)(0x008061FC));
 	uid128[1] = *((uint32_t *)(0x00806010));
 	uid128[2] = *((uint32_t *)(0x00806014));
 	uid128[3] = *((uint32_t *)(0x00806018));
+#else  // #ifndef EMULATOR
+	memset(uid128, 0xCC, sizeof(uid128));
+#endif  // #ifndef EMULATOR
 
 	uid = MurmurHash3_32(uid128, sizeof(uid128), 0x5cfed374);
 }
@@ -64,8 +71,13 @@ std::string Model::CurrentChargeCurrentString() {
 }
 
 void Model::load() {
+#ifndef EMULATOR
 	uint32_t page_size = flash_get_page_size(&FLASH_0);
 	uint32_t model_page = flash_get_total_pages(&FLASH_0) - 1;
+#else  // #ifndef EMULATOR
+	uint32_t page_size = 512;
+	uint32_t model_page = 0;
+#endif  // #ifndef EMULATOR
 	uint8_t *buf = static_cast<uint8_t *>(alloca(page_size));
 	size_t buf_pos = 0;
 	flash_read(&FLASH_0, model_page * page_size, buf, page_size);
@@ -167,8 +179,13 @@ void Model::load() {
 }
 
 void Model::save() {
+#ifndef EMULATOR
 	uint32_t page_size = flash_get_page_size(&FLASH_0);
 	uint32_t model_page = flash_get_total_pages(&FLASH_0) - 1;
+#else  // #ifndef EMULATOR
+	uint32_t page_size = 512;
+	uint32_t model_page = 0;
+#endif  // #ifndef EMULATOR
 	uint8_t *buf = static_cast<uint8_t *>(alloca(page_size));
 	size_t buf_pos = 0;
 

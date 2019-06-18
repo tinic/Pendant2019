@@ -1,8 +1,11 @@
 #include "./system_time.h"
 
 #include <atmel_start.h>
+#include <chrono>
+#include <stdio.h>
 
 // Generate system time based on 32-bit cycle count
+#ifndef EMULATOR
 static uint64_t large_dwt_cyccnt() {
 	volatile uint32_t *DWT_CYCCNT  = (volatile uint32_t *)0xE0001004;
 	volatile uint32_t *DWT_CONTROL = (volatile uint32_t *)0xE0001000;
@@ -33,7 +36,12 @@ static uint64_t large_dwt_cyccnt() {
 
 	return LARGE_DWT_CYCCNT + CURRENT_DWT_CYCCNT;
 }
+#endif  // #ifndef EMULATOR
 
 double system_time() {
+#ifndef EMULATOR
 	return double(large_dwt_cyccnt() / 65536) * (1.0f / ( 60000000.0 / 65536.0 ) );
+#else  // #ifndef EMULATOR
+	return double(clock()) / double(CLOCKS_PER_SEC);
+#endif  // #ifndef EMULATOR
 }

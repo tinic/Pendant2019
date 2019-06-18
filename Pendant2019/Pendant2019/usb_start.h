@@ -12,8 +12,12 @@
 extern "C" {
 #endif // __cplusplus
 
+#include <stdint.h>
+
+#ifndef EMULATOR
 #include "mscdf.h"
 #include "mscdf_desc.h"
+#endif  // #ifndef EMULATOR
 
 void usbd_msc_init(void);
 void usbd_msc_example(uint8_t *ramd_buf, uint8_t *usbdisk_buf);
