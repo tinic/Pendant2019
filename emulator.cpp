@@ -2,6 +2,7 @@
 
 #include "./atmel_start_pins.h"
 #include "./system_time.h"
+#include "./sx1280.h"
 
 #ifdef EMULATOR
 
@@ -57,6 +58,8 @@ struct spi_byte {
 	uint32_t seq;
 };
 
+static uint32_t spiSeqIdx = 0;
+static uint32_t spiSeqCmd = 0;
 static uint32_t spiSeqID = 0;
 static std::vector<spi_byte> spiBuf;
 
@@ -177,6 +180,7 @@ void gpio_set_pin_level(const uint8_t pin, const bool level) {
 		case	SX1280_SSEL:
 				if (!level) {
 					spiSeqID ++;
+					spiSeqIdx = 0;
 				}
 				break;
 	}
@@ -297,8 +301,29 @@ void spi_m_sync_enable(struct spi_m_sync_descriptor *spi) {
 
 int32_t spi_m_sync_transfer(struct spi_m_sync_descriptor *spi, const struct spi_xfer *xfer) {
 	for (size_t c = 0; c < xfer->size; c++) {
+		if (spiSeqIdx == 0) {
+			spiSeqCmd = xfer->txbuf[c];
+		}
+		xfer->rxbuf[c] = 0x00;
+		switch(spiSeqCmd) {
+			case SX1280::RADIO_READ_REGISTER: {
+				static uint8_t read_reg[5];
+				read_reg[spiSeqIdx] = xfer->txbuf[c];
+				if (spiSeqIdx == 4) {
+					switch((read_reg[1]<<8)|(read_reg[2]<<0)) {
+						case SX1280::REG_LR_FIRMWARE_VERSION_MSB: {
+							xfer->rxbuf[c] = 0xa9;
+						} break;
+						case SX1280::REG_LR_FIRMWARE_VERSION_MSB+1: {
+							xfer->rxbuf[c] = 0xb5;
+						} break;
+					}
+				}
+			} break;
+		}
 		spiBuf.push_back({xfer->txbuf[c],xfer->rxbuf[c],spiSeqID});
-	}	
+		spiSeqIdx++;
+	}
 	return 0;
 }
 

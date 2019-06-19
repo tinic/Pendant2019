@@ -90,11 +90,7 @@ void SX1280::Wakeup() {
 }
 
 bool SX1280::DevicePresent()  {
-#ifdef EMULATOR
-	return true;
-#else // #ifdef EMULATOR
 	return GetFirmwareVersion() == 0x0000a9b5;
-#endif  // #ifdef EMULATOR
 }
 
 uint16_t SX1280::GetFirmwareVersion( void )
