@@ -224,6 +224,7 @@ void UI::enterShowHistory(Timeline::Span &parent) {
 
 void UI::enterChangeMessages(Timeline::Span &parent) {
 	static Timeline::Span span;
+	
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
@@ -248,10 +249,38 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 
 void UI::enterChangeName(Timeline::Span &parent) {
 	static Timeline::Span span;
+
+	static char currentName[13];
+	
+	memset(currentName, 0x20, 13);
+	strncpy(currentName, Model::instance().CurrentName(), 12);
+	
+	for (int32_t c=0; c<12; c++) {
+		currentName[c] = std::min(char(0x5f), std::max(char(0x20), currentName[c])); 
+	}
+	
+	static int32_t currentSelection = 0;
+
+	currentSelection = 0;
+
 	span.type = Timeline::Span::Display;
 	span.time = Model::instance().CurrentTime();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		char str[20];
+		snprintf(str, 20, "%s", currentName);
+		SDD1306::instance().PlaceAsciiStr(0, 0, str);
+		if (currentSelection == 12) {
+			SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
+		} else {
+			for (int32_t c=0; c<12; c++) {
+				if (c == currentSelection) {
+					SDD1306::instance().PlaceAsciiStr(c, 1, "^");
+				} else {
+					SDD1306::instance().PlaceAsciiStr(c, 1, " ");
+				}
+			}
+		}
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		SDD1306::instance().Display();
@@ -259,12 +288,44 @@ void UI::enterChangeName(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection --;
+		if (currentSelection < 0) {
+			currentSelection = 12;
+		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		currentSelection ++;
+		if (currentSelection >= 13) {
+			currentSelection = 0;
+		}
 	};
 	span.switch3Func = [=](Timeline::Span &) {
-		Timeline::instance().Remove(span);
-		Timeline::instance().ProcessDisplay();
+		span.time = Model::instance().CurrentTime(); // reset timeout
+		if (currentSelection == 12) {
+			for (int32_t c=11; c>=0; c--) {
+				if (currentName[c] == 0x20) {
+					currentName[c] = 0;
+				}
+			}
+			Model::instance().SetCurrentName(currentName);
+			Model::instance().save();
+			Timeline::instance().Remove(span);
+			Timeline::instance().ProcessDisplay();
+		} else {
+			int32_t idx = currentName[currentSelection];
+			idx = std::min(0x5f, std::max(0x20, idx)); 
+			idx -= 0x20;
+			idx ++;
+			idx %= 0x40;
+			idx += 0x20;
+			currentName[currentSelection] = char(idx);
+			char str[20];
+			snprintf(str, 20, "%s", currentName);
+			SDD1306::instance().PlaceAsciiStr(0, 0, str);
+			SDD1306::instance().Display();
+		}
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -466,9 +527,10 @@ void UI::enterShowVersion(Timeline::Span &parent) {
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[20];
-		snprintf(str,20,"    %01d.%02d    ", int(version_number), int(build_number));
+		snprintf(str, 20, "    %01d.%02d    ", int(version_number), int(build_number));
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		SDD1306::instance().PlaceAsciiStr(0, 1, "    [OK]    ");
+		snprintf(str, 20, "%s ", __DATE__);
+		SDD1306::instance().PlaceAsciiStr(0, 1, str);
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		SDD1306::instance().Display();
