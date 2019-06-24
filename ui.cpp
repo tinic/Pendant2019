@@ -43,7 +43,7 @@ UI &UI::instance() {
 void UI::enterSendMessage(Timeline::Span &parent) {
 	static Timeline::Span span;
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 
 	static int32_t currentMessage = 0;
@@ -55,7 +55,7 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 			char str[20];
 			snprintf(str, 20, "%02d/%02d Send:", int(currentMessage), int(Model::instance().MessageCount()));
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().CurrentMessage(size_t(currentMessage)));
+			SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().Message(size_t(currentMessage)));
 		} else {
 			SDD1306::instance().PlaceAsciiStr(0, 0, "            ");
 			SDD1306::instance().PlaceAsciiStr(0, 1, "->[Cancel]<-");
@@ -67,14 +67,14 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentMessage --;
 		if (currentMessage < -1) {
 			currentMessage = Model::instance().MessageCount() - 1;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentMessage ++;
 		if (currentMessage >= int32_t(Model::instance().MessageCount())) {
 			currentMessage = -1;
@@ -85,9 +85,9 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 		Timeline::instance().ProcessDisplay();
 		if (currentMessage >= 0) {
 			Commands::instance().SendV3Message(
-				Model::instance().CurrentName(),
-				Model::instance().CurrentMessage(size_t(currentMessage)),
-				Model::instance().CurrentMessageColor()
+				Model::instance().Name(),
+				Model::instance().Message(size_t(currentMessage)),
+				Model::instance().MessageColor()
 			);
 		}
 	};
@@ -104,12 +104,12 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 
 	static colors::hsv currentColor;
 
-	currentColor = colors::hsv(colors::rgb(Model::instance().CurrentMessageColor()));
+	currentColor = colors::hsv(colors::rgb(Model::instance().MessageColor()));
 	
 	led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[13];
@@ -143,14 +143,14 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 		led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection --;
 		if (currentSelection < 0) {
 			currentSelection = 3;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection ++;
 		if (currentSelection > 3) {
 			currentSelection = 0;
@@ -159,10 +159,10 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 	
 	span.switch3Func = [=](Timeline::Span &span) {
 		const float step_size = 0.05f;
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		switch(currentSelection) {
 			case 0: {
-				span.time = Model::instance().CurrentTime(); // reset timeout
+				span.time = Model::instance().Time(); // reset timeout
 				currentColor.h += step_size / 3.6f;
 				if (currentColor.h > 1.01f) {
 					currentColor.h = 0.0f;
@@ -170,7 +170,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 1: {
-				span.time = Model::instance().CurrentTime(); // reset timeout
+				span.time = Model::instance().Time(); // reset timeout
 				currentColor.s += step_size;
 				if (currentColor.s > 1.01f) {
 					currentColor.s = 0.0f;
@@ -178,7 +178,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 2: {
-				span.time = Model::instance().CurrentTime(); // reset timeout
+				span.time = Model::instance().Time(); // reset timeout
 				currentColor.v += step_size ;
 				if (currentColor.v >= 1.01f) {
 					currentColor.v = 0.0f;
@@ -186,7 +186,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 3: {
-				Model::instance().SetCurrentMessageColor(colors::rgb8(colors::rgb(currentColor)));
+				Model::instance().SetMessageColor(colors::rgb8(colors::rgb(currentColor)));
 				Model::instance().save();
 				led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 				Timeline::instance().Remove(span);
@@ -201,7 +201,7 @@ void UI::enterMessageColor(Timeline::Span &parent) {
 void UI::enterShowHistory(Timeline::Span &parent) {
 	static Timeline::Span span;
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 	};
@@ -224,11 +224,49 @@ void UI::enterShowHistory(Timeline::Span &parent) {
 
 void UI::enterChangeMessages(Timeline::Span &parent) {
 	static Timeline::Span span;
+
+	static char currentMessage[Model::MessageLength() + 1];
+	
+	memset(currentMessage, 0x20, Model::MessageLength() + 1);
+	
+	static int32_t currentChar = 0;
+
+	currentChar = 0;
+	
+	static int32_t currentMode = 0;
+
+	currentMode = 0;
+
+	static int32_t selectedMessage = 0;
+
+	selectedMessage = 0;
 	
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		if (currentMode == 0) {
+			char str[20];
+			snprintf(str, 20, "%s", Model::instance().Message(selectedMessage));
+			SDD1306::instance().PlaceAsciiStr(0, 0, str);
+			snprintf(str, 20, "   %02d/%02d    ", selectedMessage, int(Model::MessageCount()));
+			SDD1306::instance().PlaceAsciiStr(0, 1, str);
+		} else {
+			char str[20];
+			snprintf(str, 20, "%s", currentMessage);
+			SDD1306::instance().PlaceAsciiStr(0, 0, str);
+			if (currentChar == Model::MessageLength()) {
+				SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
+			} else {
+				for (int32_t c=0; c<Model::MessageLength(); c++) {
+					if (c == currentChar) {
+						SDD1306::instance().PlaceAsciiStr(c, 1, "^");
+					} else {
+						SDD1306::instance().PlaceAsciiStr(c, 1, " ");
+					}
+				}
+			}
+		}
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		SDD1306::instance().Display();
@@ -236,12 +274,67 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
+		span.time = Model::instance().Time(); // reset timeout
+		if (currentMode == 0) {
+			selectedMessage --;
+			if (selectedMessage < 0) {
+				selectedMessage = Model::MessageCount();
+			}
+		} else {
+			currentChar --;
+			if (currentChar < 0) {
+				currentChar = Model::MessageLength();
+			}
+		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
+		span.time = Model::instance().Time(); // reset timeout
+		if (currentMode == 0) {
+			selectedMessage ++;
+			if (selectedMessage >= Model::MessageCount()) {
+				selectedMessage = 0;
+			}
+		} else {
+			currentChar ++;
+			if (currentChar > Model::MessageLength()) {
+				currentChar = 0;
+			}
+		}
 	};
 	span.switch3Func = [=](Timeline::Span &) {
-		Timeline::instance().Remove(span);
-		Timeline::instance().ProcessDisplay();
+		span.time = Model::instance().Time(); // reset timeout
+		if (currentMode == 0) {
+			currentMode = 1;
+			strncpy(currentMessage, Model::instance().Message(selectedMessage), 12);
+			for (int32_t c=0; c<12; c++) {
+				currentMessage[c] = std::min(char(0x5f), std::max(char(0x20), currentMessage[c])); 
+			}
+		} else {
+			span.time = Model::instance().Time(); // reset timeout
+			if (currentChar == Model::MessageLength()) {
+				for (int32_t c=11; c>=0; c--) {
+					if (currentMessage[c] == 0x20) {
+						currentMessage[c] = 0;
+					}
+				}
+				Model::instance().SetMessage(selectedMessage, currentMessage);
+				Model::instance().save();
+				Timeline::instance().Remove(span);
+				Timeline::instance().ProcessDisplay();
+			} else {
+				int32_t idx = currentMessage[currentChar];
+				idx = std::min(0x5f, std::max(0x20, idx)); 
+				idx -= 0x20;
+				idx ++;
+				idx %= 0x40;
+				idx += 0x20;
+				currentMessage[currentChar] = char(idx);
+				char str[20];
+				snprintf(str, 20, "%s", currentMessage);
+				SDD1306::instance().PlaceAsciiStr(0, 0, str);
+				SDD1306::instance().Display();
+			}
+		}
 	};
 	Timeline::instance().Remove(parent);
 	Timeline::instance().Add(span);
@@ -253,28 +346,28 @@ void UI::enterChangeName(Timeline::Span &parent) {
 	static char currentName[13];
 	
 	memset(currentName, 0x20, 13);
-	strncpy(currentName, Model::instance().CurrentName(), 12);
+	strncpy(currentName, Model::instance().Name(), 12);
 	
 	for (int32_t c=0; c<12; c++) {
 		currentName[c] = std::min(char(0x5f), std::max(char(0x20), currentName[c])); 
 	}
 	
-	static int32_t currentSelection = 0;
+	static int32_t currentChar = 0;
 
-	currentSelection = 0;
+	currentChar = 0;
 
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[20];
 		snprintf(str, 20, "%s", currentName);
 		SDD1306::instance().PlaceAsciiStr(0, 0, str);
-		if (currentSelection == 12) {
+		if (currentChar == 12) {
 			SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
 		} else {
 			for (int32_t c=0; c<12; c++) {
-				if (c == currentSelection) {
+				if (c == currentChar) {
 					SDD1306::instance().PlaceAsciiStr(c, 1, "^");
 				} else {
 					SDD1306::instance().PlaceAsciiStr(c, 1, " ");
@@ -288,39 +381,39 @@ void UI::enterChangeName(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
-		currentSelection --;
-		if (currentSelection < 0) {
-			currentSelection = 12;
+		span.time = Model::instance().Time(); // reset timeout
+		currentChar --;
+		if (currentChar < 0) {
+			currentChar = 12;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
-		currentSelection ++;
-		if (currentSelection >= 13) {
-			currentSelection = 0;
+		span.time = Model::instance().Time(); // reset timeout
+		currentChar ++;
+		if (currentChar >= 13) {
+			currentChar = 0;
 		}
 	};
 	span.switch3Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
-		if (currentSelection == 12) {
+		span.time = Model::instance().Time(); // reset timeout
+		if (currentChar == 12) {
 			for (int32_t c=11; c>=0; c--) {
 				if (currentName[c] == 0x20) {
 					currentName[c] = 0;
 				}
 			}
-			Model::instance().SetCurrentName(currentName);
+			Model::instance().SetName(currentName);
 			Model::instance().save();
 			Timeline::instance().Remove(span);
 			Timeline::instance().ProcessDisplay();
 		} else {
-			int32_t idx = currentName[currentSelection];
+			int32_t idx = currentName[currentChar];
 			idx = std::min(0x5f, std::max(0x20, idx)); 
 			idx -= 0x20;
 			idx ++;
 			idx %= 0x40;
 			idx += 0x20;
-			currentName[currentSelection] = char(idx);
+			currentName[currentChar] = char(idx);
 			char str[20];
 			snprintf(str, 20, "%s", currentName);
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
@@ -340,12 +433,12 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 
 	static colors::hsv currentColor;
 
-	currentColor = colors::hsv(colors::rgb(Model::instance().CurrentMessageColor()));
+	currentColor = colors::hsv(colors::rgb(Model::instance().MessageColor()));
 	
 	led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[13];
@@ -379,14 +472,14 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 		led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection --;
 		if (currentSelection < 0) {
 			currentSelection = 3;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection ++;
 		if (currentSelection > 3) {
 			currentSelection = 0;
@@ -394,10 +487,10 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 	};
 	span.switch3Func = [=](Timeline::Span &span) {
 		const float step_size = 0.05f;
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		switch(currentSelection) {
 			case 0: {
-				span.time = Model::instance().CurrentTime(); // reset timeout
+				span.time = Model::instance().Time(); // reset timeout
 				currentColor.h += step_size / 3.6f;
 				if (currentColor.h > 1.01f) {
 					currentColor.h = 0.0f;
@@ -405,7 +498,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 1: {
-				span.time = Model::instance().CurrentTime(); // reset timeout
+				span.time = Model::instance().Time(); // reset timeout
 				currentColor.s += step_size;
 				if (currentColor.s > 1.01f) {
 					currentColor.s = 0.0f;
@@ -413,7 +506,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 2: {
-				span.time = Model::instance().CurrentTime(); // reset timeout
+				span.time = Model::instance().Time(); // reset timeout
 				currentColor.v += step_size;
 				if (currentColor.v > 1.01f) {
 					currentColor.v = 0.0f;
@@ -421,7 +514,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 			} break;
 			case 3: {
-				Model::instance().SetCurrentBirdColor(colors::rgb8(colors::rgb(currentColor)));
+				Model::instance().SetBirdColor(colors::rgb8(colors::rgb(currentColor)));
 				Model::instance().save();
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 				Timeline::instance().Remove(span);
@@ -436,7 +529,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 void UI::enterRangeOthers(Timeline::Span &parent) {
 	static Timeline::Span span;
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 	};
@@ -460,7 +553,7 @@ void UI::enterRangeOthers(Timeline::Span &parent) {
 void UI::enterShowStats(Timeline::Span &parent) {
 	static Timeline::Span span;
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 	};
@@ -489,7 +582,7 @@ void UI::enterTestDevice(Timeline::Span &parent) {
 	currentSelection = 0;
 
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 	};
@@ -499,14 +592,14 @@ void UI::enterTestDevice(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection --;
 		if (currentSelection < 0) {
 			currentSelection = 3;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection ++;
 		if (currentSelection > 3) {
 			currentSelection = 0;
@@ -523,7 +616,7 @@ void UI::enterTestDevice(Timeline::Span &parent) {
 void UI::enterShowVersion(Timeline::Span &parent) {
 	static Timeline::Span span;
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[20];
@@ -563,7 +656,7 @@ void UI::enterDebug(Timeline::Span &parent) {
 	const int32_t maxSelection = 0x12;
 
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[20];
@@ -584,14 +677,14 @@ void UI::enterDebug(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection --;
 		if (currentSelection < 0) {
 			currentSelection = maxSelection;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection ++;
 		if (currentSelection >= maxSelection) {
 			currentSelection = 0;
@@ -613,7 +706,7 @@ void UI::enterResetEverything(Timeline::Span &parent) {
 	currentSelection = 0;
 
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		char str[13];
@@ -638,14 +731,14 @@ void UI::enterResetEverything(Timeline::Span &parent) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection --;
 		if (currentSelection < 0) {
 			currentSelection = 1;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentSelection ++;
 		if (currentSelection > 1) {
 			currentSelection = 0;
@@ -679,11 +772,11 @@ void UI::enterPrefs(Timeline::Span &) {
 		"02/12 Change"		// 2
 		"Message Col.",
 
-		"03/12 Change"		// 3
-		"    Name    ",
-
-		"04/12 Change"		// 4
+		"03/12 Change"		// 4
 		"  Messages  ",
+
+		"04/12 Change"		// 3
+		"    Name    ",
 
 		"05/12 Change"		// 5
 		" Bird Color ",
@@ -713,7 +806,7 @@ void UI::enterPrefs(Timeline::Span &) {
 	currentPage = 0;
 	
 	span.type = Timeline::Span::Display;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 10.0f; // timeout
 	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 		SDD1306::instance().PlaceAsciiStr(0, 0, &pageText[currentPage][0]);
@@ -725,21 +818,21 @@ void UI::enterPrefs(Timeline::Span &) {
 	span.doneFunc = [=](Timeline::Span &) {
 	};
 	span.switch1Func = [=](Timeline::Span &span) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentPage --;
 		if (currentPage < 0) {
 			currentPage = maxPage - 1;
 		}
 	};
 	span.switch2Func = [=](Timeline::Span &span) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		currentPage ++;
 		if (currentPage >= maxPage) {
 			currentPage = 0;
 		}
 	};
 	span.switch3Func = [=](Timeline::Span &span) {
-		span.time = Model::instance().CurrentTime(); // reset timeout
+		span.time = Model::instance().Time(); // reset timeout
 		switch (currentPage) {
 			case 0: {
 				enterSendMessage(span);
@@ -748,10 +841,10 @@ void UI::enterPrefs(Timeline::Span &) {
 				enterMessageColor(span);
 			} break;
 			case 2: {
-				enterChangeName(span);
+				enterChangeMessages(span);
 			} break;
 			case 3: {
-				enterChangeMessages(span);
+				enterChangeName(span);
 			} break;
 			case 4: {
 				enterChangeColors(span);
@@ -786,15 +879,15 @@ void UI::init() {
 	if (SDD1306::instance().DevicePresent()) {
 		static Timeline::Span span;
 		span.type = Timeline::Span::Display;
-		span.time = Model::instance().CurrentTime();
+		span.time = Model::instance().Time();
 		span.duration = std::numeric_limits<double>::infinity();
 		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 			char str[13];
-			snprintf(str, 13, "#%02d/%02d", int(Model::instance().CurrentEffect()), int(Model::instance().EffectCount()));
+			snprintf(str, 13, "#%02d/%02d", int(Model::instance().Effect()), int(Model::instance().EffectCount()));
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			if (Model::instance().CurrentDateTime() >= 0.0) {
+			if (Model::instance().DateTime() >= 0.0) {
 				// display time
-				int64_t dateTime = Model::instance().CurrentDateTime();
+				int64_t dateTime = Model::instance().DateTime();
 				int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
 				int32_t min = ( ( dateTime / 1000 )      ) % 60;
 				snprintf(str, 13, "O%02d:%02d", int(hrs), int(min));
@@ -843,10 +936,10 @@ void UI::init() {
 				}
 				return ' ';
 			};
-			float b = Model::instance().CurrentBrightness();
+			float b = Model::instance().Brightness();
 			snprintf(str, 13, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
-			float l = ( Model::instance().CurrentBatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
+			float l = ( Model::instance().BatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
 					  ( Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage() );
 			l = std::max(0.0f, std::min(1.0f, l));
 			snprintf(str, 13, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
@@ -858,15 +951,15 @@ void UI::init() {
 		span.doneFunc = [=](Timeline::Span &) {
 		};
 		span.switch1Func = [=](Timeline::Span &) {
-			Model::instance().SetCurrentEffect((Model::instance().CurrentEffect() + 1) % Model::instance().EffectCount());
+			Model::instance().SetEffect((Model::instance().Effect() + 1) % Model::instance().EffectCount());
 			Model::instance().save();
 		};
 		span.switch2Func = [=](Timeline::Span &) {
-			float newBrightness = Model::instance().CurrentBrightness() + 0.1f;
+			float newBrightness = Model::instance().Brightness() + 0.1f;
 			if (newBrightness > 1.0f) {
 				newBrightness = 0.0f;
 			}
-			Model::instance().SetCurrentBrightness(newBrightness);
+			Model::instance().SetBrightness(newBrightness);
 			Model::instance().save();
 		};
 		span.switch3Func = [=](Timeline::Span &span) {

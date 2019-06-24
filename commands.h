@@ -34,9 +34,9 @@ private:
 	void Switch3_Pressed();
 
 
-	static void Switch1_Pressed_C();
-	static void Switch2_Pressed_C();
-	static void Switch3_Pressed_C();
+	static void Switch1_EXT_C();
+	static void Switch2_EXT_C();
+	static void Switch3_EXT_C();
 
 	void init();
 

@@ -56,13 +56,13 @@ int main(void)
 					exit(0);
 					break;
 			case	0x31:
-					Commands::Switch1_Pressed_C();
+					Commands::instance().Switch1_Pressed();
 					break;
 			case	0x32:
-					Commands::Switch2_Pressed_C();
+					Commands::instance().Switch2_Pressed();
 					break;
 			case	0x33:
-					Commands::Switch3_Pressed_C();
+					Commands::instance().Switch3_Pressed();
 					break;
 		}
 	}

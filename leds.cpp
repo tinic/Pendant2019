@@ -426,10 +426,10 @@ public:
 
 		span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
 
-			if ( current_effect != Model::instance().CurrentEffect() ) {
+			if ( current_effect != Model::instance().Effect() ) {
 				previous_effect = current_effect;
-				current_effect = Model::instance().CurrentEffect();
-				switch_time = Model::instance().CurrentTime();
+				current_effect = Model::instance().Effect();
+				switch_time = Model::instance().Time();
 			}
 
 			auto calc_effect = [=] (uint32_t effect) mutable {
@@ -453,8 +453,8 @@ public:
 			};
 
 			double blend_duration = 0.5f;
-			double now = Model::instance().CurrentTime();
-
+			double now = Model::instance().Time();
+			
 			if ((now - switch_time) < blend_duration) {
 				calc_effect(previous_effect);
 
@@ -490,8 +490,8 @@ public:
 		};
 
 		Timeline::instance().Add(span);
-		current_effect = Model::instance().CurrentEffect();
-		switch_time = Model::instance().CurrentTime();
+		current_effect = Model::instance().Effect();
+		switch_time = Model::instance().Time();
 	}
 
 	void enable_leds() {
@@ -564,7 +564,7 @@ public:
 			disabled_inner_leds_bottom = disabled_inner_leds_bottom_off;
 		}
 
-		int32_t brightness = int32_t(Model::instance().CurrentBrightness() * 256);
+		int32_t brightness = int32_t(Model::instance().Brightness() * 256);
 
 		size_t buf_pos = 0;
 		static uint8_t buffer[leds_buffer_size];
@@ -852,7 +852,7 @@ public:
 	}
 
 	void rgb_band() {
-		led_bank::set_bird_color(colors::rgb(Model::instance().CurrentBirdColor()));
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		static std::mt19937 gen;
 		static std::uniform_real_distribution<float> disf(+0.001f, +0.005f);
@@ -900,9 +900,9 @@ public:
 	//
 
 	void color_walker() {
-		led_bank::set_bird_color(colors::rgb(Model::instance().CurrentBirdColor()));
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-		double now = Model::instance().CurrentTime();
+		double now = Model::instance().Time();
 
 		const double speed = 2.0;
 
@@ -930,9 +930,9 @@ public:
 	//
 
 	void light_walker() {
-		led_bank::set_bird_color(colors::rgb(Model::instance().CurrentBirdColor()));
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-		double now = Model::instance().CurrentTime();
+		double now = Model::instance().Time();
 
 		const double speed = 2.0;
 
@@ -1075,7 +1075,7 @@ public:
 		}
 
 		const double speed = 3.0;
-		double now = Model::instance().CurrentTime();
+		double now = Model::instance().Time();
 		int32_t direction = int32_t((now - span.time)  * speed) & 1;
 		float color_walk = float(fmod((now - span.time) * speed, 1.0));
 
@@ -1122,13 +1122,13 @@ void led_control::PerformV2MessageEffect(uint32_t color, bool remove) {
 	}
 
 	if (remove) {
-		span.time = Model::instance().CurrentTime();
+		span.time = Model::instance().Time();
 		span.duration = 0.25f;
 		return;
 	}
 
 	span.type = Timeline::Span::Effect;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = 8.0f;
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 		led_bank::instance().message_v2(color, span, below);
@@ -1148,7 +1148,7 @@ void led_control::PerformColorBirdDisplay(colors::rgb8 color, bool remove) {
 	passThroughColor = color;
 
 	if (remove) {
-		span.time = Model::instance().CurrentTime();
+		span.time = Model::instance().Time();
 		span.duration = 0.25f;
 		return;
 	}
@@ -1158,7 +1158,7 @@ void led_control::PerformColorBirdDisplay(colors::rgb8 color, bool remove) {
 	}
 
 	span.type = Timeline::Span::Effect;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = std::numeric_limits<double>::infinity();
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 		led_bank::instance().bird_color(passThroughColor, span, below);
@@ -1178,7 +1178,7 @@ void led_control::PerformMessageColorDisplay(colors::rgb8 color, bool remove) {
 	passThroughColor = color;
 
 	if (remove) {
-		span.time = Model::instance().CurrentTime();
+		span.time = Model::instance().Time();
 		span.duration = 0.25f;
 		return;
 	}
@@ -1188,7 +1188,7 @@ void led_control::PerformMessageColorDisplay(colors::rgb8 color, bool remove) {
 	}
 
 	span.type = Timeline::Span::Effect;
-	span.time = Model::instance().CurrentTime();
+	span.time = Model::instance().Time();
 	span.duration = std::numeric_limits<double>::infinity();
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 		led_bank::instance().message_color(passThroughColor, span, below);

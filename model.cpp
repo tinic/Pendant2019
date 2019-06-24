@@ -39,33 +39,33 @@ void Model::init() {
 	uid = MurmurHash3_32(uid128, sizeof(uid128), 0x5cfed374);
 }
 
-std::string Model::CurrentBatteryVoltageString() {
+std::string Model::BatteryVoltageString() {
 	char str[8];
-	int32_t i = int32_t(CurrentBatteryVoltage());
-	int32_t f = int32_t(fmodf(CurrentBatteryVoltage(),1.0f)*100);
+	int32_t i = int32_t(BatteryVoltage());
+	int32_t f = int32_t(fmodf(BatteryVoltage(),1.0f)*100);
 	sprintf(str,"%1d.%02d", int(i), int(f));
 	return std::string(str);
 }
 
-std::string Model::CurrentSystemVoltageString() {
+std::string Model::SystemVoltageString() {
 	char str[8];
-	int32_t i = int32_t(CurrentSystemVoltage());
-	int32_t f = int32_t(fmodf(CurrentSystemVoltage(),1.0f)*100);
+	int32_t i = int32_t(SystemVoltage());
+	int32_t f = int32_t(fmodf(SystemVoltage(),1.0f)*100);
 	sprintf(str,"%1d.%02d", int(i), int(f));
 	return std::string(str);
 }
 
-std::string Model::CurrentVbusVoltageString() {
+std::string Model::VbusVoltageString() {
 	char str[8];
-	int32_t i = int32_t(CurrentVbusVoltage());
-	int32_t f = int32_t(fmodf(CurrentVbusVoltage(),1.0f)*100);
+	int32_t i = int32_t(VbusVoltage());
+	int32_t f = int32_t(fmodf(VbusVoltage(),1.0f)*100);
 	sprintf(str,"%1d.%02d", int(i), int(f));
 	return std::string(str);
 }
 
-std::string Model::CurrentChargeCurrentString() {
+std::string Model::ChargeCurrentString() {
 	char str[8];
-	int32_t i = int32_t(CurrentChargeCurrent());
+	int32_t i = int32_t(ChargeCurrent());
 	sprintf(str,"%d", int(i));
 	return std::string(str);
 }
@@ -132,33 +132,33 @@ void Model::load() {
 	};
 
 	if (read_uint32(buf, buf_pos) == marker) {
-		current_bird_color.rgbx = read_uint32(buf, buf_pos);
-		current_message_color.rgbx = read_uint32(buf, buf_pos);
-		current_effect = read_uint32(buf, buf_pos);
-		current_sent_message_count = read_uint32(buf, buf_pos);
+		bird_color.rgbx = read_uint32(buf, buf_pos);
+		message_color.rgbx = read_uint32(buf, buf_pos);
+		effect = read_uint32(buf, buf_pos);
+		sent_message_count = read_uint32(buf, buf_pos);
 
-		current_brightness = read_float(buf, buf_pos);
-		current_time_zone_offset = read_float(buf, buf_pos);
+		brightness = read_float(buf, buf_pos);
+		time_zone_offset = read_float(buf, buf_pos);
 
-		read_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
-		read_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
+		read_buf(reinterpret_cast<uint8_t *>(messages), sizeof(messages), buf, buf_pos);
+		read_buf(reinterpret_cast<uint8_t *>(name), sizeof(name), buf, buf_pos);
 
-		current_revc_messages_pos = read_uint32(buf, buf_pos);
+		revc_messages_pos = read_uint32(buf, buf_pos);
 		
 		for (size_t c=0; c<messageRecvCount; c++) {
-			current_recv_messages[c].datetime = read_double(buf, buf_pos);
+			recv_messages[c].datetime = read_double(buf, buf_pos);
 
-			current_recv_messages[c].uid = read_uint32(buf, buf_pos);
-			current_recv_messages[c].col.rgbx = read_uint32(buf, buf_pos);
-			current_recv_messages[c].flg = read_uint32(buf, buf_pos);
-			current_recv_messages[c].cnt = read_uint16(buf, buf_pos);
+			recv_messages[c].uid = read_uint32(buf, buf_pos);
+			recv_messages[c].col.rgbx = read_uint32(buf, buf_pos);
+			recv_messages[c].flg = read_uint32(buf, buf_pos);
+			recv_messages[c].cnt = read_uint16(buf, buf_pos);
 
-			read_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].name), sizeof(current_recv_messages[c].name), buf, buf_pos);
-			read_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].message), sizeof(current_recv_messages[c].message), buf, buf_pos);
+			read_buf(reinterpret_cast<uint8_t *>(recv_messages[c].name), sizeof(recv_messages[c].name), buf, buf_pos);
+			read_buf(reinterpret_cast<uint8_t *>(recv_messages[c].message), sizeof(recv_messages[c].message), buf, buf_pos);
 		}
 	} else {
 		memcpy(
-			current_messages,
+			messages,
 			"0123456789AB"
 			"0123456789AB"
 			"0123456789AB"
@@ -167,9 +167,9 @@ void Model::load() {
 			"0123456789AB"
 			"0123456789AB"
 			"0123456789AB",
-			sizeof(current_messages)
+			sizeof(messages)
 		);
-		memcpy(current_name, "DUCK\0\0\0\0\0\0\0\0", nameLength);
+		memcpy(name, "DUCK\0\0\0\0\0\0\0\0", nameLength);
 	}
 }
 
@@ -228,29 +228,29 @@ void Model::save() {
 
 	write_uint32(marker, buf, buf_pos);	
 
-	write_uint32(current_bird_color.rgbx, buf, buf_pos);
-	write_uint32(current_message_color.rgbx, buf, buf_pos);
-	write_uint32(current_effect, buf, buf_pos);
-	write_uint32(current_sent_message_count, buf, buf_pos);
+	write_uint32(bird_color.rgbx, buf, buf_pos);
+	write_uint32(message_color.rgbx, buf, buf_pos);
+	write_uint32(effect, buf, buf_pos);
+	write_uint32(sent_message_count, buf, buf_pos);
 
-	write_float(current_brightness, buf, buf_pos);
-	write_float(current_time_zone_offset, buf, buf_pos);
+	write_float(brightness, buf, buf_pos);
+	write_float(time_zone_offset, buf, buf_pos);
 
-	write_buf(reinterpret_cast<uint8_t *>(current_messages), sizeof(current_messages), buf, buf_pos);
-	write_buf(reinterpret_cast<uint8_t *>(current_name), sizeof(current_name), buf, buf_pos);
+	write_buf(reinterpret_cast<uint8_t *>(messages), sizeof(messages), buf, buf_pos);
+	write_buf(reinterpret_cast<uint8_t *>(name), sizeof(name), buf, buf_pos);
 
-	write_uint32(current_revc_messages_pos, buf, buf_pos);
+	write_uint32(revc_messages_pos, buf, buf_pos);
 
 	for (size_t c=0; c<messageRecvCount; c++) {
-		write_double(current_recv_messages[c].datetime, buf, buf_pos);
+		write_double(recv_messages[c].datetime, buf, buf_pos);
 
-		write_uint32(current_recv_messages[c].uid, buf, buf_pos);
-		write_uint32(current_recv_messages[c].col.rgbx, buf, buf_pos);
-		write_uint32(current_recv_messages[c].flg, buf, buf_pos);
-		write_uint16(current_recv_messages[c].cnt, buf, buf_pos);
+		write_uint32(recv_messages[c].uid, buf, buf_pos);
+		write_uint32(recv_messages[c].col.rgbx, buf, buf_pos);
+		write_uint32(recv_messages[c].flg, buf, buf_pos);
+		write_uint16(recv_messages[c].cnt, buf, buf_pos);
 
-		write_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].name), sizeof(current_recv_messages[c].name), buf, buf_pos);
-		write_buf(reinterpret_cast<uint8_t *>(current_recv_messages[c].message), sizeof(current_recv_messages[c].message), buf, buf_pos);
+		write_buf(reinterpret_cast<uint8_t *>(recv_messages[c].name), sizeof(recv_messages[c].name), buf, buf_pos);
+		write_buf(reinterpret_cast<uint8_t *>(recv_messages[c].message), sizeof(recv_messages[c].message), buf, buf_pos);
 	}
 	
 	flash_write(&FLASH_0, model_page * page_size, buf, page_size);

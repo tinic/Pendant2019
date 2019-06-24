@@ -83,14 +83,14 @@ void Commands::Boot() {
 		   		double intPart = 0;
 
 				tm.tm_min += 60;
-		   		tm.tm_min += int(modf(Model::instance().CurrentTimeZoneOffset(), &intPart));
+		   		tm.tm_min += int(modf(Model::instance().TimeZoneOffset(), &intPart));
 		   		tm.tm_min %= 60;
 
 				tm.tm_hour += 24;
 		   		tm.tm_hour += int(intPart);
 		   		tm.tm_hour %= 24;
 
-				Model::instance().SetCurrentDateTime((double(tm.tm_hour) * 24.0 * 60.0 + double(tm.tm_min) * 60.0 + double(tm.tm_sec)));
+				Model::instance().SetDateTime((double(tm.tm_hour) * 24.0 * 60.0 + double(tm.tm_min) * 60.0 + double(tm.tm_sec)));
 				
 			} else if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
 				static const uint32_t radio_colors[] = {
@@ -110,13 +110,13 @@ void Commands::Boot() {
 					static Timeline::Span span;
 					if (!Timeline::instance().Scheduled(span)) {
 						span.type = Timeline::Span::Display;
-						span.time = Model::instance().CurrentTime();
+						span.time = Model::instance().Time();
 						span.duration = 8.0f;
 						span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 							char str[64];
 							snprintf(str, 64, "%8.8s : %8.8s", &payload[16], &payload[8] );
 							const double speed = 128.0;
-							float text_walk = float(Model::instance().CurrentTime() - span.time) * speed - 96;
+							float text_walk = float(Model::instance().Time() - span.time) * speed - 96;
 							float interp = 0;
 							if (span.InBeginPeriod(interp, 0.5f)) {
 								if (interp < 0.5) {
@@ -151,9 +151,9 @@ void Commands::Boot() {
 				}
 				led_control::PerformV2MessageEffect(radio_colors[payload[7]]);
 			} else if (size >= 42 && memcmp(payload, "DUCK", 4) == 0) {
-				Model::Message msg;
+				struct Model::Message msg;
 				
-				msg.datetime = Model::instance().CurrentDateTime();
+				msg.datetime = Model::instance().DateTime();
 				
 				msg.uid = ( uint32_t(payload[ 4]) << 24 )|
 					      ( uint32_t(payload[ 5]) << 16 )|
@@ -175,7 +175,7 @@ void Commands::Boot() {
 				memcpy(&msg.name[0], &payload[18], 12);
 				memcpy(&msg.message[0], &payload[30], 12);
 
-				Model::instance().PushCurrentRecvMessage(msg);
+				Model::instance().PushRecvMessage(msg);
 			}
 		});
 
@@ -269,7 +269,7 @@ void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col)
 	buf[14] = (flg >>  8 ) & 0xFF;
 	buf[15] = (flg >>  0 ) & 0xFF;
 
-	uint32_t cnt = Model::instance().CurrentMessageCount();
+	uint32_t cnt = Model::instance().MessageCount();
 	buf[16] = (cnt >>  8 ) & 0xFF;
 	buf[17] = (cnt >>  0 ) & 0xFF;
 
@@ -278,7 +278,7 @@ void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col)
 
 	SX1280::instance().TxStart(buf, 42);
 	
-	Model::instance().IncCurrentMessageCount();
+	Model::instance().IncSentMessageCount();
 }
 
 void Commands::SendDateTimeRequest() {
@@ -286,7 +286,7 @@ void Commands::SendDateTimeRequest() {
 }
 
 void Commands::OnLEDTimer() {
-	Model::instance().SetCurrentTime(system_time());
+	Model::instance().SetTime(system_time());
 
 	Timeline::instance().ProcessEffect();
 	if (Timeline::instance().TopEffect().Valid()) {
@@ -296,7 +296,7 @@ void Commands::OnLEDTimer() {
 }
 
 void Commands::OnOLEDTimer() {
-	Model::instance().SetCurrentTime(system_time());
+	Model::instance().SetTime(system_time());
 
 	Timeline::instance().ProcessDisplay();
 	if (Timeline::instance().TopDisplay().Valid()) {
@@ -305,17 +305,17 @@ void Commands::OnOLEDTimer() {
 	}
 	
 #ifdef EMULATOR
-	display_debug_area(0);
+	display_debug_area(1);
 #endif  // #ifdef EMULATOR
 }
 
 void Commands::OnADCTimer() {
-	Model::instance().SetCurrentTime(system_time());
+	Model::instance().SetTime(system_time());
 
-	Model::instance().SetCurrentBatteryVoltage(BQ25895::instance().BatteryVoltage());
-	Model::instance().SetCurrentSystemVoltage(BQ25895::instance().SystemVoltage());
-	Model::instance().SetCurrentVbusVoltage(BQ25895::instance().VBUSVoltage());
-	Model::instance().SetCurrentChargeCurrent(BQ25895::instance().ChargeCurrent());
+	Model::instance().SetBatteryVoltage(BQ25895::instance().BatteryVoltage());
+	Model::instance().SetSystemVoltage(BQ25895::instance().SystemVoltage());
+	Model::instance().SetVbusVoltage(BQ25895::instance().VBUSVoltage());
+	Model::instance().SetChargeCurrent(BQ25895::instance().ChargeCurrent());
 
 	BQ25895::instance().OneShotADC();
 }
@@ -353,20 +353,38 @@ void Commands::OnADCTimer_C(const timer_task *) {
 	Commands::instance().OnADCTimer();
 }
 
-void Commands::Switch1_Pressed_C() {
-	Commands::instance().Switch1_Pressed();
+void Commands::Switch1_EXT_C() {
+	bool level = gpio_get_pin_level(SW_2_UPPER);
+	if (level) {
+		Commands::instance().Switch1_Pressed();
+		Model::instance().SetSwitch1Down(0.0);
+	} else {
+		Model::instance().SetSwitch1Down(system_time());
+	}
 }
 
-void Commands::Switch2_Pressed_C() {
-	Commands::instance().Switch2_Pressed();
+void Commands::Switch2_EXT_C() {
+	bool level = gpio_get_pin_level(SW_2_LOWER);
+	if (level) {
+		Commands::instance().Switch2_Pressed();
+		Model::instance().SetSwitch2Down(0.0);
+	} else {
+		Model::instance().SetSwitch2Down(system_time());
+	}
 }
 
-void Commands::Switch3_Pressed_C() {
-	Commands::instance().Switch3_Pressed();
+void Commands::Switch3_EXT_C() {
+	bool level = gpio_get_pin_level(SW_1_LOWER);
+	if (level) {
+		Commands::instance().Switch3_Pressed();
+		Model::instance().SetSwitch3Down(0.0);
+	} else {
+		Model::instance().SetSwitch3Down(system_time());
+	}
 }
 
 void Commands::init() {
-	ext_irq_register(PIN_PA17, Switch1_Pressed_C);
-	ext_irq_register(PIN_PA18, Switch2_Pressed_C);
-	ext_irq_register(PIN_PA19, Switch3_Pressed_C);
+	ext_irq_register(PIN_PA17, Switch1_EXT_C);
+	ext_irq_register(PIN_PA18, Switch2_EXT_C);
+	ext_irq_register(PIN_PA19, Switch3_EXT_C);
 }

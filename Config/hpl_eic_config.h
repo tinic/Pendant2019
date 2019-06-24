@@ -146,7 +146,7 @@
 // <i> This defines input sense trigger
 // <id> eic_arch_sense1
 #ifndef CONF_EIC_SENSE1
-#define CONF_EIC_SENSE1 EIC_NMICTRL_NMISENSE_FALL_Val
+#define CONF_EIC_SENSE1 EIC_NMICTRL_NMISENSE_BOTH_Val
 #endif
 
 // <q> External Interrupt 1 Asynchronous Edge Detection Mode
@@ -195,7 +195,7 @@
 // <i> This defines input sense trigger
 // <id> eic_arch_sense2
 #ifndef CONF_EIC_SENSE2
-#define CONF_EIC_SENSE2 EIC_NMICTRL_NMISENSE_FALL_Val
+#define CONF_EIC_SENSE2 EIC_NMICTRL_NMISENSE_BOTH_Val
 #endif
 
 // <q> External Interrupt 2 Asynchronous Edge Detection Mode
@@ -244,7 +244,7 @@
 // <i> This defines input sense trigger
 // <id> eic_arch_sense3
 #ifndef CONF_EIC_SENSE3
-#define CONF_EIC_SENSE3 EIC_NMICTRL_NMISENSE_FALL_Val
+#define CONF_EIC_SENSE3 EIC_NMICTRL_NMISENSE_BOTH_Val
 #endif
 
 // <q> External Interrupt 3 Asynchronous Edge Detection Mode
