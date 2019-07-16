@@ -249,7 +249,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 			char str[20];
 			snprintf(str, 20, "%s", Model::instance().Message(selectedMessage));
 			SDD1306::instance().PlaceAsciiStr(0, 0, str);
-			snprintf(str, 20, "   %02d/%02d    ", selectedMessage, int(Model::MessageCount()));
+			snprintf(str, 20, "   %02d/%02d    ", int(selectedMessage), int(Model::MessageCount()));
 			SDD1306::instance().PlaceAsciiStr(0, 1, str);
 		} else {
 			char str[20];
@@ -258,7 +258,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 			if (currentChar == Model::MessageLength()) {
 				SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
 			} else {
-				for (int32_t c=0; c<Model::MessageLength(); c++) {
+				for (int32_t c=0; c<int32_t(Model::MessageLength()); c++) {
 					if (c == currentChar) {
 						SDD1306::instance().PlaceAsciiStr(c, 1, "^");
 					} else {
@@ -291,12 +291,12 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 		span.time = Model::instance().Time(); // reset timeout
 		if (currentMode == 0) {
 			selectedMessage ++;
-			if (selectedMessage >= Model::MessageCount()) {
+			if (selectedMessage >= int32_t(Model::MessageCount())) {
 				selectedMessage = 0;
 			}
 		} else {
 			currentChar ++;
-			if (currentChar > Model::MessageLength()) {
+			if (currentChar > int32_t(Model::MessageLength())) {
 				currentChar = 0;
 			}
 		}
@@ -323,7 +323,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
 				Timeline::instance().ProcessDisplay();
 			} else {
 				int32_t idx = currentMessage[currentChar];
-				idx = std::min(0x5f, std::max(0x20, idx)); 
+				idx = std::min(int32_t(0x5f), std::max(int32_t(0x20), idx)); 
 				idx -= 0x20;
 				idx ++;
 				idx %= 0x40;
@@ -408,7 +408,7 @@ void UI::enterChangeName(Timeline::Span &parent) {
 			Timeline::instance().ProcessDisplay();
 		} else {
 			int32_t idx = currentName[currentChar];
-			idx = std::min(0x5f, std::max(0x20, idx)); 
+			idx = std::min(int32_t(0x5f), std::max(int32_t(0x20), idx)); 
 			idx -= 0x20;
 			idx ++;
 			idx %= 0x40;
