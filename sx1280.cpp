@@ -7,6 +7,7 @@
 #include <memory.h>
 #include <vector>
 			
+#ifdef MCP
 static const std::string base64_chars = 
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
@@ -93,6 +94,7 @@ static std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
 	}
 	return ret;
 }
+#endif  // make#ifdef MCP
 			
 SX1280::SX1280() {
 }
@@ -108,7 +110,9 @@ SX1280 &SX1280::instance() {
 
 void SX1280::init() {
 
-	start_uart();
+#ifdef MCP
+	StartMCP();
+#endif  // #ifdef MCP
 
 	pins_init();
 
@@ -1114,7 +1118,7 @@ void SX1280::ProcessIrqs( void ) {
 								GetPayload( rxBuffer, &rxBufferSize, LORA_MAX_BUFFER_SIZE );
 								rxDone(rxBuffer, rxBufferSize, packetStatus);
 
-#ifndef EMULATOR
+#ifdef MCP
 								struct io_descriptor *io = 0;
 								usart_sync_get_io_descriptor(&USART_0, &io);
 								
@@ -1122,7 +1126,7 @@ void SX1280::ProcessIrqs( void ) {
 								str += base64_encode(rxBuffer, rxBufferSize);
 								str += "\n";
 								io_write(io, (const uint8_t *)str.c_str(), str.length());
-#endif  // #ifndef EMULATOR
+#endif  // #ifdef MCP
 							}
 						}
 					}
@@ -1185,7 +1189,7 @@ void SX1280::ProcessIrqs( void ) {
 								GetPayload( rxBuffer, &rxBufferSize, LORA_MAX_BUFFER_SIZE);
 								rxDone(rxBuffer, rxBufferSize, packetStatus);
 
-#ifndef EMULATOR
+#ifdef MCP
 								struct io_descriptor *io = 0;
 								usart_sync_get_io_descriptor(&USART_0, &io);
 
@@ -1193,7 +1197,7 @@ void SX1280::ProcessIrqs( void ) {
 								str += base64_encode(rxBuffer, rxBufferSize);
 								str += "\n";
 								io_write(io, (const uint8_t *)str.c_str(), str.length());
-#endif  // #ifndef EMULATOR
+#endif  // #ifdef MCP
 							}
 						}
 					}
@@ -1367,29 +1371,25 @@ void SX1280::do_pin_reset()
 	delay_ms(50);
 }
 
-void SX1280::start_uart() 
+#ifdef MCP
+void SX1280::StartMCP() 
 {
-#ifndef EMULATOR
 	struct io_descriptor *io;
 	usart_sync_get_io_descriptor(&USART_0, &io);
 	usart_sync_enable(&USART_0);
-
-
-	usart_flow_control_state flow_control_state;
-	flow_control_state.value = 0;
-	usart_sync_set_flow_control(&USART_0, flow_control_state);
 	usart_sync_set_baud_rate(&USART_0, 115200);
 	usart_sync_set_data_order(&USART_0, USART_DATA_ORDER_LSB);
 	usart_sync_set_mode(&USART_0,USART_MODE_ASYNCHRONOUS);
 	usart_sync_set_parity(&USART_0,USART_PARITY_NONE);
 	usart_sync_set_stopbits(&USART_0,USART_STOP_BITS_ONE);
 	usart_sync_set_character_size(&USART_0,USART_CHARACTER_SIZE_8BITS);
-#endif  // #ifndef EMULATOR
+	usart_flow_control_state flow_control_state;
+	flow_control_state.value = 0;
+	usart_sync_set_flow_control(&USART_0, flow_control_state);
 }
 
-void SX1280::uart_handle()
+void SX1280::OnMCPTimer()
 {
-#ifndef EMULATOR
 	static int32_t s = 0;
 	static uint8_t cmd[64];
 
@@ -1417,6 +1417,9 @@ void SX1280::uart_handle()
 										} break;
 										case	'R': {
 											WriteRegister(data.data()[0], data.data()+1, data.size()-1);
+										} break;
+										case	'M': {
+											TxStart(data.data(), data.size());
 										} break;
 									}
 								}
@@ -1450,8 +1453,8 @@ void SX1280::uart_handle()
 		}
 		cmd[s] = c;
 	}
-#endif  // #ifndef EMULATOR
 }
+#endif  // #ifdef MCP
 
 void SX1280::pins_init()
 {

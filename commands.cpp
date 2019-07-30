@@ -224,6 +224,13 @@ void Commands::StartTimers() {
 	update_adc_timer_task.mode = TIMER_TASK_REPEAT;
 	timer_add_task(&TIMER_0, &update_adc_timer_task);
 
+#ifdef MCP
+	update_adc_timer_task.interval = 16; // 60fp
+	update_adc_timer_task.cb = &OnMCPTimer_C;
+	update_adc_timer_task.mode = TIMER_TASK_REPEAT;
+	timer_add_task(&TIMER_0, &update_mcp_timer_task);
+#endif  // #ifdef MCP
+
 	timer_start(&TIMER_0);
 }
 
@@ -340,6 +347,12 @@ void Commands::Switch3_Pressed() {
 		Timeline::instance().TopDisplay().ProcessSwitch3();
 	}
 }
+
+#ifdef MCP
+void Commands::OnMCPTimer_C(const timer_task *) {
+	SX1280::instance().OnMCPTimer();
+}
+#endif  // #ifdef MCP
 
 void Commands::OnLEDTimer_C(const timer_task *) {
 	Commands::instance().OnLEDTimer();

@@ -698,6 +698,10 @@ public:
     
     uint8_t SetSyncWord(uint8_t syncWordIdx, const uint8_t *syncWord);
     uint8_t SetCrcSeed(const uint8_t *seed);
+    
+#ifdef MCP
+    void OnMCPTimer();
+#endif  // #ifdef MCP
 
 private:
 
@@ -769,9 +773,10 @@ private:
     void disableIRQ();
     void enableIRQ();
     void delayMS(uint32_t ms);
-    
-    void start_uart();
-	void uart_handle();
+
+#ifdef MCP
+    void StartMCP();
+#endif  // #ifdef MCP
 
 	void do_wait_for_busy_pin();
 	void do_pin_reset();

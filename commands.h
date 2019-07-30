@@ -45,10 +45,17 @@ private:
 	static void OnLEDTimer_C(const timer_task *);
 	static void OnOLEDTimer_C(const timer_task *);
 	static void OnADCTimer_C(const timer_task *);
+#ifdef MCP
+	static void OnMCPTimer_C(const timer_task *);
+#endif  // #ifdef MCP
 
 	struct timer_task update_leds_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
 	struct timer_task update_oled_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
 	struct timer_task update_adc_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
+
+#ifdef MCP
+	struct timer_task update_mcp_timer_task = {0, 0, 0, 0, TIMER_TASK_REPEAT};
+#endif  // #ifdef MCP
 };
 
 #endif /* COMMANDS_H_ */

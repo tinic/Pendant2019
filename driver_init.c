@@ -478,7 +478,6 @@ void I2C_0_init(void)
 
 void USART_0_PORT_init(void)
 {
-
 	gpio_set_pin_function(UART_TX, PINMUX_PA22C_SERCOM3_PAD0);
 
 	gpio_set_pin_function(UART_RX, PINMUX_PA23C_SERCOM3_PAD1);

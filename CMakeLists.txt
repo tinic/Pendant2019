@@ -3,6 +3,7 @@ set(PRJ_NAME Pendant2019)
 cmake_minimum_required(VERSION 3.10)
 
 option(EMULATOR_BUILD "Emulator Build" OFF)
+option(MCP_BUILD "MCP Build" OFF)
 
 project(${PRJ_NAME} C CXX ASM)
 
@@ -52,6 +53,11 @@ if (NOT EMULATOR_BUILD)
 
 	set(SOURCE_FILES ${HAL_SRC} ${HPL_SRC} ${USB_SRC} ${DEVICE_STARTUP})
 
+	if (MCP_BUILD)
+		add_definitions(-DMCP)
+	endif (NOT MCP_BUILD)
+	
+
 	include_directories(Config)
 	include_directories(hal/utils/include)
 	include_directories(hal/include)
@@ -92,7 +98,7 @@ include_directories(.)
 
 set(SOURCE_FILES ${SOURCE_FILES} ${USER_SRC_CPP} ${USER_SRC_C})
 
-if (NOT ${EMULATOR})
+if (NOT EMULATOR_BUILD)
 	add_executable(${PROJECT_NAME}.elf ${SOURCE_FILES})
 
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${PROJECT_SOURCE_DIR}/build/${PROJECT_NAME}.map")
