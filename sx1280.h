@@ -769,6 +769,9 @@ private:
     void disableIRQ();
     void enableIRQ();
     void delayMS(uint32_t ms);
+    
+    void start_uart();
+	void uart_handle();
 
 	void do_wait_for_busy_pin();
 	void do_pin_reset();
