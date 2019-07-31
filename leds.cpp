@@ -375,7 +375,7 @@ namespace colors {
 		}
 	}
 #endif  // #if 0
-	
+
 }
 
 namespace geom {
@@ -385,6 +385,20 @@ namespace geom {
 		float y = 0.0f;
 		float z = 0.0f;
 		float w = 0.0f;
+		
+		float4() {
+			x = 0.0f;
+			y = 0.0f;
+			z = 0.0f;
+			w = 0.0f;
+		}
+
+		float4(float v) {
+			this->x = v;
+			this->y = v;
+			this->z = v;
+			this->w = v;
+		}
 
 		float4(float x, float y, float z, float w = 0.0f) {
 			this->x = x;
@@ -632,6 +646,42 @@ namespace geom {
 						  fabs(a.w));
 		}
 
+		float4 xx00() {
+			return float4(this->x, this->x, 0.0, 0.0);
+		}
+
+		float4 yy00() {
+			return float4(this->y, this->y, 0.0, 0.0);
+		}
+
+		float4 zz00() {
+			return float4(this->z, this->z, 0.0, 0.0);
+		}
+		
+		float4 xy00() {
+			return float4(this->x, this->y, 0.0, 0.0);
+		}
+
+		float4 yx00() {
+			return float4(this->y, this->x, 0.0, 0.0);
+		}
+
+		float4 xz00() {
+			return float4(this->x, this->z, 0.0, 0.0);
+		}
+
+		float4 zx00() {
+			return float4(this->z, this->x, 0.0, 0.0);
+		}
+
+		float4 yz00() {
+			return float4(this->y, this->z, 0.0, 0.0);
+		}
+
+		float4 zy00() {
+			return float4(this->z, this->y, 0.0, 0.0);
+		}
+
 		float4 sqrt() {
 			return float4(sqrtf(this->x),
 					  	  sqrtf(this->y),
@@ -645,7 +695,23 @@ namespace geom {
 						  sqrtf(a.z),
 						  sqrtf(a.w));
 		}
-
+		
+		float4 rotate2d(float angle) {
+			return  float4(
+				this->x * cosf(angle) - this->y * sinf(angle),
+				this->y * cosf(angle) + this->x * sinf(angle),
+				this->z,
+				this->w);
+		}
+		
+		float4 reflect() {
+			return float4(
+				reflect(this->x),
+				reflect(this->y),
+				reflect(this->z),
+				reflect(this->w));
+		}
+		
 		float4 rsqrt() {
 			return float4((this->x != 0.0f) ? (1.0f/sqrtf(this->x)) : 0.0f,
 					  	  (this->y != 0.0f) ? (1.0f/sqrtf(this->y)) : 0.0f,
@@ -674,6 +740,22 @@ namespace geom {
 						  (a.w != 0.0f) ? (1.0f/a.w) : 0.0f);
 		}
 
+		float4 lerp(const float4 &b, float v) {
+			return float4(
+			  this->x * (1.0f - v) + b.x * v, 
+			  this->y * (1.0f - v) + b.y * v, 
+			  this->z * (1.0f - v) + b.z * v, 
+			  this->w * (1.0f - v) + b.w * v);
+		}
+
+		static float4 lerp(const float4 &a, const float4 &b, float v) {
+			return float4(
+			  a.x * (1.0f - v) + b.x * v, 
+			  a.y * (1.0f - v) + b.y * v, 
+			  a.z * (1.0f - v) + b.z * v, 
+			  a.w * (1.0f - v) + b.w * v);
+		}
+
 		static float4 zero() {
 			return float4(0.0f, 0.0f, 0.0f, 0.0f);
 		}
@@ -685,8 +767,86 @@ namespace geom {
 		static float4 half() {
 			return float4(0.5f, 0.5f, 0.5f, 0.5f);
 		}
+
+	private:
+	
+		float reflect(float i) {
+			i = fabs(i);
+			if (((int)i & 1) == 0) {
+				i = fmod(i, 1.0f);
+			} else {
+				i = fmod(i, 1.0f);
+				i = 1.0 - i;
+			}
+			return i;
+		}
 	};
 }
+
+namespace colors {
+	class gradient {
+
+		static constexpr size_t colors_n = 64;
+		colors::rgb colors[colors_n];
+		bool initialized = false;
+		
+	public:
+	
+		bool check_init() {
+			return !initialized;
+		}
+		
+		void init(const geom::float4 stops[], size_t n) {
+			initialized = true;
+			for (size_t c = 0; c < colors_n; c++) {
+				float f = (float)c / (float)colors_n; 
+				geom::float4 a = stops[0];
+				geom::float4 b = stops[1];
+				if (n > 2) {
+				  for (int32_t d = (n-2); d >= 0 ; d--) {
+					  if ( f >= (stops[d].w) ) {
+						a = stops[d+0];
+						b = stops[d+1];
+						break;
+					  }
+				  }
+				}
+				f -= a.w;
+				f /= b.w - a.w;
+			  	colors[c] = a.lerp(b,f);
+			}
+		}
+		
+		geom::float4 repeat(float i) {
+			i = fmodf(i, 1.0f);
+			i *= 255.0f;
+			return geom::float4::lerp(colors[((int32_t)(i))&0xFF], colors[((int32_t)(i)+1)&0xFF], fmodf(i, 1.0f));
+		}
+
+		geom::float4 reflect(float i) {
+			i = fabs(i);
+			if (((int)i & 1) == 0) {
+				i = fmodf(i, 1.0f);
+			} else {
+				i = fmodf(i, 1.0f);
+				i = 1.0f - i;
+			}
+			i *= 255.0f;
+			return geom::float4::lerp(colors[((int32_t)(i))&0xFF], colors[((int32_t)(i)+1)&0xFF], fmodf(i, 1.0f));
+		}
+
+		geom::float4 clamp(float i) {
+			if (i <= 0.0f) {
+				return colors[0];
+			}
+			if (i >= 1.0f) {
+				return colors[colors_n-1];
+			}
+			i *= 255.0f;
+			return geom::float4::lerp(colors[((int32_t)(i))&0xFF], colors[((int32_t)(i)+1)&0xFF], fmodf(i, 1.0f));
+		}
+	};
+};
 
 static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 {
@@ -759,6 +919,50 @@ public:
 		}
 		return leds;
 	}
+	
+	const std::array<geom::float4, 33> &ledpos() {
+		static std::array<geom::float4, 33> leds;
+		static bool init = false;
+		if (!init) {
+			init = true;
+			leds[ 0] = geom::float4(-0.00000000,-1.00000000,+0.00000000,+0.00000000);
+			leds[ 1] = geom::float4(-0.38268343,-0.92387953,+0.00000000,+0.00000000);
+			leds[ 2] = geom::float4(-0.70710678,-0.70710678,+0.00000000,+0.00000000);
+			leds[ 3] = geom::float4(-0.92387953,-0.38268343,+0.00000000,+0.00000000);
+			leds[ 4] = geom::float4(-1.00000000,-0.00000000,+0.00000000,+0.00000000);
+			leds[ 5] = geom::float4(-0.92387953,+0.38268343,+0.00000000,+0.00000000);
+			leds[ 6] = geom::float4(-0.70710678,+0.70710678,+0.00000000,+0.00000000);
+			leds[ 7] = geom::float4(-0.38268343,+0.92387953,+0.00000000,+0.00000000);
+			leds[ 8] = geom::float4(-0.00000000,+1.00000000,+0.00000000,+0.00000000);
+			leds[ 9] = geom::float4(+0.38268343,+0.92387953,+0.00000000,+0.00000000);
+			leds[10] = geom::float4(+0.70710678,+0.70710678,+0.00000000,+0.00000000);
+			leds[11] = geom::float4(+0.92387953,+0.38268343,+0.00000000,+0.00000000);
+			leds[12] = geom::float4(+1.00000000,+0.00000000,+0.00000000,+0.00000000);
+			leds[13] = geom::float4(+0.92387953,-0.38268343,+0.00000000,+0.00000000);
+			leds[14] = geom::float4(+0.70710678,-0.70710678,+0.00000000,+0.00000000);
+			leds[15] = geom::float4(+0.38268343,-0.92387953,+0.00000000,+0.00000000);
+
+			leds[16] = geom::float4(-0.00000000,-0.50000000,+0.00000000,+0.00000000);
+			leds[17] = geom::float4(-0.19134172,-0.46193977,+0.00000000,+0.00000000);
+			leds[18] = geom::float4(-0.35355339,-0.35355339,+0.00000000,+0.00000000);
+			leds[19] = geom::float4(-0.46193977,-0.19134172,+0.00000000,+0.00000000);
+			leds[20] = geom::float4(-0.50000000,-0.00000000,+0.00000000,+0.00000000);
+			leds[21] = geom::float4(-0.46193977,+0.19134172,+0.00000000,+0.00000000);
+			leds[22] = geom::float4(-0.35355339,+0.35355339,+0.00000000,+0.00000000);
+			leds[23] = geom::float4(-0.19134172,+0.46193977,+0.00000000,+0.00000000);
+			leds[24] = geom::float4(-0.00000000,+0.50000000,+0.00000000,+0.00000000);
+			leds[25] = geom::float4(+0.19134172,+0.46193977,+0.00000000,+0.00000000);
+			leds[26] = geom::float4(+0.35355339,+0.35355339,+0.00000000,+0.00000000);
+			leds[27] = geom::float4(+0.46193977,+0.19134172,+0.00000000,+0.00000000);
+			leds[28] = geom::float4(+0.50000000,+0.00000000,+0.00000000,+0.00000000);
+			leds[29] = geom::float4(+0.46193977,-0.19134172,+0.00000000,+0.00000000);
+			leds[30] = geom::float4(+0.35355339,-0.35355339,+0.00000000,+0.00000000);
+			leds[31] = geom::float4(+0.19134172,-0.46193977,+0.00000000,+0.00000000);
+
+			leds[32] = geom::float4(+0.00000000,+0.00000000,+0.00000000,+0.00000000);
+		}
+		return leds;
+	}
 
 	void init() {
 		qspi_sync_enable(&QUAD_SPI_0);
@@ -813,6 +1017,9 @@ public:
 						rando();
 					break;
 					case 9:
+						red_green();
+					break;
+					case 10:
 						burn_test();
 					break;
 				}
@@ -1159,6 +1366,35 @@ public:
 
 	}
 
+	void calc_outer(const std::function<geom::float4 (const geom::float4 &pos)> &func) {
+		for (size_t c = 0; c < 16; c++) {
+			leds_outer[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c])));
+			leds_outer[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c])));
+		}
+	}
+
+	void calc_all(const std::function<geom::float4 (const geom::float4 &pos)> &func) {
+		for (size_t c = 0; c < 16; c++) {
+			leds_outer[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c])));
+			leds_outer[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c])));
+		}
+		for (size_t c = 0; c < 16; c++) {
+			leds_inner[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c+16])));
+			leds_inner[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c+16])));
+		}
+		leds_centr[0] = colors::rgb8out(colors::rgb(func(ledpos()[32])));
+		leds_centr[1] = colors::rgb8out(colors::rgb(func(ledpos()[32])));
+	}
+
+	void calc_inner(const std::function<geom::float4 (const geom::float4 &pos)> &func) {
+		for (size_t c = 0; c < 16; c++) {
+			leds_inner[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c+16])));
+			leds_inner[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c+16])));
+		}
+		leds_centr[0] = colors::rgb8out(colors::rgb(func(ledpos()[32])));
+		leds_centr[1] = colors::rgb8out(colors::rgb(func(ledpos()[32])));
+	}
+
 	//
 	// RGB BAND
 	//
@@ -1428,6 +1664,22 @@ public:
 			leds_outer[1][c] = col;
 		}
 	}
+	
+	//
+	// RED GREEN
+	//
+
+	void red_green() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		double now = Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
 
 	//
 	// BURN TEST
@@ -1443,7 +1695,6 @@ public:
 		for (size_t c = 0; c < leds_rings_n; c++) {
 
 			burn_test_flip *= -1.0f;
-//			burn_test_flip = disf(gen);
 
 			colors::rgb8out out = colors::rgb8out(colors::rgb(1.0f, 1.0f, 1.0f) * burn_test_flip );
 

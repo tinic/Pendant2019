@@ -32,7 +32,7 @@ public:
 	
 	uint32_t Effect() { return effect; }
 	void SetEffect(uint32_t neweffect) { effect = neweffect; }
-	static constexpr uint32_t EffectCount() { return 9; }
+	static constexpr uint32_t EffectCount() { return 10; }
 
 	double Time() const { return time; }
 	void SetTime(double current_time) { time = current_time; }
@@ -135,7 +135,7 @@ private:
 	float brightness = 1.0f;
 	float time_zone_offset = -7.0f;
 
-	uint32_t effect = 8;
+	uint32_t effect = 9;
 	
 	colors::rgb8 bird_color = colors::rgb8(0xFF, 0xFF, 0x00);
 	colors::rgb8 message_color = colors::rgb8(0xFF, 0xFF, 0x00);
