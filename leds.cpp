@@ -147,7 +147,7 @@ namespace colors {
 
 		void RGBtoHSP(float R, float G, float B, float *H, float *S, float *P) const {
 		  //  Calculate the Perceived brightness.
-		  *P = sqrt(R * R * Pr + G * G * Pg + B * B * Pb);
+		  *P = sqrtf(R * R * Pr + G * G * Pg + B * B * Pb);
 
 		  //  Calculate the Hue and Saturation.  (This part works
 		  //  the same way as in the HSV/B and HSL systems???.)
@@ -376,6 +376,316 @@ namespace colors {
 	}
 #endif  // #if 0
 	
+}
+
+namespace geom {
+	class float4 {
+	public:
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+		float w = 0.0f;
+
+		float4(float x, float y, float z, float w = 0.0f) {
+			this->x = x;
+			this->y = y;
+			this->z = z;
+			this->w = w;
+		}
+
+		float4(const colors::rgb &from) {
+			this->x = from.r;
+			this->y = from.g;
+			this->z = from.b;
+			this->w = 1.0f;
+		}
+		
+		operator colors::rgb() {
+			return colors::rgb(this->x, this->y, this->z);
+		}
+
+		float4 &operator+=(float v) {
+			this->x += v;
+			this->y += v;
+			this->z += v;
+			this->w += v;
+			return *this;
+		}
+
+		float4 &operator-=(float v) {
+			this->x -= v;
+			this->y -= v;
+			this->z -= v;
+			this->w -= v;
+			return *this;
+		}
+
+		float4 &operator*=(float v) {
+			this->x *= v;
+			this->y *= v;
+			this->z *= v;
+			this->w *= v;
+			return *this;
+		}
+
+		float4 &operator/=(float v) {
+			this->x /= v;
+			this->y /= v;
+			this->z /= v;
+			this->w /= v;
+			return *this;
+		}
+
+		float4 &operator%=(float v) {
+			this->x = fmodf(this->x, v);
+			this->y = fmodf(this->y, v);
+			this->z = fmodf(this->z, v);
+			this->w = fmodf(this->w, v);
+			return *this;
+		}
+		
+		float4 &operator+=(const float4 &b) {
+			this->x += b.x;
+			this->y += b.y;
+			this->z += b.z;
+			this->w += b.w;
+			return *this;
+		}
+
+		float4 &operator-=(const float4 &b) {
+			this->x += b.x;
+			this->y += b.y;
+			this->z += b.z;
+			this->w += b.w;
+			return *this;
+		}
+
+		float4 &operator*=(const float4 &b) {
+			this->x += b.x;
+			this->y += b.y;
+			this->z += b.z;
+			this->w += b.w;
+			return *this;
+		}
+
+		float4 &operator/=(const float4 &b) {
+			this->x += b.x;
+			this->y += b.y;
+			this->z += b.z;
+			this->w += b.w;
+			return *this;
+		}
+
+		float4 &operator%=(const float4 &b) {
+			this->x = fmodf(this->x, b.x);
+			this->y = fmodf(this->y, b.y);
+			this->z = fmodf(this->z, b.z);
+			this->w = fmodf(this->w, b.w);
+			return *this;
+		}
+
+		float4 operator-() {
+			return float4(-this->x,
+			  			  -this->y,
+			  			  -this->z,
+			  			  -this->w);
+		}
+
+		float4 operator+() {
+			return float4(+this->x,
+			  			  +this->y,
+			  			  +this->z,
+			  			  +this->w);
+		}
+
+		float4 operator+(float v) {
+			return float4(this->x+v,
+			  			  this->y+v,
+			  			  this->z+v,
+			  			  this->w+v);
+		}
+
+		float4 operator-(float v) {
+			return float4(this->x-v,
+			  			  this->y-v,
+			  			  this->z-v,
+			  			  this->w-v);
+		}
+
+		float4 operator*(float v) {
+			return float4(this->x*v,
+			  			  this->y*v,
+			  			  this->z*v,
+			  			  this->w*v);
+		}
+
+		float4 operator/(float v) {
+			return float4(this->x/v,
+			  			  this->y/v,
+			  			  this->z/v,
+			  			  this->w/v);
+		}
+
+		float4 operator%(float v) {
+			return float4(fmodf(this->x,v),
+			  			  fmodf(this->y,v),
+			  			  fmodf(this->z,v),
+			  			  fmodf(this->w,v));
+		}
+		
+		float4 operator+(const float4 &b) {
+			return float4(this->x+b.x,
+			  			  this->y+b.y,
+			  			  this->z+b.z,
+			  			  this->w+b.w);
+		}
+
+		float4 operator-(const float4 &b) {
+			return float4(this->x-b.x,
+			  			  this->y-b.y,
+			  			  this->z-b.z,
+			  			  this->w-b.w);
+		}
+
+		float4 operator*(const float4 &b) {
+			return float4(this->x*b.x,
+			  			  this->y*b.y,
+			  			  this->z*b.z,
+			  			  this->w*b.w);
+		}
+
+		float4 operator/(const float4 &b) {
+			return float4(this->x/b.x,
+			  			  this->y/b.y,
+			  			  this->z/b.z,
+			  			  this->w/b.w);
+		}
+
+		float4 operator%(const float4 &b) {
+			return float4(fmodf(this->x,b.x),
+			  			  fmodf(this->y,b.y),
+			  			  fmodf(this->z,b.z),
+			  			  fmodf(this->w,b.w));
+		}
+		
+		float len() {
+	        return sqrtf(x*x + y*y + z*z);
+		}
+
+		static float len(const float4 &a) {
+	        return sqrtf(a.x*a.x + a.y*a.y + a.z*a.z);
+		}
+		
+		float dist(const float4 &b) {
+			float xd = fabs(this->x - b.x);
+			float yd = fabs(this->y - b.y);
+			float zd = fabs(this->z - b.z);
+			return sqrtf(xd*xd + yd*yd + zd*zd);
+		}
+
+		static float dist(const float4 &a, const float4 &b) {
+			float xd = fabs(a.x - b.x);
+			float yd = fabs(a.y - b.y);
+			float zd = fabs(a.z - b.z);
+			return sqrtf(xd*xd + yd*yd + zd*zd);
+		}
+
+		float4 min(const float4 &b) {
+			return float4(std::min(this->x, b.x),
+					  	  std::min(this->y, b.y),
+						  std::min(this->z, b.z),
+						  std::min(this->w, b.w));
+		}
+
+		static float4 min(const float4 &a, const float4 &b) {
+			return float4(std::min(a.x, b.x),
+					  	  std::min(a.y, b.y),
+						  std::min(a.z, b.z),
+						  std::min(a.w, b.w));
+		}
+
+		float4 max(const float4 &b) {
+			return float4(std::max(this->x, b.x),
+					  	  std::max(this->y, b.y),
+						  std::max(this->z, b.z),
+						  std::max(this->w, b.w));
+		}
+
+		static float4 max(const float4 &a, const float4 &b) {
+			return float4(std::max(a.x, b.x),
+					  	  std::max(a.y, b.y),
+						  std::max(a.z, b.z),
+						  std::max(a.w, b.w));
+		}
+		
+		float4 abs() {
+			return float4(fabs(this->x),
+					  	  fabs(this->y),
+						  fabs(this->z),
+						  fabs(this->w));
+		}
+
+		static float4 abs(const float4 &a) {
+			return float4(fabs(a.x),
+					  	  fabs(a.y),
+						  fabs(a.z),
+						  fabs(a.w));
+		}
+
+		float4 sqrt() {
+			return float4(sqrtf(this->x),
+					  	  sqrtf(this->y),
+						  sqrtf(this->z),
+						  sqrtf(this->w));
+		}
+
+		static float4 sqrt(const float4 &a) {
+			return float4(sqrtf(a.x),
+					  	  sqrtf(a.y),
+						  sqrtf(a.z),
+						  sqrtf(a.w));
+		}
+
+		float4 rsqrt() {
+			return float4((this->x != 0.0f) ? (1.0f/sqrtf(this->x)) : 0.0f,
+					  	  (this->y != 0.0f) ? (1.0f/sqrtf(this->y)) : 0.0f,
+						  (this->z != 0.0f) ? (1.0f/sqrtf(this->z)) : 0.0f,
+						  (this->w != 0.0f) ? (1.0f/sqrtf(this->w)) : 0.0f);
+		}
+
+		static float4 rsqrt(const float4 &a) {
+			return float4((a.x != 0.0f) ? (1.0f/sqrtf(a.x)) : 0.0f,
+					  	  (a.y != 0.0f) ? (1.0f/sqrtf(a.y)) : 0.0f,
+						  (a.z != 0.0f) ? (1.0f/sqrtf(a.z)) : 0.0f,
+						  (a.w != 0.0f) ? (1.0f/sqrtf(a.w)) : 0.0f);
+		}
+
+		float4 rcp() {
+			return float4((this->x != 0.0f) ? (1.0f/this->x) : 0.0f,
+					  	  (this->y != 0.0f) ? (1.0f/this->y) : 0.0f,
+						  (this->z != 0.0f) ? (1.0f/this->z) : 0.0f,
+						  (this->w != 0.0f) ? (1.0f/this->w) : 0.0f);
+		}
+
+		static float4 rcp(const float4 &a) {
+			return float4((a.x != 0.0f) ? (1.0f/a.x) : 0.0f,
+					  	  (a.y != 0.0f) ? (1.0f/a.y) : 0.0f,
+						  (a.z != 0.0f) ? (1.0f/a.z) : 0.0f,
+						  (a.w != 0.0f) ? (1.0f/a.w) : 0.0f);
+		}
+
+		static float4 zero() {
+			return float4(0.0f, 0.0f, 0.0f, 0.0f);
+		}
+
+		static float4 one() {
+			return float4(1.0f, 1.0f, 1.0f, 1.0f);
+		}
+
+		static float4 half() {
+			return float4(0.5f, 0.5f, 0.5f, 0.5f);
+		}
+	};
 }
 
 static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
@@ -962,8 +1272,8 @@ public:
 
 		const double speed = 2.0;
 
-		float rgb_walk = (       float(fmod(now * (1.0 / 5.0) * speed, 1.0)));
-		float val_walk = (1.0f - float(fmod(now               * speed, 1.0)));
+		float rgb_walk = (       float(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
+		float val_walk = (1.0f - float(fmodf(now               * speed, 1.0)));
 
 		colors::hsp col(rgb_walk, 1.0f, 1.0f);
 		for (size_t c = 0; c < leds_rings_n; c++) {
@@ -992,8 +1302,8 @@ public:
 
 		const double speed = 2.0;
 
-		float rgb_walk = (       float(fmod(now * (1.0 / 5.0) * speed, 1.0)));
-		float val_walk = (1.0f - float(fmod(now               * speed, 1.0)));
+		float rgb_walk = (       float(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
+		float val_walk = (1.0f - float(fmodf(now               * speed, 1.0)));
 	
 		colors::hsv col(rgb_walk, 1.0f, 1.0f);
 		for (size_t c = 0; c < leds_rings_n; c++) {
@@ -1023,7 +1333,7 @@ public:
 
 		const double speed = 0.5;
 
-		float rgb_walk = (float(fmod(now * (1.0 / 5.0) * speed, 1.0)));
+		float rgb_walk = (float(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
 	
 		colors::hsv col(rgb_walk, 1.0f, 1.0f);
 		colors::rgb8out out = colors::rgb8out(colors::rgb(col)); 		
@@ -1046,7 +1356,7 @@ public:
 			leds_outer[1][c] = black;
 		}
 
-		int index = random.get(0,16*2 * 16);
+		size_t index = random.get(int32_t(0),int32_t(16*2 * 16));
 		colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f)); 		
 		if (index < 16) {
 			leds_outer[0][index] = white;
@@ -1068,7 +1378,7 @@ public:
 			leds_outer[1][c] = black;
 		}
 
-		int index = random.get(0,leds_rings_n*2);
+		size_t index = random.get(int32_t(0),int32_t(leds_rings_n*2));
 		colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f)); 		
 		if (index < leds_rings_n) {
 			leds_outer[0][index] = white;
@@ -1090,7 +1400,7 @@ public:
 			leds_outer[1][c] = black;
 		}
 
-		int index = random.get(0,leds_rings_n*2);
+		size_t index = random.get(int32_t(0),int32_t(leds_rings_n*2));
 		colors::rgb8out col = colors::rgb8out(colors::rgb(
 			random.get(0.0f,1.0f),
 			random.get(0.0f,1.0f),
@@ -1240,7 +1550,7 @@ public:
 		const double speed = 3.0;
 		double now = Model::instance().Time();
 		int32_t direction = int32_t((now - span.time)  * speed) & 1;
-		float color_walk = float(fmod((now - span.time) * speed, 1.0));
+		float color_walk = float(fmodf((now - span.time) * speed, 1.0));
 
 		colors::rgb8out out = colors::rgb8out(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
 
