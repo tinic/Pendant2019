@@ -540,6 +540,20 @@ void SX1280::ForcePreambleLength( RadioPreambleLengths preambleLength ) {
 	WriteRegister( REG_LR_PREAMBLELENGTH, ( ReadRegister( REG_LR_PREAMBLELENGTH ) & MASK_FORCE_PREAMBLELENGTH ) | preambleLength );
 }
 
+void SX1280::EnableManualGain() {
+    WriteRegister( REG_ENABLE_MANUAL_GAIN_CONTROL, ReadRegister( REG_ENABLE_MANUAL_GAIN_CONTROL ) | 0x80 );
+    WriteRegister( REG_DEMOD_DETECTION, ReadRegister( REG_DEMOD_DETECTION ) & 0xFE );
+}
+
+void SX1280::DisableManualGain() {
+    WriteRegister( REG_ENABLE_MANUAL_GAIN_CONTROL, ReadRegister( REG_ENABLE_MANUAL_GAIN_CONTROL ) & (~0x80) );
+    WriteRegister( REG_DEMOD_DETECTION, ReadRegister( REG_DEMOD_DETECTION ) | (~0xFE) );
+}
+
+void SX1280::SetManualGainValue(uint8_t gain) {
+    WriteRegister( REG_MANUAL_GAIN_VALUE, ( ReadRegister( REG_MANUAL_GAIN_VALUE ) & 0xF0 ) | gain );
+}
+
 void SX1280::GetRxBufferStatus( uint8_t *rxPayloadLength, uint8_t *rxStartBufferPointer ) {
 	uint8_t status[2];
 
@@ -1003,6 +1017,18 @@ float SX1280::GetFrequencyError( ) {
 
 void SX1280::SetHighSensitivity() {
 	WriteRegister(REG_LNA_REGIME, (ReadRegister(REG_LNA_REGIME) | 0xC0));
+}
+
+void SX1280::SetLowPowerMode() {
+	WriteRegister(REG_LNA_REGIME, (ReadRegister(REG_LNA_REGIME) & (~0xC0)));
+}
+
+uint8_t SX1280::GetRangingPowerDeltaThresholdIndicator()
+{
+    SetStandby( STDBY_XOSC );
+    WriteRegister( 0x97F, ReadRegister( 0x97F ) | ( 1 << 1 ) ); // enable LoRa modem clock
+    WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( ( uint8_t )RANGING_RESULT_RAW ) & 0x03 ) << 4 ) ); // Select raw results
+    return ReadRegister( REG_RANGING_RSSI );
 }
 
 void SX1280::SetPollingMode( void ) {
