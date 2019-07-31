@@ -32,7 +32,7 @@ public:
 	
 	uint32_t Effect() { return effect; }
 	void SetEffect(uint32_t neweffect) { effect = neweffect; }
-	static constexpr uint32_t EffectCount() { return 4; }
+	static constexpr uint32_t EffectCount() { return 9; }
 
 	double Time() const { return time; }
 	void SetTime(double current_time) { time = current_time; }
@@ -72,6 +72,7 @@ public:
 	void IncSentMessageCount() { sent_message_count++; save(); }
 	
 	uint32_t UID() const { return uid; }
+	uint32_t RandomUInt32();
 	
 	bool IsSwitch1Down(double &timestamp) const { 
 		if (switch_1_down != 0.0) {
@@ -134,7 +135,7 @@ private:
 	float brightness = 1.0f;
 	float time_zone_offset = -7.0f;
 
-	uint32_t effect = 3;
+	uint32_t effect = 8;
 	
 	colors::rgb8 bird_color = colors::rgb8(0xFF, 0xFF, 0x00);
 	colors::rgb8 message_color = colors::rgb8(0xFF, 0xFF, 0x00);

@@ -16,6 +16,43 @@
 #include "./model.h"
 #include "./timeline.h"
 
+class pseudo_random {
+public:
+	
+	void set_seed(uint32_t seed) {
+		uint32_t i;
+		a = 0xf1ea5eed, b = c = d = seed;
+		for (i=0; i<20; ++i) {
+		    (void)get();
+		}
+	}
+
+	#define rot(x,k) (((x)<<(k))|((x)>>(32-(k))))
+	uint32_t get() {
+		uint32_t e = a - rot(b, 27);
+		a = b ^ rot(c, 17);
+		b = c + d;
+		c = d + e;
+		d = e + a;
+		return d;
+	}
+
+	float get(float lower, float upper) {
+		return (double(get()) * (double(upper-lower)/double(1LL<<32)) ) + lower;
+	}
+
+	int32_t get(int32_t lower, int32_t upper) {
+		return (get() % (upper-lower)) + lower;
+	}
+
+private:
+	uint32_t a; 
+	uint32_t b; 
+	uint32_t c; 
+	uint32_t d; 
+
+};
+
 namespace colors {
 
 	class rgb8out {
@@ -400,6 +437,8 @@ class led_bank {
 
 	bool initialized = false;
 
+	pseudo_random random;
+
 public:
 
 	static led_bank &instance() {
@@ -419,6 +458,8 @@ public:
 		static uint32_t current_effect = 0;
 		static uint32_t previous_effect = 0;
 		static double switch_time = 0;
+		
+		random.set_seed(Model::instance().RandomUInt32());
 
 		span.type = Timeline::Span::Effect;
 		span.time = 0;
@@ -447,6 +488,21 @@ public:
 						light_walker();
 					break;
 					case 4:
+						rgb_glow();
+					break;
+					case 5:
+						lightning();
+					break;
+					case 6:
+						lightning_crazy();
+					break;
+					case 7:
+						sparkle();
+					break;
+					case 8:
+						rando();
+					break;
+					case 9:
 						burn_test();
 					break;
 				}
@@ -953,6 +1009,113 @@ public:
 
 			leds_outer[0][c] = out;
 			leds_outer[1][leds_rings_n-1-c] = out;
+		}
+	}
+
+	//
+	// RGB GLOW
+	//
+
+	void rgb_glow() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		double now = Model::instance().Time();
+
+		const double speed = 0.5;
+
+		float rgb_walk = (float(fmod(now * (1.0 / 5.0) * speed, 1.0)));
+	
+		colors::hsv col(rgb_walk, 1.0f, 1.0f);
+		colors::rgb8out out = colors::rgb8out(colors::rgb(col)); 		
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			leds_outer[0][c] = out;
+			leds_outer[1][c] = out;
+		}
+	}
+
+	//
+	// LIGHTNING
+	//
+
+	void lightning() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		colors::rgb8out black = colors::rgb8out(colors::rgb(0.0f,0.0f,0.0f)); 		
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			leds_outer[0][c] = black;
+			leds_outer[1][c] = black;
+		}
+
+		int index = random.get(0,16*2 * 16);
+		colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f)); 		
+		if (index < 16) {
+			leds_outer[0][index] = white;
+		} else if (index < 32) {
+			leds_outer[1][index-16] = white;
+		}
+	}
+
+	//
+	// LIGHTNING CRAZY
+	//
+
+	void lightning_crazy() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		colors::rgb8out black = colors::rgb8out(colors::rgb(0.0f,0.0f,0.0f)); 		
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			leds_outer[0][c] = black;
+			leds_outer[1][c] = black;
+		}
+
+		int index = random.get(0,leds_rings_n*2);
+		colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f)); 		
+		if (index < leds_rings_n) {
+			leds_outer[0][index] = white;
+		} else if (index < leds_rings_n*2) {
+			leds_outer[1][index-leds_rings_n] = white;
+		}
+	}
+
+	//
+	// SPARKLE
+	//
+
+	void sparkle() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		colors::rgb8out black = colors::rgb8out(colors::rgb(0.0f,0.0f,0.0f)); 		
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			leds_outer[0][c] = black;
+			leds_outer[1][c] = black;
+		}
+
+		int index = random.get(0,leds_rings_n*2);
+		colors::rgb8out col = colors::rgb8out(colors::rgb(
+			random.get(0.0f,1.0f),
+			random.get(0.0f,1.0f),
+			random.get(0.0f,1.0f))); 		
+		if (index < leds_rings_n) {
+			leds_outer[0][index] = col;
+		} else if (index < leds_rings_n*2) {
+			leds_outer[1][index-leds_rings_n] = col;
+		}
+	}
+
+	//
+	// RANDOM
+	//
+
+	void rando() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			colors::rgb8out col = colors::rgb8out(colors::rgb(
+				random.get(0.0f,1.0f),
+				random.get(0.0f,1.0f),
+				random.get(0.0f,1.0f))); 		
+			leds_outer[0][c] = col;
+			leds_outer[1][c] = col;
 		}
 	}
 

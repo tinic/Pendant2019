@@ -26,8 +26,10 @@ void Model::init() {
 
 	
 	uint32_t uid128[4];
-	
+
 #ifndef EMULATOR
+	rand_sync_enable(&RAND_0);
+
 	uid128[0] = *((uint32_t *)(0x008061FC));
 	uid128[1] = *((uint32_t *)(0x00806010));
 	uid128[2] = *((uint32_t *)(0x00806014));
@@ -37,6 +39,17 @@ void Model::init() {
 #endif  // #ifndef EMULATOR
 
 	uid = MurmurHash3_32(uid128, sizeof(uid128), 0x5cfed374);
+}
+
+uint32_t Model::RandomUInt32() {
+#ifndef EMULATOR
+	return (rand_sync_read32(&RAND_0) << 24)|
+	       (rand_sync_read32(&RAND_0) << 16)|
+	       (rand_sync_read32(&RAND_0) <<  8)|
+	       (rand_sync_read32(&RAND_0) <<  0);
+#else  // #ifndef EMULATOR
+	return 0;
+#endif  // #ifndef EMULATOR
 }
 
 std::string Model::BatteryVoltageString() {
