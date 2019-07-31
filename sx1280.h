@@ -8,6 +8,7 @@ class SX1280 {
 public:
     enum {
         REG_LR_FIRMWARE_VERSION_MSB = 0x0153,
+        REG_LNA_REGIME = 0x0891,
         REG_LR_PACKETPARAMS = 0x0903,
         REG_LR_PAYLOADLENGTH = 0x0901,
         REG_LR_CRCSEEDBASEADDR = 0x09C8,
@@ -638,7 +639,7 @@ public:
     RadioOperatingModes GetOperatingMode(void) { return OperatingMode; }
 
 	// Perform a transfer
-    void TxStart(const uint8_t *payload, uint8_t size, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE }, uint8_t offset = 0);
+    void LoraTxStart(const uint8_t *payload, uint8_t size, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE }, uint8_t offset = 0);
 
 	// Callbacks
 	void SetTxDoneCallback(std::function<void (void)> callback) { txDone = callback; };
@@ -695,15 +696,23 @@ public:
     void RangingClearFilterResult(void);
     void RangingSetFilterNumSamples(uint8_t num);
     void SetRangingRole(RadioRangingRoles role);
+	void SetHighSensitivity();
     
     uint8_t SetSyncWord(uint8_t syncWordIdx, const uint8_t *syncWord);
     uint8_t SetCrcSeed(const uint8_t *seed);
-    
+
+
+	void SetRangingRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+	void SetRangingTX(uint32_t targetAddress, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+	void SetLoraRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+	void SetLoraTX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+	 
 #ifdef MCP
     void OnMCPTimer();
 #endif  // #ifdef MCP
 
 private:
+    static constexpr uint8_t LORA_PACKET_SIZE = 42;
 
     static constexpr uint8_t LORA_MAX_BUFFER_SIZE = 255;
     uint8_t txBuffer[LORA_MAX_BUFFER_SIZE] = { 0 };
@@ -723,8 +732,6 @@ private:
     static constexpr uint32_t DEFAULT_RANGING_FILTER_SIZE = 0x7F;
     static constexpr uint32_t MASK_FORCE_PREAMBLELENGTH = 0x8F;
     static constexpr uint32_t BLE_ADVERTIZER_ACCESS_ADDRESS = 0x8E89BED6;
-
-	void SetDefaultLoraMode(uint8_t packetSize);
 
     void Reset();
     void Wakeup();
@@ -776,6 +783,7 @@ private:
 
 #ifdef MCP
     void StartMCP();
+    void ReturnRange(float range);
 #endif  // #ifdef MCP
 
 	void do_wait_for_busy_pin();
@@ -793,7 +801,6 @@ private:
     RadioPacketTypes PacketType = PACKET_TYPE_NONE;
     RadioLoRaBandwidths LoRaBandwidth = LORA_BW_0200;
 
-	uint8_t LoraPacketSize = 51;
     bool IrqState = false;
     bool PollingMode = false;
     bool Initialized = false;

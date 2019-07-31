@@ -54,8 +54,20 @@ void Commands::Boot() {
 		});
 		
 		SX1280::instance().SetRxDoneCallback([=](const uint8_t *payload, uint8_t size, SX1280::PacketStatus) {
-			// Do V2 messages
-			if (size >= 24 && memcmp(payload, "UTC", 3) == 0) {
+			if (size >= 24 && memcmp(payload, "PLEASEPLEASERANGEMENOW!!", 24) == 0) {
+				static Timeline::Span span;
+				span.type = Timeline::Span::Measurement;
+				span.time = Model::instance().Time();
+				span.duration = 60.0f; // timeout
+
+				span.startFunc = [=](Timeline::Span &) {
+					SX1280::instance().SetRangingRX();
+				};
+
+				span.doneFunc = [=](Timeline::Span &) {
+					SX1280::instance().SetLoraRX();
+				};
+			} else if (size >= 24 && memcmp(payload, "UTC", 3) == 0) {
 			   	struct tm tm;
 			   	memset(&tm, 0, sizeof(tm));
 			   	sscanf((const char *)&payload[3],"%04d-%02d-%02dT%02d:%02d:%02dZ", &tm.tm_year, &tm.tm_mon, &tm.tm_mday, &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
@@ -92,6 +104,7 @@ void Commands::Boot() {
 
 				Model::instance().SetDateTime((double(tm.tm_hour) * 24.0 * 60.0 + double(tm.tm_min) * 60.0 + double(tm.tm_sec)));
 				
+			// Do V2 messages
 			} else if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
 				static const uint32_t radio_colors[] = {
 					0x808080UL,
@@ -248,7 +261,7 @@ void Commands::SendV2Message(const char *name, const char *message, uint8_t colo
 	memset(&buf[8],0x20,16);
 	strncpy(reinterpret_cast<char *>(&buf[8]),name,8);
 	strncpy(reinterpret_cast<char *>(&buf[16]),message,8);
-	SX1280::instance().TxStart(buf,24);
+	SX1280::instance().LoraTxStart(buf,24);
 }
 
 void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col) {
@@ -283,13 +296,13 @@ void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col)
 	strncpy((char *)&buf[42-12-12], nam, 12);
 	strncpy((char *)&buf[42-12   ], msg, 12);
 
-	SX1280::instance().TxStart(buf, 42);
+	SX1280::instance().LoraTxStart(buf, 42);
 	
 	Model::instance().IncSentMessageCount();
 }
 
 void Commands::SendDateTimeRequest() {
-	SX1280::instance().TxStart((const uint8_t *)"PLEASEPLEASEDATETIMENOW!",24);
+	SX1280::instance().LoraTxStart((const uint8_t *)"PLEASEPLEASEDATETIMENOW!",24);
 }
 
 void Commands::OnLEDTimer() {

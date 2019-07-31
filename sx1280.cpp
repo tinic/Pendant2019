@@ -1,5 +1,6 @@
 #include "./sx1280.h"
 #include "./emulator.h"
+#include "./model.h"
 
 #include <atmel_start.h>
 
@@ -126,36 +127,7 @@ void SX1280::init() {
 
 	SetStandby(STDBY_RC);
 
-	SetDefaultLoraMode(42);
-	
-	SetRfFrequency( RF_FREQUENCY );
-	SetBufferBaseAddresses( 0x00, 0x00 );
-	SetTxParams( TX_OUTPUT_POWER, RADIO_RAMP_20_US );
-	SetDioIrqParams( SX1280::IrqMask, SX1280::IrqMask, IRQ_RADIO_NONE, IRQ_RADIO_NONE );
-	
-	SetRx();
-}
-
-void SX1280::SetDefaultLoraMode(uint8_t packetSize) {
-	LoraPacketSize = packetSize;
-
-	ModulationParams modulationParams;
-	memset(&modulationParams, 0, sizeof(modulationParams));
-	modulationParams.PacketType                  = PACKET_TYPE_LORA;
-	modulationParams.Params.LoRa.SpreadingFactor = LORA_SF11;
-	modulationParams.Params.LoRa.Bandwidth       = LORA_BW_0200;
-	modulationParams.Params.LoRa.CodingRate      = LORA_CR_LI_4_7;
-	SetModulationParams( modulationParams );
-
-	PacketParams packetParams;
-	memset(&packetParams, 0, sizeof(packetParams));
-	packetParams.PacketType                 	 = PACKET_TYPE_LORA;
-	packetParams.Params.LoRa.PreambleLength      = 0x0C;
-	packetParams.Params.LoRa.HeaderType          = LORA_PACKET_VARIABLE_LENGTH;
-	packetParams.Params.LoRa.PayloadLength       = LoraPacketSize;
-	packetParams.Params.LoRa.Crc                 = LORA_CRC_ON;
-	packetParams.Params.LoRa.InvertIQ            = LORA_IQ_NORMAL;
-	SetPacketParams( packetParams );
+	SetLoraRX();
 }
 
 void SX1280::Reset() {
@@ -752,9 +724,9 @@ uint8_t SX1280::GetPayload(uint8_t *buffer, uint8_t *size , uint8_t maxSize) {
 	return 0;
 }
 
-void SX1280::TxStart(const uint8_t *payload, uint8_t size, TickTime timeout, uint8_t offset) {
+void SX1280::LoraTxStart(const uint8_t *payload, uint8_t size, TickTime timeout, uint8_t offset) {
 	SetPayload( payload, size, offset );
-	SetTx( timeout );
+	SetLoraTX(timeout);
 }
 
 uint8_t SX1280::SetSyncWord( uint8_t syncWordIdx, const uint8_t *syncWord ) {
@@ -1029,6 +1001,10 @@ float SX1280::GetFrequencyError( ) {
 	return efeHz;
 }
 
+void SX1280::SetHighSensitivity() {
+	WriteRegister(REG_LNA_REGIME, (ReadRegister(REG_LNA_REGIME) | 0xC0));
+}
+
 void SX1280::SetPollingMode( void ) {
 	PollingMode = true;
 }
@@ -1067,8 +1043,156 @@ void SX1280::OnDioIrq( void ) {
 	}
 }
 
+void SX1280::SetLoraRX(TickTime timeout) {
+	SetHighSensitivity();
+
+	SetStandby(STDBY_RC);
+
+	SetRfFrequency( RF_FREQUENCY );
+	SetBufferBaseAddresses( 0x00, 0x00 );
+	SetTxParams( TX_OUTPUT_POWER, RADIO_RAMP_20_US );
+	SetDioIrqParams( SX1280::IrqMask, SX1280::IrqMask, IRQ_RADIO_NONE, IRQ_RADIO_NONE );
+
+	ModulationParams modulationParams;
+	memset(&modulationParams, 0, sizeof(modulationParams));
+	modulationParams.PacketType                  = PACKET_TYPE_LORA;
+	modulationParams.Params.LoRa.SpreadingFactor = LORA_SF11;
+	modulationParams.Params.LoRa.Bandwidth       = LORA_BW_0200;
+	modulationParams.Params.LoRa.CodingRate      = LORA_CR_LI_4_7;
+	SetModulationParams( modulationParams );
+
+	PacketParams packetParams;
+	memset(&packetParams, 0, sizeof(packetParams));
+	packetParams.PacketType                 	 = PACKET_TYPE_LORA;
+	packetParams.Params.LoRa.PreambleLength      = 0x0C;
+	packetParams.Params.LoRa.HeaderType          = LORA_PACKET_VARIABLE_LENGTH;
+	packetParams.Params.LoRa.PayloadLength       = LORA_PACKET_SIZE;
+	packetParams.Params.LoRa.Crc                 = LORA_CRC_ON;
+	packetParams.Params.LoRa.InvertIQ            = LORA_IQ_NORMAL;
+	SetPacketParams( packetParams );
+
+	SetRx(timeout);
+}
+
+void SX1280::SetLoraTX(TickTime timeout) {
+	SetHighSensitivity();
+
+	SetStandby(STDBY_RC);
+	
+	SetRfFrequency( RF_FREQUENCY );
+	SetBufferBaseAddresses( 0x00, 0x00 );
+	SetTxParams( TX_OUTPUT_POWER, RADIO_RAMP_20_US );
+	SetDioIrqParams( SX1280::IrqMask, SX1280::IrqMask, IRQ_RADIO_NONE, IRQ_RADIO_NONE );
+
+	ModulationParams modulationParams;
+	memset(&modulationParams, 0, sizeof(modulationParams));
+	modulationParams.PacketType                  = PACKET_TYPE_LORA;
+	modulationParams.Params.LoRa.SpreadingFactor = LORA_SF11;
+	modulationParams.Params.LoRa.Bandwidth       = LORA_BW_0200;
+	modulationParams.Params.LoRa.CodingRate      = LORA_CR_LI_4_7;
+	SetModulationParams( modulationParams );
+
+	PacketParams packetParams;
+	memset(&packetParams, 0, sizeof(packetParams));
+	packetParams.PacketType                 	 = PACKET_TYPE_LORA;
+	packetParams.Params.LoRa.PreambleLength      = 0x0C;
+	packetParams.Params.LoRa.HeaderType          = LORA_PACKET_VARIABLE_LENGTH;
+	packetParams.Params.LoRa.PayloadLength       = LORA_PACKET_SIZE;
+	packetParams.Params.LoRa.Crc                 = LORA_CRC_ON;
+	packetParams.Params.LoRa.InvertIQ            = LORA_IQ_NORMAL;
+	SetPacketParams( packetParams );
+
+	SetTx(timeout);
+}
+
+void SX1280::SetRangingRX(TickTime timeout) {
+	SetHighSensitivity();
+
+	SetStandby(STDBY_RC);
+	SetPacketType(PACKET_TYPE_RANGING);
+
+	ModulationParams modulationParams;
+	memset(&modulationParams, 0, sizeof(modulationParams));
+	modulationParams.PacketType                  = PACKET_TYPE_RANGING;
+	modulationParams.Params.LoRa.SpreadingFactor = LORA_SF10;
+	modulationParams.Params.LoRa.Bandwidth       = LORA_BW_0400;
+	modulationParams.Params.LoRa.CodingRate      = LORA_CR_4_8;
+	SetModulationParams( modulationParams );
+
+	PacketParams packetParams;
+	memset(&packetParams, 0, sizeof(packetParams));
+	packetParams.PacketType                 	 = PACKET_TYPE_RANGING;
+	packetParams.Params.LoRa.PreambleLength      = 0x0C;
+	packetParams.Params.LoRa.HeaderType          = LORA_PACKET_VARIABLE_LENGTH;
+	packetParams.Params.LoRa.PayloadLength       = 0;
+	packetParams.Params.LoRa.Crc                 = LORA_CRC_ON;
+	packetParams.Params.LoRa.InvertIQ            = LORA_IQ_NORMAL;
+	SetPacketParams( packetParams );
+
+	SetRfFrequency( RF_FREQUENCY );
+	SetTxParams(TX_OUTPUT_POWER, RADIO_RAMP_02_US);
+	SetDeviceRangingAddress(Model::instance().UID());
+	SetRangingIdLength(RANGING_IDCHECK_LENGTH_32_BITS);
+
+	SetDioIrqParams((IRQ_RANGING_SLAVE_RESPONSE_DONE | IRQ_RANGING_SLAVE_REQUEST_DISCARDED | IRQ_RANGING_SLAVE_REQUEST_VALID), 
+		            (IRQ_RANGING_SLAVE_RESPONSE_DONE | IRQ_RANGING_SLAVE_REQUEST_DISCARDED | IRQ_RANGING_SLAVE_REQUEST_VALID), 0, 0);
+		            
+	SetRangingCalibration(10020);
+	SetRangingRole(RADIO_RANGING_ROLE_SLAVE);
+	
+	SetRx(timeout);
+}
+
+void SX1280::SetRangingTX(uint32_t targetAddress, TickTime timeout) {
+	SetHighSensitivity();
+
+	SetStandby(STDBY_RC);
+	SetPacketType(PACKET_TYPE_RANGING);
+
+	ModulationParams modulationParams;
+	memset(&modulationParams, 0, sizeof(modulationParams));
+	modulationParams.PacketType                  = PACKET_TYPE_RANGING;
+	modulationParams.Params.LoRa.SpreadingFactor = LORA_SF10;
+	modulationParams.Params.LoRa.Bandwidth       = LORA_BW_0400;
+	modulationParams.Params.LoRa.CodingRate      = LORA_CR_4_8;
+	SetModulationParams( modulationParams );
+
+	PacketParams packetParams;
+	memset(&packetParams, 0, sizeof(packetParams));
+	packetParams.PacketType                 	 = PACKET_TYPE_RANGING;
+	packetParams.Params.LoRa.PreambleLength      = 0x0C;
+	packetParams.Params.LoRa.HeaderType          = LORA_PACKET_VARIABLE_LENGTH;
+	packetParams.Params.LoRa.PayloadLength       = 0;
+	packetParams.Params.LoRa.Crc                 = LORA_CRC_ON;
+	packetParams.Params.LoRa.InvertIQ            = LORA_IQ_NORMAL;
+	SetPacketParams( packetParams );
+
+	SetRfFrequency( RF_FREQUENCY );
+	SetTxParams(TX_OUTPUT_POWER, RADIO_RAMP_02_US);
+	SetRangingRequestAddress(targetAddress);
+	SetRangingIdLength(RANGING_IDCHECK_LENGTH_32_BITS);
+
+	SetDioIrqParams((IRQ_RANGING_SLAVE_RESPONSE_DONE | IRQ_RANGING_SLAVE_REQUEST_DISCARDED | IRQ_RANGING_SLAVE_REQUEST_VALID), 
+		            (IRQ_RANGING_SLAVE_RESPONSE_DONE | IRQ_RANGING_SLAVE_REQUEST_DISCARDED | IRQ_RANGING_SLAVE_REQUEST_VALID), 0, 0);
+		            
+	SetRangingCalibration(10020);
+	SetRangingRole(RADIO_RANGING_ROLE_MASTER);
+	
+	SetTx(timeout);
+}
+
 void SX1280::OnBusyIrq( void ) {
 }
+
+#ifdef MCP
+void SX1280::ReturnRange(float range) {
+	struct io_descriptor *io = 0;
+	usart_sync_get_io_descriptor(&USART_0, &io);
+	char str[32];
+	snprintf(str, 32, "G%d\n", int(range * 1000000));
+	io_write(io, (const uint8_t *)str, strlen(str));
+}
+#endif  // #ifdef MCP
 
 void SX1280::ProcessIrqs( void ) {
 	RadioPacketTypes packetType = PACKET_TYPE_NONE;
@@ -1117,7 +1241,6 @@ void SX1280::ProcessIrqs( void ) {
 								uint8_t rxBufferSize = 0;
 								GetPayload( rxBuffer, &rxBufferSize, LORA_MAX_BUFFER_SIZE );
 								rxDone(rxBuffer, rxBufferSize, packetStatus);
-
 #ifdef MCP
 								struct io_descriptor *io = 0;
 								usart_sync_get_io_descriptor(&USART_0, &io);
@@ -1155,12 +1278,12 @@ void SX1280::ProcessIrqs( void ) {
 						if (txDone) {
 							txDone( );
 						}
-						SetRx();
+						SetLoraRX();
 					} else if( ( irqRegs & IRQ_RX_TX_TIMEOUT ) == IRQ_RX_TX_TIMEOUT ) {
 						if (txTimeout) {
 							txTimeout( );
 						}
-						SetRx();
+						SetLoraRX();
 					}
 					break;
 				default:
@@ -1188,7 +1311,6 @@ void SX1280::ProcessIrqs( void ) {
 								uint8_t rxBufferSize = 0;
 								GetPayload( rxBuffer, &rxBufferSize, LORA_MAX_BUFFER_SIZE);
 								rxDone(rxBuffer, rxBufferSize, packetStatus);
-
 #ifdef MCP
 								struct io_descriptor *io = 0;
 								usart_sync_get_io_descriptor(&USART_0, &io);
@@ -1232,12 +1354,12 @@ void SX1280::ProcessIrqs( void ) {
 						if (txDone) {
 							txDone( );
 						}
-						SetRx();
+						SetLoraRX();
 					} else if( ( irqRegs & IRQ_RX_TX_TIMEOUT ) == IRQ_RX_TX_TIMEOUT ) {
 						if (txTimeout) {
 							txTimeout( );
 						}
-						SetRx();
+						SetLoraRX();
 					}
 					break;
 				case MODE_CAD:
@@ -1278,24 +1400,36 @@ void SX1280::ProcessIrqs( void ) {
 						if (rangingDone) {
 							rangingDone( IRQ_RANGING_SLAVE_ERROR_CODE, 0.0f );
 						}
+						SetLoraRX();
 					}
 					if( ( irqRegs & IRQ_RANGING_SLAVE_REQUEST_VALID ) == IRQ_RANGING_SLAVE_REQUEST_VALID )
 					{
+						float range = GetRangingResult(RANGING_RESULT_RAW);
 						if (rangingDone) {
-							rangingDone( IRQ_RANGING_SLAVE_VALID_CODE, GetRangingResult(RANGING_RESULT_RAW) );
+							rangingDone( IRQ_RANGING_SLAVE_VALID_CODE, range);
 						}
+#ifdef MCP
+						ReturnRange(range);
+#endif  // #ifdef MCP
+						SetLoraRX();
 					}
 					if( ( irqRegs & IRQ_RANGING_SLAVE_RESPONSE_DONE ) == IRQ_RANGING_SLAVE_RESPONSE_DONE )
 					{
+						float range = GetRangingResult(RANGING_RESULT_RAW);
 						if (rangingDone) {
-							rangingDone( IRQ_RANGING_SLAVE_VALID_CODE, GetRangingResult(RANGING_RESULT_RAW)  );
+							rangingDone( IRQ_RANGING_SLAVE_VALID_CODE, range);
 						}
+#ifdef MCP
+						ReturnRange(range);
+#endif  // #ifdef MCP
+						SetLoraRX();
 					}
 					if( ( irqRegs & IRQ_RX_TX_TIMEOUT ) == IRQ_RX_TX_TIMEOUT )
 					{
 						if (rangingDone) {
 							rangingDone( IRQ_RANGING_SLAVE_ERROR_CODE, 0.0f );
 						}
+						SetLoraRX();
 					}
 					if( ( irqRegs & IRQ_HEADER_VALID ) == IRQ_HEADER_VALID )
 					{
@@ -1317,12 +1451,12 @@ void SX1280::ProcessIrqs( void ) {
 						if (rangingDone) {
 							rangingDone( IRQ_RANGING_MASTER_ERROR_CODE, 0.0f );
 						}
-						SetRx();
+						SetLoraRX();
 					} else if( ( irqRegs & IRQ_RANGING_MASTER_RESULT_VALID ) == IRQ_RANGING_MASTER_RESULT_VALID ) {
 						if (rangingDone) {
 							rangingDone( IRQ_RANGING_MASTER_VALID_CODE, GetRangingResult(RANGING_RESULT_RAW) );
 						}
-						SetRx();
+						SetLoraRX();
 					}
 					break;
 				default:
@@ -1408,6 +1542,15 @@ void SX1280::OnMCPTimer()
 		else if (c == '\n') {
 			if (s > 1) {
 				switch(cmd[1]) {
+					case	'G': {
+								std::vector<uint8_t> data = base64_decode(std::string(&cmd[2], &cmd[s-1]));
+								if (data.size() >= 4) {
+									SetRangingTX((data[0] << 24)|
+												 (data[1] << 16)|
+												 (data[2] <<  8)|
+												 (data[3] <<  0));
+								}
+							} break;
 					case	'W': {
 								if (s > 2) {
 									std::vector<uint8_t> data = base64_decode(std::string(&cmd[3], &cmd[s-1]));
@@ -1419,7 +1562,7 @@ void SX1280::OnMCPTimer()
 											WriteRegister(data.data()[0], data.data()+1, data.size()-1);
 										} break;
 										case	'M': {
-											TxStart(data.data(), data.size());
+											LoraTxStart(data.data(), data.size());
 										} break;
 									}
 								}
