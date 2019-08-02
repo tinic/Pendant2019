@@ -32,7 +32,7 @@ public:
 	
 	uint32_t Effect() { return effect; }
 	void SetEffect(uint32_t neweffect) { effect = neweffect; }
-	static constexpr uint32_t EffectCount() { return 10; }
+	static constexpr uint32_t EffectCount() { return 32; }
 
 	double Time() const { return time; }
 	void SetTime(double current_time) { time = current_time; }
@@ -73,6 +73,9 @@ public:
 	
 	uint32_t UID() const { return uid; }
 	uint32_t RandomUInt32();
+
+	void SetResetCause(uint8_t cause) { resetCause = cause; }
+	uint8_t ResetCause() const { return resetCause; }
 	
 	bool IsSwitch1Down(double &timestamp) const { 
 		if (switch_1_down != 0.0) {
@@ -135,7 +138,7 @@ private:
 	float brightness = 1.0f;
 	float time_zone_offset = -7.0f;
 
-	uint32_t effect = 9;
+	uint32_t effect = 10;
 	
 	colors::rgb8 bird_color = colors::rgb8(0xFF, 0xFF, 0x00);
 	colors::rgb8 message_color = colors::rgb8(0xFF, 0xFF, 0x00);
@@ -163,6 +166,8 @@ private:
 	double switch_3_down = 0.0;
 
 	uint32_t uid;
+
+	uint8_t resetCause;
 
 	bool initialized = false;
 };

@@ -393,6 +393,13 @@ namespace geom {
 			w = 0.0f;
 		}
 
+		float4(uint32_t c, float a) {
+			this->x = ((c>>16)&0xFF)*(1.0f/255.0f);
+			this->y = ((c>> 8)&0xFF)*(1.0f/255.0f);
+			this->z = ((c>> 0)&0xFF)*(1.0f/255.0f);
+			this->w = a;
+		}
+
 		float4(float v) {
 			this->x = v;
 			this->y = v;
@@ -786,7 +793,9 @@ namespace geom {
 namespace colors {
 	class gradient {
 
-		static constexpr size_t colors_n = 64;
+		static constexpr size_t colors_n = 256;
+		static constexpr float colors_mul = 255.0;
+		static constexpr size_t colors_mask = 0xFF;
 		colors::rgb colors[colors_n];
 		bool initialized = false;
 		
@@ -799,7 +808,7 @@ namespace colors {
 		void init(const geom::float4 stops[], size_t n) {
 			initialized = true;
 			for (size_t c = 0; c < colors_n; c++) {
-				float f = (float)c / (float)colors_n; 
+				float f = (float)c / ((float)colors_n - 1); 
 				geom::float4 a = stops[0];
 				geom::float4 b = stops[1];
 				if (n > 2) {
@@ -819,8 +828,8 @@ namespace colors {
 		
 		geom::float4 repeat(float i) {
 			i = fmodf(i, 1.0f);
-			i *= 255.0f;
-			return geom::float4::lerp(colors[((int32_t)(i))&0xFF], colors[((int32_t)(i)+1)&0xFF], fmodf(i, 1.0f));
+			i *= colors_mul;
+			return geom::float4::lerp(colors[((int32_t)(i))&colors_mask], colors[((int32_t)(i)+1)&colors_mask], fmodf(i, 1.0f));
 		}
 
 		geom::float4 reflect(float i) {
@@ -831,8 +840,8 @@ namespace colors {
 				i = fmodf(i, 1.0f);
 				i = 1.0f - i;
 			}
-			i *= 255.0f;
-			return geom::float4::lerp(colors[((int32_t)(i))&0xFF], colors[((int32_t)(i)+1)&0xFF], fmodf(i, 1.0f));
+			i *= colors_mul;
+			return geom::float4::lerp(colors[((int32_t)(i))&colors_mask], colors[((int32_t)(i)+1)&colors_mask], fmodf(i, 1.0f));
 		}
 
 		geom::float4 clamp(float i) {
@@ -842,8 +851,8 @@ namespace colors {
 			if (i >= 1.0f) {
 				return colors[colors_n-1];
 			}
-			i *= 255.0f;
-			return geom::float4::lerp(colors[((int32_t)(i))&0xFF], colors[((int32_t)(i)+1)&0xFF], fmodf(i, 1.0f));
+			i *= colors_mul;
+			return geom::float4::lerp(colors[((int32_t)(i))&colors_mask], colors[((int32_t)(i)+1)&colors_mask], fmodf(i, 1.0f));
 		}
 	};
 };
@@ -1020,6 +1029,9 @@ public:
 						red_green();
 					break;
 					case 10:
+						brilliance();
+					break;
+					case 11:
 						burn_test();
 					break;
 				}
@@ -1672,7 +1684,7 @@ public:
 	void red_green() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-		double now = Model::instance().Time();
+		float now = (float)Model::instance().Time();
 
 		calc_outer([=](geom::float4 pos) {
 			pos.x *= sinf(now);
@@ -1681,6 +1693,30 @@ public:
 		});
 	}
 
+	void brilliance() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		static colors::gradient bw;
+		if (bw.check_init()) {
+			const geom::float4 bwg[] = {
+				geom::float4(0x206090, 0.00f),
+				geom::float4(0x206090, 0.14f),
+				geom::float4(0xffffff, 0.21f),
+				geom::float4(0x206090, 0.28f),
+				geom::float4(0x206090, 1.00f)};
+			bw.init(bwg,5);
+		}
+
+		calc_outer([=](geom::float4 pos) {
+			pos *= 0.50f;
+			pos += now * 8.0f;
+			pos %= 64.0f;
+			pos *= 0.05;
+			return bw.clamp(pos.x);
+		});
+	}
 	//
 	// BURN TEST
 	//

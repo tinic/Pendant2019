@@ -15,6 +15,12 @@
 #include "./system_time.h"
 #include "./ui.h"
 
+#include "hri_rstc_d51.h"
+
+extern "C" {
+	extern struct wdt_descriptor WDT_0;
+};
+
 Commands::Commands() {
 }
 
@@ -28,6 +34,8 @@ Commands &Commands::instance() {
 }
 
 void Commands::Boot() {
+
+	Model::instance().SetResetCause(hri_rstc_read_RCAUSE_reg(RSTC));
 
 	if (SDD1306::instance().DevicePresent()) {
 		SDD1306::instance().Clear();
@@ -250,6 +258,7 @@ void Commands::StartTimers() {
 void Commands::StopTimers() {
 	timer_remove_task(&TIMER_0, &update_leds_timer_task);
 	timer_remove_task(&TIMER_0, &update_oled_timer_task);
+	timer_remove_task(&TIMER_0, &update_adc_timer_task);
 	
 	timer_stop(&TIMER_0);
 }
