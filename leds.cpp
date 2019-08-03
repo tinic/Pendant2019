@@ -1032,6 +1032,72 @@ public:
 						brilliance();
 					break;
 					case 11:
+						effect_11();
+					break;
+					case 12:
+						effect_12();
+					break;
+					case 13:
+						effect_13();
+					break;
+					case 14:
+						effect_14();
+					break;
+					case 15:
+						effect_15();
+					break;
+					case 16:
+						effect_16();
+					break;
+					case 17:
+						effect_17();
+					break;
+					case 18:
+						effect_18();
+					break;
+					case 19:
+						effect_19();
+					break;
+					case 20:
+						effect_20();
+					break;
+					case 21:
+						effect_21();
+					break;
+					case 22:
+						effect_22();
+					break;
+					case 23:
+						effect_23();
+					break;
+					case 24:
+						effect_24();
+					break;
+					case 25:
+						effect_25();
+					break;
+					case 26:
+						effect_26();
+					break;
+					case 27:
+						effect_27();
+					break;
+					case 28:
+						effect_28();
+					break;
+					case 29:
+						effect_29();
+					break;
+					case 30:
+						effect_30();
+					break;
+					case 31:
+						effect_31();
+					break;
+					case 32:
+						effect_32();
+					break;
+					case 33:
 						burn_test();
 					break;
 				}
@@ -1717,6 +1783,271 @@ public:
 			return bw.clamp(pos.x);
 		});
 	}
+
+	void effect_11() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_12() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_13() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_14() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_15() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_16() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_17() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_18() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_19() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_20() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_21() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_22() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_23() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_24() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_25() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_26() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_27() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_28() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_29() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_30() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_31() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
+	void effect_32() {
+		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+		float now = (float)Model::instance().Time();
+
+		calc_outer([=](geom::float4 pos) {
+			pos.x *= sinf(now);
+			pos.y *= cosf(now);
+			return pos;
+		});
+	}
+
 	//
 	// BURN TEST
 	//
