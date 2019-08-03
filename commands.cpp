@@ -15,7 +15,9 @@
 #include "./system_time.h"
 #include "./ui.h"
 
+#ifndef EMULATOR
 #include "hri_rstc_d51.h"
+#endif  // #ifndef EMULATOR
 
 extern "C" {
 	extern struct wdt_descriptor WDT_0;
@@ -35,7 +37,9 @@ Commands &Commands::instance() {
 
 void Commands::Boot() {
 
+#ifndef EMULATOR
 	Model::instance().SetResetCause(hri_rstc_read_RCAUSE_reg(RSTC));
+#endif  // #ifndef EMULATOR
 
 	if (SDD1306::instance().DevicePresent()) {
 		SDD1306::instance().Clear();
