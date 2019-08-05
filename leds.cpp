@@ -1886,7 +1886,7 @@ public:
 			g.init(gg,2);
 		}
 
-		calc_outer([=](geom::float4 pos) {
+		calc_outer([=](geom::float4) {
 			return g.reflect(now);
 		});
 	}
