@@ -146,6 +146,7 @@ void Model::load() {
 
 	if (read_uint32(buf, buf_pos) == marker) {
 		bird_color.rgbx = read_uint32(buf, buf_pos);
+		ring_color.rgbx = read_uint32(buf, buf_pos);
 		message_color.rgbx = read_uint32(buf, buf_pos);
 		effect = read_uint32(buf, buf_pos);
 		sent_message_count = read_uint32(buf, buf_pos);
@@ -242,6 +243,7 @@ void Model::save() {
 	write_uint32(marker, buf, buf_pos);	
 
 	write_uint32(bird_color.rgbx, buf, buf_pos);
+	write_uint32(ring_color.rgbx, buf, buf_pos);
 	write_uint32(message_color.rgbx, buf, buf_pos);
 	write_uint32(effect, buf, buf_pos);
 	write_uint32(sent_message_count, buf, buf_pos);

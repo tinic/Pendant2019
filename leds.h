@@ -172,7 +172,19 @@ namespace colors {
 			b(_b),
 			x(0) {
 		}
-	
+		
+		uint32_t hex() const {
+			return ((r<<16) | (g<<8) | b);
+		}
+		
+		bool operator==(const rgb8 &b) const {
+			return rgbx == b.rgbx;
+		}
+
+		bool operator!=(const rgb8 &b) const {
+			return rgbx != b.rgbx;
+		}
+		
 	private:
 	
 		uint8_t sat8(const float v) const {
@@ -286,6 +298,7 @@ public:
 
 	static void PerformMessageColorDisplay(colors::rgb8 color, bool remove = false);
 	static void PerformColorBirdDisplay(colors::rgb8 color, bool remove = false);
+	static void PerformColorRingDisplay(colors::rgb8 color, bool remove = false);
 };
 
 #endif /* LEDS_H_ */

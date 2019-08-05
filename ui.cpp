@@ -95,7 +95,7 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 	Timeline::instance().Add(span);
 }
 
-void UI::enterMessageColor(Timeline::Span &parent) {
+void UI::enterChangeMessageColor(Timeline::Span &parent) {
 	static Timeline::Span span;
 
 	static int32_t currentSelection = 0;
@@ -424,7 +424,7 @@ void UI::enterChangeName(Timeline::Span &parent) {
 	Timeline::instance().Add(span);
 }
 
-void UI::enterChangeColors(Timeline::Span &parent) {
+void UI::enterChangeBirdColor(Timeline::Span &parent) {
 	static Timeline::Span span;
 
 	static int32_t currentSelection = 0;
@@ -433,7 +433,7 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 
 	static colors::hsv currentColor;
 
-	currentColor = colors::hsv(colors::rgb(Model::instance().MessageColor()));
+	currentColor = colors::hsv(colors::rgb(Model::instance().BirdColor()));
 	
 	led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)));
 
@@ -517,6 +517,108 @@ void UI::enterChangeColors(Timeline::Span &parent) {
 				Model::instance().SetBirdColor(colors::rgb8(colors::rgb(currentColor)));
 				Model::instance().save();
 				led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)), true);
+				Timeline::instance().Remove(span);
+				Timeline::instance().ProcessDisplay();
+			} break;
+		}		
+	};
+	Timeline::instance().Remove(parent);
+	Timeline::instance().Add(span);
+}
+
+void UI::enterChangeRingColor(Timeline::Span &parent) {
+	static Timeline::Span span;
+
+	static int32_t currentSelection = 0;
+
+	currentSelection = 0;
+
+	static colors::hsv currentColor;
+
+	currentColor = colors::hsv(colors::rgb(Model::instance().RingColor()));
+	
+	led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)));
+
+	span.type = Timeline::Span::Display;
+	span.time = Model::instance().Time();
+	span.duration = 10.0f; // timeout
+	span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		char str[13];
+		snprintf(str, 13, " H:%03d", int(currentColor.h * 360.f));
+		SDD1306::instance().PlaceAsciiStr(0, 0, str);
+		snprintf(str, 13, " S:%03d", int(currentColor.s * 100.f));
+		SDD1306::instance().PlaceAsciiStr(6, 0, str);
+		snprintf(str, 13, " V:%03d", int(currentColor.v * 100.f));
+		SDD1306::instance().PlaceAsciiStr(0, 1, str);
+		snprintf(str, 13, " SAVE!");
+		SDD1306::instance().PlaceAsciiStr(6, 1, str);
+		switch(currentSelection) {
+			case 0: {
+				SDD1306::instance().PlaceAsciiStr(0, 0, ">");
+			} break;
+			case 1: {
+				SDD1306::instance().PlaceAsciiStr(6, 0, ">");
+			} break;
+			case 2: {
+				SDD1306::instance().PlaceAsciiStr(0, 1, ">");
+			} break;
+			case 3: {
+				SDD1306::instance().PlaceAsciiStr(6, 1, ">");
+			} break;
+		}		
+	};
+	span.commitFunc = [=](Timeline::Span &) {
+		SDD1306::instance().Display();
+	};
+	span.doneFunc = [=](Timeline::Span &) {
+		led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)), true);
+	};
+	span.switch1Func = [=](Timeline::Span &) {
+		span.time = Model::instance().Time(); // reset timeout
+		currentSelection --;
+		if (currentSelection < 0) {
+			currentSelection = 3;
+		}
+	};
+	span.switch2Func = [=](Timeline::Span &) {
+		span.time = Model::instance().Time(); // reset timeout
+		currentSelection ++;
+		if (currentSelection > 3) {
+			currentSelection = 0;
+		}
+	};
+	span.switch3Func = [=](Timeline::Span &span) {
+		const float step_size = 0.05f;
+		span.time = Model::instance().Time(); // reset timeout
+		switch(currentSelection) {
+			case 0: {
+				span.time = Model::instance().Time(); // reset timeout
+				currentColor.h += step_size / 3.6f;
+				if (currentColor.h > 1.01f) {
+					currentColor.h = 0.0f;
+				}
+				led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)));
+			} break;
+			case 1: {
+				span.time = Model::instance().Time(); // reset timeout
+				currentColor.s += step_size;
+				if (currentColor.s > 1.01f) {
+					currentColor.s = 0.0f;
+				}
+				led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)));
+			} break;
+			case 2: {
+				span.time = Model::instance().Time(); // reset timeout
+				currentColor.v += step_size;
+				if (currentColor.v > 1.01f) {
+					currentColor.v = 0.0f;
+				}
+				led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)));
+			} break;
+			case 3: {
+				Model::instance().SetRingColor(colors::rgb8(colors::rgb(currentColor)));
+				Model::instance().save();
+				led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)), true);
 				Timeline::instance().Remove(span);
 				Timeline::instance().ProcessDisplay();
 			} break;
@@ -766,40 +868,43 @@ void UI::enterPrefs(Timeline::Span &) {
 	const int32_t maxPage = 12;
 	
 	const char *pageText[] = {
-		"01/12 Send  "		// 1
+		"01/13 Send  "		// 1
 		"  Message!  ",
 
-		"02/12 Change"		// 2
+		"02/13 Change"		// 2
 		"Message Col.",
 
-		"03/12 Change"		// 4
+		"03/13 Change"		// 4
 		"  Messages  ",
 
-		"04/12 Change"		// 3
+		"04/13 Change"		// 3
 		"    Name    ",
 
-		"05/12 Change"		// 5
+		"05/13 Change"		// 5
 		" Bird Color ",
 
-		"06/12  Show "		// 6
+		"06/13 Change"		// 5
+		" Ring Color ",
+
+		"07/13  Show "		// 6
 		"   History  ",
 
-		"07/12 Range "		// 7
+		"08/13 Range "		// 7
 		"   Others   ",
 
-		"08/12 Show  "		// 8
+		"09/13 Show  "		// 8
 		" Statistics ",
 
-		"09/12 Test  "		// 9
+		"10/13 Test  "		// 9
 		"   Device   ",
 
-		"10/12 Show  "		// 10
+		"11/13 Show  "		// 10
 		"  Version   ",
 
-		"11/12 Debug "		// 10
+		"12/13 Debug "		// 10
 		"Information ",
 
-		"12/12 Reset "		// 11
+		"13/13 Reset "		// 11
 		" Everything "
 	};
 
@@ -838,7 +943,7 @@ void UI::enterPrefs(Timeline::Span &) {
 				enterSendMessage(span);
 			} break;
 			case 1: {
-				enterMessageColor(span);
+				enterChangeMessageColor(span);
 			} break;
 			case 2: {
 				enterChangeMessages(span);
@@ -847,27 +952,30 @@ void UI::enterPrefs(Timeline::Span &) {
 				enterChangeName(span);
 			} break;
 			case 4: {
-				enterChangeColors(span);
+				enterChangeBirdColor(span);
 			} break;
 			case 5: {
-				enterShowHistory(span);
+				enterChangeRingColor(span);
 			} break;
 			case 6: {
-				enterRangeOthers(span);
+				enterShowHistory(span);
 			} break;
 			case 7: {
-				enterShowStats(span);
+				enterRangeOthers(span);
 			} break;
 			case 8: {
-				enterTestDevice(span);
+				enterShowStats(span);
 			} break;
 			case 9: {
-				enterShowVersion(span);
+				enterTestDevice(span);
 			} break;
 			case 10: {
-				enterDebug(span);
+				enterShowVersion(span);
 			} break;
 			case 11: {
+				enterDebug(span);
+			} break;
+			case 12: {
 				enterResetEverything(span);
 			} break;
 		}

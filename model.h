@@ -40,6 +40,9 @@ public:
 	colors::rgb8 BirdColor() const { return bird_color; }
 	void SetBirdColor(colors::rgb8 color) { bird_color = color; }
 
+	colors::rgb8 RingColor() const { return ring_color; }
+	void SetRingColor(colors::rgb8 color) { ring_color = color; }
+
 	float Brightness() const { return brightness; }
 	void SetBrightness(float newbrightness) { brightness = newbrightness; }
 
@@ -138,9 +141,10 @@ private:
 	float brightness = 1.0f;
 	float time_zone_offset = -7.0f;
 
-	uint32_t effect = 10;
+	uint32_t effect = 14;
 	
 	colors::rgb8 bird_color = colors::rgb8(0xFF, 0xFF, 0x00);
+	colors::rgb8 ring_color = colors::rgb8(0x00, 0x2F, 0xFF);
 	colors::rgb8 message_color = colors::rgb8(0xFF, 0xFF, 0x00);
 
 	uint8_t messages[messageCount][messageLength];

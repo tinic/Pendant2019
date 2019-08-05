@@ -1032,13 +1032,13 @@ public:
 						brilliance();
 					break;
 					case 11:
-						effect_11();
+						highlight();
 					break;
 					case 12:
-						effect_12();
+						autumn();
 					break;
 					case 13:
-						effect_13();
+						heartbeat();
 					break;
 					case 14:
 						effect_14();
@@ -1777,13 +1777,15 @@ public:
 		}
 
 		static colors::gradient bw;
-		if (bw.check_init()) {
+		static colors::rgb8 col;
+		if (bw.check_init() || col != Model::instance().RingColor()) {
+			col = Model::instance().RingColor();
 			const geom::float4 bwg[] = {
-				geom::float4(0x206090, 0.00f),
-				geom::float4(0x206090, 0.14f),
+				geom::float4(Model::instance().RingColor().hex(), 0.00f),
+				geom::float4(Model::instance().RingColor().hex(), 0.14f),
 				geom::float4(0xffffff, 0.21f),
-				geom::float4(0x206090, 0.28f),
-				geom::float4(0x206090, 1.00f)};
+				geom::float4(Model::instance().RingColor().hex(), 0.28f),
+				geom::float4(Model::instance().RingColor().hex(), 1.00f)};
 			bw.init(bwg,5);
 		}
 
@@ -1796,39 +1798,96 @@ public:
 		});
 	}
 
-	void effect_11() {
+	//
+	// HIGHLIGHT
+	//
+
+	void highlight() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
+		static float next = -1.0f;
+		static float dir = 0.0f;
+		
+		if ((next - now) < 0.0f || next < 0.0f) {
+			next = now + random.get(2.0f, 10.0f);
+			dir = random.get(0.0f, 3.141f * 2.0f);
+		}
+
+		static colors::gradient bw;
+		static colors::rgb8 col;
+		if (bw.check_init() || col != Model::instance().RingColor()) {
+			col = Model::instance().RingColor();
+			const geom::float4 bwg[] = {
+				geom::float4(Model::instance().RingColor().hex(), 0.00f),
+				geom::float4(Model::instance().RingColor().hex(), 0.40f),
+				geom::float4(0xffffff, 0.50f),
+				geom::float4(Model::instance().RingColor().hex(), 0.60f),
+				geom::float4(Model::instance().RingColor().hex(), 1.00f)};
+			bw.init(bwg,5);
+		}
+
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			pos = pos.rotate2d(dir);
+			pos *= 0.50f;
+			pos += (next - now);
+			pos *= 0.50f;
+			return bw.clamp(pos.x);
 		});
 	}
 
-	void effect_12() {
+	//
+	// AUTUMN
+	//
+
+	void autumn() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
+		static colors::gradient g;
+		if (g.check_init()) {
+			const geom::float4 gg[] = {
+			   geom::float4(0x968b3f, 0.00),
+			   geom::float4(0x097916, 0.20),
+			   geom::float4(0x00d4ff, 0.40),
+			   geom::float4(0xffffff, 0.50),
+			   geom::float4(0x8a0e45, 0.80),
+			   geom::float4(0x968b3f, 1.00)};
+			g.init(gg,6);
+		}
+
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			pos += 0.5f;
+			pos = pos.rotate2d(now);
+			pos *= 0.5f;
+			pos += 1.0f;
+			return g.repeat(pos.x);
 		});
 	}
 
-	void effect_13() {
+	//
+	// HEARTBEAT
+	//
+
+	void heartbeat() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
+		
+		static colors::gradient g;
+		static colors::rgb8 col;
+		if (g.check_init() || col != Model::instance().RingColor()) {
+			col = Model::instance().RingColor();
+			const geom::float4 gg[] = {
+			   geom::float4(0x000000, 0.00),
+			   geom::float4(Model::instance().RingColor().hex(), 1.00)};
+			g.init(gg,2);
+		}
 
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			return g.reflect(now);
 		});
 	}
 
@@ -2119,6 +2178,34 @@ public:
 			leds_centr[1] = out;
 		}
 	}
+
+	//
+	// RING COLOR MODIFIER
+	//
+
+	void ring_color(colors::rgb8 color, Timeline::Span &span, Timeline::Span &below) {
+		float blend = 0.0f;
+
+		// Continue to run effect below
+		below.Calc();
+
+		if (span.InBeginPeriod(blend, 0.25f)) {
+		} else if (span.InEndPeriod(blend, 0.25f)) {
+			blend = 1.0f - blend;
+		}
+		
+		colors::rgb8out out = colors::rgb8out(colors::rgb(color));
+		
+		for (size_t c = 0; c < leds_rings_n; c++) {
+			if (blend) {
+				leds_outer[0][c] = colors::ip(leds_outer[0][c], out, blend);
+				leds_outer[1][c] = colors::ip(leds_outer[1][c], out, blend);
+			} else {
+				leds_outer[0][c] = out;
+				leds_outer[1][c] = out;
+			}
+		}
+	}
 	
 	//
 	// MESSAGE COLOR MODIFIER
@@ -2265,6 +2352,36 @@ void led_control::PerformColorBirdDisplay(colors::rgb8 color, bool remove) {
 	span.duration = std::numeric_limits<double>::infinity();
 	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
 		led_bank::instance().bird_color(passThroughColor, span, below);
+	};
+	span.commitFunc = [=](Timeline::Span &) {
+		led_bank::instance().update_leds();
+	};
+
+	Timeline::instance().Add(span);
+}
+
+void led_control::PerformColorRingDisplay(colors::rgb8 color, bool remove) {
+	static Timeline::Span span;
+
+	static colors::rgb8 passThroughColor;
+
+	passThroughColor = color;
+
+	if (remove) {
+		span.time = Model::instance().Time();
+		span.duration = 0.25f;
+		return;
+	}
+
+	if (Timeline::instance().Scheduled(span)) {
+		return;
+	}
+
+	span.type = Timeline::Span::Effect;
+	span.time = Model::instance().Time();
+	span.duration = std::numeric_limits<double>::infinity();
+	span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		led_bank::instance().ring_color(passThroughColor, span, below);
 	};
 	span.commitFunc = [=](Timeline::Span &) {
 		led_bank::instance().update_leds();
