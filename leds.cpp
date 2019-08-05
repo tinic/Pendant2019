@@ -704,7 +704,7 @@ namespace geom {
 		}
 		
 		float4 rotate2d(float angle) {
-			return  float4(
+			return float4(
 				this->x * cosf(angle) - this->y * sinf(angle),
 				this->y * cosf(angle) + this->x * sinf(angle),
 				this->z,
@@ -1759,10 +1759,22 @@ public:
 		});
 	}
 
+	//
+	// BRILLIANCE
+	//
+
 	void brilliance() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
+
+		static float next = -1.0f;
+		static float dir = 0.0f;
+		
+		if ((next - now) < 0.0f || next < 0.0f) {
+			next = now + random.get(2.0f, 20.0f);
+			dir = random.get(0.0f, 3.141f * 2.0f);
+		}
 
 		static colors::gradient bw;
 		if (bw.check_init()) {
@@ -1776,9 +1788,9 @@ public:
 		}
 
 		calc_outer([=](geom::float4 pos) {
+			pos = pos.rotate2d(dir);
 			pos *= 0.50f;
-			pos += now * 8.0f;
-			pos %= 64.0f;
+			pos += (next - now) * 8.0f;
 			pos *= 0.05;
 			return bw.clamp(pos.x);
 		});
