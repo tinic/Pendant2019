@@ -1041,13 +1041,13 @@ public:
 						heartbeat();
 					break;
 					case 14:
-						effect_14();
+						moving_rainbow();
 					break;
 					case 15:
-						effect_15();
+						twinkle();
 					break;
 					case 16:
-						effect_16();
+						twinkly();
 					break;
 					case 17:
 						effect_17();
@@ -1448,6 +1448,13 @@ public:
 		for (size_t c = 0; c < 16; c++) {
 			leds_outer[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c])));
 			leds_outer[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c])));
+		}
+	}
+
+	void calc_outer(const std::function<geom::float4 (const geom::float4 &pos, const int32_t index)> &func) {
+		for (size_t c = 0; c < 16; c++) {
+			leds_outer[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c],c)));
+			leds_outer[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c],c)));
 		}
 	}
 
@@ -1891,39 +1898,96 @@ public:
 		});
 	}
 
-	void effect_14() {
+	void moving_rainbow() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			pos = pos.rotate2d(-now * 0.25f);
+			pos += now;
+			pos *= 0.25f;
+			pos = pos.reflect();
+			return geom::float4(colors::rgb(colors::hsv(pos.x, 1.0, 1.0f)));
 		});
 	}
 
-	void effect_15() {
+	void twinkle() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
-		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+		static constexpr size_t many = 8;
+		static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
+		static int which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+		
+		for (size_t c = 0; c < many; c++) {
+			if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
+				next[c] = now + random.get(0.5f, 4.0f);
+				which[c] = random.get(0, leds_rings_n);
+			}
+		}
+
+		static colors::gradient g;
+		static colors::rgb8 col;
+		if (g.check_init() || col != Model::instance().RingColor()) {
+			col = Model::instance().RingColor();
+			const geom::float4 gg[] = {
+			   geom::float4(0x000000, 0.00f),
+			   geom::float4(Model::instance().RingColor().hex(), 0.25f),
+			   geom::float4(0xFFFFFF, 0.50f),
+			   geom::float4(Model::instance().RingColor().hex(), 0.75f),
+			   geom::float4(0x000000, 1.00f)};
+			g.init(gg,5);
+		}
+		
+		calc_outer([=](geom::float4, int32_t index) {
+			for (size_t c = 0; c < many; c++) {
+				if (which[c] == index) {
+					return g.clamp(next[c] - now);
+				}
+			}
+			return geom::float4();
 		});
+		
 	}
 
-	void effect_16() {
+	void twinkly() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
-		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+		static constexpr size_t many = 8;
+		static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
+		static int which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+		
+		for (size_t c = 0; c < many; c++) {
+			if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
+				next[c] = now + random.get(0.5f, 4.0f);
+				which[c] = random.get(0, leds_rings_n);
+			}
+		}
+
+		static colors::gradient g;
+		static colors::rgb8 col;
+		if (g.check_init() || col != Model::instance().RingColor()) {
+			col = Model::instance().RingColor();
+			const geom::float4 gg[] = {
+			   geom::float4(0x000000, 0.00f),
+			   geom::float4(0xFFFFFF, 0.50f),
+			   geom::float4(0x000000, 1.00f)};
+			g.init(gg,5);
+		}
+		
+		colors::rgb ring(Model::instance().RingColor());
+		
+		calc_outer([=](geom::float4, int32_t index) {
+			for (size_t c = 0; c < many; c++) {
+				if (which[c] == index) {
+					return g.clamp(next[c] - now) + geom::float4(ring);
+				}
+			}
+			return geom::float4(ring);
 		});
 	}
 
