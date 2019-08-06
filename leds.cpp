@@ -1924,7 +1924,7 @@ public:
 		for (size_t c = 0; c < many; c++) {
 			if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
 				next[c] = now + random.get(0.5f, 4.0f);
-				which[c] = random.get(0, leds_rings_n);
+				which[c] = random.get(int32_t(0), leds_rings_n);
 			}
 		}
 
@@ -1964,7 +1964,7 @@ public:
 		for (size_t c = 0; c < many; c++) {
 			if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
 				next[c] = now + random.get(0.5f, 4.0f);
-				which[c] = random.get(0, leds_rings_n);
+				which[c] = random.get(int32_t(0), leds_rings_n);
 			}
 		}
 
