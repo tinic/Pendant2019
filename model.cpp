@@ -173,17 +173,17 @@ void Model::load() {
 	} else {
 		memcpy(
 			messages,
-			"0123456789AB"
-			"0123456789AB"
-			"0123456789AB"
-			"0123456789AB"
-			"0123456789AB"
-			"0123456789AB"
-			"0123456789AB"
-			"0123456789AB",
+			"QUACK!QUACK!"
+			"GOING HOME!!"
+			" I AM OUT!! "
+			".DON'T WAIT."
+			"LOOK THERE!!"
+			"GIMME MARLOT"
+			"SAFETY THIRD"
+			"DUCKING DUCK",
 			sizeof(messages)
 		);
-		memcpy(name, "DUCK\0\0\0\0\0\0\0\0", nameLength);
+		memcpy(name, "DUCKLING\0\0\0\0", nameLength);
 	}
 }
 
