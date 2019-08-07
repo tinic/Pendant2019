@@ -65,8 +65,8 @@ void Commands::Boot() {
 
     if (SDD1306::instance().DevicePresent()) {
         SDD1306::instance().Clear();
-        SDD1306::instance().PlaceAsciiStr(0,0,".Pendant3.0.");
-        SDD1306::instance().PlaceAsciiStr(0,1,"============");
+        SDD1306::instance().PlaceUTF8String(0,0,".Pendant3.0.");
+        SDD1306::instance().PlaceUTF8String(0,1,"============");
         SDD1306::instance().Display();
     }
 

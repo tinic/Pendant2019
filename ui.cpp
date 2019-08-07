@@ -76,11 +76,11 @@ void UI::enterSendMessage(Timeline::Span &parent) {
         if (currentMessage >= 0) {
             char str[20];
             snprintf(str, 20, "%02d/%02d Send:", static_cast<int>(currentMessage), static_cast<int>(Model::instance().MessageCount()));
-            SDD1306::instance().PlaceAsciiStr(0, 0, str);
-            SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().Message(size_t(currentMessage)));
+            SDD1306::instance().PlaceUTF8String(0, 0, str);
+            SDD1306::instance().PlaceUTF8String(0, 1, Model::instance().Message(size_t(currentMessage)));
         } else {
-            SDD1306::instance().PlaceAsciiStr(0, 0, "            ");
-            SDD1306::instance().PlaceAsciiStr(0, 1, "->[Cancel]<-");
+            SDD1306::instance().PlaceUTF8String(0, 0, "            ");
+            SDD1306::instance().PlaceUTF8String(0, 1, "->[Cancel]<-");
         }
     };
     s.commitFunc = [=](Timeline::Span &) {
@@ -136,25 +136,25 @@ void UI::enterChangeMessageColor(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
         snprintf(str, 13, " H:%03d", static_cast<int>(currentColor.h * 360.f));
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         snprintf(str, 13, " S:%03d", static_cast<int>(currentColor.s * 100.f));
-        SDD1306::instance().PlaceAsciiStr(6, 0, str);
+        SDD1306::instance().PlaceUTF8String(6, 0, str);
         snprintf(str, 13, " V:%03d", static_cast<int>(currentColor.v * 100.f));
-        SDD1306::instance().PlaceAsciiStr(0, 1, str);
+        SDD1306::instance().PlaceUTF8String(0, 1, str);
         snprintf(str, 13, " SAVE!");
-        SDD1306::instance().PlaceAsciiStr(6, 1, str);
+        SDD1306::instance().PlaceUTF8String(6, 1, str);
         switch(currentSelection) {
             case 0: {
-                SDD1306::instance().PlaceAsciiStr(0, 0, ">");
+                SDD1306::instance().PlaceUTF8String(0, 0, ">");
             } break;
             case 1: {
-                SDD1306::instance().PlaceAsciiStr(6, 0, ">");
+                SDD1306::instance().PlaceUTF8String(6, 0, ">");
             } break;
             case 2: {
-                SDD1306::instance().PlaceAsciiStr(0, 1, ">");
+                SDD1306::instance().PlaceUTF8String(0, 1, ">");
             } break;
             case 3: {
-                SDD1306::instance().PlaceAsciiStr(6, 1, ">");
+                SDD1306::instance().PlaceUTF8String(6, 1, ">");
             } break;
         }       
     };
@@ -270,21 +270,21 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
         if (currentMode == 0) {
             char str[20];
             snprintf(str, 20, "%s", Model::instance().Message(selectedMessage));
-            SDD1306::instance().PlaceAsciiStr(0, 0, str);
+            SDD1306::instance().PlaceUTF8String(0, 0, str);
             snprintf(str, 20, "   %02d/%02d    ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
-            SDD1306::instance().PlaceAsciiStr(0, 1, str);
+            SDD1306::instance().PlaceUTF8String(0, 1, str);
         } else {
             char str[20];
             snprintf(str, 20, "%s", currentMessage);
-            SDD1306::instance().PlaceAsciiStr(0, 0, str);
+            SDD1306::instance().PlaceUTF8String(0, 0, str);
             if (currentChar == Model::MessageLength()) {
-                SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
+                SDD1306::instance().PlaceUTF8String(0, 1, "   [Save!]  ");
             } else {
                 for (int32_t c=0; c<static_cast<int32_t>(Model::MessageLength()); c++) {
                     if (c == currentChar) {
-                        SDD1306::instance().PlaceAsciiStr(c, 1, "^");
+                        SDD1306::instance().PlaceUTF8String(c, 1, "^");
                     } else {
-                        SDD1306::instance().PlaceAsciiStr(c, 1, " ");
+                        SDD1306::instance().PlaceUTF8String(c, 1, " ");
                     }
                 }
             }
@@ -353,7 +353,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
                 currentMessage[currentChar] = static_cast<char>(idx);
                 char str[20];
                 snprintf(str, 20, "%s", currentMessage);
-                SDD1306::instance().PlaceAsciiStr(0, 0, str);
+                SDD1306::instance().PlaceUTF8String(0, 0, str);
                 SDD1306::instance().Display();
             }
         }
@@ -384,15 +384,15 @@ void UI::enterChangeName(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[20];
         snprintf(str, 20, "%s", currentName);
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         if (currentChar == 12) {
-            SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
+            SDD1306::instance().PlaceUTF8String(0, 1, "   [Save!]  ");
         } else {
             for (int32_t c=0; c<12; c++) {
                 if (c == currentChar) {
-                    SDD1306::instance().PlaceAsciiStr(c, 1, "^");
+                    SDD1306::instance().PlaceUTF8String(c, 1, "^");
                 } else {
-                    SDD1306::instance().PlaceAsciiStr(c, 1, " ");
+                    SDD1306::instance().PlaceUTF8String(c, 1, " ");
                 }
             }
         }
@@ -438,7 +438,7 @@ void UI::enterChangeName(Timeline::Span &parent) {
             currentName[currentChar] = static_cast<char>(idx);
             char str[20];
             snprintf(str, 20, "%s", currentName);
-            SDD1306::instance().PlaceAsciiStr(0, 0, str);
+            SDD1306::instance().PlaceUTF8String(0, 0, str);
             SDD1306::instance().Display();
         }
     };
@@ -465,25 +465,25 @@ void UI::enterChangeBirdColor(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
         snprintf(str, 13, " H:%03d", static_cast<int>(currentColor.h * 360.f));
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         snprintf(str, 13, " S:%03d", static_cast<int>(currentColor.s * 100.f));
-        SDD1306::instance().PlaceAsciiStr(6, 0, str);
+        SDD1306::instance().PlaceUTF8String(6, 0, str);
         snprintf(str, 13, " V:%03d", static_cast<int>(currentColor.v * 100.f));
-        SDD1306::instance().PlaceAsciiStr(0, 1, str);
+        SDD1306::instance().PlaceUTF8String(0, 1, str);
         snprintf(str, 13, " SAVE!");
-        SDD1306::instance().PlaceAsciiStr(6, 1, str);
+        SDD1306::instance().PlaceUTF8String(6, 1, str);
         switch(currentSelection) {
             case 0: {
-                SDD1306::instance().PlaceAsciiStr(0, 0, ">");
+                SDD1306::instance().PlaceUTF8String(0, 0, ">");
             } break;
             case 1: {
-                SDD1306::instance().PlaceAsciiStr(6, 0, ">");
+                SDD1306::instance().PlaceUTF8String(6, 0, ">");
             } break;
             case 2: {
-                SDD1306::instance().PlaceAsciiStr(0, 1, ">");
+                SDD1306::instance().PlaceUTF8String(0, 1, ">");
             } break;
             case 3: {
-                SDD1306::instance().PlaceAsciiStr(6, 1, ">");
+                SDD1306::instance().PlaceUTF8String(6, 1, ">");
             } break;
         }       
     };
@@ -567,25 +567,25 @@ void UI::enterChangeRingColor(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
         snprintf(str, 13, " H:%03d", static_cast<int>(currentColor.h * 360.f));
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         snprintf(str, 13, " S:%03d", static_cast<int>(currentColor.s * 100.f));
-        SDD1306::instance().PlaceAsciiStr(6, 0, str);
+        SDD1306::instance().PlaceUTF8String(6, 0, str);
         snprintf(str, 13, " V:%03d", static_cast<int>(currentColor.v * 100.f));
-        SDD1306::instance().PlaceAsciiStr(0, 1, str);
+        SDD1306::instance().PlaceUTF8String(0, 1, str);
         snprintf(str, 13, " SAVE!");
-        SDD1306::instance().PlaceAsciiStr(6, 1, str);
+        SDD1306::instance().PlaceUTF8String(6, 1, str);
         switch(currentSelection) {
             case 0: {
-                SDD1306::instance().PlaceAsciiStr(0, 0, ">");
+                SDD1306::instance().PlaceUTF8String(0, 0, ">");
             } break;
             case 1: {
-                SDD1306::instance().PlaceAsciiStr(6, 0, ">");
+                SDD1306::instance().PlaceUTF8String(6, 0, ">");
             } break;
             case 2: {
-                SDD1306::instance().PlaceAsciiStr(0, 1, ">");
+                SDD1306::instance().PlaceUTF8String(0, 1, ">");
             } break;
             case 3: {
-                SDD1306::instance().PlaceAsciiStr(6, 1, ">");
+                SDD1306::instance().PlaceUTF8String(6, 1, ">");
             } break;
         }       
     };
@@ -745,9 +745,9 @@ void UI::enterShowVersion(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[20];
         snprintf(str, 20, "    %01d.%02d    ", static_cast<int>(version_number), static_cast<int>(build_number));
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         snprintf(str, 20, "%s ", __DATE__);
-        SDD1306::instance().PlaceAsciiStr(0, 1, str);
+        SDD1306::instance().PlaceUTF8String(0, 1, str);
     };
     s.commitFunc = [=](Timeline::Span &) {
         SDD1306::instance().Display();
@@ -785,14 +785,14 @@ void UI::enterDebug(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[20];
         snprintf(str, 20, "%02d          ", static_cast<int>(currentSelection));
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         if (currentSelection >= 0 && currentSelection < 0x12) {
-            SDD1306::instance().PlaceAsciiStr(5, 0, "BQ25895");
+            SDD1306::instance().PlaceUTF8String(5, 0, "BQ25895");
             snprintf(str, 20, "%02x b", static_cast<int>(currentSelection));
-            SDD1306::instance().PlaceAsciiStr(0, 1, str);
+            SDD1306::instance().PlaceUTF8String(0, 1, str);
             uint8_t val = BQ25895::instance().getRegister(currentSelection);
             snprintf(str, 20, BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(val));
-            SDD1306::instance().PlaceAsciiStr(4, 1, str);
+            SDD1306::instance().PlaceUTF8String(4, 1, str);
         }
     };
     s.commitFunc = [=](Timeline::Span &) {
@@ -835,17 +835,17 @@ void UI::enterResetEverything(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
         snprintf(str, 13, "Are U Sure? ");
-        SDD1306::instance().PlaceAsciiStr(0, 0, str);
+        SDD1306::instance().PlaceUTF8String(0, 0, str);
         snprintf(str, 13, "  No! ");
-        SDD1306::instance().PlaceAsciiStr(0, 1, str);
+        SDD1306::instance().PlaceUTF8String(0, 1, str);
         snprintf(str, 13, "  Yes ");
-        SDD1306::instance().PlaceAsciiStr(6, 1, str);
+        SDD1306::instance().PlaceUTF8String(6, 1, str);
         switch(currentSelection) {
             case 0: {
-                SDD1306::instance().PlaceAsciiStr(0, 1, ">");
+                SDD1306::instance().PlaceUTF8String(0, 1, ">");
             } break;
             case 1: {
-                SDD1306::instance().PlaceAsciiStr(6, 1, ">");
+                SDD1306::instance().PlaceUTF8String(6, 1, ">");
             } break;
         }       
     };
@@ -936,8 +936,8 @@ void UI::enterPrefs(Timeline::Span &) {
     s.time = Model::instance().Time();
     s.duration = 10.0; // timeout
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-        SDD1306::instance().PlaceAsciiStr(0, 0, &pageText[currentPage][0]);
-        SDD1306::instance().PlaceAsciiStr(0, 1, &pageText[currentPage][12]);
+        SDD1306::instance().PlaceUTF8String(0, 0, &pageText[currentPage][0]);
+        SDD1306::instance().PlaceUTF8String(0, 1, &pageText[currentPage][12]);
     };
     s.commitFunc = [=](Timeline::Span &) {
         SDD1306::instance().Display();
@@ -1014,7 +1014,7 @@ void UI::init() {
         s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
             char str[13];
             snprintf(str, 13, "#%02d/%02d", static_cast<int>(Model::instance().Effect()), static_cast<int>(Model::instance().EffectCount()));
-            SDD1306::instance().PlaceAsciiStr(0, 0, str);
+            SDD1306::instance().PlaceUTF8String(0, 0, str);
             if (Model::instance().DateTime() >= 0.0) {
                 // display time
                 int64_t dateTime = Model::instance().DateTime();
@@ -1024,7 +1024,7 @@ void UI::init() {
             } else {
                 snprintf(str, 13, "$**__*");
             }
-            SDD1306::instance().PlaceAsciiStr(6, 0, str);
+            SDD1306::instance().PlaceUTF8String(6, 0, str);
             auto gc = [](int32_t ch_index, float val) {
                 val *= 6.0f;
                 switch (ch_index) {
@@ -1068,12 +1068,12 @@ void UI::init() {
             };
             float b = Model::instance().Brightness();
             snprintf(str, 13, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
-            SDD1306::instance().PlaceAsciiStr(0, 1, str);
+            SDD1306::instance().PlaceUTF8String(0, 1, str);
             float l = ( Model::instance().BatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
                       ( Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage() );
             l = std::max(0.0f, std::min(1.0f, l));
             snprintf(str, 13, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
-            SDD1306::instance().PlaceAsciiStr(6, 1, str);
+            SDD1306::instance().PlaceUTF8String(6, 1, str);
         };
         s.commitFunc = [=](Timeline::Span &) {
             SDD1306::instance().Display();

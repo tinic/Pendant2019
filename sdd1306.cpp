@@ -95,16 +95,55 @@ void SDD1306::SetCenterFlip(int8_t progression) {
     center_flip_cache = progression;
 }
 
-void SDD1306::PlaceAsciiStr(uint32_t x, uint32_t y, const char *str) {
-    if (y>1 || x>11) return;
-    size_t len = strlen(str);
-    if (x+len > 12) len = 12-x;
-    for (size_t c=0; c<len; c++) {
-        uint8_t ch = static_cast<uint8_t>(str[c]);
-        if ((ch < 0x20) || (ch >= 0x7D)) {
+void SDD1306::PlaceUTF8String(uint32_t x, uint32_t y, const char *str) {
+    if (y>1 || x>11) {
+    	return;
+    }
+
+	static uint8_t trailingBytesForUTF8[256] = {
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5
+	};
+
+	static const uint32_t offsetsFromUTF8[6] = {
+		0x00000000UL, 0x00003080UL, 0x000E2080UL,
+		0x03C82080UL, 0xFA082080UL, 0x82082080UL
+	};
+	
+    for (uint32_t c=0;;c++) {
+    	if (*str == 0) {
+    		return;
+    	}
+    	if ((x + c) >= 12) {
+    		return;
+    	}
+    	uint8_t nb  = trailingBytesForUTF8[static_cast<uint8_t>(*str)];
+        uint32_t ch = 0;
+        switch (nb) {
+        case 5: ch += static_cast<uint32_t>(*str++); ch <<= 6;
+        // fall through
+        case 4: ch += static_cast<uint32_t>(*str++); ch <<= 6;
+        // fall through
+        case 3: ch += static_cast<uint32_t>(*str++); ch <<= 6;
+        // fall through
+        case 2: ch += static_cast<uint32_t>(*str++); ch <<= 6;
+        // fall through
+        case 1: ch += static_cast<uint32_t>(*str++); ch <<= 6;
+        // fall through
+        case 0: ch += static_cast<uint32_t>(*str++);
+        // fall through
+        }
+        ch -= offsetsFromUTF8[nb];
+        if ((ch < 0x20) || (ch > 0xFFFF)) {
             text_buffer_cache[y*12+x+c] = 0;
-            } else {
-            text_buffer_cache[y*12+x+c] = static_cast<uint8_t>(str[c]) - 0x20;
+        } else {
+            text_buffer_cache[y*12+x+c] = static_cast<uint16_t>(ch) - 0x20;
         }
     }
 }
