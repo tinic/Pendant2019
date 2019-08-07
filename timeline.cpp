@@ -113,8 +113,8 @@ Timeline::Span &Timeline::Below(Span *context, Span::Type type) const {
 
 bool Timeline::Span::InBeginPeriod(float &interpolation, float period_length) {
     double now = Model::instance().Time();
-    if ( (now - time) < period_length) {
-        interpolation = (now - time) * (1.0 / period_length);
+    if ( (now - time) < static_cast<double>(period_length)) {
+        interpolation = static_cast<float>((now - time) * (1.0 / static_cast<double>(period_length)));
         return true;
     }
     return false;
@@ -122,8 +122,8 @@ bool Timeline::Span::InBeginPeriod(float &interpolation, float period_length) {
 
 bool Timeline::Span::InEndPeriod(float &interpolation, float period_length) {
     double now = Model::instance().Time();
-    if ( ((time + duration) - now) < period_length) {
-        interpolation = 1.0f - float( ((time + duration) - now) * (1.0 / period_length));
+    if ( ((time + duration) - now) < static_cast<double>(period_length)) {
+        interpolation = 1.0f - static_cast<float>(((time + duration) - now) * (1.0 / static_cast<double>(period_length)));
         return true;
     }
     return false;

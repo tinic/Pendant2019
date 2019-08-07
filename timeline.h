@@ -27,8 +27,8 @@ public:
         };
 
         Type type = None;
-        double time = 0.0f;
-        double duration = 0.0f;
+        double time = 0.0;
+        double duration = 0.0;
 
         std::function<void (Span &span)> startFunc;
         std::function<void (Span &span, Span &below)> calcFunc;

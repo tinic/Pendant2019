@@ -139,7 +139,7 @@ private:
 
     // Settings
     float brightness = 1.0f;
-    float time_zone_offset = -7.0f;
+    double time_zone_offset = -7.0;
 
     uint32_t effect = 21;
     

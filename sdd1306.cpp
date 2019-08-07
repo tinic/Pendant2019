@@ -78,11 +78,11 @@ void SDD1306::PlaceAsciiStr(uint32_t x, uint32_t y, const char *str) {
     size_t len = strlen(str);
     if (x+len > 12) len = 12-x;
     for (size_t c=0; c<len; c++) {
-        uint8_t ch = uint8_t(str[c]);
+        uint8_t ch = static_cast<uint8_t>(str[c]);
         if ((ch < 0x20) || (ch >= 0x7D)) {
             text_buffer_cache[y*12+x+c] = 0;
             } else {
-            text_buffer_cache[y*12+x+c] = uint8_t(str[c]) - 0x20;
+            text_buffer_cache[y*12+x+c] = static_cast<uint8_t>(str[c]) - 0x20;
         }
     }
 }
@@ -108,7 +108,7 @@ void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
         size_t len = std::min(strlen(str), sizeof(scroll_message));
         memset(scroll_message, 0, sizeof(scroll_message));
         for (size_t c=0; c<len; c++) {
-            uint8_t ch = uint8_t(str[c]);
+            uint8_t ch = static_cast<uint8_t>(str[c]);
             if ((ch < 0x20) || (ch >= 0x7D)) {
                 scroll_message[c] = 0x20;
                 } else {

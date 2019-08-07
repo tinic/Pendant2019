@@ -55,7 +55,7 @@ if (NOT EMULATOR_BUILD)
 
 	if (MCP_BUILD)
 		add_definitions(-DMCP)
-	endif (NOT MCP_BUILD)
+	endif (MCP_BUILD)
 	
 
 	include_directories(Config)
@@ -83,7 +83,7 @@ else (NOT EMULATOR_BUILD)
 
 endif (NOT EMULATOR_BUILD)
 
-set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -std=c++17 -fno-rtti -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -Werror -Wall -Wextra -Wdouble-promotion -Wshadow -std=c++17 -fno-rtti -fno-exceptions")
 SET(CMAKE_CXX_FLAGS_RELEASE "-Os")
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 
@@ -112,9 +112,9 @@ if (NOT EMULATOR_BUILD)
 
 	set(PROGRAM_CMD "openocd -f ${PROJECT_SOURCE_DIR}/openocd.cfg -c \"program ${PROJECT_NAME}.elf verify reset exit\"")
 	install(CODE "execute_process(COMMAND ${PROGRAM_CMD})")
-else (NOT ${EMULATOR})
+else (NOT EMULATOR_BUILD)
 
 	add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-endif (NOT ${EMULATOR})
+endif (NOT EMULATOR_BUILD)
 

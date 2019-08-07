@@ -40,7 +40,7 @@ static uint64_t large_dwt_cyccnt() {
 
 double system_time() {
 #ifndef EMULATOR
-    return double(large_dwt_cyccnt() / 65536) * (1.0f / ( 60000000.0 / 65536.0 ) );
+    return double(static_cast<double>(large_dwt_cyccnt()) / 65536.0) * (1.0 / ( 60000000.0 / 65536.0 ) );
 #else  // #ifndef EMULATOR
     return double(clock()) / double(CLOCKS_PER_SEC);
 #endif  // #ifndef EMULATOR

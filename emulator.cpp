@@ -160,18 +160,18 @@ void display_debug_area(int32_t area) {
 }
 
 
-int32_t flash_write(struct flash_descriptor *flash, uint32_t dst_addr, uint8_t *buffer, uint32_t length) {
+int32_t flash_write(struct flash_descriptor *, uint32_t, uint8_t *buffer, uint32_t length) {
     std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
     memcpy(flash_memory, buffer, std::min(uint32_t(512),length));
     return 0;
 }
 
-int32_t flash_read(struct flash_descriptor *flash, uint32_t src_addr, uint8_t *buffer, uint32_t length) {
+int32_t flash_read(struct flash_descriptor *, uint32_t, uint8_t *buffer, uint32_t length) {
     memcpy(buffer, flash_memory, std::min(uint32_t(512),length));
     return 0;
 }
 
-bool gpio_get_pin_level(const uint8_t pin) {
+bool gpio_get_pin_level(const uint8_t) {
     return 0;
 }
 
@@ -192,20 +192,20 @@ static int32_t i2c_addr = 0;
 
 static int32_t bq25895_read_reg = 0;
 
-int32_t i2c_m_sync_enable(struct i2c_m_sync_desc *i2c) {
+int32_t i2c_m_sync_enable(struct i2c_m_sync_desc *) {
     return 0;
 }
 
-int32_t i2c_m_sync_get_io_descriptor(struct i2c_m_sync_desc *const i2c, struct io_descriptor **io) {
+int32_t i2c_m_sync_get_io_descriptor(struct i2c_m_sync_desc * const , struct io_descriptor **) {
     return 1;
 }
 
-int32_t i2c_m_sync_set_slaveaddr(struct i2c_m_sync_desc *i2c, int16_t addr, int32_t addr_len) {
+int32_t i2c_m_sync_set_slaveaddr(struct i2c_m_sync_desc *, int16_t addr, int32_t) {
     i2c_addr = addr;
     return 1;
 }
 
-int32_t io_write(struct io_descriptor *const io_descr, const uint8_t *const buf, const uint16_t length) {
+int32_t io_write(struct io_descriptor * const, const uint8_t *const buf, const uint16_t length) {
     switch (i2c_addr) {
         case 0x6A: {
             if (length == 1) {
@@ -225,7 +225,7 @@ int32_t io_write(struct io_descriptor *const io_descr, const uint8_t *const buf,
     return length;
 }
 
-int32_t io_read(struct io_descriptor *const io_descr, uint8_t *const buf, const uint16_t length) {
+int32_t io_read(struct io_descriptor * const, uint8_t *const buf, const uint16_t length) {
     switch (i2c_addr) {
         case 0x6A: {
             if (bq25895_read_reg >= 0 && length == 1) {
@@ -247,24 +247,24 @@ void __disable_irq(void) {
 void __enable_irq(void) {
 }
 
-void delay_ms(int32_t ms) {
+void delay_ms(int32_t) {
 }
 
 struct timer_descriptor TIMER_0;
 
 std::list<std::reference_wrapper<struct timer_task>> timer_tasks;
 
-int32_t timer_add_task(struct timer_descriptor *const descr, struct timer_task *const task) {
+int32_t timer_add_task(struct timer_descriptor * const, struct timer_task *const task) {
     timer_tasks.push_back(*task);
     return 0;
 }
 
-int32_t timer_start(struct timer_descriptor *const descr) {
+int32_t timer_start(struct timer_descriptor * const) {
     std::thread t([=]() {
         for (;;) {
             double now = system_time();
             for (auto it = timer_tasks.cbegin(); it != timer_tasks.cend(); it++) {
-                if (int((now - (*it).get().time_label) * 1000.f) >= (*it).get().interval) { 
+                if (uint32_t((now - (*it).get().time_label) * 1000.0) >= (*it).get().interval) { 
                     (*it).get().time_label = now;
                     (*it).get().cb(&(*it).get());
                 }
@@ -275,31 +275,31 @@ int32_t timer_start(struct timer_descriptor *const descr) {
     return 0;
 }
 
-int32_t timer_stop(struct timer_descriptor *const descr) {
+int32_t timer_stop(struct timer_descriptor * const) {
     return 0;
 }
 
-int32_t timer_remove_task(struct timer_descriptor *const descr, const struct timer_task *const task) {
+int32_t timer_remove_task(struct timer_descriptor * const, const struct timer_task * const) {
     return 0;
 }
 
-int32_t ext_irq_register(const uint32_t pin, ext_irq_cb_t cb) {
+int32_t ext_irq_register(const uint32_t, ext_irq_cb_t) {
     return 0;
 }
 
 struct qspi_sync_descriptor QUAD_SPI_0;
 
-int32_t qspi_sync_enable(struct qspi_sync_descriptor *qspi) {
+int32_t qspi_sync_enable(struct qspi_sync_descriptor *) {
     return 0;
 }
 
 struct spi_m_sync_descriptor SPI_0;
 
-void spi_m_sync_enable(struct spi_m_sync_descriptor *spi) {
+void spi_m_sync_enable(struct spi_m_sync_descriptor *) {
 }
 
 
-int32_t spi_m_sync_transfer(struct spi_m_sync_descriptor *spi, const struct spi_xfer *xfer) {
+int32_t spi_m_sync_transfer(struct spi_m_sync_descriptor *, const struct spi_xfer *xfer) {
     for (size_t c = 0; c < xfer->size; c++) {
         if (spiSeqIdx == 0) {
             spiSeqCmd = xfer->txbuf[c];
@@ -327,11 +327,11 @@ int32_t spi_m_sync_transfer(struct spi_m_sync_descriptor *spi, const struct spi_
     return 0;
 }
 
-uint32_t flash_get_page_size(struct flash_descriptor *flash) {
+uint32_t flash_get_page_size(struct flash_descriptor *) {
     return 512;
 }
 
-uint32_t flash_get_total_pages(struct flash_descriptor *flash) {
+uint32_t flash_get_total_pages(struct flash_descriptor *) {
     return 1;
 }
 

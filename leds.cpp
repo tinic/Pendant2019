@@ -38,7 +38,7 @@ public:
     }
 
     float get(float lower, float upper) {
-        return (static_cast<double>(get()) * (static_cast<double>(upper-lower)/static_cast<double>(1LL<<32)) ) + lower;
+        return static_cast<float>(static_cast<double>(get()) * (static_cast<double>(upper-lower)/static_cast<double>(1LL<<32)) ) + lower;
     }
 
     int32_t get(int32_t lower, int32_t upper) {
@@ -407,11 +407,11 @@ namespace geom {
             this->w = v;
         }
 
-        float4(float x, float y, float z, float w = 0.0f) {
-            this->x = x;
-            this->y = y;
-            this->z = z;
-            this->w = w;
+        float4(float _x, float _y, float _z, float _w = 0.0f) {
+            this->x = _x;
+            this->y = _y;
+            this->z = _z;
+            this->w = _w;
         }
 
         float4(const colors::rgb &from) {
@@ -783,7 +783,7 @@ namespace geom {
                 i = fmod(i, 1.0f);
             } else {
                 i = fmod(i, 1.0f);
-                i = 1.0 - i;
+                i = 1.0f - i;
             }
             return i;
         }
@@ -857,12 +857,14 @@ namespace colors {
     };
 };
 
+#ifndef EMULATOR
 static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
 {
+	(void)dst;
+	(void)src;
     if (count < 1) {
         return;
     }
-#ifndef EMULATOR
 #if 0
     if (count >= 64) {
         __asm volatile (
@@ -896,8 +898,8 @@ static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
         : [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
         : "r1", "cc", "memory"
     );
-#endif  // #ifndef EMULATOR
 }
+#endif  // #ifndef EMULATOR
 
 class led_bank {
     static constexpr size_t ws2812_commit_time = 384;
@@ -1103,7 +1105,7 @@ public:
                 }
             };
 
-            double blend_duration = 0.5f;
+            double blend_duration = 0.5;
             double now = Model::instance().Time();
             
             if ((now - switch_time) < blend_duration) {
@@ -1227,11 +1229,11 @@ public:
             buffer[buf_pos++] = 0;
         }
 
-        auto transfer4 = [](uint8_t p0, uint8_t p1, uint8_t p2, uint8_t p3, uint8_t *buffer, size_t &buf_pos, int32_t brightness) {
-            p0 = ( p0 * brightness ) / 256;
-            p1 = ( p1 * brightness ) / 256;
-            p2 = ( p2 * brightness ) / 256;
-            p3 = ( p3 * brightness ) / 256;
+        auto transfer4 = [](uint8_t p0, uint8_t p1, uint8_t p2, uint8_t p3, uint8_t *buf, size_t &bp, int32_t bright) {
+            p0 = ( p0 * bright ) / 256;
+            p1 = ( p1 * bright ) / 256;
+            p2 = ( p2 * bright ) / 256;
+            p3 = ( p3 * bright ) / 256;
 
             for(int32_t d = 7; d >=0; d--) {
                 const uint8_t *src = conv_lookup[
@@ -1239,10 +1241,10 @@ public:
                 ((p1&(1<<d))?0x4:0x0)|
                 ((p2&(1<<d))?0x2:0x0)|
                 ((p3&(1<<d))?0x1:0x0)];
-                buffer[buf_pos++] = *src++;
-                buffer[buf_pos++] = *src++;
-                buffer[buf_pos++] = *src++;
-                buffer[buf_pos++] = *src++;
+                buf[bp++] = *src++;
+                buf[bp++] = *src++;
+                buf[bp++] = *src++;
+                buf[bp++] = *src++;
             }
         };
 
@@ -1264,19 +1266,19 @@ public:
                       buffer, buf_pos, brightness);
         }
 
-        auto transfer2 = [](uint8_t p0, uint8_t p1, uint8_t *buffer, size_t &buf_pos, int32_t brightness) {
-            p0 = ( p0 * brightness ) / 256;
-            p1 = ( p1 * brightness ) / 256;
+        auto transfer2 = [](uint8_t p0, uint8_t p1, uint8_t *buf, size_t &bp, int32_t bright) {
+            p0 = ( p0 * bright ) / 256;
+            p1 = ( p1 * bright ) / 256;
             for(int32_t d = 7; d >=0; d--) {
                 const uint8_t *src = conv_lookup[
                 ((p0&(1<<d))?0x8:0x0)|
                 ((p0&(1<<d))?0x4:0x0)|
                 ((p1&(1<<d))?0x2:0x0)|
                 ((p1&(1<<d))?0x1:0x0)];
-                buffer[buf_pos++] = *src++;
-                buffer[buf_pos++] = *src++;
-                buffer[buf_pos++] = *src++;
-                buffer[buf_pos++] = *src++;
+                buf[bp++] = *src++;
+                buf[bp++] = *src++;
+                buf[bp++] = *src++;
+                buf[bp++] = *src++;
             }
         };
 
@@ -1549,19 +1551,19 @@ public:
         std::array<float, leds_rings_n> band_g;
         std::array<float, leds_rings_n> band_b;
 
-        if (fabs(rgb_band_r_walk) >= 2.0f) {
+        if (fabsf(rgb_band_r_walk) >= 2.0f) {
             while (rgb_band_r_walk >= +1.0f) { rgb_band_r_walk -= 1.0f; }
             while (rgb_band_r_walk <= -1.0f) { rgb_band_r_walk += 1.0f; }
             rgb_band_r_walk_step = disf(gen) * (disi(gen) ? 1.0f : -1.0f);
         }
     
-        if (fabs(rgb_band_g_walk) >= 2.0f) {
+        if (fabsf(rgb_band_g_walk) >= 2.0f) {
             while (rgb_band_g_walk >= +1.0f) { rgb_band_g_walk -= 1.0f; }
             while (rgb_band_g_walk <= -1.0f) { rgb_band_g_walk += 1.0f; }
             rgb_band_g_walk_step = disf(gen) * (disi(gen) ? 1.0f : -1.0f);
         }
     
-        if (fabs(rgb_band_b_walk) >= 2.0f) {
+        if (fabsf(rgb_band_b_walk) >= 2.0f) {
             while (rgb_band_b_walk >= +1.0f) { rgb_band_b_walk -= 1.0f; }
             while (rgb_band_b_walk <= -1.0f) { rgb_band_b_walk += 1.0f; }
             rgb_band_b_walk_step = disf(gen) * (disi(gen) ? 1.0f : -1.0f);
@@ -2381,7 +2383,7 @@ public:
         const double speed = 3.0;
         double now = Model::instance().Time();
         int32_t direction = static_cast<int32_t>((now - span.time)  * speed) & 1;
-        float color_walk = static_cast<float>(fmodf((now - span.time) * speed, 1.0));
+        float color_walk = fmodf((now - span.time) * speed, 1.0f);
 
         colors::rgb8out out = colors::rgb8out(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
 
@@ -2419,117 +2421,117 @@ void led_control::init () {
 }
 
 void led_control::PerformV2MessageEffect(uint32_t color, bool remove) {
-    static Timeline::Span span;
+    static Timeline::Span s;
 
-    if (Timeline::instance().Scheduled(span)) {
+    if (Timeline::instance().Scheduled(s)) {
         return;
     }
 
     if (remove) {
-        span.time = Model::instance().Time();
-        span.duration = 0.25f;
+        s.time = Model::instance().Time();
+        s.duration = 0.25;
         return;
     }
 
-    span.type = Timeline::Span::Effect;
-    span.time = Model::instance().Time();
-    span.duration = 8.0f;
-    span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+    s.type = Timeline::Span::Effect;
+    s.time = Model::instance().Time();
+    s.duration = 8.0;
+    s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
         led_bank::instance().message_v2(color, span, below);
     };
-    span.commitFunc = [=](Timeline::Span &) {
+    s.commitFunc = [=](Timeline::Span &) {
         led_bank::instance().update_leds();
     };
 
-    Timeline::instance().Add(span);
+    Timeline::instance().Add(s);
 }
 
 void led_control::PerformColorBirdDisplay(colors::rgb8 color, bool remove) {
-    static Timeline::Span span;
+    static Timeline::Span s;
 
     static colors::rgb8 passThroughColor;
 
     passThroughColor = color;
 
     if (remove) {
-        span.time = Model::instance().Time();
-        span.duration = 0.25f;
+        s.time = Model::instance().Time();
+        s.duration = 0.25;
         return;
     }
 
-    if (Timeline::instance().Scheduled(span)) {
+    if (Timeline::instance().Scheduled(s)) {
         return;
     }
 
-    span.type = Timeline::Span::Effect;
-    span.time = Model::instance().Time();
-    span.duration = std::numeric_limits<double>::infinity();
-    span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+    s.type = Timeline::Span::Effect;
+    s.time = Model::instance().Time();
+    s.duration = std::numeric_limits<double>::infinity();
+    s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
         led_bank::instance().bird_color(passThroughColor, span, below);
     };
-    span.commitFunc = [=](Timeline::Span &) {
+    s.commitFunc = [=](Timeline::Span &) {
         led_bank::instance().update_leds();
     };
 
-    Timeline::instance().Add(span);
+    Timeline::instance().Add(s);
 }
 
 void led_control::PerformColorRingDisplay(colors::rgb8 color, bool remove) {
-    static Timeline::Span span;
+    static Timeline::Span s;
 
     static colors::rgb8 passThroughColor;
 
     passThroughColor = color;
 
     if (remove) {
-        span.time = Model::instance().Time();
-        span.duration = 0.25f;
+        s.time = Model::instance().Time();
+        s.duration = 0.25;
         return;
     }
 
-    if (Timeline::instance().Scheduled(span)) {
+    if (Timeline::instance().Scheduled(s)) {
         return;
     }
 
-    span.type = Timeline::Span::Effect;
-    span.time = Model::instance().Time();
-    span.duration = std::numeric_limits<double>::infinity();
-    span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+    s.type = Timeline::Span::Effect;
+    s.time = Model::instance().Time();
+    s.duration = std::numeric_limits<double>::infinity();
+    s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
         led_bank::instance().ring_color(passThroughColor, span, below);
     };
-    span.commitFunc = [=](Timeline::Span &) {
+    s.commitFunc = [=](Timeline::Span &) {
         led_bank::instance().update_leds();
     };
 
-    Timeline::instance().Add(span);
+    Timeline::instance().Add(s);
 }
 
 void led_control::PerformMessageColorDisplay(colors::rgb8 color, bool remove) {
-    static Timeline::Span span;
+    static Timeline::Span s;
 
     static colors::rgb8 passThroughColor;
     
     passThroughColor = color;
 
     if (remove) {
-        span.time = Model::instance().Time();
-        span.duration = 0.25f;
+        s.time = Model::instance().Time();
+        s.duration = 0.25;
         return;
     }
 
-    if (Timeline::instance().Scheduled(span)) {
+    if (Timeline::instance().Scheduled(s)) {
         return;
     }
 
-    span.type = Timeline::Span::Effect;
-    span.time = Model::instance().Time();
-    span.duration = std::numeric_limits<double>::infinity();
-    span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+    s.type = Timeline::Span::Effect;
+    s.time = Model::instance().Time();
+    s.duration = std::numeric_limits<double>::infinity();
+    s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
         led_bank::instance().message_color(passThroughColor, span, below);
     };
-    span.commitFunc = [=](Timeline::Span &) {
+    s.commitFunc = [=](Timeline::Span &) {
         led_bank::instance().update_leds();
     };
 
-    Timeline::instance().Add(span);
+    Timeline::instance().Add(s);
 }

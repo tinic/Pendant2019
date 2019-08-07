@@ -90,57 +90,57 @@ void Model::load() {
     size_t buf_pos = 0;
     flash_read(&FLASH_0, model_page * page_size, buf, page_size);
 
-    auto read_uint32 = [](uint8_t *buf, size_t &buf_pos) {
-        uint32_t ret = (uint32_t(buf[buf_pos+0]) << 24)|
-                       (uint32_t(buf[buf_pos+1]) << 16)|
-                       (uint32_t(buf[buf_pos+2]) <<  8)|
-                       (uint32_t(buf[buf_pos+3]) <<  0);
-        buf_pos += 4;
+    auto read_uint32 = [](uint8_t *b, size_t &bp) {
+        uint32_t ret = (uint32_t(b[bp+0]) << 24)|
+                       (uint32_t(b[bp+1]) << 16)|
+                       (uint32_t(b[bp+2]) <<  8)|
+                       (uint32_t(b[bp+3]) <<  0);
+        bp += 4;
         return ret;
     };
 
-    auto read_uint16 = [](uint8_t *buf, size_t &buf_pos) {
-        uint16_t ret = (uint32_t(buf[buf_pos+0]) <<  8)|
-                       (uint32_t(buf[buf_pos+1]) <<  0);
-        buf_pos += 2;
+    auto read_uint16 = [](uint8_t *b, size_t &bp) {
+        uint16_t ret = (uint32_t(b[bp+0]) <<  8)|
+                       (uint32_t(b[bp+1]) <<  0);
+        bp += 2;
         return ret;
     };
 
-    auto read_float = [](uint8_t *buf, size_t &buf_pos) {
-        uint32_t val = (uint32_t(buf[buf_pos+0]) << 24)|
-                       (uint32_t(buf[buf_pos+1]) << 16)|
-                       (uint32_t(buf[buf_pos+2]) <<  8)|
-                       (uint32_t(buf[buf_pos+3]) <<  0);
+    auto read_float = [](uint8_t *b, size_t &bp) {
+        uint32_t val = (uint32_t(b[bp+0]) << 24)|
+                       (uint32_t(b[bp+1]) << 16)|
+                       (uint32_t(b[bp+2]) <<  8)|
+                       (uint32_t(b[bp+3]) <<  0);
         union {
             uint32_t int32;
             float float32;
         } a;
         a.int32 = val;
-        buf_pos += 4;
+        bp += 4;
         return a.float32;
     };
 
-    auto read_double = [](uint8_t *buf, size_t &buf_pos) {
-        uint64_t val = (uint64_t(buf[buf_pos+0]) << 56)|
-                       (uint64_t(buf[buf_pos+0]) << 48)|
-                       (uint64_t(buf[buf_pos+0]) << 40)|
-                       (uint64_t(buf[buf_pos+0]) << 32)|
-                       (uint64_t(buf[buf_pos+0]) << 24)|
-                       (uint64_t(buf[buf_pos+1]) << 16)|
-                       (uint64_t(buf[buf_pos+2]) <<  8)|
-                       (uint64_t(buf[buf_pos+3]) <<  0);
+    auto read_double = [](uint8_t *b, size_t &bp) {
+        uint64_t val = (uint64_t(b[bp+0]) << 56)|
+                       (uint64_t(b[bp+1]) << 48)|
+                       (uint64_t(b[bp+2]) << 40)|
+                       (uint64_t(b[bp+3]) << 32)|
+                       (uint64_t(b[bp+4]) << 24)|
+                       (uint64_t(b[bp+5]) << 16)|
+                       (uint64_t(b[bp+6]) <<  8)|
+                       (uint64_t(b[bp+7]) <<  0);
         union {
             uint64_t int64;
             double float64;
         } a;
         a.int64 = val;
-        buf_pos += 8;
+        bp += 8;
         return a.float64;
     };
     
-    auto read_buf = [](uint8_t *dst, size_t len, uint8_t *buf, size_t &buf_pos) {
+    auto read_buf = [](uint8_t *dst, size_t len, uint8_t *b, size_t &bp) {
         for (size_t c=0; c<len; c++) {
-            *dst++ = buf[buf_pos++];
+            *dst++ = b[bp++];
         }
     };
 
@@ -152,7 +152,7 @@ void Model::load() {
         sent_message_count = read_uint32(buf, buf_pos);
 
         brightness = read_float(buf, buf_pos);
-        time_zone_offset = read_float(buf, buf_pos);
+        time_zone_offset = read_double(buf, buf_pos);
 
         read_buf(reinterpret_cast<uint8_t *>(messages), sizeof(messages), buf, buf_pos);
         read_buf(reinterpret_cast<uint8_t *>(name), sizeof(name), buf, buf_pos);
@@ -193,50 +193,50 @@ void Model::save() {
     uint8_t *buf = static_cast<uint8_t *>(alloca(page_size));
     size_t buf_pos = 0;
 
-    auto write_uint32 = [](uint32_t val, uint8_t *buf, size_t &buf_pos) {
-        buf[buf_pos++] = (val >> 24) & 0xFF;
-        buf[buf_pos++] = (val >> 16) & 0xFF;
-        buf[buf_pos++] = (val >>  8) & 0xFF;
-        buf[buf_pos++] = (val >>  0) & 0xFF;
+    auto write_uint32 = [](uint32_t val, uint8_t *b, size_t &bp) {
+        b[bp++] = (val >> 24) & 0xFF;
+        b[bp++] = (val >> 16) & 0xFF;
+        b[bp++] = (val >>  8) & 0xFF;
+        b[bp++] = (val >>  0) & 0xFF;
     };
 
-    auto write_uint16 = [](uint16_t val, uint8_t *buf, size_t &buf_pos) {
-        buf[buf_pos++] = (val >>  8) & 0xFF;
-        buf[buf_pos++] = (val >>  0) & 0xFF;
+    auto write_uint16 = [](uint16_t val, uint8_t *b, size_t &bp) {
+        b[bp++] = (val >>  8) & 0xFF;
+        b[bp++] = (val >>  0) & 0xFF;
     };
 
-    auto write_float = [](float val, uint8_t *buf, size_t &buf_pos) {
+    auto write_float = [](float val, uint8_t *b, size_t &bp) {
         union {
             uint32_t int32;
             float float32;
         } a;
         a.float32 = val;
-        buf[buf_pos++] = (a.int32 >> 24) & 0xFF;
-        buf[buf_pos++] = (a.int32 >> 16) & 0xFF;
-        buf[buf_pos++] = (a.int32 >>  8) & 0xFF;
-        buf[buf_pos++] = (a.int32 >>  0) & 0xFF;
+        b[bp++] = (a.int32 >> 24) & 0xFF;
+        b[bp++] = (a.int32 >> 16) & 0xFF;
+        b[bp++] = (a.int32 >>  8) & 0xFF;
+        b[bp++] = (a.int32 >>  0) & 0xFF;
     };
 
-    auto write_double = [](double val, uint8_t *buf, size_t &buf_pos) {
+    auto write_double = [](double val, uint8_t *b, size_t &bp) {
         union {
             uint64_t int64;
             double float64;
         } a;
         a.float64 = val;
-        buf[buf_pos++] = (a.int64 >> 56) & 0xFF;
-        buf[buf_pos++] = (a.int64 >> 48) & 0xFF;
-        buf[buf_pos++] = (a.int64 >> 40) & 0xFF;
-        buf[buf_pos++] = (a.int64 >> 32) & 0xFF;
-        buf[buf_pos++] = (a.int64 >> 24) & 0xFF;
-        buf[buf_pos++] = (a.int64 >> 16) & 0xFF;
-        buf[buf_pos++] = (a.int64 >>  8) & 0xFF;
-        buf[buf_pos++] = (a.int64 >>  0) & 0xFF;
+        b[bp++] = (a.int64 >> 56) & 0xFF;
+        b[bp++] = (a.int64 >> 48) & 0xFF;
+        b[bp++] = (a.int64 >> 40) & 0xFF;
+        b[bp++] = (a.int64 >> 32) & 0xFF;
+        b[bp++] = (a.int64 >> 24) & 0xFF;
+        b[bp++] = (a.int64 >> 16) & 0xFF;
+        b[bp++] = (a.int64 >>  8) & 0xFF;
+        b[bp++] = (a.int64 >>  0) & 0xFF;
     };
 
 
-    auto write_buf = [](uint8_t *src, size_t len, uint8_t *buf, size_t &buf_pos) {
+    auto write_buf = [](uint8_t *src, size_t len, uint8_t *b, size_t &bp) {
         for (size_t c=0; c<len; c++) {
-            buf[buf_pos++] = *src++;
+            b[bp++] = *src++;
         }
     };
 
@@ -249,7 +249,7 @@ void Model::save() {
     write_uint32(sent_message_count, buf, buf_pos);
 
     write_float(brightness, buf, buf_pos);
-    write_float(time_zone_offset, buf, buf_pos);
+    write_double(time_zone_offset, buf, buf_pos);
 
     write_buf(reinterpret_cast<uint8_t *>(messages), sizeof(messages), buf, buf_pos);
     write_buf(reinterpret_cast<uint8_t *>(name), sizeof(name), buf, buf_pos);

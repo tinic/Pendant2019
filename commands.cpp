@@ -67,18 +67,19 @@ void Commands::Boot() {
         
         SX1280::instance().SetRxDoneCallback([=](const uint8_t *payload, uint8_t size, SX1280::PacketStatus) {
             if (size >= 24 && memcmp(payload, "PLEASEPLEASERANGEMENOW!!", 24) == 0) {
-                static Timeline::Span span;
-                span.type = Timeline::Span::Measurement;
-                span.time = Model::instance().Time();
-                span.duration = 60.0f; // timeout
+                static Timeline::Span s;
+                s.type = Timeline::Span::Measurement;
+                s.time = Model::instance().Time();
+                s.duration = 60.0; // timeout
 
-                span.startFunc = [=](Timeline::Span &) {
+                s.startFunc = [=](Timeline::Span &) {
                     SX1280::instance().SetRangingRX();
                 };
 
-                span.doneFunc = [=](Timeline::Span &) {
+                s.doneFunc = [=](Timeline::Span &) {
                     SX1280::instance().SetLoraRX();
                 };
+				Timeline::instance().Add(s);
             } else if (size >= 24 && memcmp(payload, "UTC", 3) == 0) {
                 struct tm tm;
                 memset(&tm, 0, sizeof(tm));
@@ -132,31 +133,31 @@ void Commands::Boot() {
                     0x902060UL,
                 };
                 if (SDD1306::instance().DevicePresent()) {
-                    static Timeline::Span span;
-                    if (!Timeline::instance().Scheduled(span)) {
-                        span.type = Timeline::Span::Display;
-                        span.time = Model::instance().Time();
-                        span.duration = 8.0f;
-                        span.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+                    static Timeline::Span s;
+                    if (!Timeline::instance().Scheduled(s)) {
+                        s.type = Timeline::Span::Display;
+                        s.time = Model::instance().Time();
+                        s.duration = 8.0;
+                        s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
                             char str[64];
                             snprintf(str, 64, "%8.8s : %8.8s", &payload[16], &payload[8] );
-                            const double speed = 128.0;
-                            float text_walk = float(Model::instance().Time() - span.time) * speed - 96;
+                            const float speed = 128.0;
+                            float text_walk = static_cast<float>(Model::instance().Time() - static_cast<double>(span.time)) * speed - 96.0f;
                             float interp = 0;
                             if (span.InBeginPeriod(interp, 0.5f)) {
-                                if (interp < 0.5) {
-                                    SDD1306::instance().SetVerticalShift(-int32_t(interp * 2.0 * 16));
+                                if (interp < 0.5f) {
+                                    SDD1306::instance().SetVerticalShift(-static_cast<int32_t>(interp * 2.0f * 16));
                                     below.Calc();
                                 } else {
-                                    SDD1306::instance().SetVerticalShift(16-int32_t((interp * 2.0 - 1.0f ) * 16.0));
+                                    SDD1306::instance().SetVerticalShift(16-static_cast<int32_t>((interp * 2.0f - 1.0f ) * 16.0f));
                                     SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
                                 }
                             } else  if (span.InEndPeriod(interp, 0.5f)) {
-                                if (interp < 0.5) {
-                                    SDD1306::instance().SetVerticalShift(-int32_t(interp * 2.0 * 16.0));
+                                if (interp < 0.5f) {
+                                    SDD1306::instance().SetVerticalShift(-static_cast<int32_t>(interp * 2.0f * 16.0f));
                                     SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
                                 } else {
-                                    SDD1306::instance().SetVerticalShift(16-int32_t((interp * 2.0 - 1.0f ) * 16));
+                                    SDD1306::instance().SetVerticalShift(16-static_cast<int32_t>((interp * 2.0f - 1.0f ) * 16.0f));
                                     SDD1306::instance().SetAsciiScrollMessage(0,0);
                                     below.Calc();
                                 }
@@ -165,13 +166,13 @@ void Commands::Boot() {
                                 SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
                             }
                         };
-                        span.commitFunc = [=](Timeline::Span &) {
+                        s.commitFunc = [=](Timeline::Span &) {
                             SDD1306::instance().Display();
                         };
-                        span.doneFunc = [=](Timeline::Span &) {
+                        s.doneFunc = [=](Timeline::Span &) {
                             SDD1306::instance().SetVerticalShift(0);
                         };
-                        Timeline::instance().Add(span);
+                        Timeline::instance().Add(s);
                     }
                 }
                 led_control::PerformV2MessageEffect(radio_colors[payload[7]]);
@@ -180,19 +181,19 @@ void Commands::Boot() {
                 
                 msg.datetime = Model::instance().DateTime();
                 
-                msg.uid = ( uint32_t(payload[ 4]) << 24 )|
-                          ( uint32_t(payload[ 5]) << 16 )|
-                          ( uint32_t(payload[ 6]) <<  8 )| 
-                          ( uint32_t(payload[ 7]) <<  0 );
+                msg.uid = ( static_cast<uint32_t>(payload[ 4]) << 24 )|
+                          ( static_cast<uint32_t>(payload[ 5]) << 16 )|
+                          ( static_cast<uint32_t>(payload[ 6]) <<  8 )| 
+                          ( static_cast<uint32_t>(payload[ 7]) <<  0 );
                           
-                msg.col.r = uint32_t(payload[ 8]);
-                msg.col.g = uint32_t(payload[ 9]);
-                msg.col.b = uint32_t(payload[10]);
+                msg.col.r = static_cast<uint32_t>(payload[ 8]);
+                msg.col.g = static_cast<uint32_t>(payload[ 9]);
+                msg.col.b = static_cast<uint32_t>(payload[10]);
                           
-                msg.flg = ( uint32_t(payload[12]) << 24 )|
-                          ( uint32_t(payload[13]) << 16 )|
-                          ( uint32_t(payload[14]) <<  8 )| 
-                          ( uint32_t(payload[15]) <<  0 );
+                msg.flg = ( static_cast<uint32_t>(payload[12]) << 24 )|
+                          ( static_cast<uint32_t>(payload[13]) << 16 )|
+                          ( static_cast<uint32_t>(payload[14]) <<  8 )| 
+                          ( static_cast<uint32_t>(payload[15]) <<  0 );
                           
                 msg.cnt = ( uint16_t(payload[16]) <<  8 )| 
                           ( uint16_t(payload[17]) <<  0 );

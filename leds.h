@@ -64,8 +64,8 @@ namespace colors {
             return *this;
         }
 
-        friend rgb operator+(rgb a, const rgb &b) {
-            a += b;
+        friend rgb operator+(rgb a, const rgb &_b) {
+            a += _b;
             return a;
         }
 
@@ -76,8 +76,8 @@ namespace colors {
             return *this;
         }
 
-        friend rgb operator-(rgb a, const rgb &b) {
-            a -= b;
+        friend rgb operator-(rgb a, const rgb &_b) {
+            a -= _b;
             return a;
         }
 
@@ -88,8 +88,8 @@ namespace colors {
             return *this;
         }
 
-        friend rgb operator*(rgb a, const rgb &b) {
-            a *= b;
+        friend rgb operator*(rgb a, const rgb &_b) {
+            a *= _b;
             return a;
         }
 
@@ -112,8 +112,8 @@ namespace colors {
             return *this;
         }
 
-        friend rgb operator/(rgb a, const rgb &b) {
-            a /= b;
+        friend rgb operator/(rgb a, const rgb &_b) {
+            a /= _b;
             return a;
         }
 
@@ -177,12 +177,12 @@ namespace colors {
             return ((r<<16) | (g<<8) | b);
         }
         
-        bool operator==(const rgb8 &b) const {
-            return rgbx == b.rgbx;
+        bool operator==(const rgb8 &c) const {
+            return rgbx == c.rgbx;
         }
 
-        bool operator!=(const rgb8 &b) const {
-            return rgbx != b.rgbx;
+        bool operator!=(const rgb8 &c) const {
+            return rgbx != c.rgbx;
         }
         
     private:
@@ -220,14 +220,14 @@ namespace colors {
         explicit hsl(const rgb &from) {
             float hi = std::max(std::max(from.r, from.g), from.b);
             float lo = std::min(std::max(from.r, from.g), from.b);
-            float d = fabs(hi - lo);
+            float d = fabsf(hi - lo);
         
             h = 0;
             s = 0;
             l = (hi + lo) * 0.5f;
         
             if (d > 0.00001f) {
-                s = d / ( 1.0f - fabs( 2.0f * l - 1.0f ) );
+                s = d / ( 1.0f - fabsf( 2.0f * l - 1.0f ) );
                 if( hi == from.r ) {
                     h = (60.0f/360.0f) * (from.g - from.b) / d + (from.g < from.b ? 1.0f : 0.0f);
                 }
