@@ -38,7 +38,7 @@ public:
     }
 
     float get(float lower, float upper) {
-        return (double(get()) * (double(upper-lower)/double(1LL<<32)) ) + lower;
+        return (static_cast<double>(get()) * (static_cast<double>(upper-lower)/static_cast<double>(1LL<<32)) ) + lower;
     }
 
     int32_t get(int32_t lower, int32_t upper) {
@@ -262,15 +262,15 @@ namespace colors {
     };
 
     rgb::rgb(const rgb8 &from) {
-        r = float(from.r) * (1.0f/255.0f);
-        g = float(from.g) * (1.0f/255.0f);
-        b = float(from.b) * (1.0f/255.0f);
+        r = static_cast<float>(from.r) * (1.0f/255.0f);
+        g = static_cast<float>(from.g) * (1.0f/255.0f);
+        b = static_cast<float>(from.b) * (1.0f/255.0f);
     }
 
     rgb::rgb(const rgb8out &from) {
-        r = float(from.r) * (1.0f/255.0f);
-        g = float(from.g) * (1.0f/255.0f);
-        b = float(from.b) * (1.0f/255.0f);
+        r = static_cast<float>(from.r) * (1.0f/255.0f);
+        g = static_cast<float>(from.g) * (1.0f/255.0f);
+        b = static_cast<float>(from.b) * (1.0f/255.0f);
     }
 
     static float value(  float const &p, float const &q, float const &t ) {
@@ -281,9 +281,9 @@ namespace colors {
     }
 
     rgb::rgb(const uint32_t color) {
-        r = float((color>>16)&0xFF) * (1.0f/255.0f);
-        g = float((color>> 8)&0xFF) * (1.0f/255.0f);
-        b = float((color>> 0)&0xFF) * (1.0f/255.0f);
+        r = static_cast<float>((color>>16)&0xFF) * (1.0f/255.0f);
+        g = static_cast<float>((color>> 8)&0xFF) * (1.0f/255.0f);
+        b = static_cast<float>((color>> 0)&0xFF) * (1.0f/255.0f);
     }
 
     rgb::rgb(const hsl &from) {
@@ -305,7 +305,7 @@ namespace colors {
         float h = from.h;
         float s = from.s;
 
-        int32_t rd = int32_t( 6.0f * h );
+        int32_t rd = static_cast<int32_t>( 6.0f * h );
         float f = h * 6.0f - rd;
         float p = v * (1.0f - s);
         float q = v * (1.0f - f * s);
@@ -331,7 +331,7 @@ namespace colors {
         } else if ( i >= 1.0f) {
             return b;
         } else {
-            int32_t ii = int32_t(i * 256.0f);
+            int32_t ii = static_cast<int32_t>(i * 256.0f);
             return rgb8out(
                 ( ( a.r * ( 256 - ii ) ) + ( b.r * ii ) ) / 256,
                 ( ( a.g * ( 256 - ii ) ) + ( b.g * ii ) ) / 256,
@@ -808,7 +808,7 @@ namespace colors {
         void init(const geom::float4 stops[], size_t n) {
             initialized = true;
             for (size_t c = 0; c < colors_n; c++) {
-                float f = (float)c / ((float)colors_n - 1); 
+                float f = static_cast<float>(c) / static_cast<float>(colors_n - 1); 
                 geom::float4 a = stops[0];
                 geom::float4 b = stops[1];
                 if (n > 2) {
@@ -1119,7 +1119,7 @@ public:
 
                 calc_effect(current_effect);
 
-                float blend = float(now - switch_time) * (1.0f / float(blend_duration));
+                float blend = static_cast<float>(now - switch_time) * (1.0f / static_cast<float>(blend_duration));
 
                 for (size_t c = 0; c < leds_rings_n; c++) {
                     leds_outer[0][c] = colors::ip(leds_outer_prev[0][c], leds_outer[0][c], blend);
@@ -1215,7 +1215,7 @@ public:
             disabled_inner_leds_bottom = disabled_inner_leds_bottom_off;
         }
 
-        int32_t brightness = int32_t(Model::instance().Brightness() * 256);
+        int32_t brightness = static_cast<int32_t>(Model::instance().Brightness() * 256);
 
         size_t buf_pos = 0;
         static uint8_t buffer[leds_buffer_size];
@@ -1507,8 +1507,8 @@ public:
         stt = fmodf(stt, 2.0f) + 0.5f;
         end = fmodf(end, 2.0f) + 0.5f;
     
-        float stop_step = float(stops.size());
-        float stop_stepi = 1.0f / float(stops.size());
+        float stop_step = static_cast<float>(stops.size());
+        float stop_stepi = 1.0f / static_cast<float>(stops.size());
     
         float stop_stt = -stop_stepi * 0.5f + 0.5f;
         float stop_end = +stop_stepi * 0.5f + 0.5f;
@@ -1593,12 +1593,12 @@ public:
 
         const double speed = 2.0;
 
-        float rgb_walk = (       float(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
-        float val_walk = (1.0f - float(fmodf(now               * speed, 1.0)));
+        float rgb_walk = (       static_cast<float>(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
+        float val_walk = (1.0f - static_cast<float>(fmodf(now               * speed, 1.0)));
 
         colors::hsp col(rgb_walk, 1.0f, 1.0f);
         for (size_t c = 0; c < leds_rings_n; c++) {
-            float mod_walk = val_walk + (1.0f - (c * ( 1.0f / float(leds_rings_n) ) ) );
+            float mod_walk = val_walk + (1.0f - (c * ( 1.0f / static_cast<float>(leds_rings_n) ) ) );
             if (mod_walk > 1.0f) {
                 mod_walk -= 1.0f;
             }
@@ -1623,12 +1623,12 @@ public:
 
         const double speed = 2.0;
 
-        float rgb_walk = (       float(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
-        float val_walk = (1.0f - float(fmodf(now               * speed, 1.0)));
+        float rgb_walk = (       static_cast<float>(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
+        float val_walk = (1.0f - static_cast<float>(fmodf(now               * speed, 1.0)));
     
         colors::hsv col(rgb_walk, 1.0f, 1.0f);
         for (size_t c = 0; c < leds_rings_n; c++) {
-            float mod_walk = val_walk + ( 1.0f - ( c * ( 1.0f / float(leds_rings_n) ) ) );
+            float mod_walk = val_walk + ( 1.0f - ( c * ( 1.0f / static_cast<float>(leds_rings_n) ) ) );
             if (mod_walk > 1.0f) {
                 mod_walk -= 1.0f;
             }
@@ -1654,7 +1654,7 @@ public:
 
         const double speed = 0.5;
 
-        float rgb_walk = (float(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
+        float rgb_walk = (static_cast<float>(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
     
         colors::hsv col(rgb_walk, 1.0f, 1.0f);
         colors::rgb8out out = colors::rgb8out(colors::rgb(col));        
@@ -1677,7 +1677,7 @@ public:
             leds_outer[1][c] = black;
         }
 
-        size_t index = random.get(int32_t(0),int32_t(16*2 * 16));
+        size_t index = random.get(static_cast<int32_t>(0),static_cast<int32_t>(16*2 * 16));
         colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f));       
         if (index < 16) {
             leds_outer[0][index] = white;
@@ -1699,7 +1699,7 @@ public:
             leds_outer[1][c] = black;
         }
 
-        size_t index = random.get(int32_t(0),int32_t(leds_rings_n*2));
+        size_t index = random.get(static_cast<int32_t>(0),static_cast<int32_t>(leds_rings_n*2));
         colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f));       
         if (index < leds_rings_n) {
             leds_outer[0][index] = white;
@@ -1721,7 +1721,7 @@ public:
             leds_outer[1][c] = black;
         }
 
-        size_t index = random.get(int32_t(0),int32_t(leds_rings_n*2));
+        size_t index = random.get(static_cast<int32_t>(0),static_cast<int32_t>(leds_rings_n*2));
         colors::rgb8out col = colors::rgb8out(colors::rgb(
             random.get(0.0f,1.0f),
             random.get(0.0f,1.0f),
@@ -1757,7 +1757,7 @@ public:
     void red_green() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -1773,7 +1773,7 @@ public:
     void brilliance() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static float next = -1.0f;
         static float dir = 0.0f;
@@ -1812,7 +1812,7 @@ public:
     void highlight() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static float next = -1.0f;
         static float dir = 0.0f;
@@ -1851,7 +1851,7 @@ public:
     void autumn() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static colors::gradient g;
         if (g.check_init()) {
@@ -1881,7 +1881,7 @@ public:
     void heartbeat() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
         
         static colors::gradient g;
         static colors::rgb8 col;
@@ -1905,7 +1905,7 @@ public:
     void moving_rainbow() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos = pos.rotate2d(-now * 0.25f);
@@ -1923,7 +1923,7 @@ public:
     void twinkle() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static constexpr size_t many = 8;
         static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
@@ -1932,7 +1932,7 @@ public:
         for (size_t c = 0; c < many; c++) {
             if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
                 next[c] = now + random.get(0.5f, 4.0f);
-                which[c] = random.get(int32_t(0), leds_rings_n);
+                which[c] = random.get(static_cast<int32_t>(0), leds_rings_n);
             }
         }
 
@@ -1967,7 +1967,7 @@ public:
     void twinkly() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static constexpr size_t many = 8;
         static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
@@ -1976,7 +1976,7 @@ public:
         for (size_t c = 0; c < many; c++) {
             if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
                 next[c] = now + random.get(0.5f, 4.0f);
-                which[c] = random.get(int32_t(0), leds_rings_n);
+                which[c] = random.get(static_cast<int32_t>(0), leds_rings_n);
             }
         }
 
@@ -2010,7 +2010,7 @@ public:
     void randomfader() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static float next = -1.0f;
         static int which = 0;
@@ -2019,7 +2019,7 @@ public:
         
         if ((next - now) < 0.0f || next < 0.0f) {
             next = now + 2.0f;
-            which = random.get(int32_t(0), leds_rings_n);
+            which = random.get(static_cast<int32_t>(0), leds_rings_n);
             prev_color = color;
             color = colors::rgb(
                 random.get(0.0f,1.0f),
@@ -2041,7 +2041,7 @@ public:
     void chaser() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
         
         colors::rgb ring(Model::instance().RingColor());
 
@@ -2058,7 +2058,7 @@ public:
     void brightchaser() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         static colors::gradient g;
         if (g.check_init()) {
@@ -2092,7 +2092,7 @@ public:
     void effect_21() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2104,7 +2104,7 @@ public:
     void effect_22() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2116,7 +2116,7 @@ public:
     void effect_23() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2128,7 +2128,7 @@ public:
     void effect_24() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2140,7 +2140,7 @@ public:
     void effect_25() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2152,7 +2152,7 @@ public:
     void effect_26() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2164,7 +2164,7 @@ public:
     void effect_27() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2176,7 +2176,7 @@ public:
     void effect_28() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2188,7 +2188,7 @@ public:
     void effect_29() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2200,7 +2200,7 @@ public:
     void effect_30() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2212,7 +2212,7 @@ public:
     void effect_31() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2224,7 +2224,7 @@ public:
     void effect_32() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-        float now = (float)Model::instance().Time();
+        float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
             pos.x *= sinf(now);
@@ -2380,8 +2380,8 @@ public:
 
         const double speed = 3.0;
         double now = Model::instance().Time();
-        int32_t direction = int32_t((now - span.time)  * speed) & 1;
-        float color_walk = float(fmodf((now - span.time) * speed, 1.0));
+        int32_t direction = static_cast<int32_t>((now - span.time)  * speed) & 1;
+        float color_walk = static_cast<float>(fmodf((now - span.time) * speed, 1.0));
 
         colors::rgb8out out = colors::rgb8out(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
 

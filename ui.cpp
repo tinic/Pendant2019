@@ -53,7 +53,7 @@ void UI::enterSendMessage(Timeline::Span &parent) {
     span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         if (currentMessage >= 0) {
             char str[20];
-            snprintf(str, 20, "%02d/%02d Send:", int(currentMessage), int(Model::instance().MessageCount()));
+            snprintf(str, 20, "%02d/%02d Send:", static_cast<int>(currentMessage), static_cast<int>(Model::instance().MessageCount()));
             SDD1306::instance().PlaceAsciiStr(0, 0, str);
             SDD1306::instance().PlaceAsciiStr(0, 1, Model::instance().Message(size_t(currentMessage)));
         } else {
@@ -76,7 +76,7 @@ void UI::enterSendMessage(Timeline::Span &parent) {
     span.switch2Func = [=](Timeline::Span &) {
         span.time = Model::instance().Time(); // reset timeout
         currentMessage ++;
-        if (currentMessage >= int32_t(Model::instance().MessageCount())) {
+        if (currentMessage >= static_cast<int32_t>(Model::instance().MessageCount())) {
             currentMessage = -1;
         }
     };
@@ -113,11 +113,11 @@ void UI::enterChangeMessageColor(Timeline::Span &parent) {
     span.duration = 10.0f; // timeout
     span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
-        snprintf(str, 13, " H:%03d", int(currentColor.h * 360.f));
+        snprintf(str, 13, " H:%03d", static_cast<int>(currentColor.h * 360.f));
         SDD1306::instance().PlaceAsciiStr(0, 0, str);
-        snprintf(str, 13, " S:%03d", int(currentColor.s * 100.f));
+        snprintf(str, 13, " S:%03d", static_cast<int>(currentColor.s * 100.f));
         SDD1306::instance().PlaceAsciiStr(6, 0, str);
-        snprintf(str, 13, " V:%03d", int(currentColor.v * 100.f));
+        snprintf(str, 13, " V:%03d", static_cast<int>(currentColor.v * 100.f));
         SDD1306::instance().PlaceAsciiStr(0, 1, str);
         snprintf(str, 13, " SAVE!");
         SDD1306::instance().PlaceAsciiStr(6, 1, str);
@@ -249,7 +249,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
             char str[20];
             snprintf(str, 20, "%s", Model::instance().Message(selectedMessage));
             SDD1306::instance().PlaceAsciiStr(0, 0, str);
-            snprintf(str, 20, "   %02d/%02d    ", int(selectedMessage), int(Model::MessageCount()));
+            snprintf(str, 20, "   %02d/%02d    ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
             SDD1306::instance().PlaceAsciiStr(0, 1, str);
         } else {
             char str[20];
@@ -258,7 +258,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
             if (currentChar == Model::MessageLength()) {
                 SDD1306::instance().PlaceAsciiStr(0, 1, "   [Save!]  ");
             } else {
-                for (int32_t c=0; c<int32_t(Model::MessageLength()); c++) {
+                for (int32_t c=0; c<static_cast<int32_t>(Model::MessageLength()); c++) {
                     if (c == currentChar) {
                         SDD1306::instance().PlaceAsciiStr(c, 1, "^");
                     } else {
@@ -291,12 +291,12 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
         span.time = Model::instance().Time(); // reset timeout
         if (currentMode == 0) {
             selectedMessage ++;
-            if (selectedMessage >= int32_t(Model::MessageCount())) {
+            if (selectedMessage >= static_cast<int32_t>(Model::MessageCount())) {
                 selectedMessage = 0;
             }
         } else {
             currentChar ++;
-            if (currentChar > int32_t(Model::MessageLength())) {
+            if (currentChar > static_cast<int32_t>(Model::MessageLength())) {
                 currentChar = 0;
             }
         }
@@ -307,7 +307,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
             currentMode = 1;
             strncpy(currentMessage, Model::instance().Message(selectedMessage), 12);
             for (int32_t c=0; c<12; c++) {
-                currentMessage[c] = std::min(char(0x5f), std::max(char(0x20), currentMessage[c])); 
+                currentMessage[c] = std::min(static_cast<char>(0x5f), std::max(static_cast<char>(0x20), currentMessage[c])); 
             }
         } else {
             span.time = Model::instance().Time(); // reset timeout
@@ -323,12 +323,12 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
                 Timeline::instance().ProcessDisplay();
             } else {
                 int32_t idx = currentMessage[currentChar];
-                idx = std::min(int32_t(0x5f), std::max(int32_t(0x20), idx)); 
+                idx = std::min(static_cast<int32_t>(0x5f), std::max(static_cast<int32_t>(0x20), idx)); 
                 idx -= 0x20;
                 idx ++;
                 idx %= 0x40;
                 idx += 0x20;
-                currentMessage[currentChar] = char(idx);
+                currentMessage[currentChar] = static_cast<char>(idx);
                 char str[20];
                 snprintf(str, 20, "%s", currentMessage);
                 SDD1306::instance().PlaceAsciiStr(0, 0, str);
@@ -349,7 +349,7 @@ void UI::enterChangeName(Timeline::Span &parent) {
     strncpy(currentName, Model::instance().Name(), 12);
     
     for (int32_t c=0; c<12; c++) {
-        currentName[c] = std::min(char(0x5f), std::max(char(0x20), currentName[c])); 
+        currentName[c] = std::min(static_cast<char>(0x5f), std::max(static_cast<char>(0x20), currentName[c])); 
     }
     
     static int32_t currentChar = 0;
@@ -408,12 +408,12 @@ void UI::enterChangeName(Timeline::Span &parent) {
             Timeline::instance().ProcessDisplay();
         } else {
             int32_t idx = currentName[currentChar];
-            idx = std::min(int32_t(0x5f), std::max(int32_t(0x20), idx)); 
+            idx = std::min(static_cast<int32_t>(0x5f), std::max(static_cast<int32_t>(0x20), idx)); 
             idx -= 0x20;
             idx ++;
             idx %= 0x40;
             idx += 0x20;
-            currentName[currentChar] = char(idx);
+            currentName[currentChar] = static_cast<char>(idx);
             char str[20];
             snprintf(str, 20, "%s", currentName);
             SDD1306::instance().PlaceAsciiStr(0, 0, str);
@@ -442,11 +442,11 @@ void UI::enterChangeBirdColor(Timeline::Span &parent) {
     span.duration = 10.0f; // timeout
     span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
-        snprintf(str, 13, " H:%03d", int(currentColor.h * 360.f));
+        snprintf(str, 13, " H:%03d", static_cast<int>(currentColor.h * 360.f));
         SDD1306::instance().PlaceAsciiStr(0, 0, str);
-        snprintf(str, 13, " S:%03d", int(currentColor.s * 100.f));
+        snprintf(str, 13, " S:%03d", static_cast<int>(currentColor.s * 100.f));
         SDD1306::instance().PlaceAsciiStr(6, 0, str);
-        snprintf(str, 13, " V:%03d", int(currentColor.v * 100.f));
+        snprintf(str, 13, " V:%03d", static_cast<int>(currentColor.v * 100.f));
         SDD1306::instance().PlaceAsciiStr(0, 1, str);
         snprintf(str, 13, " SAVE!");
         SDD1306::instance().PlaceAsciiStr(6, 1, str);
@@ -544,11 +544,11 @@ void UI::enterChangeRingColor(Timeline::Span &parent) {
     span.duration = 10.0f; // timeout
     span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[13];
-        snprintf(str, 13, " H:%03d", int(currentColor.h * 360.f));
+        snprintf(str, 13, " H:%03d", static_cast<int>(currentColor.h * 360.f));
         SDD1306::instance().PlaceAsciiStr(0, 0, str);
-        snprintf(str, 13, " S:%03d", int(currentColor.s * 100.f));
+        snprintf(str, 13, " S:%03d", static_cast<int>(currentColor.s * 100.f));
         SDD1306::instance().PlaceAsciiStr(6, 0, str);
-        snprintf(str, 13, " V:%03d", int(currentColor.v * 100.f));
+        snprintf(str, 13, " V:%03d", static_cast<int>(currentColor.v * 100.f));
         SDD1306::instance().PlaceAsciiStr(0, 1, str);
         snprintf(str, 13, " SAVE!");
         SDD1306::instance().PlaceAsciiStr(6, 1, str);
@@ -722,7 +722,7 @@ void UI::enterShowVersion(Timeline::Span &parent) {
     span.duration = 10.0f; // timeout
     span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[20];
-        snprintf(str, 20, "    %01d.%02d    ", int(version_number), int(build_number));
+        snprintf(str, 20, "    %01d.%02d    ", static_cast<int>(version_number), static_cast<int>(build_number));
         SDD1306::instance().PlaceAsciiStr(0, 0, str);
         snprintf(str, 20, "%s ", __DATE__);
         SDD1306::instance().PlaceAsciiStr(0, 1, str);
@@ -762,11 +762,11 @@ void UI::enterDebug(Timeline::Span &parent) {
     span.duration = 10.0f; // timeout
     span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         char str[20];
-        snprintf(str, 20, "%02d          ", int(currentSelection));
+        snprintf(str, 20, "%02d          ", static_cast<int>(currentSelection));
         SDD1306::instance().PlaceAsciiStr(0, 0, str);
         if (currentSelection >= 0 && currentSelection < 0x12) {
             SDD1306::instance().PlaceAsciiStr(5, 0, "BQ25895");
-            snprintf(str, 20, "%02x b", int(currentSelection));
+            snprintf(str, 20, "%02x b", static_cast<int>(currentSelection));
             SDD1306::instance().PlaceAsciiStr(0, 1, str);
             uint8_t val = BQ25895::instance().getRegister(currentSelection);
             snprintf(str, 20, BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(val));
@@ -991,14 +991,14 @@ void UI::init() {
         span.duration = std::numeric_limits<double>::infinity();
         span.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
             char str[13];
-            snprintf(str, 13, "#%02d/%02d", int(Model::instance().Effect()), int(Model::instance().EffectCount()));
+            snprintf(str, 13, "#%02d/%02d", static_cast<int>(Model::instance().Effect()), static_cast<int>(Model::instance().EffectCount()));
             SDD1306::instance().PlaceAsciiStr(0, 0, str);
             if (Model::instance().DateTime() >= 0.0) {
                 // display time
                 int64_t dateTime = Model::instance().DateTime();
                 int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
                 int32_t min = ( ( dateTime / 1000 )      ) % 60;
-                snprintf(str, 13, "O%02d:%02d", int(hrs), int(min));
+                snprintf(str, 13, "O%02d:%02d", static_cast<int>(hrs), static_cast<int>(min));
             } else {
                 snprintf(str, 13, "$**__*");
             }

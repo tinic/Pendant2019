@@ -272,7 +272,7 @@ void SDD1306::DisplayCenterFlip() {
             if (center_flip_screen == 32) {
                 buf[x+1] = 0x00;
             } else {
-                int32_t rx = ( ( ( int32_t(x) - 32 ) * 32 ) / int32_t(32 - center_flip_screen) ) + 32;
+                int32_t rx = ( ( ( static_cast<int32_t>(x) - 32 ) * 32 ) / static_cast<int32_t>(32 - center_flip_screen) ) + 32;
                 if (rx < 0 || rx > 95) {
                     buf[x+1] = 0x00;
                 } else {
