@@ -28,6 +28,9 @@ Emulator build:
 > ./Pendant2019
 ```
 
+![alt text](https://github.com/tinic/Pendant2019/blob/master/pictures/emulator_snapshot.png "Emulator Screenshot")
+
+
 Device build:
 
 ```
