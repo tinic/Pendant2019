@@ -13,7 +13,7 @@
 extern "C" {
 
 void WDT_Handler() {
-	while (1) { }
+    while (1) { }
 }
 
 }
@@ -21,7 +21,7 @@ void WDT_Handler() {
 int main(void)
 {
 #ifdef EMULATOR
-	static struct termios tty_opts_backup, tty_opts_raw;
+    static struct termios tty_opts_backup, tty_opts_raw;
     // Back up current TTY settings
     tcgetattr(STDIN_FILENO, &tty_opts_backup);
 
@@ -29,42 +29,42 @@ int main(void)
     cfmakeraw(&tty_opts_raw);
     tcsetattr(STDIN_FILENO, TCSANOW, &tty_opts_raw);
 
-	printf("\x1b[2J\x1b[?25l");
+    printf("\x1b[2J\x1b[?25l");
 #endif  // #ifdef EMULATOR
 
-	/* Initializes MCU, drivers and middleware */
-	atmel_start_init();
+    /* Initializes MCU, drivers and middleware */
+    atmel_start_init();
 
-	/* Enable I2C bus */
-	i2c_m_sync_enable(&I2C_0);
+    /* Enable I2C bus */
+    i2c_m_sync_enable(&I2C_0);
 
-	Commands::instance().Boot();
+    Commands::instance().Boot();
 
-	Commands::instance().StartTimers();
+    Commands::instance().StartTimers();
 
 #ifndef EMULATOR
-	while (1) {
-		__WFI();
-	}
+    while (1) {
+        __WFI();
+    }
 #else  // #ifndef EMULATOR
-	while (1) {
-		int key = getc(stdin);
-		switch (key) {
-			case	0x03:
-					printf("\x1b[2J\x1b[?25h\x1b[0;0f\n");
-					tcsetattr(STDIN_FILENO, TCSANOW, &tty_opts_backup);
-					exit(0);
-					break;
-			case	0x31:
-					Commands::instance().Switch1_Pressed();
-					break;
-			case	0x32:
-					Commands::instance().Switch2_Pressed();
-					break;
-			case	0x33:
-					Commands::instance().Switch3_Pressed();
-					break;
-		}
-	}
+    while (1) {
+        int key = getc(stdin);
+        switch (key) {
+            case    0x03:
+                    printf("\x1b[2J\x1b[?25h\x1b[0;0f\n");
+                    tcsetattr(STDIN_FILENO, TCSANOW, &tty_opts_backup);
+                    exit(0);
+                    break;
+            case    0x31:
+                    Commands::instance().Switch1_Pressed();
+                    break;
+            case    0x32:
+                    Commands::instance().Switch2_Pressed();
+                    break;
+            case    0x33:
+                    Commands::instance().Switch3_Pressed();
+                    break;
+        }
+    }
 #endif  // #ifndef EMULATOR
 }
