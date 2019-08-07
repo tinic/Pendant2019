@@ -15,7 +15,7 @@ Prerequisites on OSX:
 > brew install arm-none-eabi-gcc
 ```
 
-Emulator build:
+Console emulator build (runs fine on OSX, Linux, Win):
 
 ```
 > git clone https://github.com/tinic/Pendant2019.git
@@ -27,6 +27,9 @@ Emulator build:
 > make -j
 > ./Pendant2019
 ```
+
+![alt text](https://github.com/tinic/Pendant2019/blob/master/pictures/emulator_snapshot.png "Emulator Screenshot")
+
 
 Device build:
 
