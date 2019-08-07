@@ -20,24 +20,24 @@
 
 /* MSC LUN definitions */
 #define DISK_INFORMATION(n)                                                                                            \
-	{                                                                                                                  \
-		CONF_USB_MSC_LUN##n##_TYPE, (CONF_USB_MSC_LUN##n##_RMB << 7),                                                  \
-		    ((CONF_USB_MSC_LUN##n##_ISO << 6) + (CONF_USB_MSC_LUN##n##_ECMA << 3) + CONF_USB_MSC_LUN##n##_ANSI),       \
-		    CONF_USB_MSC_LUN##n##_REPO, 31, 0x00, 0x00, 0x00, CONF_USB_MSC_LUN##n##_FACTORY,                           \
-		    CONF_USB_MSC_LUN##n##_PRODUCT, CONF_USB_MSC_LUN##n##_PRODUCT_VERSION                                       \
-	}
+    {                                                                                                                  \
+        CONF_USB_MSC_LUN##n##_TYPE, (CONF_USB_MSC_LUN##n##_RMB << 7),                                                  \
+            ((CONF_USB_MSC_LUN##n##_ISO << 6) + (CONF_USB_MSC_LUN##n##_ECMA << 3) + CONF_USB_MSC_LUN##n##_ANSI),       \
+            CONF_USB_MSC_LUN##n##_REPO, 31, 0x00, 0x00, 0x00, CONF_USB_MSC_LUN##n##_FACTORY,                           \
+            CONF_USB_MSC_LUN##n##_PRODUCT, CONF_USB_MSC_LUN##n##_PRODUCT_VERSION                                       \
+    }
 
 #define DISK_CAPACITY(n)                                                                                               \
-	{                                                                                                                  \
-		(uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 24),                                                        \
-		    (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 16),                                                    \
-		    (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 8),                                                     \
-		    (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 0),                                                     \
-		    (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 24),                                             \
-		    (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 16),                                             \
-		    (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 8),                                              \
-		    (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 0)                                               \
-	}
+    {                                                                                                                  \
+        (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 24),                                                        \
+            (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 16),                                                    \
+            (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 8),                                                     \
+            (uint8_t)(CONF_USB_MSC_LUN##n##_LAST_BLOCK_ADDR >> 0),                                                     \
+            (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 24),                                             \
+            (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 16),                                             \
+            (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 8),                                              \
+            (uint8_t)((uint32_t)(CONF_USB_MSC_LUN##n##_BLOCK_SIZE) >> 0)                                               \
+    }
 
 /* MSC LUN settings */
 
@@ -90,10 +90,10 @@ static uint8_t ctrl_buffer[64];
  */
 static int32_t msc_disk_eject(uint8_t lun)
 {
-	if (lun > CONF_USB_MSC_MAX_LUN) {
-		return ERR_NOT_FOUND;
-	}
-	return ERR_NONE;
+    if (lun > CONF_USB_MSC_MAX_LUN) {
+        return ERR_NOT_FOUND;
+    }
+    return ERR_NONE;
 }
 
 /**
@@ -103,10 +103,10 @@ static int32_t msc_disk_eject(uint8_t lun)
  */
 static int32_t msc_disk_is_ready(uint8_t lun)
 {
-	if (lun > CONF_USB_MSC_MAX_LUN) {
-		return ERR_NOT_FOUND;
-	}
-	return ERR_NONE;
+    if (lun > CONF_USB_MSC_MAX_LUN) {
+        return ERR_NOT_FOUND;
+    }
+    return ERR_NONE;
 }
 
 /**
@@ -118,22 +118,22 @@ static int32_t msc_disk_is_ready(uint8_t lun)
  */
 static int32_t msc_new_read(uint8_t lun, uint32_t addr, uint32_t nblocks)
 {
-	int32_t  rc  = msc_disk_is_ready(lun);
-	uint32_t lba = 0;
-	if (rc != ERR_NONE) {
-		return rc;
-	}
-	lba = (format_capa[lun][0] << 24) + (format_capa[lun][1] << 16) + (format_capa[lun][2] << 8) + format_capa[lun][3];
-	if (addr > lba || addr + nblocks > lba + 1) {
-		return ERR_BAD_ADDRESS;
-	}
-	msc_lun  = lun;
-	xfer_dir = true;
+    int32_t  rc  = msc_disk_is_ready(lun);
+    uint32_t lba = 0;
+    if (rc != ERR_NONE) {
+        return rc;
+    }
+    lba = (format_capa[lun][0] << 24) + (format_capa[lun][1] << 16) + (format_capa[lun][2] << 8) + format_capa[lun][3];
+    if (addr > lba || addr + nblocks > lba + 1) {
+        return ERR_BAD_ADDRESS;
+    }
+    msc_lun  = lun;
+    xfer_dir = true;
 
-	disk_addr  = addr;
-	usb_remain = nblocks;
+    disk_addr  = addr;
+    usb_remain = nblocks;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -145,22 +145,22 @@ static int32_t msc_new_read(uint8_t lun, uint32_t addr, uint32_t nblocks)
  */
 static int32_t msc_new_write(uint8_t lun, uint32_t addr, uint32_t nblocks)
 {
-	int32_t  rc  = msc_disk_is_ready(lun);
-	uint32_t lba = 0;
-	if (rc != ERR_NONE) {
-		return rc;
-	}
-	lba = (format_capa[lun][0] << 24) + (format_capa[lun][1] << 16) + (format_capa[lun][2] << 8) + format_capa[lun][3];
-	if (addr > lba || addr + nblocks > lba + 1) {
-		return ERR_BAD_ADDRESS;
-	}
-	msc_lun  = lun;
-	xfer_dir = false;
+    int32_t  rc  = msc_disk_is_ready(lun);
+    uint32_t lba = 0;
+    if (rc != ERR_NONE) {
+        return rc;
+    }
+    lba = (format_capa[lun][0] << 24) + (format_capa[lun][1] << 16) + (format_capa[lun][2] << 8) + format_capa[lun][3];
+    if (addr > lba || addr + nblocks > lba + 1) {
+        return ERR_BAD_ADDRESS;
+    }
+    msc_lun  = lun;
+    xfer_dir = false;
 
-	disk_addr  = addr;
-	usb_remain = nblocks;
+    disk_addr  = addr;
+    usb_remain = nblocks;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -170,25 +170,25 @@ static int32_t msc_new_write(uint8_t lun, uint32_t addr, uint32_t nblocks)
  */
 static int32_t msc_xfer_done(uint8_t lun)
 {
-	if (lun > CONF_USB_MSC_MAX_LUN) {
-		return ERR_DENIED;
-	}
-	usb_busy = false;
-	if (LUN_RAM == msc_lun) {
-		usb_remain = 0;
-		if (!xfer_dir) {
-			/* Terminate write */
-			mscdf_xfer_blocks(false, NULL, 0);
-		}
-		return ERR_NONE;
-	}
-	return ERR_NONE;
+    if (lun > CONF_USB_MSC_MAX_LUN) {
+        return ERR_DENIED;
+    }
+    usb_busy = false;
+    if (LUN_RAM == msc_lun) {
+        usb_remain = 0;
+        if (!xfer_dir) {
+            /* Terminate write */
+            mscdf_xfer_blocks(false, NULL, 0);
+        }
+        return ERR_NONE;
+    }
+    return ERR_NONE;
 } /**
    * \brief Disk loop
    */
 static void msc_disk_task(void)
 {
-	/* RAM Disk transfer directly between RAM and USB */
+    /* RAM Disk transfer directly between RAM and USB */
 }
 
 /**
@@ -196,23 +196,23 @@ static void msc_disk_task(void)
  */
 static void msc_usb_task(void)
 {
-	if (false == usb_busy && 0 != usb_remain) {
-		if (0 == xfer_dir) {
-			/* RAM Disk directly exchange data with USB */
-			if (msc_lun == LUN_RAM) {
-				usb_busy = true;
-				mscdf_xfer_blocks(false, &ram_disk_buf[disk_addr << 9], usb_remain);
-				return;
-			}
-		} else {
-			/* RAM Disk directly exchange data with USB */
-			if (msc_lun == LUN_RAM) {
-				usb_busy = true;
-				mscdf_xfer_blocks(true, &ram_disk_buf[disk_addr << 9], usb_remain);
-				return;
-			}
-		}
-	}
+    if (false == usb_busy && 0 != usb_remain) {
+        if (0 == xfer_dir) {
+            /* RAM Disk directly exchange data with USB */
+            if (msc_lun == LUN_RAM) {
+                usb_busy = true;
+                mscdf_xfer_blocks(false, &ram_disk_buf[disk_addr << 9], usb_remain);
+                return;
+            }
+        } else {
+            /* RAM Disk directly exchange data with USB */
+            if (msc_lun == LUN_RAM) {
+                usb_busy = true;
+                mscdf_xfer_blocks(true, &ram_disk_buf[disk_addr << 9], usb_remain);
+                return;
+            }
+        }
+    }
 }
 
 /**
@@ -222,13 +222,13 @@ static void msc_usb_task(void)
  */
 static uint8_t *msc_inquiry_info(uint8_t lun)
 {
-	if (lun > CONF_USB_MSC_MAX_LUN) {
-		return NULL;
-	} else {
-		usb_busy   = false;
-		usb_remain = 0;
-		return &inquiry_info[lun][0];
-	}
+    if (lun > CONF_USB_MSC_MAX_LUN) {
+        return NULL;
+    } else {
+        usb_busy   = false;
+        usb_remain = 0;
+        return &inquiry_info[lun][0];
+    }
 }
 
 /**
@@ -238,31 +238,31 @@ static uint8_t *msc_inquiry_info(uint8_t lun)
  */
 static uint8_t *msc_get_capacity(uint8_t lun)
 {
-	if (lun > CONF_USB_MSC_MAX_LUN) {
-		return NULL;
-	} else {
-		return &format_capa[lun][0];
-	}
+    if (lun > CONF_USB_MSC_MAX_LUN) {
+        return NULL;
+    } else {
+        return &format_capa[lun][0];
+    }
 }
 
 void mscdf_demo_init(uint8_t *ramd_buf, uint8_t *usbdisk_buf)
 {
-	(void)usbdisk_buf;
-	
-	ram_disk_buf = ramd_buf;
-	mscdf_register_callback(MSCDF_CB_INQUIRY_DISK, (FUNC_PTR)msc_inquiry_info);
-	mscdf_register_callback(MSCDF_CB_GET_DISK_CAPACITY, (FUNC_PTR)msc_get_capacity);
-	mscdf_register_callback(MSCDF_CB_START_READ_DISK, (FUNC_PTR)msc_new_read);
-	mscdf_register_callback(MSCDF_CB_START_WRITE_DISK, (FUNC_PTR)msc_new_write);
-	mscdf_register_callback(MSCDF_CB_EJECT_DISK, (FUNC_PTR)msc_disk_eject);
-	mscdf_register_callback(MSCDF_CB_TEST_DISK_READY, (FUNC_PTR)msc_disk_is_ready);
-	mscdf_register_callback(MSCDF_CB_XFER_BLOCKS_DONE, (FUNC_PTR)msc_xfer_done);
+    (void)usbdisk_buf;
+    
+    ram_disk_buf = ramd_buf;
+    mscdf_register_callback(MSCDF_CB_INQUIRY_DISK, (FUNC_PTR)msc_inquiry_info);
+    mscdf_register_callback(MSCDF_CB_GET_DISK_CAPACITY, (FUNC_PTR)msc_get_capacity);
+    mscdf_register_callback(MSCDF_CB_START_READ_DISK, (FUNC_PTR)msc_new_read);
+    mscdf_register_callback(MSCDF_CB_START_WRITE_DISK, (FUNC_PTR)msc_new_write);
+    mscdf_register_callback(MSCDF_CB_EJECT_DISK, (FUNC_PTR)msc_disk_eject);
+    mscdf_register_callback(MSCDF_CB_TEST_DISK_READY, (FUNC_PTR)msc_disk_is_ready);
+    mscdf_register_callback(MSCDF_CB_XFER_BLOCKS_DONE, (FUNC_PTR)msc_xfer_done);
 }
 
 void mscdf_demo_task(void)
 {
-	msc_disk_task();
-	msc_usb_task();
+    msc_disk_task();
+    msc_usb_task();
 }
 
 #endif
@@ -272,11 +272,11 @@ void mscdf_demo_task(void)
  */
 void usbd_msc_init(void)
 {
-	/* usb stack init */
-	usbdc_init(ctrl_buffer);
+    /* usb stack init */
+    usbdc_init(ctrl_buffer);
 
-	/* usbdc_register_funcion inside */
-	mscdf_init(CONF_USB_MSC_MAX_LUN);
+    /* usbdc_register_funcion inside */
+    mscdf_init(CONF_USB_MSC_MAX_LUN);
 }
 
 /**
@@ -298,29 +298,29 @@ void usbd_msc_example(uint8_t *ramd_buf, uint8_t *usbdisk_buf)
 {
 
 #if CONF_USB_MSC_LUN_DEMO
-	mscdf_demo_init(ramd_buf, usbdisk_buf);
+    mscdf_demo_init(ramd_buf, usbdisk_buf);
 #endif
 
-	usbdc_start(single_desc);
-	usbdc_attach();
+    usbdc_start(single_desc);
+    usbdc_attach();
 
-	while (!mscdf_is_enabled()) {
-		/* wait massive storage to be installed */
-	};
+    while (!mscdf_is_enabled()) {
+        /* wait massive storage to be installed */
+    };
 
-	while (1) {
+    while (1) {
 
 #if CONF_USB_MSC_LUN_DEMO
-		mscdf_demo_task();
+        mscdf_demo_task();
 #endif
-	}
+    }
 }
 #endif // #ifndef EMULATOR
 
 void usb_init(void)
 {
 #ifndef EMULATOR
-	usbd_msc_init();
+    usbd_msc_init();
 #endif // #ifndef EMULATOR
 }
 

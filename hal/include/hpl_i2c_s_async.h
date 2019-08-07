@@ -60,18 +60,18 @@ typedef void (*_i2c_s_async_cb_t)(struct _i2c_s_async_device *device);
  * \brief i2c slave callback pointers structure
  */
 struct _i2c_s_async_callback {
-	void (*error)(struct _i2c_s_async_device *const device);
-	void (*tx)(struct _i2c_s_async_device *const device);
-	void (*rx_done)(struct _i2c_s_async_device *const device, const uint8_t data);
+    void (*error)(struct _i2c_s_async_device *const device);
+    void (*tx)(struct _i2c_s_async_device *const device);
+    void (*rx_done)(struct _i2c_s_async_device *const device, const uint8_t data);
 };
 
 /**
  * \brief i2c slave device structure
  */
 struct _i2c_s_async_device {
-	void *                       hw;
-	struct _i2c_s_async_callback cb;
-	struct _irq_descriptor       irq;
+    void *                       hw;
+    struct _i2c_s_async_callback cb;
+    struct _irq_descriptor       irq;
 };
 
 /**

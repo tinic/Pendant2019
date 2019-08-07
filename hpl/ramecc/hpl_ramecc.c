@@ -43,26 +43,26 @@ struct _ramecc_device device;
  */
 int32_t _ramecc_init(void)
 {
-	if (hri_ramecc_get_STATUS_ECCDIS_bit(RAMECC)) {
-		return ERR_ABORTED;
-	}
+    if (hri_ramecc_get_STATUS_ECCDIS_bit(RAMECC)) {
+        return ERR_ABORTED;
+    }
 
-	NVIC_DisableIRQ(RAMECC_IRQn);
-	NVIC_ClearPendingIRQ(RAMECC_IRQn);
-	NVIC_EnableIRQ(RAMECC_IRQn);
+    NVIC_DisableIRQ(RAMECC_IRQn);
+    NVIC_ClearPendingIRQ(RAMECC_IRQn);
+    NVIC_EnableIRQ(RAMECC_IRQn);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 void _ramecc_register_callback(const enum _ramecc_callback_type type, ramecc_cb_t cb)
 {
-	if (RAMECC_DUAL_ERROR_CB == type) {
-		device.ramecc_cb.dual_bit_err = cb;
-		hri_ramecc_write_INTEN_DUALE_bit(RAMECC, NULL != cb);
-	} else if (RAMECC_SINGLE_ERROR_CB == type) {
-		device.ramecc_cb.single_bit_err = cb;
-		hri_ramecc_write_INTEN_SINGLEE_bit(RAMECC, NULL != cb);
-	}
+    if (RAMECC_DUAL_ERROR_CB == type) {
+        device.ramecc_cb.dual_bit_err = cb;
+        hri_ramecc_write_INTEN_DUALE_bit(RAMECC, NULL != cb);
+    } else if (RAMECC_SINGLE_ERROR_CB == type) {
+        device.ramecc_cb.single_bit_err = cb;
+        hri_ramecc_write_INTEN_SINGLEE_bit(RAMECC, NULL != cb);
+    }
 }
 
 /**
@@ -70,14 +70,14 @@ void _ramecc_register_callback(const enum _ramecc_callback_type type, ramecc_cb_
  */
 void RAMECC_Handler(void)
 {
-	struct _ramecc_device *dev      = (struct _ramecc_device *)&device;
-	volatile uint32_t      int_mask = hri_ramecc_read_INTFLAG_reg(RAMECC);
+    struct _ramecc_device *dev      = (struct _ramecc_device *)&device;
+    volatile uint32_t      int_mask = hri_ramecc_read_INTFLAG_reg(RAMECC);
 
-	if (int_mask & RAMECC_INTFLAG_DUALE && dev->ramecc_cb.dual_bit_err) {
-		dev->ramecc_cb.dual_bit_err((uint32_t)hri_ramecc_read_ERRADDR_reg(RAMECC));
-	} else if (int_mask & RAMECC_INTFLAG_SINGLEE && dev->ramecc_cb.single_bit_err) {
-		dev->ramecc_cb.single_bit_err((uint32_t)hri_ramecc_read_ERRADDR_reg(RAMECC));
-	} else {
-		return;
-	}
+    if (int_mask & RAMECC_INTFLAG_DUALE && dev->ramecc_cb.dual_bit_err) {
+        dev->ramecc_cb.dual_bit_err((uint32_t)hri_ramecc_read_ERRADDR_reg(RAMECC));
+    } else if (int_mask & RAMECC_INTFLAG_SINGLEE && dev->ramecc_cb.single_bit_err) {
+        dev->ramecc_cb.single_bit_err((uint32_t)hri_ramecc_read_ERRADDR_reg(RAMECC));
+    } else {
+        return;
+    }
 }

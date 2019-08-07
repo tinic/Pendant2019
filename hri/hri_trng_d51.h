@@ -58,318 +58,318 @@ typedef uint8_t  hri_trng_intflag_reg_t;
 
 static inline bool hri_trng_get_INTFLAG_DATARDY_bit(const void *const hw)
 {
-	return (((Trng *)hw)->INTFLAG.reg & TRNG_INTFLAG_DATARDY) >> TRNG_INTFLAG_DATARDY_Pos;
+    return (((Trng *)hw)->INTFLAG.reg & TRNG_INTFLAG_DATARDY) >> TRNG_INTFLAG_DATARDY_Pos;
 }
 
 static inline void hri_trng_clear_INTFLAG_DATARDY_bit(const void *const hw)
 {
-	((Trng *)hw)->INTFLAG.reg = TRNG_INTFLAG_DATARDY;
+    ((Trng *)hw)->INTFLAG.reg = TRNG_INTFLAG_DATARDY;
 }
 
 static inline bool hri_trng_get_interrupt_DATARDY_bit(const void *const hw)
 {
-	return (((Trng *)hw)->INTFLAG.reg & TRNG_INTFLAG_DATARDY) >> TRNG_INTFLAG_DATARDY_Pos;
+    return (((Trng *)hw)->INTFLAG.reg & TRNG_INTFLAG_DATARDY) >> TRNG_INTFLAG_DATARDY_Pos;
 }
 
 static inline void hri_trng_clear_interrupt_DATARDY_bit(const void *const hw)
 {
-	((Trng *)hw)->INTFLAG.reg = TRNG_INTFLAG_DATARDY;
+    ((Trng *)hw)->INTFLAG.reg = TRNG_INTFLAG_DATARDY;
 }
 
 static inline hri_trng_intflag_reg_t hri_trng_get_INTFLAG_reg(const void *const hw, hri_trng_intflag_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->INTFLAG.reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->INTFLAG.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline hri_trng_intflag_reg_t hri_trng_read_INTFLAG_reg(const void *const hw)
 {
-	return ((Trng *)hw)->INTFLAG.reg;
+    return ((Trng *)hw)->INTFLAG.reg;
 }
 
 static inline void hri_trng_clear_INTFLAG_reg(const void *const hw, hri_trng_intflag_reg_t mask)
 {
-	((Trng *)hw)->INTFLAG.reg = mask;
+    ((Trng *)hw)->INTFLAG.reg = mask;
 }
 
 static inline void hri_trng_set_INTEN_DATARDY_bit(const void *const hw)
 {
-	((Trng *)hw)->INTENSET.reg = TRNG_INTENSET_DATARDY;
+    ((Trng *)hw)->INTENSET.reg = TRNG_INTENSET_DATARDY;
 }
 
 static inline bool hri_trng_get_INTEN_DATARDY_bit(const void *const hw)
 {
-	return (((Trng *)hw)->INTENSET.reg & TRNG_INTENSET_DATARDY) >> TRNG_INTENSET_DATARDY_Pos;
+    return (((Trng *)hw)->INTENSET.reg & TRNG_INTENSET_DATARDY) >> TRNG_INTENSET_DATARDY_Pos;
 }
 
 static inline void hri_trng_write_INTEN_DATARDY_bit(const void *const hw, bool value)
 {
-	if (value == 0x0) {
-		((Trng *)hw)->INTENCLR.reg = TRNG_INTENSET_DATARDY;
-	} else {
-		((Trng *)hw)->INTENSET.reg = TRNG_INTENSET_DATARDY;
-	}
+    if (value == 0x0) {
+        ((Trng *)hw)->INTENCLR.reg = TRNG_INTENSET_DATARDY;
+    } else {
+        ((Trng *)hw)->INTENSET.reg = TRNG_INTENSET_DATARDY;
+    }
 }
 
 static inline void hri_trng_clear_INTEN_DATARDY_bit(const void *const hw)
 {
-	((Trng *)hw)->INTENCLR.reg = TRNG_INTENSET_DATARDY;
+    ((Trng *)hw)->INTENCLR.reg = TRNG_INTENSET_DATARDY;
 }
 
 static inline void hri_trng_set_INTEN_reg(const void *const hw, hri_trng_intenset_reg_t mask)
 {
-	((Trng *)hw)->INTENSET.reg = mask;
+    ((Trng *)hw)->INTENSET.reg = mask;
 }
 
 static inline hri_trng_intenset_reg_t hri_trng_get_INTEN_reg(const void *const hw, hri_trng_intenset_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->INTENSET.reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->INTENSET.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline hri_trng_intenset_reg_t hri_trng_read_INTEN_reg(const void *const hw)
 {
-	return ((Trng *)hw)->INTENSET.reg;
+    return ((Trng *)hw)->INTENSET.reg;
 }
 
 static inline void hri_trng_write_INTEN_reg(const void *const hw, hri_trng_intenset_reg_t data)
 {
-	((Trng *)hw)->INTENSET.reg = data;
-	((Trng *)hw)->INTENCLR.reg = ~data;
+    ((Trng *)hw)->INTENSET.reg = data;
+    ((Trng *)hw)->INTENCLR.reg = ~data;
 }
 
 static inline void hri_trng_clear_INTEN_reg(const void *const hw, hri_trng_intenset_reg_t mask)
 {
-	((Trng *)hw)->INTENCLR.reg = mask;
+    ((Trng *)hw)->INTENCLR.reg = mask;
 }
 
 static inline hri_trng_data_reg_t hri_trng_get_DATA_DATA_bf(const void *const hw, hri_trng_data_reg_t mask)
 {
-	return (((Trng *)hw)->DATA.reg & TRNG_DATA_DATA(mask)) >> TRNG_DATA_DATA_Pos;
+    return (((Trng *)hw)->DATA.reg & TRNG_DATA_DATA(mask)) >> TRNG_DATA_DATA_Pos;
 }
 
 static inline hri_trng_data_reg_t hri_trng_read_DATA_DATA_bf(const void *const hw)
 {
-	return (((Trng *)hw)->DATA.reg & TRNG_DATA_DATA_Msk) >> TRNG_DATA_DATA_Pos;
+    return (((Trng *)hw)->DATA.reg & TRNG_DATA_DATA_Msk) >> TRNG_DATA_DATA_Pos;
 }
 
 static inline hri_trng_data_reg_t hri_trng_get_DATA_reg(const void *const hw, hri_trng_data_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Trng *)hw)->DATA.reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Trng *)hw)->DATA.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline hri_trng_data_reg_t hri_trng_read_DATA_reg(const void *const hw)
 {
-	return ((Trng *)hw)->DATA.reg;
+    return ((Trng *)hw)->DATA.reg;
 }
 
 static inline void hri_trng_set_CTRLA_ENABLE_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg |= TRNG_CTRLA_ENABLE;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg |= TRNG_CTRLA_ENABLE;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline bool hri_trng_get_CTRLA_ENABLE_bit(const void *const hw)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->CTRLA.reg;
-	tmp = (tmp & TRNG_CTRLA_ENABLE) >> TRNG_CTRLA_ENABLE_Pos;
-	return (bool)tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->CTRLA.reg;
+    tmp = (tmp & TRNG_CTRLA_ENABLE) >> TRNG_CTRLA_ENABLE_Pos;
+    return (bool)tmp;
 }
 
 static inline void hri_trng_write_CTRLA_ENABLE_bit(const void *const hw, bool value)
 {
-	uint8_t tmp;
-	TRNG_CRITICAL_SECTION_ENTER();
-	tmp = ((Trng *)hw)->CTRLA.reg;
-	tmp &= ~TRNG_CTRLA_ENABLE;
-	tmp |= value << TRNG_CTRLA_ENABLE_Pos;
-	((Trng *)hw)->CTRLA.reg = tmp;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    uint8_t tmp;
+    TRNG_CRITICAL_SECTION_ENTER();
+    tmp = ((Trng *)hw)->CTRLA.reg;
+    tmp &= ~TRNG_CTRLA_ENABLE;
+    tmp |= value << TRNG_CTRLA_ENABLE_Pos;
+    ((Trng *)hw)->CTRLA.reg = tmp;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_clear_CTRLA_ENABLE_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg &= ~TRNG_CTRLA_ENABLE;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg &= ~TRNG_CTRLA_ENABLE;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_toggle_CTRLA_ENABLE_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg ^= TRNG_CTRLA_ENABLE;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg ^= TRNG_CTRLA_ENABLE;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_set_CTRLA_RUNSTDBY_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg |= TRNG_CTRLA_RUNSTDBY;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg |= TRNG_CTRLA_RUNSTDBY;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline bool hri_trng_get_CTRLA_RUNSTDBY_bit(const void *const hw)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->CTRLA.reg;
-	tmp = (tmp & TRNG_CTRLA_RUNSTDBY) >> TRNG_CTRLA_RUNSTDBY_Pos;
-	return (bool)tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->CTRLA.reg;
+    tmp = (tmp & TRNG_CTRLA_RUNSTDBY) >> TRNG_CTRLA_RUNSTDBY_Pos;
+    return (bool)tmp;
 }
 
 static inline void hri_trng_write_CTRLA_RUNSTDBY_bit(const void *const hw, bool value)
 {
-	uint8_t tmp;
-	TRNG_CRITICAL_SECTION_ENTER();
-	tmp = ((Trng *)hw)->CTRLA.reg;
-	tmp &= ~TRNG_CTRLA_RUNSTDBY;
-	tmp |= value << TRNG_CTRLA_RUNSTDBY_Pos;
-	((Trng *)hw)->CTRLA.reg = tmp;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    uint8_t tmp;
+    TRNG_CRITICAL_SECTION_ENTER();
+    tmp = ((Trng *)hw)->CTRLA.reg;
+    tmp &= ~TRNG_CTRLA_RUNSTDBY;
+    tmp |= value << TRNG_CTRLA_RUNSTDBY_Pos;
+    ((Trng *)hw)->CTRLA.reg = tmp;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_clear_CTRLA_RUNSTDBY_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg &= ~TRNG_CTRLA_RUNSTDBY;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg &= ~TRNG_CTRLA_RUNSTDBY;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_toggle_CTRLA_RUNSTDBY_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg ^= TRNG_CTRLA_RUNSTDBY;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg ^= TRNG_CTRLA_RUNSTDBY;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_set_CTRLA_reg(const void *const hw, hri_trng_ctrla_reg_t mask)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg |= mask;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg |= mask;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_trng_ctrla_reg_t hri_trng_get_CTRLA_reg(const void *const hw, hri_trng_ctrla_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->CTRLA.reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->CTRLA.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_trng_write_CTRLA_reg(const void *const hw, hri_trng_ctrla_reg_t data)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg = data;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg = data;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_clear_CTRLA_reg(const void *const hw, hri_trng_ctrla_reg_t mask)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg &= ~mask;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg &= ~mask;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_toggle_CTRLA_reg(const void *const hw, hri_trng_ctrla_reg_t mask)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->CTRLA.reg ^= mask;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->CTRLA.reg ^= mask;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_trng_ctrla_reg_t hri_trng_read_CTRLA_reg(const void *const hw)
 {
-	return ((Trng *)hw)->CTRLA.reg;
+    return ((Trng *)hw)->CTRLA.reg;
 }
 
 static inline void hri_trng_set_EVCTRL_DATARDYEO_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg |= TRNG_EVCTRL_DATARDYEO;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg |= TRNG_EVCTRL_DATARDYEO;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline bool hri_trng_get_EVCTRL_DATARDYEO_bit(const void *const hw)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->EVCTRL.reg;
-	tmp = (tmp & TRNG_EVCTRL_DATARDYEO) >> TRNG_EVCTRL_DATARDYEO_Pos;
-	return (bool)tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->EVCTRL.reg;
+    tmp = (tmp & TRNG_EVCTRL_DATARDYEO) >> TRNG_EVCTRL_DATARDYEO_Pos;
+    return (bool)tmp;
 }
 
 static inline void hri_trng_write_EVCTRL_DATARDYEO_bit(const void *const hw, bool value)
 {
-	uint8_t tmp;
-	TRNG_CRITICAL_SECTION_ENTER();
-	tmp = ((Trng *)hw)->EVCTRL.reg;
-	tmp &= ~TRNG_EVCTRL_DATARDYEO;
-	tmp |= value << TRNG_EVCTRL_DATARDYEO_Pos;
-	((Trng *)hw)->EVCTRL.reg = tmp;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    uint8_t tmp;
+    TRNG_CRITICAL_SECTION_ENTER();
+    tmp = ((Trng *)hw)->EVCTRL.reg;
+    tmp &= ~TRNG_EVCTRL_DATARDYEO;
+    tmp |= value << TRNG_EVCTRL_DATARDYEO_Pos;
+    ((Trng *)hw)->EVCTRL.reg = tmp;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_clear_EVCTRL_DATARDYEO_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg &= ~TRNG_EVCTRL_DATARDYEO;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg &= ~TRNG_EVCTRL_DATARDYEO;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_toggle_EVCTRL_DATARDYEO_bit(const void *const hw)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg ^= TRNG_EVCTRL_DATARDYEO;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg ^= TRNG_EVCTRL_DATARDYEO;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_set_EVCTRL_reg(const void *const hw, hri_trng_evctrl_reg_t mask)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg |= mask;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg |= mask;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_trng_evctrl_reg_t hri_trng_get_EVCTRL_reg(const void *const hw, hri_trng_evctrl_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Trng *)hw)->EVCTRL.reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Trng *)hw)->EVCTRL.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_trng_write_EVCTRL_reg(const void *const hw, hri_trng_evctrl_reg_t data)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg = data;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg = data;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_clear_EVCTRL_reg(const void *const hw, hri_trng_evctrl_reg_t mask)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg &= ~mask;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg &= ~mask;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_trng_toggle_EVCTRL_reg(const void *const hw, hri_trng_evctrl_reg_t mask)
 {
-	TRNG_CRITICAL_SECTION_ENTER();
-	((Trng *)hw)->EVCTRL.reg ^= mask;
-	TRNG_CRITICAL_SECTION_LEAVE();
+    TRNG_CRITICAL_SECTION_ENTER();
+    ((Trng *)hw)->EVCTRL.reg ^= mask;
+    TRNG_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_trng_evctrl_reg_t hri_trng_read_EVCTRL_reg(const void *const hw)
 {
-	return ((Trng *)hw)->EVCTRL.reg;
+    return ((Trng *)hw)->EVCTRL.reg;
 }
 
 #ifdef __cplusplus

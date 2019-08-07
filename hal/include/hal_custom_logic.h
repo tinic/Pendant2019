@@ -52,7 +52,7 @@ extern "C" {
  */
 static inline int32_t custom_logic_init(void)
 {
-	return _custom_logic_init();
+    return _custom_logic_init();
 }
 
 /**
@@ -60,7 +60,7 @@ static inline int32_t custom_logic_init(void)
  */
 static inline void custom_logic_deinit(void)
 {
-	_custom_logic_deinit();
+    _custom_logic_deinit();
 }
 
 /**
@@ -69,7 +69,7 @@ static inline void custom_logic_deinit(void)
  */
 static inline int32_t custom_logic_enable(void)
 {
-	return _custom_logic_enable();
+    return _custom_logic_enable();
 }
 
 /**
@@ -77,10 +77,10 @@ static inline int32_t custom_logic_enable(void)
  */
 static inline void custom_logic_disable(void)
 {
-	_custom_logic_disable();
+    _custom_logic_disable();
 }
 
-	/**@}*/
+    /**@}*/
 
 #ifdef __cplusplus
 }

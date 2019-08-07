@@ -46,9 +46,9 @@
  */
 static bool _dummy_func_no_return(uint32_t unused0, uint32_t unused1)
 {
-	(void)unused0;
-	(void)unused1;
-	return false;
+    (void)unused0;
+    (void)unused1;
+    return false;
 }
 
 static void _dummy_func_dev_sof_cb(void)
@@ -57,27 +57,27 @@ static void _dummy_func_dev_sof_cb(void)
 
 static void _dummy_func_dev_event_cb(const enum usb_event event, const uint32_t param)
 {
-	(void)event;
-	(void)param;
+    (void)event;
+    (void)param;
 }
 
 static void _dummy_func_dev_ep_cb_setup(const uint8_t ep)
 {
-	(void)ep;
+    (void)ep;
 }
 
 static bool _dummy_func_dev_ep_cb_more(const uint8_t ep, const uint32_t transfered)
 {
-	(void)ep;
-	(void)transfered;
-	return false;
+    (void)ep;
+    (void)transfered;
+    return false;
 }
 
 static void _dummy_func_dev_ep_cb_done(const uint8_t ep, const int32_t code, const uint32_t transfered)
 {
-	(void)ep;
-	(void)code;
-	(void)transfered;
+    (void)ep;
+    (void)code;
+    (void)transfered;
 }
 
 /**
@@ -91,29 +91,29 @@ static void _usb_load_calib(void)
 #define NVM_USB_PAD_TRANSP_SIZE 5
 #define NVM_USB_PAD_TRIM_POS 42
 #define NVM_USB_PAD_TRIM_SIZE 3
-	Usb *    hw = USB;
-	uint32_t pad_transn
-	    = (*((uint32_t *)(NVMCTRL_SW0) + (NVM_USB_PAD_TRANSN_POS / 32)) >> (NVM_USB_PAD_TRANSN_POS % 32))
-	      & ((1 << NVM_USB_PAD_TRANSN_SIZE) - 1);
-	uint32_t pad_transp
-	    = (*((uint32_t *)(NVMCTRL_SW0) + (NVM_USB_PAD_TRANSP_POS / 32)) >> (NVM_USB_PAD_TRANSP_POS % 32))
-	      & ((1 << NVM_USB_PAD_TRANSP_SIZE) - 1);
-	uint32_t pad_trim = (*((uint32_t *)(NVMCTRL_SW0) + (NVM_USB_PAD_TRIM_POS / 32)) >> (NVM_USB_PAD_TRIM_POS % 32))
-	                    & ((1 << NVM_USB_PAD_TRIM_SIZE) - 1);
-	if (pad_transn == 0 || pad_transn == 0x1F) {
-		pad_transn = 9;
-	}
-	if (pad_transp == 0 || pad_transp == 0x1F) {
-		pad_transp = 25;
-	}
-	if (pad_trim == 0 || pad_trim == 0x7) {
-		pad_trim = 6;
-	}
+    Usb *    hw = USB;
+    uint32_t pad_transn
+        = (*((uint32_t *)(NVMCTRL_SW0) + (NVM_USB_PAD_TRANSN_POS / 32)) >> (NVM_USB_PAD_TRANSN_POS % 32))
+          & ((1 << NVM_USB_PAD_TRANSN_SIZE) - 1);
+    uint32_t pad_transp
+        = (*((uint32_t *)(NVMCTRL_SW0) + (NVM_USB_PAD_TRANSP_POS / 32)) >> (NVM_USB_PAD_TRANSP_POS % 32))
+          & ((1 << NVM_USB_PAD_TRANSP_SIZE) - 1);
+    uint32_t pad_trim = (*((uint32_t *)(NVMCTRL_SW0) + (NVM_USB_PAD_TRIM_POS / 32)) >> (NVM_USB_PAD_TRIM_POS % 32))
+                        & ((1 << NVM_USB_PAD_TRIM_SIZE) - 1);
+    if (pad_transn == 0 || pad_transn == 0x1F) {
+        pad_transn = 9;
+    }
+    if (pad_transp == 0 || pad_transp == 0x1F) {
+        pad_transp = 25;
+    }
+    if (pad_trim == 0 || pad_trim == 0x7) {
+        pad_trim = 6;
+    }
 
-	hw->DEVICE.PADCAL.reg = USB_PADCAL_TRANSN(pad_transn) | USB_PADCAL_TRANSP(pad_transp) | USB_PADCAL_TRIM(pad_trim);
+    hw->DEVICE.PADCAL.reg = USB_PADCAL_TRANSN(pad_transn) | USB_PADCAL_TRANSP(pad_transp) | USB_PADCAL_TRIM(pad_trim);
 
-	hw->DEVICE.QOSCTRL.bit.CQOS = 3;
-	hw->DEVICE.QOSCTRL.bit.DQOS = 3;
+    hw->DEVICE.QOSCTRL.bit.CQOS = 3;
+    hw->DEVICE.QOSCTRL.bit.DQOS = 3;
 }
 
 /** \name USB clock source management */
@@ -137,8 +137,8 @@ static void _usb_load_calib(void)
 static inline void _usb_d_dev_wait_dpll_rdy(void)
 {
 #define DPLL_READY_FLAG (OSCCTRL_DPLLSTATUS_CLKRDY | OSCCTRL_DPLLSTATUS_LOCK)
-	while (hri_oscctrl_get_DPLLSTATUS_reg(OSCCTRL, 0, DPLL_READY_FLAG) != DPLL_READY_FLAG)
-		;
+    while (hri_oscctrl_get_DPLLSTATUS_reg(OSCCTRL, 0, DPLL_READY_FLAG) != DPLL_READY_FLAG)
+        ;
 }
 
 /**
@@ -146,14 +146,14 @@ static inline void _usb_d_dev_wait_dpll_rdy(void)
  */
 static inline void _usb_d_dev_wait_dfll_rdy(void)
 {
-	if (hri_oscctrl_get_DFLLCTRLB_MODE_bit(OSCCTRL)) {
-		while (hri_oscctrl_get_STATUS_reg(OSCCTRL, (OSCCTRL_STATUS_DFLLRDY | OSCCTRL_STATUS_DFLLLCKC))
-		       != (OSCCTRL_STATUS_DFLLRDY | OSCCTRL_STATUS_DFLLLCKC))
-			;
-	} else {
-		while (hri_oscctrl_get_STATUS_reg(OSCCTRL, OSCCTRL_STATUS_DFLLRDY) != OSCCTRL_STATUS_DFLLRDY)
-			;
-	}
+    if (hri_oscctrl_get_DFLLCTRLB_MODE_bit(OSCCTRL)) {
+        while (hri_oscctrl_get_STATUS_reg(OSCCTRL, (OSCCTRL_STATUS_DFLLRDY | OSCCTRL_STATUS_DFLLLCKC))
+               != (OSCCTRL_STATUS_DFLLRDY | OSCCTRL_STATUS_DFLLLCKC))
+            ;
+    } else {
+        while (hri_oscctrl_get_STATUS_reg(OSCCTRL, OSCCTRL_STATUS_DFLLRDY) != OSCCTRL_STATUS_DFLLRDY)
+            ;
+    }
 }
 
 /**
@@ -163,11 +163,11 @@ static inline void _usb_d_dev_wait_dfll_rdy(void)
  */
 static inline void _usb_d_dev_wait_clk_rdy(const uint8_t clk_src)
 {
-	if (clk_src == USB_CLK_SRC_DFLL) {
-		_usb_d_dev_wait_dfll_rdy();
-	} else if (clk_src == USB_CLK_SRC_DPLL) {
-		_usb_d_dev_wait_dpll_rdy();
-	}
+    if (clk_src == USB_CLK_SRC_DFLL) {
+        _usb_d_dev_wait_dfll_rdy();
+    } else if (clk_src == USB_CLK_SRC_DPLL) {
+        _usb_d_dev_wait_dpll_rdy();
+    }
 }
 
 /*@}*/
@@ -459,23 +459,23 @@ static uint32_t _usb_ep9_i_cache[_usb_align_up(CONF_USB_EP9_I_CACHE) / 4];
 
 /** The configuration settings for one of the endpoint hardware. */
 struct _usb_ep_cfg_item {
-	/* Endpoint cache buffer for OUT transactions (none-control) or
-	 * SETUP/IN/OUT transactions (control). */
-	void *cache;
-	/* endpoint cache buffer for IN transactions (none-control). */
-	void *i_cache;
-	/* Cache buffer size for OUT transactions (none-control) or
-	 * SETUP/IN/OUT transactions (control). */
-	uint16_t size;
-	/* Cache buffer size for IN transactions (none-control). */
-	uint16_t i_size;
+    /* Endpoint cache buffer for OUT transactions (none-control) or
+     * SETUP/IN/OUT transactions (control). */
+    void *cache;
+    /* endpoint cache buffer for IN transactions (none-control). */
+    void *i_cache;
+    /* Cache buffer size for OUT transactions (none-control) or
+     * SETUP/IN/OUT transactions (control). */
+    uint16_t size;
+    /* Cache buffer size for IN transactions (none-control). */
+    uint16_t i_size;
 };
 
 /** Build the endpoint configuration settings for one endpoint. */
 #define _USB_EP_CFG_ITEM(n)                                                                                            \
-	{                                                                                                                  \
-		_USB_EP_CACHE(n), _USB_EP_I_CACHE(n), CONF_USB_EP##n##_CACHE, CONF_USB_EP##n##_I_CACHE,                        \
-	}
+    {                                                                                                                  \
+        _USB_EP_CACHE(n), _USB_EP_I_CACHE(n), CONF_USB_EP##n##_CACHE, CONF_USB_EP##n##_I_CACHE,                        \
+    }
 
 /** The configuration settings for all endpoint. */
 static const struct _usb_ep_cfg_item _usb_ep_cfgs[] = {_USB_EP_CFG_ITEM(0)
@@ -525,39 +525,39 @@ static const struct _usb_ep_cfg_item _usb_ep_cfgs[] = {_USB_EP_CFG_ITEM(0)
 
 /** HPL USB device endpoint struct. */
 struct _usb_d_dev_ep {
-	/** Pointer to transaction buffer. */
-	uint8_t *trans_buf;
-	/** Transaction size. */
-	uint32_t trans_size;
-	/** Transaction transferred count. */
-	uint32_t trans_count;
+    /** Pointer to transaction buffer. */
+    uint8_t *trans_buf;
+    /** Transaction size. */
+    uint32_t trans_size;
+    /** Transaction transferred count. */
+    uint32_t trans_count;
 
-	/** Pointer to cache buffer, must be aligned. */
-	uint8_t *cache;
+    /** Pointer to cache buffer, must be aligned. */
+    uint8_t *cache;
 
-	/** Endpoint size. */
-	uint16_t size;
-	/** Endpoint address. */
-	uint8_t ep;
-	/** Feature flags. */
-	union {
-		/** Interpreted by bit fields. */
-		struct {
-			/** EPCFG.ETYPE. */
-			uint8_t eptype : 3;
-			/** Stall status. */
-			uint8_t is_stalled : 1;
-			/** Transaction auto ZLP. */
-			uint8_t need_zlp : 1;
-			/** Transaction with cache */
-			uint8_t use_cache : 1;
-			/** Endpoint is busy. */
-			uint8_t is_busy : 1;
-			/** Transaction direction. */
-			uint8_t dir : 1;
-		} bits;
-		uint8_t u8;
-	} flags;
+    /** Endpoint size. */
+    uint16_t size;
+    /** Endpoint address. */
+    uint8_t ep;
+    /** Feature flags. */
+    union {
+        /** Interpreted by bit fields. */
+        struct {
+            /** EPCFG.ETYPE. */
+            uint8_t eptype : 3;
+            /** Stall status. */
+            uint8_t is_stalled : 1;
+            /** Transaction auto ZLP. */
+            uint8_t need_zlp : 1;
+            /** Transaction with cache */
+            uint8_t use_cache : 1;
+            /** Endpoint is busy. */
+            uint8_t is_busy : 1;
+            /** Transaction direction. */
+            uint8_t dir : 1;
+        } bits;
+        uint8_t u8;
+    } flags;
 };
 
 /** Check if the endpoint is used. */
@@ -616,19 +616,19 @@ struct _usb_d_dev_ep {
 
 /** HPL USB device struct. */
 struct _usb_d_dev {
-	/** Callbacks of USB device. */
-	struct _usb_d_dev_callbacks callbacks;
-	/** Endpoint transaction callbacks. */
-	struct _usb_d_dev_ep_callbacks ep_callbacks;
-	/** Endpoints (ep0 + others). */
-	struct _usb_d_dev_ep ep[USB_D_N_EP];
+    /** Callbacks of USB device. */
+    struct _usb_d_dev_callbacks callbacks;
+    /** Endpoint transaction callbacks. */
+    struct _usb_d_dev_ep_callbacks ep_callbacks;
+    /** Endpoints (ep0 + others). */
+    struct _usb_d_dev_ep ep[USB_D_N_EP];
 };
 
 /** Private data for SAM0 USB peripheral.
  */
 typedef struct _usb_d_dev_prvt {
-	/** USB device descriptor table for peripheral to work. */
-	UsbDeviceDescriptor desc_table[CONF_USB_D_MAX_EP_N + 1];
+    /** USB device descriptor table for peripheral to work. */
+    UsbDeviceDescriptor desc_table[CONF_USB_D_MAX_EP_N + 1];
 } usb_d_dev_prvt_t;
 
 /*@}*/
@@ -655,7 +655,7 @@ static inline void _usb_d_dev_trans_setup(struct _usb_d_dev_ep *ept);
  */
 static inline void _usbd_ep_int_ack(uint8_t epn, uint32_t flags)
 {
-	hri_usbendpoint_clear_EPINTFLAG_reg(USB, epn, flags);
+    hri_usbendpoint_clear_EPINTFLAG_reg(USB, epn, flags);
 }
 
 /** \brief Enable the endpoint interrupt
@@ -664,7 +664,7 @@ static inline void _usbd_ep_int_ack(uint8_t epn, uint32_t flags)
  */
 static inline void _usbd_ep_int_en(uint8_t epn, uint32_t flags)
 {
-	hri_usbendpoint_set_EPINTEN_reg(USB, epn, flags);
+    hri_usbendpoint_set_EPINTEN_reg(USB, epn, flags);
 }
 
 /** \brief Disable the endpoint interrupt
@@ -673,7 +673,7 @@ static inline void _usbd_ep_int_en(uint8_t epn, uint32_t flags)
  */
 static inline void _usbd_ep_int_dis(uint8_t epn, uint32_t flags)
 {
-	hri_usbendpoint_clear_EPINTEN_reg(USB, epn, flags);
+    hri_usbendpoint_clear_EPINTEN_reg(USB, epn, flags);
 }
 
 /** \brief Check if endpoint is control endpoint
@@ -681,7 +681,7 @@ static inline void _usbd_ep_int_dis(uint8_t epn, uint32_t flags)
  */
 static inline bool _usbd_ep_is_ctrl(uint8_t epn)
 {
-	return (hri_usbendpoint_read_EPCFG_reg(USB, epn) == USB_D_EPCFG_CTRL);
+    return (hri_usbendpoint_read_EPCFG_reg(USB, epn) == USB_D_EPCFG_CTRL);
 }
 
 /** \brief Set endpoint stall
@@ -691,11 +691,11 @@ static inline bool _usbd_ep_is_ctrl(uint8_t epn)
  */
 static inline void _usbd_ep_set_stall(uint8_t epn, uint8_t bank_n, bool st)
 {
-	if (st) {
-		hri_usbendpoint_set_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_STALLRQ0 << bank_n));
-	} else {
-		hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_STALLRQ0 << bank_n));
-	}
+    if (st) {
+        hri_usbendpoint_set_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_STALLRQ0 << bank_n));
+    } else {
+        hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_STALLRQ0 << bank_n));
+    }
 }
 
 /** \brief Check if the endpoint is stalled
@@ -705,8 +705,8 @@ static inline void _usbd_ep_set_stall(uint8_t epn, uint8_t bank_n, bool st)
  */
 static inline bool _usbd_ep_is_stalled(uint8_t epn, uint8_t bank_n)
 {
-	Usb *hw = USB;
-	return (hri_usbendpoint_read_EPSTATUS_reg(hw, epn) & (USB_DEVICE_EPSTATUS_STALLRQ0 << bank_n));
+    Usb *hw = USB;
+    return (hri_usbendpoint_read_EPSTATUS_reg(hw, epn) & (USB_DEVICE_EPSTATUS_STALLRQ0 << bank_n));
 }
 
 /** \brief Check if stall has been sent from the endpoint
@@ -716,8 +716,8 @@ static inline bool _usbd_ep_is_stalled(uint8_t epn, uint8_t bank_n)
  */
 static inline bool _usbd_ep_is_stall_sent(uint8_t epn, uint8_t bank_n)
 {
-	Usb *hw = USB;
-	return (hri_usbendpoint_read_EPINTFLAG_reg(hw, epn) & (USB_DEVICE_EPINTFLAG_STALL0 << bank_n));
+    Usb *hw = USB;
+    return (hri_usbendpoint_read_EPINTFLAG_reg(hw, epn) & (USB_DEVICE_EPINTFLAG_STALL0 << bank_n));
 }
 
 /** \brief ACK endpoint STALL interrupt
@@ -726,7 +726,7 @@ static inline bool _usbd_ep_is_stall_sent(uint8_t epn, uint8_t bank_n)
  */
 static inline void _usbd_ep_ack_stall(uint8_t epn, uint8_t bank_n)
 {
-	_usbd_ep_int_ack(epn, (USB_DEVICE_EPINTFLAG_STALL0 << bank_n));
+    _usbd_ep_int_ack(epn, (USB_DEVICE_EPINTFLAG_STALL0 << bank_n));
 }
 
 /** \brief Enable/disable endpoint STALL interrupt
@@ -736,11 +736,11 @@ static inline void _usbd_ep_ack_stall(uint8_t epn, uint8_t bank_n)
  */
 static inline void _usbd_ep_int_stall_en(uint8_t epn, uint8_t bank_n, const bool en)
 {
-	if (en) {
-		_usbd_ep_int_en(epn, USB_DEVICE_EPINTFLAG_STALL0 << bank_n);
-	} else {
-		_usbd_ep_int_dis(epn, USB_DEVICE_EPINTFLAG_STALL0 << bank_n);
-	}
+    if (en) {
+        _usbd_ep_int_en(epn, USB_DEVICE_EPINTFLAG_STALL0 << bank_n);
+    } else {
+        _usbd_ep_int_dis(epn, USB_DEVICE_EPINTFLAG_STALL0 << bank_n);
+    }
 }
 
 /** \brief Stop SETUP transactions
@@ -748,7 +748,7 @@ static inline void _usbd_ep_int_stall_en(uint8_t epn, uint8_t bank_n, const bool
  */
 static inline void _usbd_ep_stop_setup(uint8_t epn)
 {
-	hri_usbendpoint_clear_EPINTEN_RXSTP_bit(USB, epn);
+    hri_usbendpoint_clear_EPINTEN_RXSTP_bit(USB, epn);
 }
 
 /** \brief Check if SETUP packet is ready in cache
@@ -756,7 +756,7 @@ static inline void _usbd_ep_stop_setup(uint8_t epn)
  */
 static inline bool _usbd_ep_is_setup(uint8_t epn)
 {
-	return hri_usbendpoint_get_EPINTFLAG_reg(USB, epn, USB_DEVICE_EPINTFLAG_RXSTP);
+    return hri_usbendpoint_get_EPINTFLAG_reg(USB, epn, USB_DEVICE_EPINTFLAG_RXSTP);
 }
 
 /** \brief ACK endpoint SETUP interrupt
@@ -764,7 +764,7 @@ static inline bool _usbd_ep_is_setup(uint8_t epn)
  */
 static inline void _usbd_ep_ack_setup(uint8_t epn)
 {
-	_usbd_ep_int_ack(epn, USB_DEVICE_EPINTFLAG_RXSTP);
+    _usbd_ep_int_ack(epn, USB_DEVICE_EPINTFLAG_RXSTP);
 }
 
 /** \brief Set endpoint toggle value
@@ -774,11 +774,11 @@ static inline void _usbd_ep_ack_setup(uint8_t epn)
  */
 static inline void _usbd_ep_set_toggle(uint8_t epn, uint8_t bank_n, uint8_t tgl)
 {
-	if (tgl) {
-		hri_usbendpoint_set_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_DTGLOUT << bank_n));
-	} else {
-		hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_DTGLOUT << bank_n));
-	}
+    if (tgl) {
+        hri_usbendpoint_set_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_DTGLOUT << bank_n));
+    } else {
+        hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, (USB_DEVICE_EPSTATUS_DTGLOUT << bank_n));
+    }
 }
 
 /** \brief ACK IN/OUT complete interrupt
@@ -787,7 +787,7 @@ static inline void _usbd_ep_set_toggle(uint8_t epn, uint8_t bank_n, uint8_t tgl)
  */
 static inline void _usbd_ep_ack_io_cpt(uint8_t epn, uint8_t bank_n)
 {
-	_usbd_ep_int_ack(epn, USB_DEVICE_EPINTFLAG_TRCPT0 << bank_n);
+    _usbd_ep_int_ack(epn, USB_DEVICE_EPINTFLAG_TRCPT0 << bank_n);
 }
 
 /** \brief Set DMA buffer used for bank data
@@ -797,8 +797,8 @@ static inline void _usbd_ep_ack_io_cpt(uint8_t epn, uint8_t bank_n)
  */
 static inline void _usbd_ep_set_buf(uint8_t epn, uint8_t bank_n, uint32_t addr)
 {
-	UsbDeviceDescBank *bank = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
-	bank->ADDR.reg          = addr;
+    UsbDeviceDescBank *bank = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
+    bank->ADDR.reg          = addr;
 }
 
 /** \brief Set bank count for IN transactions
@@ -808,8 +808,8 @@ static inline void _usbd_ep_set_buf(uint8_t epn, uint8_t bank_n, uint32_t addr)
  */
 static inline void _usbd_ep_set_in_count(uint8_t epn, uint8_t bank_n, uint16_t count)
 {
-	UsbDeviceDescBank *bank             = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
-	bank->PCKSIZE.bit.MULTI_PACKET_SIZE = count;
+    UsbDeviceDescBank *bank             = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
+    bank->PCKSIZE.bit.MULTI_PACKET_SIZE = count;
 }
 
 /** \brief Set bank size for IN transactions
@@ -819,8 +819,8 @@ static inline void _usbd_ep_set_in_count(uint8_t epn, uint8_t bank_n, uint16_t c
  */
 static inline void _usbd_ep_set_in_size(uint8_t epn, uint8_t bank_n, uint16_t size)
 {
-	UsbDeviceDescBank *bank      = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
-	bank->PCKSIZE.bit.BYTE_COUNT = size;
+    UsbDeviceDescBank *bank      = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
+    bank->PCKSIZE.bit.BYTE_COUNT = size;
 }
 
 /** \brief Set bank count for OUT transaction
@@ -830,8 +830,8 @@ static inline void _usbd_ep_set_in_size(uint8_t epn, uint8_t bank_n, uint16_t si
  */
 static inline void _usbd_ep_set_out_count(uint8_t epn, uint8_t bank_n, uint16_t count)
 {
-	UsbDeviceDescBank *bank      = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
-	bank->PCKSIZE.bit.BYTE_COUNT = count;
+    UsbDeviceDescBank *bank      = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
+    bank->PCKSIZE.bit.BYTE_COUNT = count;
 }
 
 /** \brief Set bank size for OUT transactions
@@ -841,8 +841,8 @@ static inline void _usbd_ep_set_out_count(uint8_t epn, uint8_t bank_n, uint16_t 
  */
 static inline void _usbd_ep_set_out_size(uint8_t epn, uint8_t bank_n, uint16_t size)
 {
-	UsbDeviceDescBank *bank             = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
-	bank->PCKSIZE.bit.MULTI_PACKET_SIZE = size;
+    UsbDeviceDescBank *bank             = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
+    bank->PCKSIZE.bit.MULTI_PACKET_SIZE = size;
 }
 
 /** Set bank size and count for IN transactions
@@ -853,8 +853,8 @@ static inline void _usbd_ep_set_out_size(uint8_t epn, uint8_t bank_n, uint16_t s
  */
 static inline void _usbd_ep_set_in_trans(uint8_t epn, uint8_t bank_n, uint32_t size, uint32_t count)
 {
-	_usbd_ep_set_in_size(epn, bank_n, size);
-	_usbd_ep_set_in_count(epn, bank_n, count);
+    _usbd_ep_set_in_size(epn, bank_n, size);
+    _usbd_ep_set_in_count(epn, bank_n, count);
 }
 
 /** \brief Set bank size and count for OUT transaction
@@ -865,8 +865,8 @@ static inline void _usbd_ep_set_in_trans(uint8_t epn, uint8_t bank_n, uint32_t s
  */
 static inline void _usbd_ep_set_out_trans(uint8_t epn, uint8_t bank_n, uint32_t size, uint32_t count)
 {
-	_usbd_ep_set_out_size(epn, bank_n, size);
-	_usbd_ep_set_out_count(epn, bank_n, count);
+    _usbd_ep_set_out_size(epn, bank_n, size);
+    _usbd_ep_set_out_count(epn, bank_n, count);
 }
 
 /** \brief Clear bank status
@@ -875,8 +875,8 @@ static inline void _usbd_ep_set_out_trans(uint8_t epn, uint8_t bank_n, uint32_t 
  */
 static inline void _usbd_ep_clear_bank_status(uint8_t epn, uint8_t bank_n)
 {
-	UsbDeviceDescBank *bank = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
-	bank->STATUS_BK.reg     = 0;
+    UsbDeviceDescBank *bank = &prvt_inst.desc_table[epn].DeviceDescBank[bank_n];
+    bank->STATUS_BK.reg     = 0;
 }
 
 /** Set IN ready for IN transactions
@@ -886,11 +886,11 @@ static inline void _usbd_ep_clear_bank_status(uint8_t epn, uint8_t bank_n)
  */
 static inline void _usbd_ep_set_in_rdy(uint8_t epn, uint8_t bank_n, const bool rdy)
 {
-	if (rdy) {
-		hri_usbendpoint_set_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
-	} else {
-		hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
-	}
+    if (rdy) {
+        hri_usbendpoint_set_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
+    } else {
+        hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
+    }
 }
 
 /** \brief Set bank ready for OUT transactions
@@ -900,11 +900,11 @@ static inline void _usbd_ep_set_in_rdy(uint8_t epn, uint8_t bank_n, const bool r
  */
 static inline void _usbd_ep_set_out_rdy(uint8_t epn, uint8_t bank_n, const bool rdy)
 {
-	if (rdy) {
-		hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
-	} else {
-		hri_usbendpoint_set_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
-	}
+    if (rdy) {
+        hri_usbendpoint_clear_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
+    } else {
+        hri_usbendpoint_set_EPSTATUS_reg(USB, epn, USB_DEVICE_EPSTATUS_BK0RDY << bank_n);
+    }
 }
 
 /**
@@ -913,10 +913,10 @@ static inline void _usbd_ep_set_out_rdy(uint8_t epn, uint8_t bank_n, const bool 
  */
 static inline uint8_t _usbd_ep_pcksize_size(uint16_t n)
 {
-	return (
-	    (n > 512)
-	        ? 7
-	        : ((n > 256) ? 6 : ((n > 128) ? 5 : ((n > 64) ? 4 : ((n > 32) ? 3 : ((n > 16) ? 2 : ((n > 8) ? 1 : 0)))))));
+    return (
+        (n > 512)
+            ? 7
+            : ((n > 256) ? 6 : ((n > 128) ? 5 : ((n > 64) ? 4 : ((n > 32) ? 3 : ((n > 16) ? 2 : ((n > 8) ? 1 : 0)))))));
 }
 
 /**
@@ -926,8 +926,8 @@ static inline uint8_t _usbd_ep_pcksize_size(uint16_t n)
  */
 static inline struct _usb_d_dev_ep *_usb_d_dev_ept(uint8_t epn, bool dir)
 {
-	uint8_t ep_index = (epn == 0) ? 0 : (dir ? (epn + CONF_USB_D_MAX_EP_N) : epn);
-	return &dev_inst.ep[ep_index];
+    uint8_t ep_index = (epn == 0) ? 0 : (dir ? (epn + CONF_USB_D_MAX_EP_N) : epn);
+    return &dev_inst.ep[ep_index];
 }
 
 /**
@@ -935,9 +935,9 @@ static inline struct _usb_d_dev_ep *_usb_d_dev_ept(uint8_t epn, bool dir)
  */
 static inline void _usb_d_dev_sof(void)
 {
-	/* ACK SOF interrupt. */
-	hri_usbdevice_clear_INTFLAG_reg(USB, USB_DEVICE_INTFLAG_SOF);
-	dev_inst.callbacks.sof();
+    /* ACK SOF interrupt. */
+    hri_usbdevice_clear_INTFLAG_reg(USB, USB_DEVICE_INTFLAG_SOF);
+    dev_inst.callbacks.sof();
 }
 
 /**
@@ -945,27 +945,27 @@ static inline void _usb_d_dev_sof(void)
  */
 static inline void _usb_d_dev_lpmsusp(void)
 {
-	uint8_t  i;
-	uint32_t lpm_variable = 0;
+    uint8_t  i;
+    uint32_t lpm_variable = 0;
 
-	/* ACK LPMSUSP interrupt. */
-	hri_usbdevice_clear_INTFLAG_reg(USB, USB_D_SUSPEND_INT_FLAGS);
-	/* Change interrupt masks */
-	hri_usbdevice_clear_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
-	hri_usbdevice_set_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
+    /* ACK LPMSUSP interrupt. */
+    hri_usbdevice_clear_INTFLAG_reg(USB, USB_D_SUSPEND_INT_FLAGS);
+    /* Change interrupt masks */
+    hri_usbdevice_clear_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
+    hri_usbdevice_set_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
 
-	/* Find LPM data */
-	for (i = 0; i < CONF_USB_D_MAX_EP_N; i++) {
-		UsbDeviceDescBank *bank = &prvt_inst.desc_table[i].DeviceDescBank[0];
-		if (bank->EXTREG.bit.SUBPID == 0x3) {
-			/* Save LPM variable */
-			lpm_variable = bank->EXTREG.bit.VARIABLE;
-			/* Clear */
-			bank->EXTREG.reg = 0;
-			break;
-		}
-	}
-	dev_inst.callbacks.event(USB_EV_LPM_SUSPEND, lpm_variable);
+    /* Find LPM data */
+    for (i = 0; i < CONF_USB_D_MAX_EP_N; i++) {
+        UsbDeviceDescBank *bank = &prvt_inst.desc_table[i].DeviceDescBank[0];
+        if (bank->EXTREG.bit.SUBPID == 0x3) {
+            /* Save LPM variable */
+            lpm_variable = bank->EXTREG.bit.VARIABLE;
+            /* Clear */
+            bank->EXTREG.reg = 0;
+            break;
+        }
+    }
+    dev_inst.callbacks.event(USB_EV_LPM_SUSPEND, lpm_variable);
 }
 
 /**
@@ -973,8 +973,8 @@ static inline void _usb_d_dev_lpmsusp(void)
  */
 static inline void _usb_d_dev_ramerr(void)
 {
-	hri_usbdevice_clear_INTFLAG_reg(USB, USB_DEVICE_INTFLAG_RAMACER);
-	dev_inst.callbacks.event(USB_EV_ERROR, 0);
+    hri_usbdevice_clear_INTFLAG_reg(USB, USB_DEVICE_INTFLAG_RAMACER);
+    dev_inst.callbacks.event(USB_EV_ERROR, 0);
 }
 
 /**
@@ -982,12 +982,12 @@ static inline void _usb_d_dev_ramerr(void)
  */
 static inline void _usb_d_dev_wakeup(void)
 {
-	hri_usbdevice_clear_INTFLAG_reg(USB, USB_D_WAKEUP_INT_FLAGS);
-	hri_usbdevice_clear_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
-	hri_usbdevice_set_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
+    hri_usbdevice_clear_INTFLAG_reg(USB, USB_D_WAKEUP_INT_FLAGS);
+    hri_usbdevice_clear_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
+    hri_usbdevice_set_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
 
-	_usb_d_dev_wait_clk_rdy(CONF_USB_D_CLK_SRC);
-	dev_inst.callbacks.event(USB_EV_WAKEUP, 0);
+    _usb_d_dev_wait_clk_rdy(CONF_USB_D_CLK_SRC);
+    dev_inst.callbacks.event(USB_EV_WAKEUP, 0);
 }
 
 /**
@@ -995,24 +995,24 @@ static inline void _usb_d_dev_wakeup(void)
  */
 static inline void _usb_d_dev_reset(void)
 {
-	/* EP0 will not be reseted by USB RESET, disable manually. */
-	hri_usbendpoint_write_EPCFG_reg(USB, 0, 0);
+    /* EP0 will not be reseted by USB RESET, disable manually. */
+    hri_usbendpoint_write_EPCFG_reg(USB, 0, 0);
 
-	hri_usbdevice_clear_INTFLAG_reg(USB, USB_DEVICE_INTFLAG_EORST);
-	hri_usbdevice_clear_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
-	hri_usbdevice_set_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
+    hri_usbdevice_clear_INTFLAG_reg(USB, USB_DEVICE_INTFLAG_EORST);
+    hri_usbdevice_clear_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
+    hri_usbdevice_set_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
 
-	_usb_d_dev_reset_epts();
-	dev_inst.callbacks.event(USB_EV_RESET, 0);
+    _usb_d_dev_reset_epts();
+    dev_inst.callbacks.event(USB_EV_RESET, 0);
 }
 
 static inline void _usb_d_dev_suspend(void)
 {
-	hri_usbdevice_clear_INTFLAG_reg(USB, USB_D_SUSPEND_INT_FLAGS);
-	hri_usbdevice_clear_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
-	hri_usbdevice_set_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
+    hri_usbdevice_clear_INTFLAG_reg(USB, USB_D_SUSPEND_INT_FLAGS);
+    hri_usbdevice_clear_INTEN_reg(USB, USB_D_SUSPEND_INT_FLAGS);
+    hri_usbdevice_set_INTEN_reg(USB, USB_D_WAKEUP_INT_FLAGS);
 
-	dev_inst.callbacks.event(USB_EV_SUSPEND, 0);
+    dev_inst.callbacks.event(USB_EV_SUSPEND, 0);
 }
 
 /**
@@ -1020,28 +1020,28 @@ static inline void _usb_d_dev_suspend(void)
  */
 static inline bool _usb_d_dev_handle_nep(void)
 {
-	bool     rc    = true;
-	uint16_t flags = hri_usbdevice_read_INTFLAG_reg(USB);
-	flags &= hri_usbdevice_read_INTEN_reg(USB);
+    bool     rc    = true;
+    uint16_t flags = hri_usbdevice_read_INTFLAG_reg(USB);
+    flags &= hri_usbdevice_read_INTEN_reg(USB);
 
-	if (flags & USB_DEVICE_INTFLAG_SOF) {
-		_usb_d_dev_sof();
-		return true;
-	}
-	if (flags & USB_DEVICE_INTFLAG_LPMSUSP) {
-		_usb_d_dev_lpmsusp();
-	} else if (flags & USB_DEVICE_INTFLAG_RAMACER) {
-		_usb_d_dev_ramerr();
-	} else if (flags & USB_D_WAKEUP_INT_FLAGS) {
-		_usb_d_dev_wakeup();
-	} else if (flags & USB_DEVICE_INTFLAG_EORST) {
-		_usb_d_dev_reset();
-	} else if (flags & USB_DEVICE_INTFLAG_SUSPEND) {
-		_usb_d_dev_suspend();
-	} else {
-		rc = false;
-	}
-	return rc;
+    if (flags & USB_DEVICE_INTFLAG_SOF) {
+        _usb_d_dev_sof();
+        return true;
+    }
+    if (flags & USB_DEVICE_INTFLAG_LPMSUSP) {
+        _usb_d_dev_lpmsusp();
+    } else if (flags & USB_DEVICE_INTFLAG_RAMACER) {
+        _usb_d_dev_ramerr();
+    } else if (flags & USB_D_WAKEUP_INT_FLAGS) {
+        _usb_d_dev_wakeup();
+    } else if (flags & USB_DEVICE_INTFLAG_EORST) {
+        _usb_d_dev_reset();
+    } else if (flags & USB_DEVICE_INTFLAG_SUSPEND) {
+        _usb_d_dev_suspend();
+    } else {
+        rc = false;
+    }
+    return rc;
 }
 
 /**
@@ -1051,78 +1051,78 @@ static inline bool _usb_d_dev_handle_nep(void)
  */
 static void _usb_d_dev_in_next(struct _usb_d_dev_ep *ept, bool isr)
 {
-	Usb *              hw          = USB;
-	uint8_t            epn         = USB_EP_GET_N(ept->ep);
-	UsbDeviceDescBank *bank        = &prvt_inst.desc_table[epn].DeviceDescBank[0];
-	uint16_t           trans_count = isr ? bank[1].PCKSIZE.bit.BYTE_COUNT : 0;
-	uint16_t           trans_next;
-	uint16_t           last_pkt = trans_count & ((ept->size == 1023) ? ept->size : (ept->size - 1));
-	uint8_t            inten    = 0;
-	bool               is_ctrl  = _usb_d_dev_ep_is_ctrl(ept);
+    Usb *              hw          = USB;
+    uint8_t            epn         = USB_EP_GET_N(ept->ep);
+    UsbDeviceDescBank *bank        = &prvt_inst.desc_table[epn].DeviceDescBank[0];
+    uint16_t           trans_count = isr ? bank[1].PCKSIZE.bit.BYTE_COUNT : 0;
+    uint16_t           trans_next;
+    uint16_t           last_pkt = trans_count & ((ept->size == 1023) ? ept->size : (ept->size - 1));
+    uint8_t            inten    = 0;
+    bool               is_ctrl  = _usb_d_dev_ep_is_ctrl(ept);
 
-	if (isr) {
-		_usbd_ep_ack_io_cpt(epn, 1);
-	}
+    if (isr) {
+        _usbd_ep_ack_io_cpt(epn, 1);
+    }
 
-	ept->trans_count += trans_count;
-	/* Send more data. */
-	if (ept->trans_count < ept->trans_size) {
-		trans_next = ept->trans_size - ept->trans_count;
-		if (ept->flags.bits.use_cache) {
-			if (trans_next > ept->size) {
-				trans_next = ept->size;
-			}
-			memcpy(ept->cache, &ept->trans_buf[ept->trans_count], trans_next);
-			_usbd_ep_set_buf(epn, 1, (uint32_t)ept->cache);
-		} else {
-			if (trans_next > USB_D_DEV_TRANS_MAX) {
-				trans_next = USB_D_DEV_TRANS_MAX;
-			}
-			_usbd_ep_set_buf(epn, 1, (uint32_t)&ept->trans_buf[ept->trans_count]);
-		}
-		_usbd_ep_set_in_trans(epn, 1, trans_next, 0);
-		goto _in_tx_exec;
-	} else if (ept->flags.bits.need_zlp) {
-		ept->flags.bits.need_zlp = 0;
-		_usbd_ep_set_in_trans(epn, 1, 0, 0);
-		goto _in_tx_exec;
-	}
-	/* Complete. */
-	if (is_ctrl) {
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK1_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRCPT0);
-	} else {
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK1_INT_FLAGS);
-	}
+    ept->trans_count += trans_count;
+    /* Send more data. */
+    if (ept->trans_count < ept->trans_size) {
+        trans_next = ept->trans_size - ept->trans_count;
+        if (ept->flags.bits.use_cache) {
+            if (trans_next > ept->size) {
+                trans_next = ept->size;
+            }
+            memcpy(ept->cache, &ept->trans_buf[ept->trans_count], trans_next);
+            _usbd_ep_set_buf(epn, 1, (uint32_t)ept->cache);
+        } else {
+            if (trans_next > USB_D_DEV_TRANS_MAX) {
+                trans_next = USB_D_DEV_TRANS_MAX;
+            }
+            _usbd_ep_set_buf(epn, 1, (uint32_t)&ept->trans_buf[ept->trans_count]);
+        }
+        _usbd_ep_set_in_trans(epn, 1, trans_next, 0);
+        goto _in_tx_exec;
+    } else if (ept->flags.bits.need_zlp) {
+        ept->flags.bits.need_zlp = 0;
+        _usbd_ep_set_in_trans(epn, 1, 0, 0);
+        goto _in_tx_exec;
+    }
+    /* Complete. */
+    if (is_ctrl) {
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK1_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRCPT0);
+    } else {
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK1_INT_FLAGS);
+    }
 
-	/* No ping-pong, so ask more data without background transfer. */
-	if (last_pkt == ept->size) {
-		ept->flags.bits.is_busy = 0;
-		if (dev_inst.ep_callbacks.more(ept->ep, ept->trans_count)) {
-			/* More data added. */
-			return;
-		}
-		ept->flags.bits.is_busy = 1;
-	}
-	/* Finish normally. */
-	_usb_d_dev_trans_done(ept, USB_TRANS_DONE);
-	return;
+    /* No ping-pong, so ask more data without background transfer. */
+    if (last_pkt == ept->size) {
+        ept->flags.bits.is_busy = 0;
+        if (dev_inst.ep_callbacks.more(ept->ep, ept->trans_count)) {
+            /* More data added. */
+            return;
+        }
+        ept->flags.bits.is_busy = 1;
+    }
+    /* Finish normally. */
+    _usb_d_dev_trans_done(ept, USB_TRANS_DONE);
+    return;
 
 _in_tx_exec:
-	if (!isr) {
-		if (is_ctrl) {
-			/* Control endpoint: SETUP or OUT will abort IN transaction.
-			 * SETUP: terminate the IN without any notification. Trigger
-			 *        SETUP callback.
-			 * OUT NAK: terminate IN.
-			 */
-			inten = USB_D_BANK1_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRFAIL0;
-		} else {
-			/* Initialize normal IN transaction. */
-			inten = USB_D_BANK1_INT_FLAGS;
-		}
-		hri_usbendpoint_set_EPINTEN_reg(hw, epn, inten);
-	}
-	_usbd_ep_set_in_rdy(epn, 1, true);
+    if (!isr) {
+        if (is_ctrl) {
+            /* Control endpoint: SETUP or OUT will abort IN transaction.
+             * SETUP: terminate the IN without any notification. Trigger
+             *        SETUP callback.
+             * OUT NAK: terminate IN.
+             */
+            inten = USB_D_BANK1_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRFAIL0;
+        } else {
+            /* Initialize normal IN transaction. */
+            inten = USB_D_BANK1_INT_FLAGS;
+        }
+        hri_usbendpoint_set_EPINTEN_reg(hw, epn, inten);
+    }
+    _usbd_ep_set_in_rdy(epn, 1, true);
 }
 
 /**
@@ -1132,105 +1132,105 @@ _in_tx_exec:
  */
 static void _usb_d_dev_out_next(struct _usb_d_dev_ep *ept, bool isr)
 {
-	Usb *              hw         = USB;
-	uint8_t            epn        = USB_EP_GET_N(ept->ep);
-	UsbDeviceDescBank *bank       = &prvt_inst.desc_table[epn].DeviceDescBank[0];
-	uint16_t           trans_size = isr ? bank->PCKSIZE.bit.MULTI_PACKET_SIZE : 0;
-	uint16_t           last_trans = isr ? bank->PCKSIZE.bit.BYTE_COUNT : 0;
-	uint16_t           size_mask  = (ept->size == 1023) ? 1023 : (ept->size - 1);
-	uint16_t           last_pkt   = last_trans & size_mask;
-	uint16_t           trans_next;
-	uint8_t            inten;
-	bool               is_ctrl = _usb_d_dev_ep_is_ctrl(ept);
+    Usb *              hw         = USB;
+    uint8_t            epn        = USB_EP_GET_N(ept->ep);
+    UsbDeviceDescBank *bank       = &prvt_inst.desc_table[epn].DeviceDescBank[0];
+    uint16_t           trans_size = isr ? bank->PCKSIZE.bit.MULTI_PACKET_SIZE : 0;
+    uint16_t           last_trans = isr ? bank->PCKSIZE.bit.BYTE_COUNT : 0;
+    uint16_t           size_mask  = (ept->size == 1023) ? 1023 : (ept->size - 1);
+    uint16_t           last_pkt   = last_trans & size_mask;
+    uint16_t           trans_next;
+    uint8_t            inten;
+    bool               is_ctrl = _usb_d_dev_ep_is_ctrl(ept);
 
-	if (isr) {
-		_usbd_ep_ack_io_cpt(epn, 0);
-	}
+    if (isr) {
+        _usbd_ep_ack_io_cpt(epn, 0);
+    }
 
-	/* If cache is used, copy data to buffer. */
-	if (ept->flags.bits.use_cache && ept->trans_size) {
-		uint16_t buf_remain = ept->trans_size - ept->trans_count;
-		memcpy(&ept->trans_buf[ept->trans_count], ept->cache, (buf_remain > last_pkt) ? last_pkt : buf_remain);
-	}
+    /* If cache is used, copy data to buffer. */
+    if (ept->flags.bits.use_cache && ept->trans_size) {
+        uint16_t buf_remain = ept->trans_size - ept->trans_count;
+        memcpy(&ept->trans_buf[ept->trans_count], ept->cache, (buf_remain > last_pkt) ? last_pkt : buf_remain);
+    }
 
-	/* Force wait ZLP */
-	if (ept->trans_size == 0 && ept->flags.bits.need_zlp) {
-		ept->flags.bits.need_zlp  = 0;
-		ept->flags.bits.use_cache = 1;
-		_usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
-		_usbd_ep_set_out_trans(epn, 0, ept->size, 0);
-		goto _out_rx_exec;
-	} else if (isr && last_pkt < ept->size) {
-		/* Short packet. */
-		ept->flags.bits.need_zlp = 0;
-		ept->trans_count += last_trans;
-	} else {
-		/* Full packets. */
-		ept->trans_count += trans_size;
+    /* Force wait ZLP */
+    if (ept->trans_size == 0 && ept->flags.bits.need_zlp) {
+        ept->flags.bits.need_zlp  = 0;
+        ept->flags.bits.use_cache = 1;
+        _usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
+        _usbd_ep_set_out_trans(epn, 0, ept->size, 0);
+        goto _out_rx_exec;
+    } else if (isr && last_pkt < ept->size) {
+        /* Short packet. */
+        ept->flags.bits.need_zlp = 0;
+        ept->trans_count += last_trans;
+    } else {
+        /* Full packets. */
+        ept->trans_count += trans_size;
 
-		/* Wait more data */
-		if (ept->trans_count < ept->trans_size) {
-			/* Continue OUT */
-			trans_next = ept->trans_size - ept->trans_count;
-			if (ept->flags.bits.use_cache) {
-				/* Expect single packet each time. */
-				if (trans_next > ept->size) {
-					trans_next = ept->size;
-				}
-				_usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
-			} else {
-				/* Multiple packets each time. */
-				if (trans_next > ept->size) {
-					if (trans_next > USB_D_DEV_TRANS_MAX) {
-						trans_next = USB_D_DEV_TRANS_MAX;
-					} else {
-						/* Must expect multiple of ep size. */
-						trans_next -= trans_next & size_mask;
-					}
-				} else if (trans_next < ept->size) {
-					/* Last un-aligned packet should be cached. */
-					ept->flags.bits.use_cache = 1;
-				}
-				_usbd_ep_set_buf(epn, 0, (uint32_t)&ept->trans_buf[ept->trans_count]);
-			}
-			_usbd_ep_set_out_trans(epn, 0, trans_next, 0);
-			goto _out_rx_exec;
-		}
-	}
-	/* Finish normally. */
-	if (is_ctrl) {
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK0_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRFAIL1);
-	} else {
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK0_INT_FLAGS);
-	}
-	/* Use ep0 out cache for next setup packets */
-	if (0 == epn) {
-		_usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
-	}
-	_usb_d_dev_trans_done(ept, USB_TRANS_DONE);
-	return;
+        /* Wait more data */
+        if (ept->trans_count < ept->trans_size) {
+            /* Continue OUT */
+            trans_next = ept->trans_size - ept->trans_count;
+            if (ept->flags.bits.use_cache) {
+                /* Expect single packet each time. */
+                if (trans_next > ept->size) {
+                    trans_next = ept->size;
+                }
+                _usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
+            } else {
+                /* Multiple packets each time. */
+                if (trans_next > ept->size) {
+                    if (trans_next > USB_D_DEV_TRANS_MAX) {
+                        trans_next = USB_D_DEV_TRANS_MAX;
+                    } else {
+                        /* Must expect multiple of ep size. */
+                        trans_next -= trans_next & size_mask;
+                    }
+                } else if (trans_next < ept->size) {
+                    /* Last un-aligned packet should be cached. */
+                    ept->flags.bits.use_cache = 1;
+                }
+                _usbd_ep_set_buf(epn, 0, (uint32_t)&ept->trans_buf[ept->trans_count]);
+            }
+            _usbd_ep_set_out_trans(epn, 0, trans_next, 0);
+            goto _out_rx_exec;
+        }
+    }
+    /* Finish normally. */
+    if (is_ctrl) {
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK0_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRFAIL1);
+    } else {
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_BANK0_INT_FLAGS);
+    }
+    /* Use ep0 out cache for next setup packets */
+    if (0 == epn) {
+        _usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
+    }
+    _usb_d_dev_trans_done(ept, USB_TRANS_DONE);
+    return;
 
 _out_rx_exec:
-	if (!isr) {
-		if (is_ctrl) {
-			/* Initialize control OUT transaction. */
+    if (!isr) {
+        if (is_ctrl) {
+            /* Initialize control OUT transaction. */
 
-			/* Control transfer: SETUP or IN request will abort the
-			 *                   OUT transactions.
-			 * SETUP: terminate OUT without any notification.
-			 *        Trigger SETUP notification.
-			 * IN NAK: finish OUT normally. Notify data done.
-			 */
-			_usbd_ep_clear_bank_status(epn, 1);
-			/* Detect OUT, SETUP, NAK IN */
-			inten = USB_D_BANK0_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRFAIL1;
-		} else {
-			/* Initialize normal OUT transaction. */
-			inten = USB_D_BANK0_INT_FLAGS;
-		}
-		hri_usbendpoint_set_EPINTEN_reg(hw, epn, inten);
-	}
-	_usbd_ep_set_out_rdy(epn, 0, true);
+            /* Control transfer: SETUP or IN request will abort the
+             *                   OUT transactions.
+             * SETUP: terminate OUT without any notification.
+             *        Trigger SETUP notification.
+             * IN NAK: finish OUT normally. Notify data done.
+             */
+            _usbd_ep_clear_bank_status(epn, 1);
+            /* Detect OUT, SETUP, NAK IN */
+            inten = USB_D_BANK0_INT_FLAGS | USB_DEVICE_EPINTFLAG_TRFAIL1;
+        } else {
+            /* Initialize normal OUT transaction. */
+            inten = USB_D_BANK0_INT_FLAGS;
+        }
+        hri_usbendpoint_set_EPINTEN_reg(hw, epn, inten);
+    }
+    _usbd_ep_set_out_rdy(epn, 0, true);
 }
 
 /**
@@ -1239,35 +1239,35 @@ _out_rx_exec:
  */
 static void _usb_d_dev_handle_setup(struct _usb_d_dev_ep *ept)
 {
-	uint8_t epn     = USB_EP_GET_N(ept->ep);
-	bool    is_ctrl = _usb_d_dev_ep_is_ctrl(ept);
+    uint8_t epn     = USB_EP_GET_N(ept->ep);
+    bool    is_ctrl = _usb_d_dev_ep_is_ctrl(ept);
 
-	if (!is_ctrl) {
-		/* Should never be here! */
-		_usbd_ep_ack_setup(epn);
-		_usbd_ep_stop_setup(epn);
-		return;
-	}
-	/* Control transfer:
-	 * SETUP transaction will terminate IN/OUT transaction,
-	 * and start new transaction with received SETUP packet.
-	 */
-	if (_usb_d_dev_ep_is_busy(ept)) {
-		ept->flags.bits.is_busy = 0;
+    if (!is_ctrl) {
+        /* Should never be here! */
+        _usbd_ep_ack_setup(epn);
+        _usbd_ep_stop_setup(epn);
+        return;
+    }
+    /* Control transfer:
+     * SETUP transaction will terminate IN/OUT transaction,
+     * and start new transaction with received SETUP packet.
+     */
+    if (_usb_d_dev_ep_is_busy(ept)) {
+        ept->flags.bits.is_busy = 0;
 
-		/* Stop transfer on either direction. */
-		_usbd_ep_set_in_rdy(epn, 1, false);
-		_usbd_ep_set_out_rdy(epn, 0, false);
-	}
-	ept->flags.bits.is_stalled = 0;
+        /* Stop transfer on either direction. */
+        _usbd_ep_set_in_rdy(epn, 1, false);
+        _usbd_ep_set_out_rdy(epn, 0, false);
+    }
+    ept->flags.bits.is_stalled = 0;
 
-	/* Clear status and notify SETUP */
-	_usbd_ep_clear_bank_status(epn, 0);
-	_usbd_ep_clear_bank_status(epn, 1);
-	_usbd_ep_int_ack(epn, USB_D_BANK0_INT_FLAGS | USB_D_BANK1_INT_FLAGS);
-	_usbd_ep_int_dis(epn, USB_D_BANK0_INT_FLAGS | USB_D_BANK1_INT_FLAGS);
-	/* Invoke callback. */
-	dev_inst.ep_callbacks.setup(ept->ep);
+    /* Clear status and notify SETUP */
+    _usbd_ep_clear_bank_status(epn, 0);
+    _usbd_ep_clear_bank_status(epn, 1);
+    _usbd_ep_int_ack(epn, USB_D_BANK0_INT_FLAGS | USB_D_BANK1_INT_FLAGS);
+    _usbd_ep_int_dis(epn, USB_D_BANK0_INT_FLAGS | USB_D_BANK1_INT_FLAGS);
+    /* Invoke callback. */
+    dev_inst.ep_callbacks.setup(ept->ep);
 }
 
 /**
@@ -1277,10 +1277,10 @@ static void _usb_d_dev_handle_setup(struct _usb_d_dev_ep *ept)
  */
 static void _usb_d_dev_handle_stall(struct _usb_d_dev_ep *ept, const uint8_t bank_n)
 {
-	uint8_t epn = USB_EP_GET_N(ept->ep);
-	/* Clear interrupt enable. Leave status there for status check. */
-	_usbd_ep_int_stall_en(epn, bank_n, false);
-	dev_inst.ep_callbacks.done(ept->ep, USB_TRANS_STALL, ept->trans_count);
+    uint8_t epn = USB_EP_GET_N(ept->ep);
+    /* Clear interrupt enable. Leave status there for status check. */
+    _usbd_ep_int_stall_en(epn, bank_n, false);
+    dev_inst.ep_callbacks.done(ept->ep, USB_TRANS_STALL, ept->trans_count);
 }
 
 /**
@@ -1290,36 +1290,36 @@ static void _usb_d_dev_handle_stall(struct _usb_d_dev_ep *ept, const uint8_t ban
  */
 static void _usb_d_dev_handle_trfail(struct _usb_d_dev_ep *ept, const uint8_t bank_n)
 {
-	Usb *              hw      = USB;
-	uint8_t            epn     = USB_EP_GET_N(ept->ep);
-	const uint8_t      fail[2] = {USB_DEVICE_EPINTFLAG_TRFAIL0, USB_DEVICE_EPINTFLAG_TRFAIL1};
-	UsbDeviceDescBank *bank    = prvt_inst.desc_table[epn].DeviceDescBank;
-	uint8_t            eptype
-	    = bank_n ? hri_usbendpoint_read_EPCFG_EPTYPE1_bf(hw, epn) : hri_usbendpoint_read_EPCFG_EPTYPE0_bf(hw, epn);
-	bool                      is_ctrl = _usb_d_dev_ep_is_ctrl(ept);
-	USB_DEVICE_STATUS_BK_Type st;
-	st.reg = bank[bank_n].STATUS_BK.reg;
+    Usb *              hw      = USB;
+    uint8_t            epn     = USB_EP_GET_N(ept->ep);
+    const uint8_t      fail[2] = {USB_DEVICE_EPINTFLAG_TRFAIL0, USB_DEVICE_EPINTFLAG_TRFAIL1};
+    UsbDeviceDescBank *bank    = prvt_inst.desc_table[epn].DeviceDescBank;
+    uint8_t            eptype
+        = bank_n ? hri_usbendpoint_read_EPCFG_EPTYPE1_bf(hw, epn) : hri_usbendpoint_read_EPCFG_EPTYPE0_bf(hw, epn);
+    bool                      is_ctrl = _usb_d_dev_ep_is_ctrl(ept);
+    USB_DEVICE_STATUS_BK_Type st;
+    st.reg = bank[bank_n].STATUS_BK.reg;
 
-	if ((eptype == USB_D_EPTYPE_ISOCH) && st.bit.CRCERR) {
-		bank[bank_n].STATUS_BK.bit.CRCERR = 0;
-		hri_usbendpoint_clear_EPINTFLAG_reg(hw, epn, fail[bank_n]);
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, fail[bank_n]);
-		_usb_d_dev_trans_stop(ept, bank_n, USB_TRANS_ERROR);
-	} else if (st.bit.ERRORFLOW) {
-		bank[bank_n].STATUS_BK.bit.ERRORFLOW = 0;
-		hri_usbendpoint_clear_EPINTFLAG_reg(hw, epn, fail[bank_n]);
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, fail[bank_n]);
-		/* Abort control transfer. */
-		if (is_ctrl && _usb_d_dev_ep_is_busy(ept)) {
-			if (bank_n != _usb_d_dev_ep_is_in(ept)) {
-				_usb_d_dev_trans_stop(ept, _usb_d_dev_ep_is_in(ept), USB_TRANS_DONE);
-			}
-		}
-	} else {
-		_usbd_ep_clear_bank_status(epn, bank_n);
-		hri_usbendpoint_clear_EPINTFLAG_reg(hw, epn, fail[bank_n]);
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, fail[bank_n]);
-	}
+    if ((eptype == USB_D_EPTYPE_ISOCH) && st.bit.CRCERR) {
+        bank[bank_n].STATUS_BK.bit.CRCERR = 0;
+        hri_usbendpoint_clear_EPINTFLAG_reg(hw, epn, fail[bank_n]);
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, fail[bank_n]);
+        _usb_d_dev_trans_stop(ept, bank_n, USB_TRANS_ERROR);
+    } else if (st.bit.ERRORFLOW) {
+        bank[bank_n].STATUS_BK.bit.ERRORFLOW = 0;
+        hri_usbendpoint_clear_EPINTFLAG_reg(hw, epn, fail[bank_n]);
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, fail[bank_n]);
+        /* Abort control transfer. */
+        if (is_ctrl && _usb_d_dev_ep_is_busy(ept)) {
+            if (bank_n != _usb_d_dev_ep_is_in(ept)) {
+                _usb_d_dev_trans_stop(ept, _usb_d_dev_ep_is_in(ept), USB_TRANS_DONE);
+            }
+        }
+    } else {
+        _usbd_ep_clear_bank_status(epn, bank_n);
+        hri_usbendpoint_clear_EPINTFLAG_reg(hw, epn, fail[bank_n]);
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, fail[bank_n]);
+    }
 }
 
 /**
@@ -1329,18 +1329,18 @@ static void _usb_d_dev_handle_trfail(struct _usb_d_dev_ep *ept, const uint8_t ba
  */
 static inline void _usb_d_dev_trans_setup_isr(struct _usb_d_dev_ep *ept, const uint8_t flags)
 {
-	/*
-	 * SETPU is automatically ACKed by hardware
-	 * OUT & IN should be set to NAK when checking SETUP
-	 * No need to check OUT & IN status.
-	 */
-	if (flags & USB_DEVICE_EPINTFLAG_RXSTP) {
-		_usb_d_dev_handle_setup(ept);
-	} else if (flags & USB_DEVICE_EPINTFLAG_STALL1) {
-		_usb_d_dev_handle_stall(ept, 1);
-	} else if (flags & USB_DEVICE_EPINTFLAG_STALL0) {
-		_usb_d_dev_handle_stall(ept, 0);
-	}
+    /*
+     * SETPU is automatically ACKed by hardware
+     * OUT & IN should be set to NAK when checking SETUP
+     * No need to check OUT & IN status.
+     */
+    if (flags & USB_DEVICE_EPINTFLAG_RXSTP) {
+        _usb_d_dev_handle_setup(ept);
+    } else if (flags & USB_DEVICE_EPINTFLAG_STALL1) {
+        _usb_d_dev_handle_stall(ept, 1);
+    } else if (flags & USB_DEVICE_EPINTFLAG_STALL0) {
+        _usb_d_dev_handle_stall(ept, 0);
+    }
 }
 
 /**
@@ -1350,26 +1350,26 @@ static inline void _usb_d_dev_trans_setup_isr(struct _usb_d_dev_ep *ept, const u
  */
 static inline void _usb_d_dev_trans_in_isr(struct _usb_d_dev_ep *ept, const uint8_t flags)
 {
-	/*
-	 * Check IN flags
-	 * If control endpoint, SETUP & OUT is checked to see if abort
-	 */
-	if (flags & USB_DEVICE_EPINTFLAG_STALL1) {
-		_usb_d_dev_handle_stall(ept, 1);
-	} else if (flags & USB_DEVICE_EPINTFLAG_TRFAIL1) {
-		_usb_d_dev_handle_trfail(ept, 1);
-	} else if (flags & USB_DEVICE_EPINTFLAG_TRCPT1) {
-		_usb_d_dev_in_next(ept, true);
-	} else if (_usb_d_dev_ep_is_ctrl(ept)) {
-		/* Check OUT NAK
-		 * Check SETUP
-		 */
-		if (flags & USB_DEVICE_EPINTFLAG_TRFAIL0) {
-			_usb_d_dev_handle_trfail(ept, 0);
-		} else if (flags & USB_DEVICE_EPINTFLAG_RXSTP) {
-			_usb_d_dev_handle_setup(ept);
-		}
-	}
+    /*
+     * Check IN flags
+     * If control endpoint, SETUP & OUT is checked to see if abort
+     */
+    if (flags & USB_DEVICE_EPINTFLAG_STALL1) {
+        _usb_d_dev_handle_stall(ept, 1);
+    } else if (flags & USB_DEVICE_EPINTFLAG_TRFAIL1) {
+        _usb_d_dev_handle_trfail(ept, 1);
+    } else if (flags & USB_DEVICE_EPINTFLAG_TRCPT1) {
+        _usb_d_dev_in_next(ept, true);
+    } else if (_usb_d_dev_ep_is_ctrl(ept)) {
+        /* Check OUT NAK
+         * Check SETUP
+         */
+        if (flags & USB_DEVICE_EPINTFLAG_TRFAIL0) {
+            _usb_d_dev_handle_trfail(ept, 0);
+        } else if (flags & USB_DEVICE_EPINTFLAG_RXSTP) {
+            _usb_d_dev_handle_setup(ept);
+        }
+    }
 }
 
 /**
@@ -1379,26 +1379,26 @@ static inline void _usb_d_dev_trans_in_isr(struct _usb_d_dev_ep *ept, const uint
  */
 static inline void _usb_d_dev_trans_out_isr(struct _usb_d_dev_ep *ept, const uint8_t flags)
 {
-	/*
-	 * Check OUT flags.
-	 * If control endpoint, SETUP & IN NAK is checked to see if abort
-	 */
-	if (flags & USB_DEVICE_EPINTFLAG_STALL0) {
-		_usb_d_dev_handle_stall(ept, 0);
-	} else if (flags & USB_DEVICE_EPINTFLAG_TRFAIL0) {
-		_usb_d_dev_handle_trfail(ept, 0);
-	} else if (flags & USB_DEVICE_EPINTFLAG_TRCPT0) {
-		_usb_d_dev_out_next(ept, true);
-	} else if (_usb_d_dev_ep_is_ctrl(ept)) {
-		/* Check IN NAK
-		 * Check SETUP
-		 */
-		if (flags & USB_DEVICE_EPINTFLAG_TRFAIL1) {
-			_usb_d_dev_handle_trfail(ept, 1);
-		} else if (flags & USB_DEVICE_EPINTFLAG_RXSTP) {
-			_usb_d_dev_handle_setup(ept);
-		}
-	}
+    /*
+     * Check OUT flags.
+     * If control endpoint, SETUP & IN NAK is checked to see if abort
+     */
+    if (flags & USB_DEVICE_EPINTFLAG_STALL0) {
+        _usb_d_dev_handle_stall(ept, 0);
+    } else if (flags & USB_DEVICE_EPINTFLAG_TRFAIL0) {
+        _usb_d_dev_handle_trfail(ept, 0);
+    } else if (flags & USB_DEVICE_EPINTFLAG_TRCPT0) {
+        _usb_d_dev_out_next(ept, true);
+    } else if (_usb_d_dev_ep_is_ctrl(ept)) {
+        /* Check IN NAK
+         * Check SETUP
+         */
+        if (flags & USB_DEVICE_EPINTFLAG_TRFAIL1) {
+            _usb_d_dev_handle_trfail(ept, 1);
+        } else if (flags & USB_DEVICE_EPINTFLAG_RXSTP) {
+            _usb_d_dev_handle_setup(ept);
+        }
+    }
 }
 
 /**
@@ -1408,26 +1408,26 @@ static inline void _usb_d_dev_trans_out_isr(struct _usb_d_dev_ep *ept, const uin
  */
 static inline void _usb_d_dev_handle_eps(uint32_t epint, struct _usb_d_dev_ep *ept)
 {
-	Usb *hw = USB;
+    Usb *hw = USB;
 
-	uint8_t flags, mask;
-	uint8_t epn = USB_EP_GET_N(ept->ep);
+    uint8_t flags, mask;
+    uint8_t epn = USB_EP_GET_N(ept->ep);
 
-	if (!(epint & (1u << epn))) {
-		return;
-	}
-	flags = hw->DEVICE.DeviceEndpoint[epn].EPINTFLAG.reg;
-	mask  = hw->DEVICE.DeviceEndpoint[epn].EPINTENSET.reg;
-	flags &= mask;
-	if (flags) {
-		if ((ept->flags.bits.eptype == 0x1) && !_usb_d_dev_ep_is_busy(ept)) {
-			_usb_d_dev_trans_setup_isr(ept, flags);
-		} else if (_usb_d_dev_ep_is_in(ept)) {
-			_usb_d_dev_trans_in_isr(ept, flags);
-		} else {
-			_usb_d_dev_trans_out_isr(ept, flags);
-		}
-	}
+    if (!(epint & (1u << epn))) {
+        return;
+    }
+    flags = hw->DEVICE.DeviceEndpoint[epn].EPINTFLAG.reg;
+    mask  = hw->DEVICE.DeviceEndpoint[epn].EPINTENSET.reg;
+    flags &= mask;
+    if (flags) {
+        if ((ept->flags.bits.eptype == 0x1) && !_usb_d_dev_ep_is_busy(ept)) {
+            _usb_d_dev_trans_setup_isr(ept, flags);
+        } else if (_usb_d_dev_ep_is_in(ept)) {
+            _usb_d_dev_trans_in_isr(ept, flags);
+        } else {
+            _usb_d_dev_trans_out_isr(ept, flags);
+        }
+    }
 }
 
 /**
@@ -1436,23 +1436,23 @@ static inline void _usb_d_dev_handle_eps(uint32_t epint, struct _usb_d_dev_ep *e
  */
 static void _usb_d_dev_handler(void)
 {
-	Usb *   hw = USB;
-	uint8_t i;
+    Usb *   hw = USB;
+    uint8_t i;
 
-	uint16_t epint = hw->DEVICE.EPINTSMRY.reg;
-	if (0 == epint) {
-		if (_usb_d_dev_handle_nep()) {
-			return;
-		}
-	}
-	/* Handle endpoints */
-	for (i = 0; i < USB_D_N_EP; i++) {
-		struct _usb_d_dev_ep *ept = &dev_inst.ep[i];
-		if (ept->ep == 0xFF) {
-			continue;
-		}
-		_usb_d_dev_handle_eps(epint, ept);
-	}
+    uint16_t epint = hw->DEVICE.EPINTSMRY.reg;
+    if (0 == epint) {
+        if (_usb_d_dev_handle_nep()) {
+            return;
+        }
+    }
+    /* Handle endpoints */
+    for (i = 0; i < USB_D_N_EP; i++) {
+        struct _usb_d_dev_ep *ept = &dev_inst.ep[i];
+        if (ept->ep == 0xFF) {
+            continue;
+        }
+        _usb_d_dev_handle_eps(epint, ept);
+    }
 }
 
 /**
@@ -1460,131 +1460,131 @@ static void _usb_d_dev_handler(void)
  */
 static void _usb_d_dev_reset_epts(void)
 {
-	uint8_t i;
-	for (i = 0; i < USB_D_N_EP; i++) {
-		_usb_d_dev_trans_done(&dev_inst.ep[i], USB_TRANS_RESET);
-		dev_inst.ep[i].ep       = 0xFF;
-		dev_inst.ep[i].flags.u8 = 0;
-	}
-	memset(prvt_inst.desc_table, 0, sizeof(UsbDeviceDescriptor) * (CONF_USB_D_MAX_EP_N + 1));
+    uint8_t i;
+    for (i = 0; i < USB_D_N_EP; i++) {
+        _usb_d_dev_trans_done(&dev_inst.ep[i], USB_TRANS_RESET);
+        dev_inst.ep[i].ep       = 0xFF;
+        dev_inst.ep[i].flags.u8 = 0;
+    }
+    memset(prvt_inst.desc_table, 0, sizeof(UsbDeviceDescriptor) * (CONF_USB_D_MAX_EP_N + 1));
 }
 
 int32_t _usb_d_dev_init(void)
 {
-	Usb *         hw         = USB;
-	uint8_t       speed      = CONF_USB_D_SPEED;
-	const uint8_t spdconf[4] = {
-	    USB_DEVICE_CTRLB_SPDCONF(1), /* LS */
-	    USB_DEVICE_CTRLB_SPDCONF(0), /* FS */
-	    0,
-	    0 /* Reserved */
-	};
+    Usb *         hw         = USB;
+    uint8_t       speed      = CONF_USB_D_SPEED;
+    const uint8_t spdconf[4] = {
+        USB_DEVICE_CTRLB_SPDCONF(1), /* LS */
+        USB_DEVICE_CTRLB_SPDCONF(0), /* FS */
+        0,
+        0 /* Reserved */
+    };
 
-	if (!hri_usbdevice_is_syncing(hw, USB_SYNCBUSY_SWRST)) {
-		if (hri_usbdevice_get_CTRLA_reg(hw, USB_CTRLA_ENABLE)) {
-			hri_usbdevice_clear_CTRLA_ENABLE_bit(hw);
-			hri_usbdevice_wait_for_sync(hw, USB_SYNCBUSY_ENABLE);
-		}
-		hri_usbdevice_write_CTRLA_reg(hw, USB_CTRLA_SWRST);
-	}
-	hri_usbdevice_wait_for_sync(hw, USB_SYNCBUSY_SWRST);
+    if (!hri_usbdevice_is_syncing(hw, USB_SYNCBUSY_SWRST)) {
+        if (hri_usbdevice_get_CTRLA_reg(hw, USB_CTRLA_ENABLE)) {
+            hri_usbdevice_clear_CTRLA_ENABLE_bit(hw);
+            hri_usbdevice_wait_for_sync(hw, USB_SYNCBUSY_ENABLE);
+        }
+        hri_usbdevice_write_CTRLA_reg(hw, USB_CTRLA_SWRST);
+    }
+    hri_usbdevice_wait_for_sync(hw, USB_SYNCBUSY_SWRST);
 
-	dev_inst.callbacks.sof   = (_usb_d_dev_sof_cb_t)_dummy_func_dev_sof_cb;
-	dev_inst.callbacks.event = (_usb_d_dev_event_cb_t)_dummy_func_dev_event_cb;
+    dev_inst.callbacks.sof   = (_usb_d_dev_sof_cb_t)_dummy_func_dev_sof_cb;
+    dev_inst.callbacks.event = (_usb_d_dev_event_cb_t)_dummy_func_dev_event_cb;
 
-	dev_inst.ep_callbacks.setup = (_usb_d_dev_ep_cb_setup_t)_dummy_func_dev_ep_cb_setup;
-	dev_inst.ep_callbacks.more  = (_usb_d_dev_ep_cb_more_t)_dummy_func_dev_ep_cb_more;
-	dev_inst.ep_callbacks.done  = (_usb_d_dev_ep_cb_done_t)_dummy_func_dev_ep_cb_done;
+    dev_inst.ep_callbacks.setup = (_usb_d_dev_ep_cb_setup_t)_dummy_func_dev_ep_cb_setup;
+    dev_inst.ep_callbacks.more  = (_usb_d_dev_ep_cb_more_t)_dummy_func_dev_ep_cb_more;
+    dev_inst.ep_callbacks.done  = (_usb_d_dev_ep_cb_done_t)_dummy_func_dev_ep_cb_done;
 
-	_usb_d_dev_reset_epts();
+    _usb_d_dev_reset_epts();
 
-	_usb_load_calib();
+    _usb_load_calib();
 
-	hri_usbdevice_write_CTRLA_reg(hw, USB_CTRLA_RUNSTDBY);
-	hri_usbdevice_write_DESCADD_reg(hw, (uint32_t)prvt_inst.desc_table);
-	hri_usbdevice_write_CTRLB_reg(hw, spdconf[speed] | USB_DEVICE_CTRLB_DETACH);
+    hri_usbdevice_write_CTRLA_reg(hw, USB_CTRLA_RUNSTDBY);
+    hri_usbdevice_write_DESCADD_reg(hw, (uint32_t)prvt_inst.desc_table);
+    hri_usbdevice_write_CTRLB_reg(hw, spdconf[speed] | USB_DEVICE_CTRLB_DETACH);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 void _usb_d_dev_deinit(void)
 {
-	Usb *hw = USB;
+    Usb *hw = USB;
 
-	while (_usb_d_dev_disable() < 0)
-		;
+    while (_usb_d_dev_disable() < 0)
+        ;
 
-	hri_usbdevice_write_CTRLA_reg(hw, USB_CTRLA_SWRST);
+    hri_usbdevice_write_CTRLA_reg(hw, USB_CTRLA_SWRST);
 
-	NVIC_DisableIRQ(USB_0_IRQn);
-	NVIC_ClearPendingIRQ(USB_0_IRQn);
-	NVIC_DisableIRQ(USB_1_IRQn);
-	NVIC_ClearPendingIRQ(USB_1_IRQn);
-	NVIC_DisableIRQ(USB_2_IRQn);
-	NVIC_ClearPendingIRQ(USB_2_IRQn);
-	NVIC_DisableIRQ(USB_3_IRQn);
-	NVIC_ClearPendingIRQ(USB_3_IRQn);
+    NVIC_DisableIRQ(USB_0_IRQn);
+    NVIC_ClearPendingIRQ(USB_0_IRQn);
+    NVIC_DisableIRQ(USB_1_IRQn);
+    NVIC_ClearPendingIRQ(USB_1_IRQn);
+    NVIC_DisableIRQ(USB_2_IRQn);
+    NVIC_ClearPendingIRQ(USB_2_IRQn);
+    NVIC_DisableIRQ(USB_3_IRQn);
+    NVIC_ClearPendingIRQ(USB_3_IRQn);
 }
 
 int32_t _usb_d_dev_enable(void)
 {
-	Usb *   hw = USB;
-	uint8_t ctrla;
+    Usb *   hw = USB;
+    uint8_t ctrla;
 
-	if (hri_usbdevice_get_SYNCBUSY_reg(hw, (USB_SYNCBUSY_ENABLE | USB_SYNCBUSY_SWRST))) {
-		return -USB_ERR_DENIED;
-	}
-	ctrla = hri_usbdevice_read_CTRLA_reg(hw);
-	if ((ctrla & USB_CTRLA_ENABLE) == 0) {
-		hri_usbdevice_write_CTRLA_reg(hw, ctrla | USB_CTRLA_ENABLE);
-	}
+    if (hri_usbdevice_get_SYNCBUSY_reg(hw, (USB_SYNCBUSY_ENABLE | USB_SYNCBUSY_SWRST))) {
+        return -USB_ERR_DENIED;
+    }
+    ctrla = hri_usbdevice_read_CTRLA_reg(hw);
+    if ((ctrla & USB_CTRLA_ENABLE) == 0) {
+        hri_usbdevice_write_CTRLA_reg(hw, ctrla | USB_CTRLA_ENABLE);
+    }
 
-	NVIC_EnableIRQ(USB_0_IRQn);
-	NVIC_EnableIRQ(USB_1_IRQn);
-	NVIC_EnableIRQ(USB_2_IRQn);
-	NVIC_EnableIRQ(USB_3_IRQn);
+    NVIC_EnableIRQ(USB_0_IRQn);
+    NVIC_EnableIRQ(USB_1_IRQn);
+    NVIC_EnableIRQ(USB_2_IRQn);
+    NVIC_EnableIRQ(USB_3_IRQn);
 
-	hri_usbdevice_set_INTEN_reg(hw,
-	                            USB_DEVICE_INTENSET_SOF | USB_DEVICE_INTENSET_EORST | USB_DEVICE_INTENSET_RAMACER
-	                                | USB_D_SUSPEND_INT_FLAGS);
+    hri_usbdevice_set_INTEN_reg(hw,
+                                USB_DEVICE_INTENSET_SOF | USB_DEVICE_INTENSET_EORST | USB_DEVICE_INTENSET_RAMACER
+                                    | USB_D_SUSPEND_INT_FLAGS);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 int32_t _usb_d_dev_disable(void)
 {
-	Usb *   hw = USB;
-	uint8_t ctrla;
+    Usb *   hw = USB;
+    uint8_t ctrla;
 
-	if (hri_usbdevice_get_SYNCBUSY_reg(hw, (USB_SYNCBUSY_ENABLE | USB_SYNCBUSY_SWRST))) {
-		return -USB_ERR_DENIED;
-	}
+    if (hri_usbdevice_get_SYNCBUSY_reg(hw, (USB_SYNCBUSY_ENABLE | USB_SYNCBUSY_SWRST))) {
+        return -USB_ERR_DENIED;
+    }
 
-	ctrla = hri_usbdevice_read_CTRLA_reg(hw);
-	if (ctrla & USB_CTRLA_ENABLE) {
-		hri_usbdevice_write_CTRLA_reg(hw, ctrla & ~USB_CTRLA_ENABLE);
-	}
+    ctrla = hri_usbdevice_read_CTRLA_reg(hw);
+    if (ctrla & USB_CTRLA_ENABLE) {
+        hri_usbdevice_write_CTRLA_reg(hw, ctrla & ~USB_CTRLA_ENABLE);
+    }
 
-	NVIC_DisableIRQ(USB_0_IRQn);
-	NVIC_DisableIRQ(USB_1_IRQn);
-	NVIC_DisableIRQ(USB_2_IRQn);
-	NVIC_DisableIRQ(USB_3_IRQn);
+    NVIC_DisableIRQ(USB_0_IRQn);
+    NVIC_DisableIRQ(USB_1_IRQn);
+    NVIC_DisableIRQ(USB_2_IRQn);
+    NVIC_DisableIRQ(USB_3_IRQn);
 
-	hri_usbdevice_clear_INTEN_reg(hw,
-	                              USB_DEVICE_INTENSET_SOF | USB_DEVICE_INTENSET_EORST | USB_DEVICE_INTENSET_RAMACER
-	                                  | USB_D_SUSPEND_INT_FLAGS | USB_D_WAKEUP_INT_FLAGS);
+    hri_usbdevice_clear_INTEN_reg(hw,
+                                  USB_DEVICE_INTENSET_SOF | USB_DEVICE_INTENSET_EORST | USB_DEVICE_INTENSET_RAMACER
+                                      | USB_D_SUSPEND_INT_FLAGS | USB_D_WAKEUP_INT_FLAGS);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 void _usb_d_dev_attach(void)
 {
-	hri_usbdevice_clear_CTRLB_DETACH_bit(USB);
+    hri_usbdevice_clear_CTRLB_DETACH_bit(USB);
 }
 
 void _usb_d_dev_detach(void)
 {
-	hri_usbdevice_set_CTRLB_DETACH_bit(USB);
+    hri_usbdevice_set_CTRLB_DETACH_bit(USB);
 }
 
 #ifndef USB_FSMSTATUS_FSMSTATE_ON
@@ -1592,42 +1592,42 @@ void _usb_d_dev_detach(void)
 #endif
 void _usb_d_dev_send_remotewakeup(void)
 {
-	uint32_t retry = CONF_USB_RMT_WKUP_RETRY;
-	_usb_d_dev_wait_clk_rdy(CONF_USB_D_CLK_SRC);
-	while ((USB_FSMSTATUS_FSMSTATE_ON != hri_usbdevice_read_FSMSTATUS_FSMSTATE_bf(USB)) && (retry--)) {
-		USB->DEVICE.CTRLB.bit.UPRSM = 1;
-	}
+    uint32_t retry = CONF_USB_RMT_WKUP_RETRY;
+    _usb_d_dev_wait_clk_rdy(CONF_USB_D_CLK_SRC);
+    while ((USB_FSMSTATUS_FSMSTATE_ON != hri_usbdevice_read_FSMSTATUS_FSMSTATE_bf(USB)) && (retry--)) {
+        USB->DEVICE.CTRLB.bit.UPRSM = 1;
+    }
 }
 
 enum usb_speed _usb_d_dev_get_speed(void)
 {
-	uint8_t              sp       = (enum usb_speed)hri_usbdevice_read_STATUS_SPEED_bf(USB);
-	const enum usb_speed speed[2] = {USB_SPEED_FS, USB_SPEED_LS};
+    uint8_t              sp       = (enum usb_speed)hri_usbdevice_read_STATUS_SPEED_bf(USB);
+    const enum usb_speed speed[2] = {USB_SPEED_FS, USB_SPEED_LS};
 
-	return speed[sp];
+    return speed[sp];
 }
 
 void _usb_d_dev_set_address(uint8_t addr)
 {
-	hri_usbdevice_write_DADD_reg(USB, USB_DEVICE_DADD_ADDEN | USB_DEVICE_DADD_DADD(addr));
+    hri_usbdevice_write_DADD_reg(USB, USB_DEVICE_DADD_ADDEN | USB_DEVICE_DADD_DADD(addr));
 }
 
 uint8_t _usb_d_dev_get_address(void)
 {
-	uint8_t addr = hri_usbdevice_read_DADD_DADD_bf(USB);
-	return addr;
+    uint8_t addr = hri_usbdevice_read_DADD_DADD_bf(USB);
+    return addr;
 }
 
 uint16_t _usb_d_dev_get_frame_n(void)
 {
-	uint16_t fn = hri_usbdevice_read_FNUM_FNUM_bf(USB);
-	return fn;
+    uint16_t fn = hri_usbdevice_read_FNUM_FNUM_bf(USB);
+    return fn;
 }
 
 uint8_t _usb_d_dev_get_uframe_n(void)
 {
-	uint8_t ufn = hri_usbdevice_read_FNUM_MFNUM_bf(USB);
-	return ufn;
+    uint8_t ufn = hri_usbdevice_read_FNUM_MFNUM_bf(USB);
+    return ufn;
 }
 
 /**
@@ -1636,163 +1636,163 @@ uint8_t _usb_d_dev_get_uframe_n(void)
  */
 static inline void _usb_d_dev_trans_setup(struct _usb_d_dev_ep *ept)
 {
-	Usb *   hw  = USB;
-	uint8_t epn = USB_EP_GET_N(ept->ep);
+    Usb *   hw  = USB;
+    uint8_t epn = USB_EP_GET_N(ept->ep);
 
-	_usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
-	_usbd_ep_set_out_trans(epn, 0, ept->size, 0);
+    _usbd_ep_set_buf(epn, 0, (uint32_t)ept->cache);
+    _usbd_ep_set_out_trans(epn, 0, ept->size, 0);
 
-	hri_usbendpoint_clear_EPSTATUS_reg(hw, epn, USB_DEVICE_EPSTATUS_STALLRQ(0x3) | USB_DEVICE_EPSTATUS_BK1RDY);
-	_usbd_ep_set_out_rdy(epn, 0, false);
+    hri_usbendpoint_clear_EPSTATUS_reg(hw, epn, USB_DEVICE_EPSTATUS_STALLRQ(0x3) | USB_DEVICE_EPSTATUS_BK1RDY);
+    _usbd_ep_set_out_rdy(epn, 0, false);
 
-	hri_usbendpoint_set_EPINTEN_reg(hw, epn, USB_D_SETUP_INT_FLAGS);
+    hri_usbendpoint_set_EPINTEN_reg(hw, epn, USB_D_SETUP_INT_FLAGS);
 }
 
 int32_t _usb_d_dev_ep0_init(const uint8_t max_pkt_siz)
 {
-	return _usb_d_dev_ep_init(0, USB_EP_XTYPE_CTRL, max_pkt_siz);
+    return _usb_d_dev_ep_init(0, USB_EP_XTYPE_CTRL, max_pkt_siz);
 }
 
 int32_t _usb_d_dev_ep_init(const uint8_t ep, const uint8_t attr, const uint16_t max_pkt_siz)
 {
-	uint8_t               epn = USB_EP_GET_N(ep);
-	bool                  dir = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    uint8_t               epn = USB_EP_GET_N(ep);
+    bool                  dir = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
 
-	uint8_t                        ep_type = attr & USB_EP_XTYPE_MASK;
-	const struct _usb_ep_cfg_item *pcfg    = &_usb_ep_cfgs[epn];
+    uint8_t                        ep_type = attr & USB_EP_XTYPE_MASK;
+    const struct _usb_ep_cfg_item *pcfg    = &_usb_ep_cfgs[epn];
 
-	if (epn > CONF_USB_D_MAX_EP_N) {
-		return -USB_ERR_PARAM;
-	}
-	if (ept->ep != 0xFF) {
-		return -USB_ERR_REDO;
-	}
-	if (ep_type == USB_EP_XTYPE_CTRL) {
-		struct _usb_d_dev_ep *ept_in = _usb_d_dev_ept(epn, !dir);
-		if (ept_in->ep != 0xFF) {
-			return -USB_ERR_REDO;
-		}
-		if (pcfg->cache == NULL) {
-			return -USB_ERR_FUNC;
-		}
-	}
-	if ((dir ? pcfg->i_cache : pcfg->cache) && ((dir ? pcfg->i_size : pcfg->size) < max_pkt_siz)) {
-		return -USB_ERR_FUNC;
-	}
+    if (epn > CONF_USB_D_MAX_EP_N) {
+        return -USB_ERR_PARAM;
+    }
+    if (ept->ep != 0xFF) {
+        return -USB_ERR_REDO;
+    }
+    if (ep_type == USB_EP_XTYPE_CTRL) {
+        struct _usb_d_dev_ep *ept_in = _usb_d_dev_ept(epn, !dir);
+        if (ept_in->ep != 0xFF) {
+            return -USB_ERR_REDO;
+        }
+        if (pcfg->cache == NULL) {
+            return -USB_ERR_FUNC;
+        }
+    }
+    if ((dir ? pcfg->i_cache : pcfg->cache) && ((dir ? pcfg->i_size : pcfg->size) < max_pkt_siz)) {
+        return -USB_ERR_FUNC;
+    }
 
-	/* Initialize EP n settings */
-	ept->cache    = (uint8_t *)(dir ? pcfg->i_cache : pcfg->cache);
-	ept->size     = max_pkt_siz;
-	ept->flags.u8 = (ep_type + 1);
-	ept->ep       = ep;
+    /* Initialize EP n settings */
+    ept->cache    = (uint8_t *)(dir ? pcfg->i_cache : pcfg->cache);
+    ept->size     = max_pkt_siz;
+    ept->flags.u8 = (ep_type + 1);
+    ept->ep       = ep;
 
-	return USB_OK;
+    return USB_OK;
 }
 
 void _usb_d_dev_ep_deinit(uint8_t ep)
 {
-	Usb *                 hw  = USB;
-	uint8_t               epn = USB_EP_GET_N(ep);
-	bool                  dir = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    Usb *                 hw  = USB;
+    uint8_t               epn = USB_EP_GET_N(ep);
+    bool                  dir = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
 
-	if (epn > CONF_USB_D_MAX_EP_N || !_usb_d_dev_ep_is_used(ept)) {
-		return;
-	}
+    if (epn > CONF_USB_D_MAX_EP_N || !_usb_d_dev_ep_is_used(ept)) {
+        return;
+    }
 
-	/* Finish pending transactions. */
-	_usb_d_dev_trans_stop(ept, dir, USB_TRANS_RESET);
+    /* Finish pending transactions. */
+    _usb_d_dev_trans_stop(ept, dir, USB_TRANS_RESET);
 
-	/* Disable the endpoint. */
-	if (_usb_d_dev_ep_is_ctrl(ept)) {
-		hw->DEVICE.DeviceEndpoint[ep].EPCFG.reg = 0;
-	} else if (USB_EP_GET_DIR(ep)) {
-		hw->DEVICE.DeviceEndpoint[USB_EP_GET_N(ep)].EPCFG.reg &= ~USB_DEVICE_EPCFG_EPTYPE1_Msk;
-	} else {
-		hw->DEVICE.DeviceEndpoint[ep].EPCFG.reg &= ~USB_DEVICE_EPCFG_EPTYPE0_Msk;
-	}
-	ept->flags.u8 = 0;
-	ept->ep       = 0xFF;
+    /* Disable the endpoint. */
+    if (_usb_d_dev_ep_is_ctrl(ept)) {
+        hw->DEVICE.DeviceEndpoint[ep].EPCFG.reg = 0;
+    } else if (USB_EP_GET_DIR(ep)) {
+        hw->DEVICE.DeviceEndpoint[USB_EP_GET_N(ep)].EPCFG.reg &= ~USB_DEVICE_EPCFG_EPTYPE1_Msk;
+    } else {
+        hw->DEVICE.DeviceEndpoint[ep].EPCFG.reg &= ~USB_DEVICE_EPCFG_EPTYPE0_Msk;
+    }
+    ept->flags.u8 = 0;
+    ept->ep       = 0xFF;
 }
 
 int32_t _usb_d_dev_ep_enable(const uint8_t ep)
 {
-	Usb *                 hw    = USB;
-	uint8_t               epn   = USB_EP_GET_N(ep);
-	bool                  dir   = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept   = _usb_d_dev_ept(epn, dir);
-	uint8_t               epcfg = hri_usbendpoint_read_EPCFG_reg(hw, epn);
-	UsbDeviceDescBank *   bank;
+    Usb *                 hw    = USB;
+    uint8_t               epn   = USB_EP_GET_N(ep);
+    bool                  dir   = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept   = _usb_d_dev_ept(epn, dir);
+    uint8_t               epcfg = hri_usbendpoint_read_EPCFG_reg(hw, epn);
+    UsbDeviceDescBank *   bank;
 
-	if (epn > CONF_USB_D_MAX_EP_N || !_usb_d_dev_ep_is_used(ept)) {
-		return -USB_ERR_PARAM;
-	}
+    if (epn > CONF_USB_D_MAX_EP_N || !_usb_d_dev_ep_is_used(ept)) {
+        return -USB_ERR_PARAM;
+    }
 
-	bank = prvt_inst.desc_table[epn].DeviceDescBank;
-	if (ept->flags.bits.eptype == USB_D_EPTYPE_CTRL) {
-		if (epcfg & (USB_DEVICE_EPCFG_EPTYPE1_Msk | USB_DEVICE_EPCFG_EPTYPE0_Msk)) {
-			return -USB_ERR_REDO;
-		}
-		hri_usbendpoint_write_EPCFG_reg(hw, epn, USB_D_EPCFG_CTRL);
-		bank[0].PCKSIZE.reg = USB_DEVICE_PCKSIZE_MULTI_PACKET_SIZE(ept->size)
-		                      | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
-		bank[1].PCKSIZE.reg
-		    = USB_DEVICE_PCKSIZE_BYTE_COUNT(ept->size) | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
-		/* By default, control endpoint accept SETUP and NAK all other token. */
-		_usbd_ep_set_out_rdy(epn, 0, false);
-		_usbd_ep_set_in_rdy(epn, 1, false);
+    bank = prvt_inst.desc_table[epn].DeviceDescBank;
+    if (ept->flags.bits.eptype == USB_D_EPTYPE_CTRL) {
+        if (epcfg & (USB_DEVICE_EPCFG_EPTYPE1_Msk | USB_DEVICE_EPCFG_EPTYPE0_Msk)) {
+            return -USB_ERR_REDO;
+        }
+        hri_usbendpoint_write_EPCFG_reg(hw, epn, USB_D_EPCFG_CTRL);
+        bank[0].PCKSIZE.reg = USB_DEVICE_PCKSIZE_MULTI_PACKET_SIZE(ept->size)
+                              | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
+        bank[1].PCKSIZE.reg
+            = USB_DEVICE_PCKSIZE_BYTE_COUNT(ept->size) | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
+        /* By default, control endpoint accept SETUP and NAK all other token. */
+        _usbd_ep_set_out_rdy(epn, 0, false);
+        _usbd_ep_set_in_rdy(epn, 1, false);
 
-		_usbd_ep_clear_bank_status(epn, 0);
-		_usbd_ep_clear_bank_status(epn, 1);
+        _usbd_ep_clear_bank_status(epn, 0);
+        _usbd_ep_clear_bank_status(epn, 1);
 
-		/* Enable SETUP reception for control endpoint. */
-		_usb_d_dev_trans_setup(ept);
+        /* Enable SETUP reception for control endpoint. */
+        _usb_d_dev_trans_setup(ept);
 
-	} else if (dir) {
-		if (epcfg & USB_DEVICE_EPCFG_EPTYPE1_Msk) {
-			return -USB_ERR_REDO;
-		}
-		epcfg |= USB_DEVICE_EPCFG_EPTYPE1(ept->flags.bits.eptype);
-		hri_usbendpoint_write_EPCFG_reg(hw, epn, epcfg);
+    } else if (dir) {
+        if (epcfg & USB_DEVICE_EPCFG_EPTYPE1_Msk) {
+            return -USB_ERR_REDO;
+        }
+        epcfg |= USB_DEVICE_EPCFG_EPTYPE1(ept->flags.bits.eptype);
+        hri_usbendpoint_write_EPCFG_reg(hw, epn, epcfg);
 
-		bank[1].PCKSIZE.reg
-		    = USB_DEVICE_PCKSIZE_BYTE_COUNT(ept->size) | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
+        bank[1].PCKSIZE.reg
+            = USB_DEVICE_PCKSIZE_BYTE_COUNT(ept->size) | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
 
-		/* By default, IN endpoint will NAK all token. */
-		_usbd_ep_set_in_rdy(epn, 1, false);
-		_usbd_ep_clear_bank_status(epn, 1);
+        /* By default, IN endpoint will NAK all token. */
+        _usbd_ep_set_in_rdy(epn, 1, false);
+        _usbd_ep_clear_bank_status(epn, 1);
 
-	} else {
+    } else {
 
-		if (epcfg & USB_DEVICE_EPCFG_EPTYPE0_Msk) {
-			return -USB_ERR_REDO;
-		}
-		epcfg |= USB_DEVICE_EPCFG_EPTYPE0(ept->flags.bits.eptype);
-		hri_usbendpoint_write_EPCFG_reg(hw, epn, epcfg);
+        if (epcfg & USB_DEVICE_EPCFG_EPTYPE0_Msk) {
+            return -USB_ERR_REDO;
+        }
+        epcfg |= USB_DEVICE_EPCFG_EPTYPE0(ept->flags.bits.eptype);
+        hri_usbendpoint_write_EPCFG_reg(hw, epn, epcfg);
 
-		bank[0].PCKSIZE.reg = USB_DEVICE_PCKSIZE_MULTI_PACKET_SIZE(ept->size)
-		                      | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
+        bank[0].PCKSIZE.reg = USB_DEVICE_PCKSIZE_MULTI_PACKET_SIZE(ept->size)
+                              | USB_DEVICE_PCKSIZE_SIZE(_usbd_ep_pcksize_size(ept->size));
 
-		/* By default, OUT endpoint will NAK all token. */
-		_usbd_ep_set_out_rdy(epn, 0, false);
-		_usbd_ep_clear_bank_status(epn, 0);
-	}
+        /* By default, OUT endpoint will NAK all token. */
+        _usbd_ep_set_out_rdy(epn, 0, false);
+        _usbd_ep_clear_bank_status(epn, 0);
+    }
 
-	return USB_OK;
+    return USB_OK;
 }
 
 void _usb_d_dev_ep_disable(const uint8_t ep)
 {
-	Usb *                 hw  = USB;
-	uint8_t               epn = USB_EP_GET_N(ep);
-	bool                  dir = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    Usb *                 hw  = USB;
+    uint8_t               epn = USB_EP_GET_N(ep);
+    bool                  dir = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
 
-	_usb_d_dev_trans_stop(ept, dir, USB_TRANS_RESET);
-	if (_usb_d_dev_ep_is_ctrl(ept)) {
-		hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_ALL_INT_FLAGS);
-	}
+    _usb_d_dev_trans_stop(ept, dir, USB_TRANS_RESET);
+    if (_usb_d_dev_ep_is_ctrl(ept)) {
+        hri_usbendpoint_clear_EPINTEN_reg(hw, epn, USB_D_ALL_INT_FLAGS);
+    }
 }
 
 /**
@@ -1805,8 +1805,8 @@ void _usb_d_dev_ep_disable(const uint8_t ep)
  */
 static inline int32_t _usb_d_dev_ep_stall_get(struct _usb_d_dev_ep *ept, bool dir)
 {
-	uint8_t epn = USB_EP_GET_N(ept->ep);
-	return _usbd_ep_is_stalled(epn, dir);
+    uint8_t epn = USB_EP_GET_N(ept->ep);
+    return _usbd_ep_is_stalled(epn, dir);
 }
 
 /**
@@ -1817,12 +1817,12 @@ static inline int32_t _usb_d_dev_ep_stall_get(struct _usb_d_dev_ep *ept, bool di
  */
 static inline int32_t _usb_d_dev_ep_stall_set(struct _usb_d_dev_ep *ept, bool dir)
 {
-	uint8_t epn = USB_EP_GET_N(ept->ep);
-	_usbd_ep_set_stall(epn, dir, true);
-	_usbd_ep_int_en(epn, USB_DEVICE_EPINTFLAG_STALL0 << dir);
-	ept->flags.bits.is_stalled = 1;
-	/* In stall interrupt abort the transfer. */
-	return ERR_NONE;
+    uint8_t epn = USB_EP_GET_N(ept->ep);
+    _usbd_ep_set_stall(epn, dir, true);
+    _usbd_ep_int_en(epn, USB_DEVICE_EPINTFLAG_STALL0 << dir);
+    ept->flags.bits.is_stalled = 1;
+    /* In stall interrupt abort the transfer. */
+    return ERR_NONE;
 }
 
 /**
@@ -1833,46 +1833,46 @@ static inline int32_t _usb_d_dev_ep_stall_set(struct _usb_d_dev_ep *ept, bool di
  */
 static inline int32_t _usb_d_dev_ep_stall_clr(struct _usb_d_dev_ep *ept, bool dir)
 {
-	uint8_t epn        = USB_EP_GET_N(ept->ep);
-	bool    is_stalled = _usbd_ep_is_stalled(epn, dir);
-	if (!is_stalled) {
-		return ERR_NONE;
-	}
-	_usbd_ep_set_stall(epn, dir, false);
-	_usbd_ep_int_dis(epn, USB_DEVICE_EPINTFLAG_STALL0 << dir);
-	if (_usbd_ep_is_stall_sent(epn, dir)) {
-		_usbd_ep_ack_stall(epn, dir);
-		_usbd_ep_set_toggle(epn, dir, 0);
-	}
-	if (_usb_d_dev_ep_is_ctrl(ept)) {
-		if ((hri_usbendpoint_read_EPSTATUS_reg(USB, epn) & USB_DEVICE_EPSTATUS_STALLRQ_Msk) == 0) {
-			ept->flags.bits.is_stalled = 0;
-		}
-	} else {
-		ept->flags.bits.is_stalled = 0;
-	}
-	return ERR_NONE;
+    uint8_t epn        = USB_EP_GET_N(ept->ep);
+    bool    is_stalled = _usbd_ep_is_stalled(epn, dir);
+    if (!is_stalled) {
+        return ERR_NONE;
+    }
+    _usbd_ep_set_stall(epn, dir, false);
+    _usbd_ep_int_dis(epn, USB_DEVICE_EPINTFLAG_STALL0 << dir);
+    if (_usbd_ep_is_stall_sent(epn, dir)) {
+        _usbd_ep_ack_stall(epn, dir);
+        _usbd_ep_set_toggle(epn, dir, 0);
+    }
+    if (_usb_d_dev_ep_is_ctrl(ept)) {
+        if ((hri_usbendpoint_read_EPSTATUS_reg(USB, epn) & USB_DEVICE_EPSTATUS_STALLRQ_Msk) == 0) {
+            ept->flags.bits.is_stalled = 0;
+        }
+    } else {
+        ept->flags.bits.is_stalled = 0;
+    }
+    return ERR_NONE;
 }
 
 int32_t _usb_d_dev_ep_stall(const uint8_t ep, const enum usb_ep_stall_ctrl ctrl)
 {
-	uint8_t               epn = USB_EP_GET_N(ep);
-	bool                  dir = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
-	int32_t               rc;
+    uint8_t               epn = USB_EP_GET_N(ep);
+    bool                  dir = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    int32_t               rc;
 
-	if (epn > CONF_USB_D_MAX_EP_N) {
-		return -USB_ERR_PARAM;
-	}
+    if (epn > CONF_USB_D_MAX_EP_N) {
+        return -USB_ERR_PARAM;
+    }
 
-	if (USB_EP_STALL_SET == ctrl) {
-		rc = _usb_d_dev_ep_stall_set(ept, dir);
-	} else if (USB_EP_STALL_CLR == ctrl) {
-		rc = _usb_d_dev_ep_stall_clr(ept, dir);
-	} else {
-		rc = _usb_d_dev_ep_stall_get(ept, dir);
-	}
-	return rc;
+    if (USB_EP_STALL_SET == ctrl) {
+        rc = _usb_d_dev_ep_stall_set(ept, dir);
+    } else if (USB_EP_STALL_CLR == ctrl) {
+        rc = _usb_d_dev_ep_stall_clr(ept, dir);
+    } else {
+        rc = _usb_d_dev_ep_stall_get(ept, dir);
+    }
+    return rc;
 }
 
 /**
@@ -1882,11 +1882,11 @@ int32_t _usb_d_dev_ep_stall(const uint8_t ep, const enum usb_ep_stall_ctrl ctrl)
  */
 static void _usb_d_dev_trans_done(struct _usb_d_dev_ep *ept, const int32_t code)
 {
-	if (!(_usb_d_dev_ep_is_used(ept) && _usb_d_dev_ep_is_busy(ept))) {
-		return;
-	}
-	ept->flags.bits.is_busy = 0;
-	dev_inst.ep_callbacks.done(ept->ep, code, ept->trans_count);
+    if (!(_usb_d_dev_ep_is_used(ept) && _usb_d_dev_ep_is_busy(ept))) {
+        return;
+    }
+    ept->flags.bits.is_busy = 0;
+    dev_inst.ep_callbacks.done(ept->ep, code, ept->trans_count);
 }
 
 /**
@@ -1897,180 +1897,180 @@ static void _usb_d_dev_trans_done(struct _usb_d_dev_ep *ept, const int32_t code)
  */
 static void _usb_d_dev_trans_stop(struct _usb_d_dev_ep *ept, bool dir, const int32_t code)
 {
-	uint8_t epn = USB_EP_GET_N(ept->ep);
-	;
-	const uint8_t intflags[2] = {USB_D_BANK0_INT_FLAGS, USB_D_BANK1_INT_FLAGS};
-	if (!(_usb_d_dev_ep_is_used(ept) && _usb_d_dev_ep_is_busy(ept))) {
-		return;
-	}
-	/* Stop transfer */
-	if (dir) {
-		/* NAK IN */
-		_usbd_ep_set_in_rdy(epn, 1, false);
-	} else {
-		/* NAK OUT */
-		_usbd_ep_set_out_rdy(epn, 0, false);
-	}
-	_usbd_ep_int_ack(epn, intflags[dir]);
-	_usbd_ep_int_dis(epn, intflags[dir]);
-	_usb_d_dev_trans_done(ept, code);
+    uint8_t epn = USB_EP_GET_N(ept->ep);
+    ;
+    const uint8_t intflags[2] = {USB_D_BANK0_INT_FLAGS, USB_D_BANK1_INT_FLAGS};
+    if (!(_usb_d_dev_ep_is_used(ept) && _usb_d_dev_ep_is_busy(ept))) {
+        return;
+    }
+    /* Stop transfer */
+    if (dir) {
+        /* NAK IN */
+        _usbd_ep_set_in_rdy(epn, 1, false);
+    } else {
+        /* NAK OUT */
+        _usbd_ep_set_out_rdy(epn, 0, false);
+    }
+    _usbd_ep_int_ack(epn, intflags[dir]);
+    _usbd_ep_int_dis(epn, intflags[dir]);
+    _usb_d_dev_trans_done(ept, code);
 }
 
 int32_t _usb_d_dev_ep_read_req(const uint8_t ep, uint8_t *req_buf)
 {
-	uint8_t            epn   = USB_EP_GET_N(ep);
-	UsbDeviceDescBank *bank  = prvt_inst.desc_table[epn].DeviceDescBank;
-	uint32_t           addr  = bank[0].ADDR.reg;
-	uint16_t           bytes = bank[0].PCKSIZE.bit.BYTE_COUNT;
+    uint8_t            epn   = USB_EP_GET_N(ep);
+    UsbDeviceDescBank *bank  = prvt_inst.desc_table[epn].DeviceDescBank;
+    uint32_t           addr  = bank[0].ADDR.reg;
+    uint16_t           bytes = bank[0].PCKSIZE.bit.BYTE_COUNT;
 
-	if (epn > CONF_USB_D_MAX_EP_N || !req_buf) {
-		return -USB_ERR_PARAM;
-	}
-	if (!_usbd_ep_is_ctrl(epn)) {
-		return -USB_ERR_FUNC;
-	}
-	if (!_usbd_ep_is_setup(epn)) {
-		return ERR_NONE;
-	}
-	memcpy(req_buf, (void *)addr, 8);
-	_usbd_ep_ack_setup(epn);
+    if (epn > CONF_USB_D_MAX_EP_N || !req_buf) {
+        return -USB_ERR_PARAM;
+    }
+    if (!_usbd_ep_is_ctrl(epn)) {
+        return -USB_ERR_FUNC;
+    }
+    if (!_usbd_ep_is_setup(epn)) {
+        return ERR_NONE;
+    }
+    memcpy(req_buf, (void *)addr, 8);
+    _usbd_ep_ack_setup(epn);
 
-	return bytes;
+    return bytes;
 }
 
 int32_t _usb_d_dev_ep_trans(const struct usb_d_transfer *trans)
 {
-	uint8_t               epn = USB_EP_GET_N(trans->ep);
-	bool                  dir = USB_EP_GET_DIR(trans->ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    uint8_t               epn = USB_EP_GET_N(trans->ep);
+    bool                  dir = USB_EP_GET_DIR(trans->ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
 
-	uint16_t size_mask      = (ept->size == 1023) ? 1023 : (ept->size - 1);
-	bool     size_n_aligned = (trans->size & size_mask);
+    uint16_t size_mask      = (ept->size == 1023) ? 1023 : (ept->size - 1);
+    bool     size_n_aligned = (trans->size & size_mask);
 
-	bool use_cache = false;
+    bool use_cache = false;
 
-	volatile hal_atomic_t flags;
+    volatile hal_atomic_t flags;
 
-	if (epn > CONF_USB_D_MAX_EP_N) {
-		return -USB_ERR_PARAM;
-	}
+    if (epn > CONF_USB_D_MAX_EP_N) {
+        return -USB_ERR_PARAM;
+    }
 
-	/* Cases that needs cache:
-	 * 1. Buffer not in RAM (cache all).
-	 * 2. IN/OUT with unaligned buffer (cache all).
-	 * 3. OUT with unaligned packet size (cache last packet).
-	 * 4. OUT size < 8 (sub-case for 3).
-	 */
-	if (!_usb_is_addr4dma(trans->buf, trans->size) || (!_usb_is_aligned(trans->buf))
-	    || (!dir && (trans->size < ept->size))) {
-		if (!ept->cache) {
-			return -USB_ERR_FUNC;
-		}
-		/* Use cache all the time. */
-		use_cache = true;
-	}
-	if (!dir && size_n_aligned) {
-		if (!ept->cache) {
-			return -USB_ERR_PARAM;
-		}
-		/* Set 'use_cache' on last packet. */
-	}
+    /* Cases that needs cache:
+     * 1. Buffer not in RAM (cache all).
+     * 2. IN/OUT with unaligned buffer (cache all).
+     * 3. OUT with unaligned packet size (cache last packet).
+     * 4. OUT size < 8 (sub-case for 3).
+     */
+    if (!_usb_is_addr4dma(trans->buf, trans->size) || (!_usb_is_aligned(trans->buf))
+        || (!dir && (trans->size < ept->size))) {
+        if (!ept->cache) {
+            return -USB_ERR_FUNC;
+        }
+        /* Use cache all the time. */
+        use_cache = true;
+    }
+    if (!dir && size_n_aligned) {
+        if (!ept->cache) {
+            return -USB_ERR_PARAM;
+        }
+        /* Set 'use_cache' on last packet. */
+    }
 
-	/* Check halt */
-	if (ept->flags.bits.is_stalled) {
-		return USB_HALTED;
-	}
+    /* Check halt */
+    if (ept->flags.bits.is_stalled) {
+        return USB_HALTED;
+    }
 
-	/* Try to start transactions. */
+    /* Try to start transactions. */
 
-	atomic_enter_critical(&flags);
-	if (_usb_d_dev_ep_is_busy(ept)) {
-		atomic_leave_critical(&flags);
-		return USB_BUSY;
-	}
-	ept->flags.bits.is_busy = 1;
-	atomic_leave_critical(&flags);
+    atomic_enter_critical(&flags);
+    if (_usb_d_dev_ep_is_busy(ept)) {
+        atomic_leave_critical(&flags);
+        return USB_BUSY;
+    }
+    ept->flags.bits.is_busy = 1;
+    atomic_leave_critical(&flags);
 
-	/* Copy transaction information. */
-	ept->trans_buf   = trans->buf;
-	ept->trans_size  = trans->size;
-	ept->trans_count = 0;
+    /* Copy transaction information. */
+    ept->trans_buf   = trans->buf;
+    ept->trans_size  = trans->size;
+    ept->trans_count = 0;
 
-	ept->flags.bits.dir       = dir;
-	ept->flags.bits.use_cache = use_cache;
-	ept->flags.bits.need_zlp  = (trans->zlp && (!size_n_aligned));
+    ept->flags.bits.dir       = dir;
+    ept->flags.bits.use_cache = use_cache;
+    ept->flags.bits.need_zlp  = (trans->zlp && (!size_n_aligned));
 
-	if (dir) {
-		_usb_d_dev_in_next(ept, false);
-	} else {
-		_usb_d_dev_out_next(ept, false);
-	}
+    if (dir) {
+        _usb_d_dev_in_next(ept, false);
+    } else {
+        _usb_d_dev_out_next(ept, false);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 void _usb_d_dev_ep_abort(const uint8_t ep)
 {
-	uint8_t               epn = USB_EP_GET_N(ep);
-	bool                  dir = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
-	if (epn > CONF_USB_D_MAX_EP_N) {
-		return;
-	}
-	_usb_d_dev_trans_stop(ept, dir, USB_TRANS_ABORT);
+    uint8_t               epn = USB_EP_GET_N(ep);
+    bool                  dir = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    if (epn > CONF_USB_D_MAX_EP_N) {
+        return;
+    }
+    _usb_d_dev_trans_stop(ept, dir, USB_TRANS_ABORT);
 }
 
 int32_t _usb_d_dev_ep_get_status(const uint8_t ep, struct usb_d_trans_status *stat)
 {
-	uint8_t               epn = USB_EP_GET_N(ep);
-	bool                  dir = USB_EP_GET_DIR(ep);
-	struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
-	bool                  busy, stall;
+    uint8_t               epn = USB_EP_GET_N(ep);
+    bool                  dir = USB_EP_GET_DIR(ep);
+    struct _usb_d_dev_ep *ept = _usb_d_dev_ept(epn, dir);
+    bool                  busy, stall;
 
-	if (epn > CONF_USB_D_MAX_EP_N) {
-		return USB_ERR_PARAM;
-	}
-	busy  = ept->flags.bits.is_busy;
-	stall = ept->flags.bits.is_stalled;
-	if (stat) {
-		stat->stall = stall;
-		stat->busy  = busy;
-		stat->setup = USB->DEVICE.DeviceEndpoint[epn].EPINTFLAG.bit.RXSTP;
-		stat->dir   = ept->flags.bits.dir;
-		stat->size  = ept->trans_size;
-		stat->count = ept->trans_count;
-		stat->ep    = ep;
-		stat->xtype = ept->flags.bits.eptype - 1;
-	}
-	if (stall) {
-		return USB_HALTED;
-	}
-	if (busy) {
-		return USB_BUSY;
-	}
-	return USB_OK;
+    if (epn > CONF_USB_D_MAX_EP_N) {
+        return USB_ERR_PARAM;
+    }
+    busy  = ept->flags.bits.is_busy;
+    stall = ept->flags.bits.is_stalled;
+    if (stat) {
+        stat->stall = stall;
+        stat->busy  = busy;
+        stat->setup = USB->DEVICE.DeviceEndpoint[epn].EPINTFLAG.bit.RXSTP;
+        stat->dir   = ept->flags.bits.dir;
+        stat->size  = ept->trans_size;
+        stat->count = ept->trans_count;
+        stat->ep    = ep;
+        stat->xtype = ept->flags.bits.eptype - 1;
+    }
+    if (stall) {
+        return USB_HALTED;
+    }
+    if (busy) {
+        return USB_BUSY;
+    }
+    return USB_OK;
 }
 
 void _usb_d_dev_register_callback(const enum usb_d_cb_type type, const FUNC_PTR func)
 {
-	FUNC_PTR f = (func == NULL) ? (FUNC_PTR)_dummy_func_no_return : (FUNC_PTR)func;
-	if (type == USB_D_CB_EVENT) {
-		dev_inst.callbacks.event = (_usb_d_dev_event_cb_t)f;
-	} else if (type == USB_D_CB_SOF) {
-		dev_inst.callbacks.sof = (_usb_d_dev_sof_cb_t)f;
-	}
+    FUNC_PTR f = (func == NULL) ? (FUNC_PTR)_dummy_func_no_return : (FUNC_PTR)func;
+    if (type == USB_D_CB_EVENT) {
+        dev_inst.callbacks.event = (_usb_d_dev_event_cb_t)f;
+    } else if (type == USB_D_CB_SOF) {
+        dev_inst.callbacks.sof = (_usb_d_dev_sof_cb_t)f;
+    }
 }
 
 void _usb_d_dev_register_ep_callback(const enum usb_d_dev_ep_cb_type type, const FUNC_PTR func)
 {
-	FUNC_PTR f = (func == NULL) ? (FUNC_PTR)_dummy_func_no_return : (FUNC_PTR)func;
-	if (type == USB_D_DEV_EP_CB_SETUP) {
-		dev_inst.ep_callbacks.setup = (_usb_d_dev_ep_cb_setup_t)f;
-	} else if (type == USB_D_DEV_EP_CB_MORE) {
-		dev_inst.ep_callbacks.more = (_usb_d_dev_ep_cb_more_t)f;
-	} else if (type == USB_D_DEV_EP_CB_DONE) {
-		dev_inst.ep_callbacks.done = (_usb_d_dev_ep_cb_done_t)f;
-	}
+    FUNC_PTR f = (func == NULL) ? (FUNC_PTR)_dummy_func_no_return : (FUNC_PTR)func;
+    if (type == USB_D_DEV_EP_CB_SETUP) {
+        dev_inst.ep_callbacks.setup = (_usb_d_dev_ep_cb_setup_t)f;
+    } else if (type == USB_D_DEV_EP_CB_MORE) {
+        dev_inst.ep_callbacks.more = (_usb_d_dev_ep_cb_more_t)f;
+    } else if (type == USB_D_DEV_EP_CB_DONE) {
+        dev_inst.ep_callbacks.done = (_usb_d_dev_ep_cb_done_t)f;
+    }
 }
 
 /**
@@ -2079,7 +2079,7 @@ void _usb_d_dev_register_ep_callback(const enum usb_d_dev_ep_cb_type type, const
 void USB_0_Handler(void)
 {
 
-	_usb_d_dev_handler();
+    _usb_d_dev_handler();
 }
 /**
  * \brief USB interrupt handler
@@ -2087,7 +2087,7 @@ void USB_0_Handler(void)
 void USB_1_Handler(void)
 {
 
-	_usb_d_dev_handler();
+    _usb_d_dev_handler();
 }
 /**
  * \brief USB interrupt handler
@@ -2095,7 +2095,7 @@ void USB_1_Handler(void)
 void USB_2_Handler(void)
 {
 
-	_usb_d_dev_handler();
+    _usb_d_dev_handler();
 }
 /**
  * \brief USB interrupt handler
@@ -2103,5 +2103,5 @@ void USB_2_Handler(void)
 void USB_3_Handler(void)
 {
 
-	_usb_d_dev_handler();
+    _usb_d_dev_handler();
 }

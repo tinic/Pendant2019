@@ -74,9 +74,9 @@ typedef void (*event_cb_t)(event_id_t id, event_data_t data);
  * \brief Event structure
  */
 struct event {
-	struct list_element elem;                  /*! The pointer to next event */
-	uint8_t             mask[EVENT_MASK_SIZE]; /*! Mask of event IDs callback is called for */
-	event_cb_t          cb;                    /*! Callback to be called when an event occurs */
+    struct list_element elem;                  /*! The pointer to next event */
+    uint8_t             mask[EVENT_MASK_SIZE]; /*! Mask of event IDs callback is called for */
+    event_cb_t          cb;                    /*! Callback to be called when an event occurs */
 };
 
 /**

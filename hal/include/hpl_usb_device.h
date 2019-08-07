@@ -43,74 +43,74 @@ extern "C" {
 
 /** USB Device callback type. */
 enum usb_d_cb_type {
-	/** USB device SOF callback. */
-	USB_D_CB_SOF,
-	/** USB device events callbacks. */
-	USB_D_CB_EVENT,
-	/** Number of types of USB device callback types. */
-	USB_D_CB_N
+    /** USB device SOF callback. */
+    USB_D_CB_SOF,
+    /** USB device events callbacks. */
+    USB_D_CB_EVENT,
+    /** Number of types of USB device callback types. */
+    USB_D_CB_N
 };
 
 /** USB Device endpoint callback type. */
 enum usb_d_ep_cb_type {
-	/** USB device endpoint setup callback. */
-	USB_D_EP_CB_SETUP,
-	/** USB device endpoint more data callback. */
-	USB_D_EP_CB_MORE,
-	/** USB device endpoint transaction done or error callback. */
-	USB_D_EP_CB_XFER,
-	/** Number of types of USB device endpoint callback types. */
-	USB_D_EP_CB_N
+    /** USB device endpoint setup callback. */
+    USB_D_EP_CB_SETUP,
+    /** USB device endpoint more data callback. */
+    USB_D_EP_CB_MORE,
+    /** USB device endpoint transaction done or error callback. */
+    USB_D_EP_CB_XFER,
+    /** Number of types of USB device endpoint callback types. */
+    USB_D_EP_CB_N
 };
 
 /** Control action for USB device LPM handshake. */
 enum usb_d_lpm_ctrl {
-	/** No LPM handshake, not supported. */
-	USB_D_LPM_DISABLE,
-	/** ACK the LPM transaction. */
-	USB_D_LPM_ACK,
-	/** NYET the LPM transaction. */
-	USB_D_LPM_NYET
+    /** No LPM handshake, not supported. */
+    USB_D_LPM_DISABLE,
+    /** ACK the LPM transaction. */
+    USB_D_LPM_ACK,
+    /** NYET the LPM transaction. */
+    USB_D_LPM_NYET
 };
 
 /**
  *  USB device transfer descriptor.
  */
 struct usb_d_transfer {
-	/** Pointer to data buffer to transfer.
-	 *  Note that it's recommended that the buffer is 32-bit aligned since
-	 *  some of USB peripheral require this.
-	 */
-	uint8_t *buf;
-	/** Transfer size, in number of bytes.
-	 *  Note that it's recommended that the buffer size is 32-bit aligned
-	 *  (modeled by 4) since some of USB peripheral require this.
-	 */
-	uint32_t size;
-	/** Endpoint address. */
-	uint8_t ep;
-	/** Append ZLP for IN transfer, wait ZLP for OUT transfer. */
-	uint8_t zlp;
+    /** Pointer to data buffer to transfer.
+     *  Note that it's recommended that the buffer is 32-bit aligned since
+     *  some of USB peripheral require this.
+     */
+    uint8_t *buf;
+    /** Transfer size, in number of bytes.
+     *  Note that it's recommended that the buffer size is 32-bit aligned
+     *  (modeled by 4) since some of USB peripheral require this.
+     */
+    uint32_t size;
+    /** Endpoint address. */
+    uint8_t ep;
+    /** Append ZLP for IN transfer, wait ZLP for OUT transfer. */
+    uint8_t zlp;
 };
 
 /** USB device transactions status structure. */
 struct usb_d_trans_status {
-	/** Total data size. */
-	uint32_t size;
-	/** Total transfered data count. */
-	uint32_t count;
-	/** Endpoint address. */
-	uint8_t ep;
-	/** Endpoint type - CTRL/ISO/INT/BULK. */
-	uint8_t xtype : 2;
-	/** Transactions state, busy or not. */
-	uint8_t busy : 1;
-	/** Transactions state, setup received or not. */
-	uint8_t setup : 1;
-	/** Transactions state, stall or not. */
-	uint8_t stall : 1;
-	/** Transactions direction. */
-	uint8_t dir : 1;
+    /** Total data size. */
+    uint32_t size;
+    /** Total transfered data count. */
+    uint32_t count;
+    /** Endpoint address. */
+    uint8_t ep;
+    /** Endpoint type - CTRL/ISO/INT/BULK. */
+    uint8_t xtype : 2;
+    /** Transactions state, busy or not. */
+    uint8_t busy : 1;
+    /** Transactions state, setup received or not. */
+    uint8_t setup : 1;
+    /** Transactions state, stall or not. */
+    uint8_t stall : 1;
+    /** Transactions direction. */
+    uint8_t dir : 1;
 };
 
 /** Prototype function for callback that is invoked on USB device SOF. */
@@ -121,22 +121,22 @@ typedef void (*_usb_d_dev_event_cb_t)(const enum usb_event, const uint32_t param
 
 /** HPL USB device callbacks. */
 struct _usb_d_dev_callbacks {
-	/** Callback that is invoked on SOF. */
-	_usb_d_dev_sof_cb_t sof;
-	/** Callback that is invoked on USB RESET/WAKEUP/RESUME/SUSPEND. */
-	_usb_d_dev_event_cb_t event;
+    /** Callback that is invoked on SOF. */
+    _usb_d_dev_sof_cb_t sof;
+    /** Callback that is invoked on USB RESET/WAKEUP/RESUME/SUSPEND. */
+    _usb_d_dev_event_cb_t event;
 };
 
 /** USB device endpoint callbacks. */
 enum usb_d_dev_ep_cb_type {
-	/** Setup packet is received. */
-	USB_D_DEV_EP_CB_SETUP,
-	/** Try to require more data. */
-	USB_D_DEV_EP_CB_MORE,
-	/** Transaction done OK/ERROR. */
-	USB_D_DEV_EP_CB_DONE,
-	/** Number of device endpoint callbacks. */
-	USB_D_DEV_EP_CB_N
+    /** Setup packet is received. */
+    USB_D_DEV_EP_CB_SETUP,
+    /** Try to require more data. */
+    USB_D_DEV_EP_CB_MORE,
+    /** Transaction done OK/ERROR. */
+    USB_D_DEV_EP_CB_DONE,
+    /** Number of device endpoint callbacks. */
+    USB_D_DEV_EP_CB_N
 };
 
 /**
@@ -156,22 +156,22 @@ typedef void (*_usb_d_dev_ep_cb_done_t)(const uint8_t ep, const int32_t code, co
 
 /** Callbacks for HPL USB device endpoint. */
 struct _usb_d_dev_ep_callbacks {
-	/** Callback that is invoked when SETUP packet is received.
-	 *  \ref _usb_d_dev_ep_read_req() must be invoked to read setup data, and
-	 *  allow IN/OUT transactions on control endpoint.
-	 */
-	_usb_d_dev_ep_cb_setup_t setup;
-	/** Callback that is invoked to check if buffer is NULL and more data is
-	 *  required.
-	 *  It's called when last packet is full size packet, without
-	 *  auto ZLP enabled.
-	 *  It could be called when background transfer is still in progress.
-	 */
-	_usb_d_dev_ep_cb_more_t more;
-	/** Callback that is invoked when transaction is done, including background
-	 *  transfer, or error occurs.
-	 */
-	_usb_d_dev_ep_cb_done_t done;
+    /** Callback that is invoked when SETUP packet is received.
+     *  \ref _usb_d_dev_ep_read_req() must be invoked to read setup data, and
+     *  allow IN/OUT transactions on control endpoint.
+     */
+    _usb_d_dev_ep_cb_setup_t setup;
+    /** Callback that is invoked to check if buffer is NULL and more data is
+     *  required.
+     *  It's called when last packet is full size packet, without
+     *  auto ZLP enabled.
+     *  It could be called when background transfer is still in progress.
+     */
+    _usb_d_dev_ep_cb_more_t more;
+    /** Callback that is invoked when transaction is done, including background
+     *  transfer, or error occurs.
+     */
+    _usb_d_dev_ep_cb_done_t done;
 };
 
 /**

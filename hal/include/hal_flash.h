@@ -51,11 +51,11 @@ struct flash_descriptor;
 
 /** The callback types */
 enum flash_cb_type {
-	/** Callback type for ready to accept a new command */
-	FLASH_CB_READY,
-	/** Callback type for error */
-	FLASH_CB_ERROR,
-	FLASH_CB_N
+    /** Callback type for ready to accept a new command */
+    FLASH_CB_READY,
+    /** Callback type for error */
+    FLASH_CB_ERROR,
+    FLASH_CB_N
 };
 
 /** \brief Prototype of callback on FLASH
@@ -67,19 +67,19 @@ typedef void (*flash_cb_t)(struct flash_descriptor *const descr);
  *
  */
 struct flash_callbacks {
-	/** Callback invoked when ready to accept a new command */
-	flash_cb_t cb_ready;
-	/** Callback invoked when error occurs */
-	flash_cb_t cb_error;
+    /** Callback invoked when ready to accept a new command */
+    flash_cb_t cb_ready;
+    /** Callback invoked when error occurs */
+    flash_cb_t cb_error;
 };
 
 /** \brief FLASH HAL driver struct for asynchronous access
  */
 struct flash_descriptor {
-	/** Pointer to FLASH device instance */
-	struct _flash_device dev;
-	/** Callbacks for asynchronous transfer */
-	struct flash_callbacks callbacks;
+    /** Pointer to FLASH device instance */
+    struct _flash_device dev;
+    /** Callbacks for asynchronous transfer */
+    struct flash_callbacks callbacks;
 };
 
 /** \brief Initialize the FLASH HAL instance and hardware for callback mode

@@ -43,13 +43,13 @@
 #define NVMCTRL_BLOCK_PAGES (NVMCTRL_BLOCK_SIZE / NVMCTRL_PAGE_SIZE)
 #define NVMCTRL_REGIONS_NUM 32
 #define NVMCTRL_INTFLAG_ERR                                                                                            \
-	(NVMCTRL_INTFLAG_ADDRE | NVMCTRL_INTFLAG_PROGE | NVMCTRL_INTFLAG_LOCKE | NVMCTRL_INTFLAG_ECCSE                     \
-	 | NVMCTRL_INTFLAG_NVME | NVMCTRL_INTFLAG_SEESOVF)
+    (NVMCTRL_INTFLAG_ADDRE | NVMCTRL_INTFLAG_PROGE | NVMCTRL_INTFLAG_LOCKE | NVMCTRL_INTFLAG_ECCSE                     \
+     | NVMCTRL_INTFLAG_NVME | NVMCTRL_INTFLAG_SEESOVF)
 /**
  * \brief NVM configuration type
  */
 struct nvm_configuration {
-	hri_nvmctrl_ctrlb_reg_t ctrla; /*!< Control B Register */
+    hri_nvmctrl_ctrlb_reg_t ctrla; /*!< Control B Register */
 };
 
 /**
@@ -70,25 +70,25 @@ static void _flash_program(void *const hw, const uint32_t dst_addr, const uint8_
  */
 int32_t _flash_init(struct _flash_device *const device, void *const hw)
 {
-	uint32_t ctrla;
+    uint32_t ctrla;
 
-	ASSERT(device && (hw == NVMCTRL));
+    ASSERT(device && (hw == NVMCTRL));
 
-	device->hw = hw;
-	ctrla      = hri_nvmctrl_read_CTRLA_reg(hw);
-	ctrla &= ~(NVMCTRL_CTRLA_CACHEDIS0 | NVMCTRL_CTRLA_CACHEDIS1 | NVMCTRL_CTRLA_PRM_Msk);
-	ctrla |= _nvm.ctrla;
-	hri_nvmctrl_write_CTRLA_reg(hw, ctrla);
+    device->hw = hw;
+    ctrla      = hri_nvmctrl_read_CTRLA_reg(hw);
+    ctrla &= ~(NVMCTRL_CTRLA_CACHEDIS0 | NVMCTRL_CTRLA_CACHEDIS1 | NVMCTRL_CTRLA_PRM_Msk);
+    ctrla |= _nvm.ctrla;
+    hri_nvmctrl_write_CTRLA_reg(hw, ctrla);
 
-	_nvm_dev = device;
-	NVIC_DisableIRQ(NVMCTRL_0_IRQn);
-	NVIC_DisableIRQ(NVMCTRL_1_IRQn);
-	NVIC_ClearPendingIRQ(NVMCTRL_0_IRQn);
-	NVIC_ClearPendingIRQ(NVMCTRL_1_IRQn);
-	NVIC_EnableIRQ(NVMCTRL_0_IRQn);
-	NVIC_EnableIRQ(NVMCTRL_1_IRQn);
+    _nvm_dev = device;
+    NVIC_DisableIRQ(NVMCTRL_0_IRQn);
+    NVIC_DisableIRQ(NVMCTRL_1_IRQn);
+    NVIC_ClearPendingIRQ(NVMCTRL_0_IRQn);
+    NVIC_ClearPendingIRQ(NVMCTRL_1_IRQn);
+    NVIC_EnableIRQ(NVMCTRL_0_IRQn);
+    NVIC_EnableIRQ(NVMCTRL_1_IRQn);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -96,9 +96,9 @@ int32_t _flash_init(struct _flash_device *const device, void *const hw)
  */
 void _flash_deinit(struct _flash_device *const device)
 {
-	device->hw = NULL;
-	NVIC_DisableIRQ(NVMCTRL_0_IRQn);
-	NVIC_DisableIRQ(NVMCTRL_1_IRQn);
+    device->hw = NULL;
+    NVIC_DisableIRQ(NVMCTRL_0_IRQn);
+    NVIC_DisableIRQ(NVMCTRL_1_IRQn);
 }
 
 /**
@@ -106,8 +106,8 @@ void _flash_deinit(struct _flash_device *const device)
  */
 uint32_t _flash_get_page_size(struct _flash_device *const device)
 {
-	(void)device;
-	return (uint32_t)NVMCTRL_PAGE_SIZE;
+    (void)device;
+    return (uint32_t)NVMCTRL_PAGE_SIZE;
 }
 
 /**
@@ -115,8 +115,8 @@ uint32_t _flash_get_page_size(struct _flash_device *const device)
  */
 uint32_t _flash_get_total_pages(struct _flash_device *const device)
 {
-	(void)device;
-	return (uint32_t)hri_nvmctrl_read_PARAM_NVMP_bf(device->hw);
+    (void)device;
+    return (uint32_t)hri_nvmctrl_read_PARAM_NVMP_bf(device->hw);
 }
 
 /**
@@ -124,7 +124,7 @@ uint32_t _flash_get_total_pages(struct _flash_device *const device)
  */
 uint8_t _flash_get_wait_state(struct _flash_device *const device)
 {
-	return hri_nvmctrl_get_CTRLA_reg(device->hw, NVMCTRL_CTRLA_RWS_Msk);
+    return hri_nvmctrl_get_CTRLA_reg(device->hw, NVMCTRL_CTRLA_RWS_Msk);
 }
 
 /**
@@ -132,7 +132,7 @@ uint8_t _flash_get_wait_state(struct _flash_device *const device)
  */
 void _flash_set_wait_state(struct _flash_device *const device, uint8_t state)
 {
-	hri_nvmctrl_write_CTRLA_RWS_bf(device->hw, state);
+    hri_nvmctrl_write_CTRLA_RWS_bf(device->hw, state);
 }
 
 /**
@@ -140,17 +140,17 @@ void _flash_set_wait_state(struct _flash_device *const device, uint8_t state)
  */
 void _flash_read(struct _flash_device *const device, const uint32_t src_addr, uint8_t *buffer, uint32_t length)
 {
-	uint8_t *nvm_addr = (uint8_t *)NVM_MEMORY;
-	uint32_t i;
+    uint8_t *nvm_addr = (uint8_t *)NVM_MEMORY;
+    uint32_t i;
 
-	/* Check if the module is busy */
-	while (!hri_nvmctrl_get_STATUS_READY_bit(device->hw)) {
-		/* Wait until this module isn't busy */
-	}
+    /* Check if the module is busy */
+    while (!hri_nvmctrl_get_STATUS_READY_bit(device->hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	for (i = 0; i < length; i++) {
-		buffer[i] = nvm_addr[src_addr + i];
-	}
+    for (i = 0; i < length; i++) {
+        buffer[i] = nvm_addr[src_addr + i];
+    }
 }
 
 /**
@@ -158,44 +158,44 @@ void _flash_read(struct _flash_device *const device, const uint32_t src_addr, ui
  */
 void _flash_write(struct _flash_device *const device, const uint32_t dst_addr, uint8_t *buffer, uint32_t length)
 {
-	uint8_t  tmp_buffer[NVMCTRL_BLOCK_PAGES][NVMCTRL_PAGE_SIZE];
-	uint32_t block_start_addr, block_end_addr;
-	uint32_t i, j, k;
-	uint32_t wr_start_addr = dst_addr;
+    uint8_t  tmp_buffer[NVMCTRL_BLOCK_PAGES][NVMCTRL_PAGE_SIZE];
+    uint32_t block_start_addr, block_end_addr;
+    uint32_t i, j, k;
+    uint32_t wr_start_addr = dst_addr;
 
-	do {
-		block_start_addr = wr_start_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
-		block_end_addr   = block_start_addr + NVMCTRL_BLOCK_SIZE - 1;
+    do {
+        block_start_addr = wr_start_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
+        block_end_addr   = block_start_addr + NVMCTRL_BLOCK_SIZE - 1;
 
-		/* store the erase data into temp buffer before write */
-		for (i = 0; i < NVMCTRL_BLOCK_PAGES; i++) {
-			_flash_read(device, block_start_addr + i * NVMCTRL_PAGE_SIZE, tmp_buffer[i], NVMCTRL_PAGE_SIZE);
-		}
+        /* store the erase data into temp buffer before write */
+        for (i = 0; i < NVMCTRL_BLOCK_PAGES; i++) {
+            _flash_read(device, block_start_addr + i * NVMCTRL_PAGE_SIZE, tmp_buffer[i], NVMCTRL_PAGE_SIZE);
+        }
 
-		/* temp buffer update */
-		j = (wr_start_addr - block_start_addr) / NVMCTRL_PAGE_SIZE;
-		k = wr_start_addr - block_start_addr - j * NVMCTRL_PAGE_SIZE;
-		while ((wr_start_addr <= block_end_addr) && (length > 0)) {
-			tmp_buffer[j][k] = *buffer;
-			k                = (k + 1) % NVMCTRL_PAGE_SIZE;
+        /* temp buffer update */
+        j = (wr_start_addr - block_start_addr) / NVMCTRL_PAGE_SIZE;
+        k = wr_start_addr - block_start_addr - j * NVMCTRL_PAGE_SIZE;
+        while ((wr_start_addr <= block_end_addr) && (length > 0)) {
+            tmp_buffer[j][k] = *buffer;
+            k                = (k + 1) % NVMCTRL_PAGE_SIZE;
 
-			if (0 == k) {
-				j++;
-			}
+            if (0 == k) {
+                j++;
+            }
 
-			wr_start_addr++;
-			buffer++;
-			length--;
-		}
+            wr_start_addr++;
+            buffer++;
+            length--;
+        }
 
-		/* erase row before write */
-		_flash_erase_block(device->hw, block_start_addr);
+        /* erase row before write */
+        _flash_erase_block(device->hw, block_start_addr);
 
-		/* write buffer to flash */
-		for (i = 0; i < NVMCTRL_BLOCK_PAGES; i++) {
-			_flash_program(device->hw, block_start_addr + i * NVMCTRL_PAGE_SIZE, tmp_buffer[i], NVMCTRL_PAGE_SIZE);
-		}
-	} while (block_end_addr < (wr_start_addr + length - 1));
+        /* write buffer to flash */
+        for (i = 0; i < NVMCTRL_BLOCK_PAGES; i++) {
+            _flash_program(device->hw, block_start_addr + i * NVMCTRL_PAGE_SIZE, tmp_buffer[i], NVMCTRL_PAGE_SIZE);
+        }
+    } while (block_end_addr < (wr_start_addr + length - 1));
 }
 
 /**
@@ -203,24 +203,24 @@ void _flash_write(struct _flash_device *const device, const uint32_t dst_addr, u
  */
 void _flash_append(struct _flash_device *const device, const uint32_t dst_addr, uint8_t *buffer, uint32_t length)
 {
-	uint32_t page_start_addr = dst_addr & ~(NVMCTRL_PAGE_SIZE - 1);
-	uint32_t size;
-	uint32_t offset = 0;
+    uint32_t page_start_addr = dst_addr & ~(NVMCTRL_PAGE_SIZE - 1);
+    uint32_t size;
+    uint32_t offset = 0;
 
-	if (dst_addr != page_start_addr) {
-		/* Need to write some data to the end of a page */
-		size = c_min(length, NVMCTRL_PAGE_SIZE - (dst_addr - page_start_addr));
-		_flash_program(device->hw, dst_addr, buffer, size);
-		page_start_addr += NVMCTRL_PAGE_SIZE;
-		offset += size;
-	}
+    if (dst_addr != page_start_addr) {
+        /* Need to write some data to the end of a page */
+        size = c_min(length, NVMCTRL_PAGE_SIZE - (dst_addr - page_start_addr));
+        _flash_program(device->hw, dst_addr, buffer, size);
+        page_start_addr += NVMCTRL_PAGE_SIZE;
+        offset += size;
+    }
 
-	while (offset < length) {
-		size = c_min(length - offset, NVMCTRL_PAGE_SIZE);
-		_flash_program(device->hw, page_start_addr, buffer + offset, size);
-		page_start_addr += NVMCTRL_PAGE_SIZE;
-		offset += size;
-	}
+    while (offset < length) {
+        size = c_min(length - offset, NVMCTRL_PAGE_SIZE);
+        _flash_program(device->hw, page_start_addr, buffer + offset, size);
+        page_start_addr += NVMCTRL_PAGE_SIZE;
+        offset += size;
+    }
 }
 
 /**
@@ -228,44 +228,44 @@ void _flash_append(struct _flash_device *const device, const uint32_t dst_addr, 
  */
 void _flash_erase(struct _flash_device *const device, uint32_t dst_addr, uint32_t page_nums)
 {
-	uint8_t  tmp_buffer[NVMCTRL_PAGE_SIZE];
-	uint32_t block_start_addr;
-	uint32_t i;
+    uint8_t  tmp_buffer[NVMCTRL_PAGE_SIZE];
+    uint32_t block_start_addr;
+    uint32_t i;
 
-	block_start_addr = dst_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
+    block_start_addr = dst_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
 
-	memset(tmp_buffer, 0xFF, NVMCTRL_PAGE_SIZE);
+    memset(tmp_buffer, 0xFF, NVMCTRL_PAGE_SIZE);
 
-	/* when address is not aligned with block start address */
-	if (dst_addr != block_start_addr) {
-		block_start_addr += NVMCTRL_BLOCK_SIZE;
-		for (i = 0; i < NVMCTRL_BLOCK_PAGES - 1; i++) {
-			_flash_write(device, dst_addr, tmp_buffer, NVMCTRL_PAGE_SIZE);
+    /* when address is not aligned with block start address */
+    if (dst_addr != block_start_addr) {
+        block_start_addr += NVMCTRL_BLOCK_SIZE;
+        for (i = 0; i < NVMCTRL_BLOCK_PAGES - 1; i++) {
+            _flash_write(device, dst_addr, tmp_buffer, NVMCTRL_PAGE_SIZE);
 
-			if (--page_nums == 0) {
-				return;
-			}
+            if (--page_nums == 0) {
+                return;
+            }
 
-			dst_addr += NVMCTRL_PAGE_SIZE;
+            dst_addr += NVMCTRL_PAGE_SIZE;
 
-			if (dst_addr == block_start_addr) {
-				break;
-			}
-		}
-	}
+            if (dst_addr == block_start_addr) {
+                break;
+            }
+        }
+    }
 
-	while (page_nums >= NVMCTRL_BLOCK_PAGES) {
-		_flash_erase_block(device->hw, block_start_addr);
-		block_start_addr += NVMCTRL_BLOCK_SIZE;
-		page_nums -= NVMCTRL_BLOCK_PAGES;
-	}
+    while (page_nums >= NVMCTRL_BLOCK_PAGES) {
+        _flash_erase_block(device->hw, block_start_addr);
+        block_start_addr += NVMCTRL_BLOCK_SIZE;
+        page_nums -= NVMCTRL_BLOCK_PAGES;
+    }
 
-	if (page_nums != 0) {
-		for (i = 0; i < page_nums; i++) {
-			_flash_write(device, block_start_addr, tmp_buffer, NVMCTRL_PAGE_SIZE);
-			block_start_addr += NVMCTRL_PAGE_SIZE;
-		}
-	}
+    if (page_nums != 0) {
+        for (i = 0; i < page_nums; i++) {
+            _flash_write(device, block_start_addr, tmp_buffer, NVMCTRL_PAGE_SIZE);
+            block_start_addr += NVMCTRL_PAGE_SIZE;
+        }
+    }
 }
 
 /**
@@ -273,24 +273,24 @@ void _flash_erase(struct _flash_device *const device, uint32_t dst_addr, uint32_
  */
 int32_t _flash_lock(struct _flash_device *const device, const uint32_t dst_addr, uint32_t page_nums)
 {
-	uint32_t region_pages;
-	uint32_t block_start_addr;
+    uint32_t region_pages;
+    uint32_t block_start_addr;
 
-	region_pages     = (uint32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
-	block_start_addr = dst_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
+    region_pages     = (uint32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
+    block_start_addr = dst_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
 
-	if ((page_nums != region_pages) || (dst_addr != block_start_addr)) {
-		return ERR_INVALID_ARG;
-	}
+    if ((page_nums != region_pages) || (dst_addr != block_start_addr)) {
+        return ERR_INVALID_ARG;
+    }
 
-	while (!hri_nvmctrl_get_STATUS_READY_bit(device->hw)) {
-		/* Wait until this module isn't busy */
-	}
+    while (!hri_nvmctrl_get_STATUS_READY_bit(device->hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	hri_nvmctrl_write_ADDR_reg(device->hw, dst_addr);
-	hri_nvmctrl_write_CTRLB_reg(device->hw, NVMCTRL_CTRLB_CMD_LR | NVMCTRL_CTRLB_CMDEX_KEY);
+    hri_nvmctrl_write_ADDR_reg(device->hw, dst_addr);
+    hri_nvmctrl_write_CTRLB_reg(device->hw, NVMCTRL_CTRLB_CMD_LR | NVMCTRL_CTRLB_CMDEX_KEY);
 
-	return (int32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
+    return (int32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
 }
 
 /**
@@ -298,24 +298,24 @@ int32_t _flash_lock(struct _flash_device *const device, const uint32_t dst_addr,
  */
 int32_t _flash_unlock(struct _flash_device *const device, const uint32_t dst_addr, uint32_t page_nums)
 {
-	uint32_t region_pages;
-	uint32_t block_start_addr;
+    uint32_t region_pages;
+    uint32_t block_start_addr;
 
-	region_pages     = (uint32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
-	block_start_addr = dst_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
+    region_pages     = (uint32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
+    block_start_addr = dst_addr & ~(NVMCTRL_BLOCK_SIZE - 1);
 
-	if ((page_nums != region_pages) || (dst_addr != block_start_addr)) {
-		return ERR_INVALID_ARG;
-	}
+    if ((page_nums != region_pages) || (dst_addr != block_start_addr)) {
+        return ERR_INVALID_ARG;
+    }
 
-	while (!hri_nvmctrl_get_STATUS_READY_bit(device->hw)) {
-		/* Wait until this module isn't busy */
-	}
+    while (!hri_nvmctrl_get_STATUS_READY_bit(device->hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	hri_nvmctrl_write_ADDR_reg(device->hw, dst_addr);
-	hri_nvmctrl_write_CTRLB_reg(device->hw, NVMCTRL_CTRLB_CMD_UR | NVMCTRL_CTRLB_CMDEX_KEY);
+    hri_nvmctrl_write_ADDR_reg(device->hw, dst_addr);
+    hri_nvmctrl_write_CTRLB_reg(device->hw, NVMCTRL_CTRLB_CMD_UR | NVMCTRL_CTRLB_CMDEX_KEY);
 
-	return (int32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
+    return (int32_t)FLASH_SIZE / (NVMCTRL_REGIONS_NUM * NVMCTRL_PAGE_SIZE);
 }
 
 /**
@@ -323,12 +323,12 @@ int32_t _flash_unlock(struct _flash_device *const device, const uint32_t dst_add
  */
 bool _flash_is_locked(struct _flash_device *const device, const uint32_t dst_addr)
 {
-	uint16_t region_id;
+    uint16_t region_id;
 
-	/* Get region for given page */
-	region_id = dst_addr / (FLASH_SIZE / NVMCTRL_REGIONS_NUM);
+    /* Get region for given page */
+    region_id = dst_addr / (FLASH_SIZE / NVMCTRL_REGIONS_NUM);
 
-	return !(hri_nvmctrl_get_RUNLOCK_reg(device->hw, 1 << region_id));
+    return !(hri_nvmctrl_get_RUNLOCK_reg(device->hw, 1 << region_id));
 }
 
 /**
@@ -336,17 +336,17 @@ bool _flash_is_locked(struct _flash_device *const device, const uint32_t dst_add
  */
 void _flash_set_irq_state(struct _flash_device *const device, const enum _flash_cb_type type, const bool state)
 {
-	ASSERT(device);
+    ASSERT(device);
 
-	if (FLASH_DEVICE_CB_READY == type) {
-		hri_nvmctrl_write_INTEN_DONE_bit(device->hw, state);
-	} else if (FLASH_DEVICE_CB_ERROR == type) {
-		if (state) {
-			hri_nvmctrl_write_INTEN_reg(device->hw, NVMCTRL_INTFLAG_ERR);
-		} else {
-			hri_nvmctrl_clear_INTEN_reg(device->hw, NVMCTRL_INTFLAG_ERR);
-		}
-	}
+    if (FLASH_DEVICE_CB_READY == type) {
+        hri_nvmctrl_write_INTEN_DONE_bit(device->hw, state);
+    } else if (FLASH_DEVICE_CB_ERROR == type) {
+        if (state) {
+            hri_nvmctrl_write_INTEN_reg(device->hw, NVMCTRL_INTFLAG_ERR);
+        } else {
+            hri_nvmctrl_clear_INTEN_reg(device->hw, NVMCTRL_INTFLAG_ERR);
+        }
+    }
 }
 
 /**
@@ -356,13 +356,13 @@ void _flash_set_irq_state(struct _flash_device *const device, const enum _flash_
  */
 static void _flash_erase_block(void *const hw, const uint32_t dst_addr)
 {
-	while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-		/* Wait until this module isn't busy */
-	}
+    while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	/* Set address and command */
-	hri_nvmctrl_write_ADDR_reg(hw, dst_addr);
-	hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_EB | NVMCTRL_CTRLB_CMDEX_KEY);
+    /* Set address and command */
+    hri_nvmctrl_write_ADDR_reg(hw, dst_addr);
+    hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_EB | NVMCTRL_CTRLB_CMDEX_KEY);
 }
 
 /**
@@ -375,33 +375,33 @@ static void _flash_erase_block(void *const hw, const uint32_t dst_addr)
  */
 static void _flash_program(void *const hw, const uint32_t dst_addr, const uint8_t *buffer, const uint16_t size)
 {
-	uint32_t *ptr_read    = (uint32_t *)buffer;
-	uint32_t  nvm_address = dst_addr / 4;
-	uint16_t  i;
+    uint32_t *ptr_read    = (uint32_t *)buffer;
+    uint32_t  nvm_address = dst_addr / 4;
+    uint16_t  i;
 
-	while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-		/* Wait until this module isn't busy */
-	}
+    while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_PBC | NVMCTRL_CTRLB_CMDEX_KEY);
+    hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_PBC | NVMCTRL_CTRLB_CMDEX_KEY);
 
-	while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-		/* Wait until this module isn't busy */
-	}
+    while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	/* Writes to the page buffer must be 32 bits, perform manual copy
-	 * to ensure alignment */
-	for (i = 0; i < size; i += 4) {
-		NVM_MEMORY[nvm_address++] = *ptr_read;
-		ptr_read++;
-	}
+    /* Writes to the page buffer must be 32 bits, perform manual copy
+     * to ensure alignment */
+    for (i = 0; i < size; i += 4) {
+        NVM_MEMORY[nvm_address++] = *ptr_read;
+        ptr_read++;
+    }
 
-	while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-		/* Wait until this module isn't busy */
-	}
+    while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	hri_nvmctrl_write_ADDR_reg(hw, dst_addr);
-	hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_WP | NVMCTRL_CTRLB_CMDEX_KEY);
+    hri_nvmctrl_write_ADDR_reg(hw, dst_addr);
+    hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_WP | NVMCTRL_CTRLB_CMDEX_KEY);
 }
 
 /**
@@ -411,21 +411,21 @@ static void _flash_program(void *const hw, const uint32_t dst_addr, const uint8_
  */
 static void _nvm_interrupt_handler(struct _flash_device *device)
 {
-	void *const hw = device->hw;
+    void *const hw = device->hw;
 
-	if (hri_nvmctrl_get_INTFLAG_DONE_bit(hw)) {
-		hri_nvmctrl_clear_INTFLAG_DONE_bit(hw);
+    if (hri_nvmctrl_get_INTFLAG_DONE_bit(hw)) {
+        hri_nvmctrl_clear_INTFLAG_DONE_bit(hw);
 
-		if (NULL != device->flash_cb.ready_cb) {
-			device->flash_cb.ready_cb(device);
-		}
-	} else if (hri_nvmctrl_read_INTFLAG_reg(hw) && ~NVMCTRL_INTFLAG_ERR) {
-		hri_nvmctrl_clear_INTFLAG_reg(hw, NVMCTRL_INTFLAG_ERR);
+        if (NULL != device->flash_cb.ready_cb) {
+            device->flash_cb.ready_cb(device);
+        }
+    } else if (hri_nvmctrl_read_INTFLAG_reg(hw) && ~NVMCTRL_INTFLAG_ERR) {
+        hri_nvmctrl_clear_INTFLAG_reg(hw, NVMCTRL_INTFLAG_ERR);
 
-		if (NULL != device->flash_cb.error_cb) {
-			device->flash_cb.error_cb(device);
-		}
-	}
+        if (NULL != device->flash_cb.error_cb) {
+            device->flash_cb.error_cb(device);
+        }
+    }
 }
 
 /**
@@ -433,7 +433,7 @@ static void _nvm_interrupt_handler(struct _flash_device *device)
  */
 void NVMCTRL_0_Handler(void)
 {
-	_nvm_interrupt_handler(_nvm_dev);
+    _nvm_interrupt_handler(_nvm_dev);
 }
 
 /**
@@ -441,7 +441,7 @@ void NVMCTRL_0_Handler(void)
  */
 void NVMCTRL_1_Handler(void)
 {
-	_nvm_interrupt_handler(_nvm_dev);
+    _nvm_interrupt_handler(_nvm_dev);
 }
 
 /*
@@ -460,7 +460,7 @@ void NVMCTRL_1_Handler(void)
 #define _NVM_USER_ROW_N_BYTES (_NVM_USER_ROW_N_BITS / 8)
 #define _NVM_USER_ROW_END (((uint8_t *)_NVM_USER_ROW_BASE) + _NVM_USER_ROW_N_BYTES - 1)
 #define _IS_NVM_USER_ROW(b)                                                                                            \
-	(((uint8_t *)(b) >= (uint8_t *)(_NVM_USER_ROW_BASE)) && ((uint8_t *)(b) <= (uint8_t *)(_NVM_USER_ROW_END)))
+    (((uint8_t *)(b) >= (uint8_t *)(_NVM_USER_ROW_BASE)) && ((uint8_t *)(b) <= (uint8_t *)(_NVM_USER_ROW_END)))
 #define _IN_NVM_USER_ROW(b, o) (((uint8_t *)(b) + (o)) <= (uint8_t *)(_NVM_USER_ROW_END))
 
 /*
@@ -474,7 +474,7 @@ void NVMCTRL_1_Handler(void)
 #define _NVM_SW_CALIB_AREA_N_BYTES (_NVM_SW_CALIB_AREA_N_BITS / 8)
 #define _NVM_SW_CALIB_AREA_END (((uint8_t *)_NVM_SW_CALIB_AREA_BASE) + _NVM_SW_CALIB_AREA_N_BYTES - 1)
 #define _IS_NVM_SW_CALIB_AREA(b)                                                                                       \
-	(((uint8_t *)(b) >= (uint8_t *)_NVM_SW_CALIB_AREA_BASE) && ((uint8_t *)(b) <= (uint8_t *)_NVM_SW_CALIB_AREA_END))
+    (((uint8_t *)(b) >= (uint8_t *)_NVM_SW_CALIB_AREA_BASE) && ((uint8_t *)(b) <= (uint8_t *)_NVM_SW_CALIB_AREA_END))
 #define _IN_NVM_SW_CALIB_AREA(b, o) (((uint8_t *)(b) + (o)) <= (uint8_t *)(_NVM_SW_CALIB_AREA_END))
 
 /**
@@ -486,7 +486,7 @@ void NVMCTRL_1_Handler(void)
 static inline uint32_t _user_area_read_l32_bits(const volatile uint32_t *base, const uint32_t bit_offset,
                                                 const uint8_t n_bits)
 {
-	return base[bit_offset >> 5] & ((1 << n_bits) - 1);
+    return base[bit_offset >> 5] & ((1 << n_bits) - 1);
 }
 
 /**
@@ -498,73 +498,73 @@ static inline uint32_t _user_area_read_l32_bits(const volatile uint32_t *base, c
 static inline uint32_t _user_area_read_r32_bits(const volatile uint32_t *base, const uint32_t bit_offset,
                                                 const uint8_t n_bits)
 {
-	return (base[bit_offset >> 5] >> (bit_offset & 0x1F)) & ((1 << n_bits) - 1);
+    return (base[bit_offset >> 5] >> (bit_offset & 0x1F)) & ((1 << n_bits) - 1);
 }
 
 int32_t _user_area_read(const void *base, const uint32_t offset, uint8_t *buf, uint32_t size)
 {
-	ASSERT(buf);
+    ASSERT(buf);
 
-	/** Parameter check. */
-	if (_IS_NVM_USER_ROW(base)) {
-		if (!_IN_NVM_USER_ROW(base, offset)) {
-			return ERR_BAD_ADDRESS;
-		}
+    /** Parameter check. */
+    if (_IS_NVM_USER_ROW(base)) {
+        if (!_IN_NVM_USER_ROW(base, offset)) {
+            return ERR_BAD_ADDRESS;
+        }
 
-		/* Cut off if request too many bytes */
-		if (!_IN_NVM_USER_ROW(base, offset + size - 1)) {
-			return ERR_INVALID_ARG;
-		}
-	} else if (_IS_NVM_SW_CALIB_AREA(base)) {
-		if (!_IN_NVM_SW_CALIB_AREA(base, offset)) {
-			return ERR_BAD_ADDRESS;
-		}
+        /* Cut off if request too many bytes */
+        if (!_IN_NVM_USER_ROW(base, offset + size - 1)) {
+            return ERR_INVALID_ARG;
+        }
+    } else if (_IS_NVM_SW_CALIB_AREA(base)) {
+        if (!_IN_NVM_SW_CALIB_AREA(base, offset)) {
+            return ERR_BAD_ADDRESS;
+        }
 
-		/* Cut off if request too many bytes */
-		if (!_IN_NVM_SW_CALIB_AREA(base, offset + size - 1)) {
-			return ERR_INVALID_ARG;
-		}
-	} else {
-		return ERR_UNSUPPORTED_OP;
-	}
+        /* Cut off if request too many bytes */
+        if (!_IN_NVM_SW_CALIB_AREA(base, offset + size - 1)) {
+            return ERR_INVALID_ARG;
+        }
+    } else {
+        return ERR_UNSUPPORTED_OP;
+    }
 
-	/* Copy data */
-	memcpy(buf, ((uint8_t *)base) + offset, size);
-	return ERR_NONE;
+    /* Copy data */
+    memcpy(buf, ((uint8_t *)base) + offset, size);
+    return ERR_NONE;
 }
 
 uint32_t _user_area_read_bits(const void *base, const uint32_t bit_offset, const uint8_t n_bits)
 {
-	volatile uint32_t *mem_base = (volatile uint32_t *)base;
-	uint32_t           l_off, l_bits;
-	uint32_t           r_off, r_bits;
+    volatile uint32_t *mem_base = (volatile uint32_t *)base;
+    uint32_t           l_off, l_bits;
+    uint32_t           r_off, r_bits;
 
-	/** Parameter check. */
-	if (_IS_NVM_USER_ROW(base)) {
-		ASSERT(_IN_NVM_USER_ROW(base, bit_offset >> 3) && _IN_NVM_USER_ROW(base, (bit_offset + n_bits - 1) >> 3));
-	} else if (_IS_NVM_SW_CALIB_AREA(base)) {
-		ASSERT(_IN_NVM_SW_CALIB_AREA(base, bit_offset >> 3)
-		       && _IN_NVM_SW_CALIB_AREA(base, (bit_offset + n_bits - 1) >> 3));
-	} else {
-		ASSERT(false);
-	}
+    /** Parameter check. */
+    if (_IS_NVM_USER_ROW(base)) {
+        ASSERT(_IN_NVM_USER_ROW(base, bit_offset >> 3) && _IN_NVM_USER_ROW(base, (bit_offset + n_bits - 1) >> 3));
+    } else if (_IS_NVM_SW_CALIB_AREA(base)) {
+        ASSERT(_IN_NVM_SW_CALIB_AREA(base, bit_offset >> 3)
+               && _IN_NVM_SW_CALIB_AREA(base, (bit_offset + n_bits - 1) >> 3));
+    } else {
+        ASSERT(false);
+    }
 
-	/* Since the bitfield can cross 32-bits boundaries,
-	 * left and right bits are read from 32-bit aligned address
-	 * and then combined together. */
-	l_off  = bit_offset & (~(32 - 1));
-	r_off  = l_off + 32;
-	l_bits = 32 - (bit_offset & (32 - 1));
+    /* Since the bitfield can cross 32-bits boundaries,
+     * left and right bits are read from 32-bit aligned address
+     * and then combined together. */
+    l_off  = bit_offset & (~(32 - 1));
+    r_off  = l_off + 32;
+    l_bits = 32 - (bit_offset & (32 - 1));
 
-	if (n_bits > l_bits) {
-		r_bits = n_bits - l_bits;
-	} else {
-		l_bits = n_bits;
-		r_bits = 0;
-	}
+    if (n_bits > l_bits) {
+        r_bits = n_bits - l_bits;
+    } else {
+        l_bits = n_bits;
+        r_bits = 0;
+    }
 
-	return _user_area_read_r32_bits(mem_base, bit_offset, l_bits)
-	       + (_user_area_read_l32_bits(mem_base, r_off, r_bits) << l_bits);
+    return _user_area_read_r32_bits(mem_base, bit_offset, l_bits)
+           + (_user_area_read_l32_bits(mem_base, r_off, r_bits) << l_bits);
 }
 
 /** \internal Write 4096-bit user row
@@ -572,124 +572,124 @@ uint32_t _user_area_read_bits(const void *base, const uint32_t bit_offset, const
  */
 static int32_t _user_row_write_exec(const uint32_t *_row)
 {
-	Nvmctrl *hw    = NVMCTRL;
-	uint32_t ctrla = hri_nvmctrl_read_CTRLA_reg(NVMCTRL);
-	uint32_t i;
+    Nvmctrl *hw    = NVMCTRL;
+    uint32_t ctrla = hri_nvmctrl_read_CTRLA_reg(NVMCTRL);
+    uint32_t i;
 
-	/* Denied if Security Bit is set */
-	if (DSU->STATUSB.bit.PROT) {
-		return ERR_DENIED;
-	}
+    /* Denied if Security Bit is set */
+    if (DSU->STATUSB.bit.PROT) {
+        return ERR_DENIED;
+    }
 
-	/* Do Save */
+    /* Do Save */
 
-	/* - Prepare. */
-	while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-		/* Wait until this module isn't busy */
-	}
-	hri_nvmctrl_clear_CTRLA_WMODE_bf(NVMCTRL, NVMCTRL_CTRLA_WMODE_Msk);
+    /* - Prepare. */
+    while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+        /* Wait until this module isn't busy */
+    }
+    hri_nvmctrl_clear_CTRLA_WMODE_bf(NVMCTRL, NVMCTRL_CTRLA_WMODE_Msk);
 
-	/* - Erase AUX row. */
-	hri_nvmctrl_write_ADDR_reg(hw, (hri_nvmctrl_addr_reg_t)_NVM_USER_ROW_BASE);
-	hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_EP | NVMCTRL_CTRLB_CMDEX_KEY);
-	while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-		/* Wait until this module isn't busy */
-	}
+    /* - Erase AUX row. */
+    hri_nvmctrl_write_ADDR_reg(hw, (hri_nvmctrl_addr_reg_t)_NVM_USER_ROW_BASE);
+    hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_EP | NVMCTRL_CTRLB_CMDEX_KEY);
+    while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+        /* Wait until this module isn't busy */
+    }
 
-	for (i = 0; i < 32; i++) { /* 32 Quad words for User row: 32 * (4 bytes * 4) = 512 bytes */
-		/* - Page buffer clear & write. */
-		hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_PBC | NVMCTRL_CTRLB_CMDEX_KEY);
-		while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-			/* Wait until this module isn't busy */
-		}
-		*(((uint32_t *)NVMCTRL_USER) + i * 4)     = _row[i * 4];
-		*(((uint32_t *)NVMCTRL_USER) + i * 4 + 1) = _row[i * 4 + 1];
-		*(((uint32_t *)NVMCTRL_USER) + i * 4 + 2) = _row[i * 4 + 2];
-		*(((uint32_t *)NVMCTRL_USER) + i * 4 + 3) = _row[i * 4 + 3];
+    for (i = 0; i < 32; i++) { /* 32 Quad words for User row: 32 * (4 bytes * 4) = 512 bytes */
+        /* - Page buffer clear & write. */
+        hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_PBC | NVMCTRL_CTRLB_CMDEX_KEY);
+        while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+            /* Wait until this module isn't busy */
+        }
+        *(((uint32_t *)NVMCTRL_USER) + i * 4)     = _row[i * 4];
+        *(((uint32_t *)NVMCTRL_USER) + i * 4 + 1) = _row[i * 4 + 1];
+        *(((uint32_t *)NVMCTRL_USER) + i * 4 + 2) = _row[i * 4 + 2];
+        *(((uint32_t *)NVMCTRL_USER) + i * 4 + 3) = _row[i * 4 + 3];
 
-		/* - Write AUX row. */
-		hri_nvmctrl_write_ADDR_reg(hw, (hri_nvmctrl_addr_reg_t)(_NVM_USER_ROW_BASE + i * 16));
-		hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_WQW | NVMCTRL_CTRLB_CMDEX_KEY);
-		while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
-			/* Wait until this module isn't busy */
-		}
-	}
+        /* - Write AUX row. */
+        hri_nvmctrl_write_ADDR_reg(hw, (hri_nvmctrl_addr_reg_t)(_NVM_USER_ROW_BASE + i * 16));
+        hri_nvmctrl_write_CTRLB_reg(hw, NVMCTRL_CTRLB_CMD_WQW | NVMCTRL_CTRLB_CMDEX_KEY);
+        while (!hri_nvmctrl_get_STATUS_READY_bit(hw)) {
+            /* Wait until this module isn't busy */
+        }
+    }
 
-	/* Restore CTRLA */
-	hri_nvmctrl_write_CTRLA_reg(NVMCTRL, ctrla);
+    /* Restore CTRLA */
+    hri_nvmctrl_write_CTRLA_reg(NVMCTRL, ctrla);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 int32_t _user_area_write(void *base, const uint32_t offset, const uint8_t *buf, const uint32_t size)
 {
-	uint32_t _row[NVMCTRL_PAGE_SIZE / 4]; /* Copy of user row. */
+    uint32_t _row[NVMCTRL_PAGE_SIZE / 4]; /* Copy of user row. */
 
-	/** Parameter check. */
-	if (_IS_NVM_USER_ROW(base)) {
-		if (!_IN_NVM_USER_ROW(base, offset)) {
-			return ERR_BAD_ADDRESS;
-		} else if (!_IN_NVM_USER_ROW(base, offset + size - 1)) {
-			return ERR_INVALID_ARG;
-		}
-	} else if (_IS_NVM_SW_CALIB_AREA(base)) {
-		return ERR_DENIED;
-	} else {
-		return ERR_UNSUPPORTED_OP;
-	}
+    /** Parameter check. */
+    if (_IS_NVM_USER_ROW(base)) {
+        if (!_IN_NVM_USER_ROW(base, offset)) {
+            return ERR_BAD_ADDRESS;
+        } else if (!_IN_NVM_USER_ROW(base, offset + size - 1)) {
+            return ERR_INVALID_ARG;
+        }
+    } else if (_IS_NVM_SW_CALIB_AREA(base)) {
+        return ERR_DENIED;
+    } else {
+        return ERR_UNSUPPORTED_OP;
+    }
 
-	memcpy(_row, base, NVMCTRL_PAGE_SIZE);       /* Store previous data. */
-	memcpy((uint8_t *)_row + offset, buf, size); /* Modify with buf data. */
+    memcpy(_row, base, NVMCTRL_PAGE_SIZE);       /* Store previous data. */
+    memcpy((uint8_t *)_row + offset, buf, size); /* Modify with buf data. */
 
-	return _user_row_write_exec(_row);
+    return _user_row_write_exec(_row);
 }
 
 int32_t _user_area_write_bits(void *base, const uint32_t bit_offset, const uint32_t bits, const uint8_t n_bits)
 {
-	uint32_t _row[NVMCTRL_PAGE_SIZE / 4]; /* Copy of user row. */
-	uint32_t l_off, l_bits;
-	uint32_t r_off, r_bits;
+    uint32_t _row[NVMCTRL_PAGE_SIZE / 4]; /* Copy of user row. */
+    uint32_t l_off, l_bits;
+    uint32_t r_off, r_bits;
 
-	/** Parameter check. */
-	if (_IS_NVM_USER_ROW(base)) {
-		if (!_IN_NVM_USER_ROW(base, bit_offset >> 3)) {
-			return ERR_BAD_ADDRESS;
-		} else if (!_IN_NVM_USER_ROW(base, (bit_offset + n_bits - 1) >> 3)) {
-			return ERR_INVALID_ARG;
-		}
-	} else if (_IS_NVM_SW_CALIB_AREA(base)) {
-		return ERR_DENIED;
-	} else {
-		return ERR_UNSUPPORTED_OP;
-	}
+    /** Parameter check. */
+    if (_IS_NVM_USER_ROW(base)) {
+        if (!_IN_NVM_USER_ROW(base, bit_offset >> 3)) {
+            return ERR_BAD_ADDRESS;
+        } else if (!_IN_NVM_USER_ROW(base, (bit_offset + n_bits - 1) >> 3)) {
+            return ERR_INVALID_ARG;
+        }
+    } else if (_IS_NVM_SW_CALIB_AREA(base)) {
+        return ERR_DENIED;
+    } else {
+        return ERR_UNSUPPORTED_OP;
+    }
 
-	/* Since the bitfield can cross 32-bits boundaries,
-	 * left and right bits are splitted for 32-bit aligned address
-	 * and then saved. */
-	l_off  = bit_offset & (~(32 - 1));
-	r_off  = l_off + 32;
-	l_bits = 32 - (bit_offset & (32 - 1));
+    /* Since the bitfield can cross 32-bits boundaries,
+     * left and right bits are splitted for 32-bit aligned address
+     * and then saved. */
+    l_off  = bit_offset & (~(32 - 1));
+    r_off  = l_off + 32;
+    l_bits = 32 - (bit_offset & (32 - 1));
 
-	if (n_bits > l_bits) {
-		r_bits = n_bits - l_bits;
-	} else {
-		l_bits = n_bits;
-		r_bits = 0;
-	}
+    if (n_bits > l_bits) {
+        r_bits = n_bits - l_bits;
+    } else {
+        l_bits = n_bits;
+        r_bits = 0;
+    }
 
-	memcpy(_row, base, NVMCTRL_PAGE_SIZE); /* Store previous data. */
+    memcpy(_row, base, NVMCTRL_PAGE_SIZE); /* Store previous data. */
 
-	if (l_bits) {
-		uint32_t l_mask = ((1 << l_bits) - 1) << (bit_offset & (32 - 1));
-		_row[bit_offset >> 5] &= ~l_mask;
-		_row[bit_offset >> 5] |= (bits << (bit_offset & (32 - 1))) & l_mask;
-	}
+    if (l_bits) {
+        uint32_t l_mask = ((1 << l_bits) - 1) << (bit_offset & (32 - 1));
+        _row[bit_offset >> 5] &= ~l_mask;
+        _row[bit_offset >> 5] |= (bits << (bit_offset & (32 - 1))) & l_mask;
+    }
 
-	if (r_bits) {
-		uint32_t r_mask = (1 << r_bits) - 1;
-		_row[r_off >> 5] &= ~r_mask;
-		_row[r_off >> 5] |= bits >> l_bits;
-	}
+    if (r_bits) {
+        uint32_t r_mask = (1 << r_bits) - 1;
+        _row[r_off >> 5] &= ~r_mask;
+        _row[r_off >> 5] |= bits >> l_bits;
+    }
 
-	return _user_row_write_exec(_row);
+    return _user_row_write_exec(_row);
 }

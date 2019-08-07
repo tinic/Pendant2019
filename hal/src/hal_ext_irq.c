@@ -44,8 +44,8 @@
  * \brief External IRQ struct
  */
 struct ext_irq {
-	ext_irq_cb_t cb;
-	uint32_t     pin;
+    ext_irq_cb_t cb;
+    uint32_t     pin;
 };
 
 /* Remove KEIL compiling error in case no IRQ line selected */
@@ -66,14 +66,14 @@ static void process_ext_irq(const uint32_t pin);
  */
 int32_t ext_irq_init(void)
 {
-	uint16_t i;
+    uint16_t i;
 
-	for (i = 0; i < EXT_IRQ_AMOUNT; i++) {
-		ext_irqs[i].pin = 0xFFFFFFFF;
-		ext_irqs[i].cb  = NULL;
-	}
+    for (i = 0; i < EXT_IRQ_AMOUNT; i++) {
+        ext_irqs[i].pin = 0xFFFFFFFF;
+        ext_irqs[i].cb  = NULL;
+    }
 
-	return _ext_irq_init(process_ext_irq);
+    return _ext_irq_init(process_ext_irq);
 }
 
 /**
@@ -81,7 +81,7 @@ int32_t ext_irq_init(void)
  */
 int32_t ext_irq_deinit(void)
 {
-	return _ext_irq_deinit();
+    return _ext_irq_deinit();
 }
 
 /**
@@ -89,48 +89,48 @@ int32_t ext_irq_deinit(void)
  */
 int32_t ext_irq_register(const uint32_t pin, ext_irq_cb_t cb)
 {
-	uint8_t i = 0, j = 0;
-	bool    found = false;
+    uint8_t i = 0, j = 0;
+    bool    found = false;
 
-	for (; i < EXT_IRQ_AMOUNT; i++) {
-		if (ext_irqs[i].pin == pin) {
-			ext_irqs[i].cb = cb;
-			found          = true;
-			break;
-		}
-	}
+    for (; i < EXT_IRQ_AMOUNT; i++) {
+        if (ext_irqs[i].pin == pin) {
+            ext_irqs[i].cb = cb;
+            found          = true;
+            break;
+        }
+    }
 
-	if (NULL == cb) {
-		if (!found) {
-			return ERR_INVALID_ARG;
-		}
-		return _ext_irq_enable(pin, false);
-	}
+    if (NULL == cb) {
+        if (!found) {
+            return ERR_INVALID_ARG;
+        }
+        return _ext_irq_enable(pin, false);
+    }
 
-	if (!found) {
-		for (i = 0; i < EXT_IRQ_AMOUNT; i++) {
-			if (NULL == ext_irqs[i].cb) {
-				ext_irqs[i].cb  = cb;
-				ext_irqs[i].pin = pin;
-				found           = true;
-				break;
-			}
-		}
-		for (; (j < EXT_IRQ_AMOUNT) && (i < EXT_IRQ_AMOUNT); j++) {
-			if ((ext_irqs[i].pin < ext_irqs[j].pin) && (ext_irqs[j].pin != 0xFFFFFFFF)) {
-				struct ext_irq tmp = ext_irqs[j];
+    if (!found) {
+        for (i = 0; i < EXT_IRQ_AMOUNT; i++) {
+            if (NULL == ext_irqs[i].cb) {
+                ext_irqs[i].cb  = cb;
+                ext_irqs[i].pin = pin;
+                found           = true;
+                break;
+            }
+        }
+        for (; (j < EXT_IRQ_AMOUNT) && (i < EXT_IRQ_AMOUNT); j++) {
+            if ((ext_irqs[i].pin < ext_irqs[j].pin) && (ext_irqs[j].pin != 0xFFFFFFFF)) {
+                struct ext_irq tmp = ext_irqs[j];
 
-				ext_irqs[j] = ext_irqs[i];
-				ext_irqs[i] = tmp;
-			}
-		}
-	}
+                ext_irqs[j] = ext_irqs[i];
+                ext_irqs[i] = tmp;
+            }
+        }
+    }
 
-	if (!found) {
-		return ERR_INVALID_ARG;
-	}
+    if (!found) {
+        return ERR_INVALID_ARG;
+    }
 
-	return _ext_irq_enable(pin, true);
+    return _ext_irq_enable(pin, true);
 }
 
 /**
@@ -138,7 +138,7 @@ int32_t ext_irq_register(const uint32_t pin, ext_irq_cb_t cb)
  */
 int32_t ext_irq_enable(const uint32_t pin)
 {
-	return _ext_irq_enable(pin, true);
+    return _ext_irq_enable(pin, true);
 }
 
 /**
@@ -146,7 +146,7 @@ int32_t ext_irq_enable(const uint32_t pin)
  */
 int32_t ext_irq_disable(const uint32_t pin)
 {
-	return _ext_irq_enable(pin, false);
+    return _ext_irq_enable(pin, false);
 }
 
 /**
@@ -154,7 +154,7 @@ int32_t ext_irq_disable(const uint32_t pin)
  */
 uint32_t ext_irq_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }
 
 /**
@@ -164,25 +164,25 @@ uint32_t ext_irq_get_version(void)
  */
 static void process_ext_irq(const uint32_t pin)
 {
-	uint8_t lower = 0, middle, upper = EXT_IRQ_AMOUNT;
+    uint8_t lower = 0, middle, upper = EXT_IRQ_AMOUNT;
 
-	while (upper >= lower) {
-		middle = (upper + lower) >> 1;
-		if (middle >= EXT_IRQ_AMOUNT) {
-			return;
-		}
+    while (upper >= lower) {
+        middle = (upper + lower) >> 1;
+        if (middle >= EXT_IRQ_AMOUNT) {
+            return;
+        }
 
-		if (ext_irqs[middle].pin == pin) {
-			if (ext_irqs[middle].cb) {
-				ext_irqs[middle].cb();
-			}
-			return;
-		}
+        if (ext_irqs[middle].pin == pin) {
+            if (ext_irqs[middle].cb) {
+                ext_irqs[middle].cb();
+            }
+            return;
+        }
 
-		if (ext_irqs[middle].pin < pin) {
-			lower = middle + 1;
-		} else {
-			upper = middle - 1;
-		}
-	}
+        if (ext_irqs[middle].pin < pin) {
+            lower = middle + 1;
+        } else {
+            upper = middle - 1;
+        }
+    }
 }

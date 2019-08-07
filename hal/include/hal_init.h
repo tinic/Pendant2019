@@ -55,7 +55,7 @@ extern "C" {
  */
 static inline void init_mcu(void)
 {
-	_init_chip();
+    _init_chip();
 }
 
 /**

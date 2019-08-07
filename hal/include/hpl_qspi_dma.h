@@ -50,10 +50,10 @@ extern "C" {
 
 /** The callback types */
 enum _qspi_dma_cb_type {
-	/** Callback type for DMA transfer done */
-	QSPI_DMA_CB_XFER_DONE,
-	/** Callback type for DMA errors */
-	QSPI_DMA_CB_ERROR,
+    /** Callback type for DMA transfer done */
+    QSPI_DMA_CB_XFER_DONE,
+    /** Callback type for DMA errors */
+    QSPI_DMA_CB_ERROR,
 };
 
 /**
@@ -65,23 +65,23 @@ typedef void (*_qspi_dma_cb_t)(struct _dma_resource *resource);
  *  \brief The callbacks offered by QSPI driver
  */
 struct _qspi_dma_callbacks {
-	_qspi_dma_cb_t xfer_done;
-	_qspi_dma_cb_t error;
+    _qspi_dma_cb_t xfer_done;
+    _qspi_dma_cb_t error;
 };
 
 /**
  * QSPI dma driver instance.
  */
 struct _qspi_dma_dev {
-	/** Pointer to private data or hardware base */
-	void *prvt;
-	/**
-	 *  Pointer to the callback functions so that initialize the driver to
-	 *  handle interrupts.
-	 */
-	struct _qspi_dma_callbacks cb;
-	/** DMA resource */
-	struct _dma_resource *resource;
+    /** Pointer to private data or hardware base */
+    void *prvt;
+    /**
+     *  Pointer to the callback functions so that initialize the driver to
+     *  handle interrupts.
+     */
+    struct _qspi_dma_callbacks cb;
+    /** DMA resource */
+    struct _dma_resource *resource;
 };
 
 /**

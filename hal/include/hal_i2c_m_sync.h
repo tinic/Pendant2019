@@ -53,9 +53,9 @@ extern "C" {
  * \brief I2C descriptor structure, embed i2c_device & i2c_interface
  */
 struct i2c_m_sync_desc {
-	struct _i2c_m_sync_device device;
-	struct io_descriptor      io;
-	uint16_t                  slave_addr;
+    struct _i2c_m_sync_device device;
+    struct io_descriptor      io;
+    uint16_t                  slave_addr;
 };
 
 /**

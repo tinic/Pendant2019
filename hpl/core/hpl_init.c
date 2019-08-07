@@ -52,27 +52,27 @@
  */
 void _init_chip(void)
 {
-	hri_nvmctrl_set_CTRLA_RWS_bf(NVMCTRL, CONF_NVM_WAIT_STATE);
+    hri_nvmctrl_set_CTRLA_RWS_bf(NVMCTRL, CONF_NVM_WAIT_STATE);
 
-	_osc32kctrl_init_sources();
-	_oscctrl_init_sources();
-	_mclk_init();
+    _osc32kctrl_init_sources();
+    _oscctrl_init_sources();
+    _mclk_init();
 #if _GCLK_INIT_1ST
-	_gclk_init_generators_by_fref(_GCLK_INIT_1ST);
+    _gclk_init_generators_by_fref(_GCLK_INIT_1ST);
 #endif
-	_oscctrl_init_referenced_generators();
-	_gclk_init_generators_by_fref(_GCLK_INIT_LAST);
+    _oscctrl_init_referenced_generators();
+    _gclk_init_generators_by_fref(_GCLK_INIT_LAST);
 
 #if CONF_DMAC_ENABLE
-	hri_mclk_set_AHBMASK_DMAC_bit(MCLK);
-	_dma_init();
+    hri_mclk_set_AHBMASK_DMAC_bit(MCLK);
+    _dma_init();
 #endif
 
 #if (CONF_PORT_EVCTRL_PORT_0 | CONF_PORT_EVCTRL_PORT_1 | CONF_PORT_EVCTRL_PORT_2 | CONF_PORT_EVCTRL_PORT_3)
-	_port_event_init();
+    _port_event_init();
 #endif
 
 #if CONF_CMCC_ENABLE
-	cache_init();
+    cache_init();
 #endif
 }

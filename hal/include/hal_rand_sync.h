@@ -50,7 +50,7 @@ extern "C" {
 
 /** Random Number Generator polling device. */
 struct rand_sync_desc {
-	struct _rand_sync_dev dev;
+    struct _rand_sync_dev dev;
 };
 
 /**

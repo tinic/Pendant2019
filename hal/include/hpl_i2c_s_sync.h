@@ -48,7 +48,7 @@ typedef uint32_t i2c_s_status_t;
  * \brief i2c slave device structure
  */
 struct _i2c_s_sync_device {
-	void *hw;
+    void *hw;
 };
 
 #include <compiler.h>

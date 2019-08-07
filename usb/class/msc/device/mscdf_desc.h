@@ -38,50 +38,50 @@
 #include "usbd_config.h"
 
 #define MSC_DEV_DESC                                                                                                   \
-	USB_DEV_DESC_BYTES(CONF_USB_MSC_BCDUSB,                                                                            \
-	                   0x00,                                                                                           \
-	                   0x00,                                                                                           \
-	                   0x00,                                                                                           \
-	                   CONF_USB_MSC_BMAXPKSZ0,                                                                         \
-	                   CONF_USB_MSC_IDVENDER,                                                                          \
-	                   CONF_USB_MSC_IDPRODUCT,                                                                         \
-	                   CONF_USB_MSC_BCDDEVICE,                                                                         \
-	                   CONF_USB_MSC_IMANUFACT,                                                                         \
-	                   CONF_USB_MSC_IPRODUCT,                                                                          \
-	                   CONF_USB_MSC_ISERIALNUM,                                                                        \
-	                   0x01)
+    USB_DEV_DESC_BYTES(CONF_USB_MSC_BCDUSB,                                                                            \
+                       0x00,                                                                                           \
+                       0x00,                                                                                           \
+                       0x00,                                                                                           \
+                       CONF_USB_MSC_BMAXPKSZ0,                                                                         \
+                       CONF_USB_MSC_IDVENDER,                                                                          \
+                       CONF_USB_MSC_IDPRODUCT,                                                                         \
+                       CONF_USB_MSC_BCDDEVICE,                                                                         \
+                       CONF_USB_MSC_IMANUFACT,                                                                         \
+                       CONF_USB_MSC_IPRODUCT,                                                                          \
+                       CONF_USB_MSC_ISERIALNUM,                                                                        \
+                       0x01)
 
 #define MSC_DEV_QUAL_DESC USB_DEV_QUAL_DESC_BYTES(CONF_USB_MSC_BCDUSB, 0x00, 0x00, 0x00, CONF_USB_MSC_BMAXPKSZ0, 0x01)
 
 #define MSC_CFG_DESC                                                                                                   \
-	USB_CONFIG_DESC_BYTES(32, 1, 0x01, CONF_USB_MSC_ICONFIG, CONF_USB_MSC_BMATTRI, CONF_USB_MSC_BMAXPOWER)
+    USB_CONFIG_DESC_BYTES(32, 1, 0x01, CONF_USB_MSC_ICONFIG, CONF_USB_MSC_BMATTRI, CONF_USB_MSC_BMAXPOWER)
 
 #define MSC_OTH_SPD_CFG_DESC                                                                                           \
-	USB_OTH_SPD_CFG_DESC_BYTES(32, 1, 0x01, CONF_USB_MSC_ICONFIG, CONF_USB_MSC_BMATTRI, CONF_USB_MSC_BMAXPOWER)
+    USB_OTH_SPD_CFG_DESC_BYTES(32, 1, 0x01, CONF_USB_MSC_ICONFIG, CONF_USB_MSC_BMATTRI, CONF_USB_MSC_BMAXPOWER)
 
 #define MSC_IFACE_DESCES                                                                                               \
-	USB_IFACE_DESC_BYTES(CONF_USB_MSC_BIFCNUM, 0x00, 2, 0x08, 0x06, 0x50, CONF_USB_MSC_IIFC),                          \
-	    USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKOUT_EPADDR, 2, CONF_USB_MSC_BULKOUT_MAXPKSZ, 0),                          \
-	    USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKIN_EPADDR, 2, CONF_USB_MSC_BULKIN_MAXPKSZ, 0)
+    USB_IFACE_DESC_BYTES(CONF_USB_MSC_BIFCNUM, 0x00, 2, 0x08, 0x06, 0x50, CONF_USB_MSC_IIFC),                          \
+        USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKOUT_EPADDR, 2, CONF_USB_MSC_BULKOUT_MAXPKSZ, 0),                          \
+        USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKIN_EPADDR, 2, CONF_USB_MSC_BULKIN_MAXPKSZ, 0)
 
 #define MSC_IFACE_DESCES_HS                                                                                            \
-	USB_IFACE_DESC_BYTES(CONF_USB_MSC_BIFCNUM, 0x00, 2, 0x08, 0x06, 0x50, CONF_USB_MSC_IIFC),                          \
-	    USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKOUT_EPADDR, 2, CONF_USB_MSC_BULKOUT_MAXPKSZ_HS, 0),                       \
-	    USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKIN_EPADDR, 2, CONF_USB_MSC_BULKIN_MAXPKSZ_HS, 0)
+    USB_IFACE_DESC_BYTES(CONF_USB_MSC_BIFCNUM, 0x00, 2, 0x08, 0x06, 0x50, CONF_USB_MSC_IIFC),                          \
+        USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKOUT_EPADDR, 2, CONF_USB_MSC_BULKOUT_MAXPKSZ_HS, 0),                       \
+        USB_ENDP_DESC_BYTES(CONF_USB_MSC_BULKIN_EPADDR, 2, CONF_USB_MSC_BULKIN_MAXPKSZ_HS, 0)
 
 #define MSC_STR_DESCES                                                                                                 \
-	CONF_USB_MSC_LANGID_DESC                                                                                           \
-	CONF_USB_MSC_IMANUFACT_STR_DESC                                                                                    \
-	CONF_USB_MSC_IPRODUCT_STR_DESC                                                                                     \
-	CONF_USB_MSC_ISERIALNUM_STR_DESC                                                                                   \
-	CONF_USB_MSC_ICONFIG_STR_DESC
+    CONF_USB_MSC_LANGID_DESC                                                                                           \
+    CONF_USB_MSC_IMANUFACT_STR_DESC                                                                                    \
+    CONF_USB_MSC_IPRODUCT_STR_DESC                                                                                     \
+    CONF_USB_MSC_ISERIALNUM_STR_DESC                                                                                   \
+    CONF_USB_MSC_ICONFIG_STR_DESC
 
 /** USB Device descriptors and configuration descriptors */
 #define MSC_DESCES_LS_FS MSC_DEV_DESC, MSC_CFG_DESC, MSC_IFACE_DESCES, MSC_STR_DESCES
 
 #define MSC_HS_DESCES_LS_FS                                                                                            \
-	MSC_DEV_DESC, MSC_DEV_QUAL_DESC, MSC_CFG_DESC, MSC_IFACE_DESCES, MSC_OTH_SPD_CFG_DESC, MSC_IFACE_DESCES_HS,        \
-	    MSC_STR_DESCES
+    MSC_DEV_DESC, MSC_DEV_QUAL_DESC, MSC_CFG_DESC, MSC_IFACE_DESCES, MSC_OTH_SPD_CFG_DESC, MSC_IFACE_DESCES_HS,        \
+        MSC_STR_DESCES
 
 #define MSC_HS_DESCES_HS MSC_CFG_DESC, MSC_IFACE_DESCES_HS, MSC_OTH_SPD_CFG_DESC, MSC_IFACE_DESCES
 

@@ -61,19 +61,19 @@ enum _flash_cb_type { FLASH_DEVICE_CB_READY, FLASH_DEVICE_CB_ERROR, FLASH_DEVICE
  * \brief FLASH interrupt handlers structure
  */
 struct _flash_callback {
-	/** Ready to accept new command handler */
-	void (*ready_cb)(struct _flash_device *device);
-	/** Error handler */
-	void (*error_cb)(struct _flash_device *device);
+    /** Ready to accept new command handler */
+    void (*ready_cb)(struct _flash_device *device);
+    /** Error handler */
+    void (*error_cb)(struct _flash_device *device);
 };
 
 /**
  * \brief FLASH descriptor device structure.
  */
 struct _flash_device {
-	struct _flash_callback flash_cb; /*!< Interrupt handers  */
-	struct _irq_descriptor irq;      /*!< Interrupt descriptor */
-	void *                 hw;       /*!< Hardware module instance handler */
+    struct _flash_callback flash_cb; /*!< Interrupt handers  */
+    struct _irq_descriptor irq;      /*!< Interrupt descriptor */
+    void *                 hw;       /*!< Hardware module instance handler */
 };
 
 /**

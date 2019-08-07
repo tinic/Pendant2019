@@ -94,13 +94,13 @@ COMPILER_PACK_SET(1)
  */
 //@{
 struct usb_msc_cbw {
-	le32_t  dCBWSignature;          /**< Must contain 'USBC' (0x43425355, LE32) */
-	le32_t  dCBWTag;                /**< Unique command ID (LE32) */
-	le32_t  dCBWDataTransferLength; /**< Number of bytes to transfer (LE32) */
-	uint8_t bmCBWFlags;             /**< Direction in bit 7 */
-	uint8_t bCBWLUN;                /**< Logical Unit Number */
-	uint8_t bCBWCBLength;           /**< Number of valid CDB bytes */
-	uint8_t CDB[16];                /**< SCSI Command Descriptor Block */
+    le32_t  dCBWSignature;          /**< Must contain 'USBC' (0x43425355, LE32) */
+    le32_t  dCBWTag;                /**< Unique command ID (LE32) */
+    le32_t  dCBWDataTransferLength; /**< Number of bytes to transfer (LE32) */
+    uint8_t bmCBWFlags;             /**< Direction in bit 7 */
+    uint8_t bCBWLUN;                /**< Logical Unit Number */
+    uint8_t bCBWCBLength;           /**< Number of valid CDB bytes */
+    uint8_t CDB[16];                /**< SCSI Command Descriptor Block */
 };
 
 #define USB_CBW_SIGNATURE 0x43425355   /**< dCBWSignature value */
@@ -116,10 +116,10 @@ struct usb_msc_cbw {
  */
 //@{
 struct usb_msc_csw {
-	le32_t  dCSWSignature;   /**< Must contain 'USBS' */
-	le32_t  dCSWTag;         /**< Same as dCBWTag */
-	le32_t  dCSWDataResidue; /**< Number of bytes not transfered */
-	uint8_t bCSWStatus;      /**< Status code */
+    le32_t  dCSWSignature;   /**< Must contain 'USBS' */
+    le32_t  dCSWTag;         /**< Same as dCBWTag */
+    le32_t  dCSWDataResidue; /**< Number of bytes not transfered */
+    uint8_t bCSWStatus;      /**< Status code */
 };
 
 #define USB_CSW_SIGNATURE 0x53425355 /**< dCSWSignature value */
@@ -139,11 +139,11 @@ COMPILER_PACK_RESET()
  */
 static inline void usb_fill_BOMSReset_req(struct usb_req *req, uint8_t iface)
 {
-	req->bmRequestType = 0x21;
-	req->bRequest      = USB_REQ_MSC_BULK_RESET;
-	req->wValue        = 0;
-	req->wIndex        = iface;
-	req->wLength       = 0;
+    req->bmRequestType = 0x21;
+    req->bRequest      = USB_REQ_MSC_BULK_RESET;
+    req->wValue        = 0;
+    req->wIndex        = iface;
+    req->wLength       = 0;
 }
 
 /**
@@ -153,11 +153,11 @@ static inline void usb_fill_BOMSReset_req(struct usb_req *req, uint8_t iface)
  */
 static inline void usb_fill_GetMaxLUN_req(struct usb_req *req, uint8_t iface)
 {
-	req->bmRequestType = 0xA1;
-	req->bRequest      = USB_REQ_MSC_GET_MAX_LUN;
-	req->wValue        = 0;
-	req->wIndex        = iface;
-	req->wLength       = 1;
+    req->bmRequestType = 0xA1;
+    req->bRequest      = USB_REQ_MSC_GET_MAX_LUN;
+    req->wValue        = 0;
+    req->wIndex        = iface;
+    req->wLength       = 1;
 }
 
 #ifdef __cplusplus

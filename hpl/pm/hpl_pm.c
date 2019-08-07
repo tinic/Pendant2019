@@ -40,29 +40,29 @@
  */
 int32_t _set_sleep_mode(const uint8_t mode)
 {
-	uint8_t delay = 10;
+    uint8_t delay = 10;
 
-	switch (mode) {
-	case 2:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
-		hri_pm_write_SLEEPCFG_reg(PM, mode);
-		/* A small latency happens between the store instruction and actual
-		 * writing of the SLEEPCFG register due to bridges. Software has to make
-		 * sure the SLEEPCFG register reads the wanted value before issuing WFI
-		 * instruction.
-		 */
-		do {
-			if (hri_pm_read_SLEEPCFG_reg(PM) == mode) {
-				break;
-			}
-		} while (--delay);
-		break;
-	default:
-		return ERR_INVALID_ARG;
-	}
+    switch (mode) {
+    case 2:
+    case 4:
+    case 5:
+    case 6:
+    case 7:
+        hri_pm_write_SLEEPCFG_reg(PM, mode);
+        /* A small latency happens between the store instruction and actual
+         * writing of the SLEEPCFG register due to bridges. Software has to make
+         * sure the SLEEPCFG register reads the wanted value before issuing WFI
+         * instruction.
+         */
+        do {
+            if (hri_pm_read_SLEEPCFG_reg(PM) == mode) {
+                break;
+            }
+        } while (--delay);
+        break;
+    default:
+        return ERR_INVALID_ARG;
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }

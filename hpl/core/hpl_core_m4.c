@@ -69,7 +69,7 @@ struct _irq_descriptor *_irq_table[PERIPH_COUNT_IRQn];
  */
 void _reset_mcu(void)
 {
-	NVIC_SystemReset();
+    NVIC_SystemReset();
 }
 
 /**
@@ -77,8 +77,8 @@ void _reset_mcu(void)
  */
 void _go_to_sleep(void)
 {
-	__DSB();
-	__WFI();
+    __DSB();
+    __WFI();
 }
 
 /**
@@ -86,7 +86,7 @@ void _go_to_sleep(void)
  */
 uint8_t _irq_get_current(void)
 {
-	return (uint8_t)__get_IPSR() - 16;
+    return (uint8_t)__get_IPSR() - 16;
 }
 
 /**
@@ -94,7 +94,7 @@ uint8_t _irq_get_current(void)
  */
 void _irq_disable(uint8_t n)
 {
-	NVIC_DisableIRQ((IRQn_Type)n);
+    NVIC_DisableIRQ((IRQn_Type)n);
 }
 
 /**
@@ -102,7 +102,7 @@ void _irq_disable(uint8_t n)
  */
 void _irq_set(uint8_t n)
 {
-	NVIC_SetPendingIRQ((IRQn_Type)n);
+    NVIC_SetPendingIRQ((IRQn_Type)n);
 }
 
 /**
@@ -110,7 +110,7 @@ void _irq_set(uint8_t n)
  */
 void _irq_clear(uint8_t n)
 {
-	NVIC_ClearPendingIRQ((IRQn_Type)n);
+    NVIC_ClearPendingIRQ((IRQn_Type)n);
 }
 
 /**
@@ -118,7 +118,7 @@ void _irq_clear(uint8_t n)
  */
 void _irq_enable(uint8_t n)
 {
-	NVIC_EnableIRQ((IRQn_Type)n);
+    NVIC_EnableIRQ((IRQn_Type)n);
 }
 
 /**
@@ -126,9 +126,9 @@ void _irq_enable(uint8_t n)
  */
 void _irq_register(const uint8_t n, struct _irq_descriptor *const irq)
 {
-	ASSERT(n < PERIPH_COUNT_IRQn);
+    ASSERT(n < PERIPH_COUNT_IRQn);
 
-	_irq_table[n] = irq;
+    _irq_table[n] = irq;
 }
 
 /**
@@ -136,8 +136,8 @@ void _irq_register(const uint8_t n, struct _irq_descriptor *const irq)
  */
 void Default_Handler(void)
 {
-	while (1) {
-	}
+    while (1) {
+    }
 }
 
 /**
@@ -145,22 +145,22 @@ void Default_Handler(void)
  */
 static inline uint32_t _get_cycles_for_us_internal(const uint16_t us, const uint32_t freq, const uint8_t power)
 {
-	switch (power) {
-	case 9:
-		return (us * (freq / 1000000) - 1) + 1;
-	case 8:
-		return (us * (freq / 100000) - 1) / 10 + 1;
-	case 7:
-		return (us * (freq / 10000) - 1) / 100 + 1;
-	case 6:
-		return (us * (freq / 1000) - 1) / 1000 + 1;
-	case 5:
-		return (us * (freq / 100) - 1) / 10000 + 1;
-	case 4:
-		return (us * (freq / 10) - 1) / 100000 + 1;
-	default:
-		return (us * freq - 1) / 1000000 + 1;
-	}
+    switch (power) {
+    case 9:
+        return (us * (freq / 1000000) - 1) + 1;
+    case 8:
+        return (us * (freq / 100000) - 1) / 10 + 1;
+    case 7:
+        return (us * (freq / 10000) - 1) / 100 + 1;
+    case 6:
+        return (us * (freq / 1000) - 1) / 1000 + 1;
+    case 5:
+        return (us * (freq / 100) - 1) / 10000 + 1;
+    case 4:
+        return (us * (freq / 10) - 1) / 100000 + 1;
+    default:
+        return (us * freq - 1) / 1000000 + 1;
+    }
 }
 
 /**
@@ -168,7 +168,7 @@ static inline uint32_t _get_cycles_for_us_internal(const uint16_t us, const uint
  */
 uint32_t _get_cycles_for_us(const uint16_t us)
 {
-	return _get_cycles_for_us_internal(us, CONF_CPU_FREQUENCY, CPU_FREQ_POWER);
+    return _get_cycles_for_us_internal(us, CONF_CPU_FREQUENCY, CPU_FREQ_POWER);
 }
 
 /**
@@ -176,22 +176,22 @@ uint32_t _get_cycles_for_us(const uint16_t us)
  */
 static inline uint32_t _get_cycles_for_ms_internal(const uint16_t ms, const uint32_t freq, const uint8_t power)
 {
-	switch (power) {
-	case 9:
-		return (ms * (freq / 1000000)) * 1000;
-	case 8:
-		return (ms * (freq / 100000)) * 100;
-	case 7:
-		return (ms * (freq / 10000)) * 10;
-	case 6:
-		return (ms * (freq / 1000));
-	case 5:
-		return (ms * (freq / 100) - 1) / 10 + 1;
-	case 4:
-		return (ms * (freq / 10) - 1) / 100 + 1;
-	default:
-		return (ms * freq - 1) / 1000 + 1;
-	}
+    switch (power) {
+    case 9:
+        return (ms * (freq / 1000000)) * 1000;
+    case 8:
+        return (ms * (freq / 100000)) * 100;
+    case 7:
+        return (ms * (freq / 10000)) * 10;
+    case 6:
+        return (ms * (freq / 1000));
+    case 5:
+        return (ms * (freq / 100) - 1) / 10 + 1;
+    case 4:
+        return (ms * (freq / 10) - 1) / 100 + 1;
+    default:
+        return (ms * freq - 1) / 1000 + 1;
+    }
 }
 
 /**
@@ -199,5 +199,5 @@ static inline uint32_t _get_cycles_for_ms_internal(const uint16_t ms, const uint
  */
 uint32_t _get_cycles_for_ms(const uint16_t ms)
 {
-	return _get_cycles_for_ms_internal(ms, CONF_CPU_FREQUENCY, CPU_FREQ_POWER);
+    return _get_cycles_for_ms_internal(ms, CONF_CPU_FREQUENCY, CPU_FREQ_POWER);
 }

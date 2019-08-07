@@ -46,42 +46,42 @@ extern "C" {
 
 int32_t qspi_sync_init(struct qspi_sync_descriptor *qspi, void *const hw)
 {
-	ASSERT(qspi && hw);
+    ASSERT(qspi && hw);
 
-	return _qspi_sync_init(&qspi->dev, hw);
+    return _qspi_sync_init(&qspi->dev, hw);
 }
 
 int32_t qspi_sync_deinit(struct qspi_sync_descriptor *qspi)
 {
-	ASSERT(qspi);
+    ASSERT(qspi);
 
-	return _qspi_sync_deinit(&qspi->dev);
+    return _qspi_sync_deinit(&qspi->dev);
 }
 
 int32_t qspi_sync_enable(struct qspi_sync_descriptor *qspi)
 {
-	ASSERT(qspi);
+    ASSERT(qspi);
 
-	return _qspi_sync_enable(&qspi->dev);
+    return _qspi_sync_enable(&qspi->dev);
 }
 
 int32_t qspi_sync_disable(struct qspi_sync_descriptor *qspi)
 {
-	ASSERT(qspi);
+    ASSERT(qspi);
 
-	return _qspi_sync_disable(&qspi->dev);
+    return _qspi_sync_disable(&qspi->dev);
 }
 
 int32_t qspi_sync_serial_run_command(struct qspi_sync_descriptor *qspi, const struct _qspi_command *cmd)
 {
-	ASSERT(qspi && cmd);
+    ASSERT(qspi && cmd);
 
-	return _qspi_sync_serial_run_command(&qspi->dev, cmd);
+    return _qspi_sync_serial_run_command(&qspi->dev, cmd);
 }
 
 uint32_t qspi_sync_get_version(void)
 {
-	return QSPI_SYNC_DRIVER_VERSION;
+    return QSPI_SYNC_DRIVER_VERSION;
 }
 
 #ifdef __cplusplus

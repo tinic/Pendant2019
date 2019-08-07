@@ -42,33 +42,33 @@
 static inline void _gpio_set_direction(const enum gpio_port port, const uint32_t mask,
                                        const enum gpio_direction direction)
 {
-	switch (direction) {
-	case GPIO_DIRECTION_OFF:
-		hri_port_clear_DIR_reg(PORT, port, mask);
-		hri_port_write_WRCONFIG_reg(PORT, port, PORT_WRCONFIG_WRPINCFG | (mask & 0xffff));
-		hri_port_write_WRCONFIG_reg(
-		    PORT, port, PORT_WRCONFIG_HWSEL | PORT_WRCONFIG_WRPINCFG | ((mask & 0xffff0000) >> 16));
-		break;
+    switch (direction) {
+    case GPIO_DIRECTION_OFF:
+        hri_port_clear_DIR_reg(PORT, port, mask);
+        hri_port_write_WRCONFIG_reg(PORT, port, PORT_WRCONFIG_WRPINCFG | (mask & 0xffff));
+        hri_port_write_WRCONFIG_reg(
+            PORT, port, PORT_WRCONFIG_HWSEL | PORT_WRCONFIG_WRPINCFG | ((mask & 0xffff0000) >> 16));
+        break;
 
-	case GPIO_DIRECTION_IN:
-		hri_port_clear_DIR_reg(PORT, port, mask);
-		hri_port_write_WRCONFIG_reg(PORT, port, PORT_WRCONFIG_WRPINCFG | PORT_WRCONFIG_INEN | (mask & 0xffff));
-		hri_port_write_WRCONFIG_reg(PORT,
-		                            port,
-		                            PORT_WRCONFIG_HWSEL | PORT_WRCONFIG_WRPINCFG | PORT_WRCONFIG_INEN
-		                                | ((mask & 0xffff0000) >> 16));
-		break;
+    case GPIO_DIRECTION_IN:
+        hri_port_clear_DIR_reg(PORT, port, mask);
+        hri_port_write_WRCONFIG_reg(PORT, port, PORT_WRCONFIG_WRPINCFG | PORT_WRCONFIG_INEN | (mask & 0xffff));
+        hri_port_write_WRCONFIG_reg(PORT,
+                                    port,
+                                    PORT_WRCONFIG_HWSEL | PORT_WRCONFIG_WRPINCFG | PORT_WRCONFIG_INEN
+                                        | ((mask & 0xffff0000) >> 16));
+        break;
 
-	case GPIO_DIRECTION_OUT:
-		hri_port_set_DIR_reg(PORT, port, mask);
-		hri_port_write_WRCONFIG_reg(PORT, port, PORT_WRCONFIG_WRPINCFG | (mask & 0xffff));
-		hri_port_write_WRCONFIG_reg(
-		    PORT, port, PORT_WRCONFIG_HWSEL | PORT_WRCONFIG_WRPINCFG | ((mask & 0xffff0000) >> 16));
-		break;
+    case GPIO_DIRECTION_OUT:
+        hri_port_set_DIR_reg(PORT, port, mask);
+        hri_port_write_WRCONFIG_reg(PORT, port, PORT_WRCONFIG_WRPINCFG | (mask & 0xffff));
+        hri_port_write_WRCONFIG_reg(
+            PORT, port, PORT_WRCONFIG_HWSEL | PORT_WRCONFIG_WRPINCFG | ((mask & 0xffff0000) >> 16));
+        break;
 
-	default:
-		ASSERT(false);
-	}
+    default:
+        ASSERT(false);
+    }
 }
 
 /**
@@ -76,11 +76,11 @@ static inline void _gpio_set_direction(const enum gpio_port port, const uint32_t
  */
 static inline void _gpio_set_level(const enum gpio_port port, const uint32_t mask, const bool level)
 {
-	if (level) {
-		hri_port_set_OUT_reg(PORT, port, mask);
-	} else {
-		hri_port_clear_OUT_reg(PORT, port, mask);
-	}
+    if (level) {
+        hri_port_set_OUT_reg(PORT, port, mask);
+    } else {
+        hri_port_clear_OUT_reg(PORT, port, mask);
+    }
 }
 
 /**
@@ -88,7 +88,7 @@ static inline void _gpio_set_level(const enum gpio_port port, const uint32_t mas
  */
 static inline void _gpio_toggle_level(const enum gpio_port port, const uint32_t mask)
 {
-	hri_port_toggle_OUT_reg(PORT, port, mask);
+    hri_port_toggle_OUT_reg(PORT, port, mask);
 }
 
 /**
@@ -96,18 +96,18 @@ static inline void _gpio_toggle_level(const enum gpio_port port, const uint32_t 
  */
 static inline uint32_t _gpio_get_level(const enum gpio_port port)
 {
-	uint32_t tmp;
+    uint32_t tmp;
 
-	CRITICAL_SECTION_ENTER();
+    CRITICAL_SECTION_ENTER();
 
-	uint32_t dir_tmp = hri_port_read_DIR_reg(PORT, port);
+    uint32_t dir_tmp = hri_port_read_DIR_reg(PORT, port);
 
-	tmp = hri_port_read_IN_reg(PORT, port) & ~dir_tmp;
-	tmp |= hri_port_read_OUT_reg(PORT, port) & dir_tmp;
+    tmp = hri_port_read_IN_reg(PORT, port) & ~dir_tmp;
+    tmp |= hri_port_read_OUT_reg(PORT, port) & dir_tmp;
 
-	CRITICAL_SECTION_LEAVE();
+    CRITICAL_SECTION_LEAVE();
 
-	return tmp;
+    return tmp;
 }
 
 /**
@@ -116,27 +116,27 @@ static inline uint32_t _gpio_get_level(const enum gpio_port port)
 static inline void _gpio_set_pin_pull_mode(const enum gpio_port port, const uint8_t pin,
                                            const enum gpio_pull_mode pull_mode)
 {
-	switch (pull_mode) {
-	case GPIO_PULL_OFF:
-		hri_port_clear_PINCFG_PULLEN_bit(PORT, port, pin);
-		break;
+    switch (pull_mode) {
+    case GPIO_PULL_OFF:
+        hri_port_clear_PINCFG_PULLEN_bit(PORT, port, pin);
+        break;
 
-	case GPIO_PULL_UP:
-		hri_port_clear_DIR_reg(PORT, port, 1U << pin);
-		hri_port_set_PINCFG_PULLEN_bit(PORT, port, pin);
-		hri_port_set_OUT_reg(PORT, port, 1U << pin);
-		break;
+    case GPIO_PULL_UP:
+        hri_port_clear_DIR_reg(PORT, port, 1U << pin);
+        hri_port_set_PINCFG_PULLEN_bit(PORT, port, pin);
+        hri_port_set_OUT_reg(PORT, port, 1U << pin);
+        break;
 
-	case GPIO_PULL_DOWN:
-		hri_port_clear_DIR_reg(PORT, port, 1U << pin);
-		hri_port_set_PINCFG_PULLEN_bit(PORT, port, pin);
-		hri_port_clear_OUT_reg(PORT, port, 1U << pin);
-		break;
+    case GPIO_PULL_DOWN:
+        hri_port_clear_DIR_reg(PORT, port, 1U << pin);
+        hri_port_set_PINCFG_PULLEN_bit(PORT, port, pin);
+        hri_port_clear_OUT_reg(PORT, port, 1U << pin);
+        break;
 
-	default:
-		ASSERT(false);
-		break;
-	}
+    default:
+        ASSERT(false);
+        break;
+    }
 }
 
 /**
@@ -144,27 +144,27 @@ static inline void _gpio_set_pin_pull_mode(const enum gpio_port port, const uint
  */
 static inline void _gpio_set_pin_function(const uint32_t gpio, const uint32_t function)
 {
-	uint8_t port = GPIO_PORT(gpio);
-	uint8_t pin  = GPIO_PIN(gpio);
+    uint8_t port = GPIO_PORT(gpio);
+    uint8_t pin  = GPIO_PIN(gpio);
 
-	if (function == GPIO_PIN_FUNCTION_OFF) {
-		hri_port_write_PINCFG_PMUXEN_bit(PORT, port, pin, false);
+    if (function == GPIO_PIN_FUNCTION_OFF) {
+        hri_port_write_PINCFG_PMUXEN_bit(PORT, port, pin, false);
 
-	} else {
-		hri_port_write_PINCFG_PMUXEN_bit(PORT, port, pin, true);
+    } else {
+        hri_port_write_PINCFG_PMUXEN_bit(PORT, port, pin, true);
 
-		if (pin & 1) {
-			// Odd numbered pin
-			hri_port_write_PMUX_PMUXO_bf(PORT, port, pin >> 1, function & 0xffff);
-		} else {
-			// Even numbered pin
-			hri_port_write_PMUX_PMUXE_bf(PORT, port, pin >> 1, function & 0xffff);
-		}
-	}
+        if (pin & 1) {
+            // Odd numbered pin
+            hri_port_write_PMUX_PMUXO_bf(PORT, port, pin >> 1, function & 0xffff);
+        } else {
+            // Even numbered pin
+            hri_port_write_PMUX_PMUXE_bf(PORT, port, pin >> 1, function & 0xffff);
+        }
+    }
 }
 
 static inline void _port_event_init()
 {
-	hri_port_set_EVCTRL_reg(PORT, 0, CONF_PORTA_EVCTRL);
-	hri_port_set_EVCTRL_reg(PORT, 1, CONF_PORTB_EVCTRL);
+    hri_port_set_EVCTRL_reg(PORT, 0, CONF_PORTA_EVCTRL);
+    hri_port_set_EVCTRL_reg(PORT, 1, CONF_PORTB_EVCTRL);
 }

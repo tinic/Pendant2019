@@ -44,7 +44,7 @@
  */
 int32_t event_system_init(void)
 {
-	return _event_system_init();
+    return _event_system_init();
 }
 
 /**
@@ -52,7 +52,7 @@ int32_t event_system_init(void)
  */
 int32_t event_system_deinit(void)
 {
-	return _event_system_deinit();
+    return _event_system_deinit();
 }
 
 /**
@@ -60,7 +60,7 @@ int32_t event_system_deinit(void)
  */
 int32_t event_system_enable_user(const uint16_t user, const uint16_t channel)
 {
-	return _event_system_enable_user(user, channel, true);
+    return _event_system_enable_user(user, channel, true);
 }
 
 /**
@@ -68,7 +68,7 @@ int32_t event_system_enable_user(const uint16_t user, const uint16_t channel)
  */
 int32_t event_system_disable_user(const uint16_t user, const uint16_t channel)
 {
-	return _event_system_enable_user(user, channel, false);
+    return _event_system_enable_user(user, channel, false);
 }
 
 /**
@@ -76,7 +76,7 @@ int32_t event_system_disable_user(const uint16_t user, const uint16_t channel)
  */
 int32_t event_system_enable_generator(const uint16_t generator, const uint16_t channel)
 {
-	return _event_system_enable_generator(generator, channel, true);
+    return _event_system_enable_generator(generator, channel, true);
 }
 
 /**
@@ -84,7 +84,7 @@ int32_t event_system_enable_generator(const uint16_t generator, const uint16_t c
  */
 int32_t event_system_disable_generator(const uint16_t generator, const uint16_t channel)
 {
-	return _event_system_enable_generator(generator, channel, false);
+    return _event_system_enable_generator(generator, channel, false);
 }
 
 /**
@@ -94,5 +94,5 @@ int32_t event_system_disable_generator(const uint16_t generator, const uint16_t 
  */
 uint32_t event_system_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }

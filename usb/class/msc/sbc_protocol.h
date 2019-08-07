@@ -63,10 +63,10 @@
 
 /** \name SBC-2 Mode page definitions */
 enum scsi_sbc_mode {
-	SCSI_MS_MODE_RW_ERR_RECOV  = 0x01, /**< Read-Write Error Recovery mode page */
-	SCSI_MS_MODE_FORMAT_DEVICE = 0x03, /**< Format Device mode page */
-	SCSI_MS_MODE_FLEXIBLE_DISK = 0x05, /**< Flexible Disk mode page */
-	SCSI_MS_MODE_CACHING       = 0x08
+    SCSI_MS_MODE_RW_ERR_RECOV  = 0x01, /**< Read-Write Error Recovery mode page */
+    SCSI_MS_MODE_FORMAT_DEVICE = 0x03, /**< Format Device mode page */
+    SCSI_MS_MODE_FLEXIBLE_DISK = 0x05, /**< Flexible Disk mode page */
+    SCSI_MS_MODE_CACHING       = 0x08
 };
 
 /** \name SBC-2 Device-Specific Parameter */
@@ -78,8 +78,8 @@ enum scsi_sbc_mode {
  * \note Fields are MSB first (BE)
  */
 struct sbc_slba_block_desc {
-	be32_t nr_blocks;                       /**< Number of Blocks (BE32) */
-	be32_t block_len;                       /**< Block Length (BE32) */
+    be32_t nr_blocks;                       /**< Number of Blocks (BE32) */
+    be32_t block_len;                       /**< Block Length (BE32) */
 #define SBC_SLBA_BLOCK_LEN_MASK 0x00FFFFFFU /**< Mask reserved bits */
 };
 
@@ -88,9 +88,9 @@ struct sbc_slba_block_desc {
  * \note Fields are MSB first (BE)
  */
 struct sbc_caching_mode_page {
-	uint8_t page_code;
-	uint8_t page_length;
-	uint8_t flags2;
+    uint8_t page_code;
+    uint8_t page_length;
+    uint8_t flags2;
 #define SBC_MP_CACHE_IC (1 << 7)   /**< Initiator Control */
 #define SBC_MP_CACHE_ABPF (1 << 6) /**< Abort Pre-Fetch */
 #define SBC_MP_CACHE_CAP (1 << 5)  /**< Catching Analysis Permitted */
@@ -99,19 +99,19 @@ struct sbc_caching_mode_page {
 #define SBC_MP_CACHE_WCE (1 << 2)  /**< Write back Cache Enable */
 #define SBC_MP_CACHE_MF (1 << 1)   /**< Multiplication Factor */
 #define SBC_MP_CACHE_RCD (1 << 0)  /**< Read Cache Disable */
-	uint8_t retention;
-	be16_t  dis_pf_transfer_len;
-	be16_t  min_prefetch;
-	be16_t  max_prefetch;
-	be16_t  max_prefetch_ceil;
-	uint8_t flags12;
+    uint8_t retention;
+    be16_t  dis_pf_transfer_len;
+    be16_t  min_prefetch;
+    be16_t  max_prefetch;
+    be16_t  max_prefetch_ceil;
+    uint8_t flags12;
 #define SBC_MP_CACHE_FSW (1 << 7)    /**< Force Sequential Write */
 #define SBC_MP_CACHE_LBCSS (1 << 6)  /**< Logical Blk Cache Seg Sz */
 #define SBC_MP_CACHE_DRA (1 << 5)    /**< Disable Read-Ahead */
 #define SBC_MP_CACHE_NV_DIS (1 << 0) /**< Non-Volatile Cache Disable */
-	uint8_t nr_cache_segments;
-	be16_t  cache_segment_size;
-	uint8_t reserved[4];
+    uint8_t nr_cache_segments;
+    be16_t  cache_segment_size;
+    uint8_t reserved[4];
 };
 
 /**
@@ -119,10 +119,10 @@ struct sbc_caching_mode_page {
  * \note Fields are MSB first (BE)
  */
 struct sbc_rdwr_error_recovery_mode_page {
-	uint8_t page_code;
-	uint8_t page_length;
+    uint8_t page_code;
+    uint8_t page_length;
 #define SPC_MP_RW_ERR_RECOV_PAGE_LENGTH 0x0A
-	uint8_t flags1;
+    uint8_t flags1;
 #define SBC_MP_RW_ERR_RECOV_AWRE (1 << 7)
 #define SBC_MP_RW_ERR_RECOV_ARRE (1 << 6)
 #define SBC_MP_RW_ERR_RECOV_TB (1 << 5)
@@ -131,14 +131,14 @@ struct sbc_rdwr_error_recovery_mode_page {
 #define SBC_MP_RW_ERR_RECOV_PER (1 << 2)
 #define SBC_MP_RW_ERR_RECOV_DTE (1 << 1)
 #define SBC_MP_RW_ERR_RECOV_DCR (1 << 0)
-	uint8_t read_retry_count;
-	uint8_t correction_span;
-	uint8_t head_offset_count;
-	uint8_t data_strobe_offset_count;
-	uint8_t flags2;
-	uint8_t write_retry_count;
-	uint8_t flags3;
-	be16_t  recovery_time_limit;
+    uint8_t read_retry_count;
+    uint8_t correction_span;
+    uint8_t head_offset_count;
+    uint8_t data_strobe_offset_count;
+    uint8_t flags2;
+    uint8_t write_retry_count;
+    uint8_t flags3;
+    be16_t  recovery_time_limit;
 };
 
 /**
@@ -146,8 +146,8 @@ struct sbc_rdwr_error_recovery_mode_page {
  * \note Fields are MSB first (BE)
  */
 struct sbc_read_capacity10_data {
-	be32_t max_lba;   /**< LBA of last logical block (BE32) */
-	be32_t block_len; /**< Number of bytes in the last logical block (BE32) */
+    be32_t max_lba;   /**< LBA of last logical block (BE32) */
+    be32_t block_len; /**< Number of bytes in the last logical block (BE32) */
 };
 
 #endif /*_SBC_PROTOCOL_H_*/

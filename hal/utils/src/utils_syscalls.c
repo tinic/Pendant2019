@@ -59,17 +59,17 @@ extern int     _getpid(void);
  */
 extern caddr_t _sbrk(int incr)
 {
-	static unsigned char *heap = NULL;
-	unsigned char *       prev_heap;
+    static unsigned char *heap = NULL;
+    unsigned char *       prev_heap;
 
-	if (heap == NULL) {
-		heap = (unsigned char *)&_end;
-	}
-	prev_heap = heap;
+    if (heap == NULL) {
+        heap = (unsigned char *)&_end;
+    }
+    prev_heap = heap;
 
-	heap += incr;
+    heap += incr;
 
-	return (caddr_t)prev_heap;
+    return (caddr_t)prev_heap;
 }
 
 /**
@@ -77,8 +77,8 @@ extern caddr_t _sbrk(int incr)
  */
 extern int link(char *old, char *_new)
 {
-	(void)old, (void)_new;
-	return -1;
+    (void)old, (void)_new;
+    return -1;
 }
 
 /**
@@ -86,8 +86,8 @@ extern int link(char *old, char *_new)
  */
 extern int _close(int file)
 {
-	(void)file;
-	return -1;
+    (void)file;
+    return -1;
 }
 
 /**
@@ -95,10 +95,10 @@ extern int _close(int file)
  */
 extern int _fstat(int file, struct stat *st)
 {
-	(void)file;
-	st->st_mode = S_IFCHR;
+    (void)file;
+    st->st_mode = S_IFCHR;
 
-	return 0;
+    return 0;
 }
 
 /**
@@ -106,8 +106,8 @@ extern int _fstat(int file, struct stat *st)
  */
 extern int _isatty(int file)
 {
-	(void)file;
-	return 1;
+    (void)file;
+    return 1;
 }
 
 /**
@@ -115,8 +115,8 @@ extern int _isatty(int file)
  */
 extern int _lseek(int file, int ptr, int dir)
 {
-	(void)file, (void)ptr, (void)dir;
-	return 0;
+    (void)file, (void)ptr, (void)dir;
+    return 0;
 }
 
 /**
@@ -124,10 +124,10 @@ extern int _lseek(int file, int ptr, int dir)
  */
 extern void _exit(int status)
 {
-	printf("Exiting with status %d.\n", status);
+    printf("Exiting with status %d.\n", status);
 
-	for (;;)
-		;
+    for (;;)
+        ;
 }
 
 /**
@@ -135,8 +135,8 @@ extern void _exit(int status)
  */
 extern void _kill(int pid, int sig)
 {
-	(void)pid, (void)sig;
-	return;
+    (void)pid, (void)sig;
+    return;
 }
 
 /**
@@ -144,7 +144,7 @@ extern void _kill(int pid, int sig)
  */
 extern int _getpid(void)
 {
-	return -1;
+    return -1;
 }
 
 #ifdef __cplusplus

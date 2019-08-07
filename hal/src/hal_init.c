@@ -43,5 +43,5 @@
  */
 uint32_t init_get_version(void)
 {
-	return HAL_INIT_VERSION;
+    return HAL_INIT_VERSION;
 }

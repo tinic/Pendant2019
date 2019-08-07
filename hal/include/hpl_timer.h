@@ -61,30 +61,30 @@ struct _timer_device;
  * \brief Timer interrupt callbacks
  */
 struct _timer_callbacks {
-	void (*period_expired)(struct _timer_device *device);
+    void (*period_expired)(struct _timer_device *device);
 };
 
 /**
  * \brief Timer device structure
  */
 struct _timer_device {
-	struct _timer_callbacks timer_cb;
-	struct _irq_descriptor  irq;
-	void *                  hw;
+    struct _timer_callbacks timer_cb;
+    struct _irq_descriptor  irq;
+    void *                  hw;
 };
 
 /**
  * \brief Timer functions, pointers to low-level functions
  */
 struct _timer_hpl_interface {
-	int32_t (*init)(struct _timer_device *const device, void *const hw);
-	void (*deinit)(struct _timer_device *const device);
-	void (*start_timer)(struct _timer_device *const device);
-	void (*stop_timer)(struct _timer_device *const device);
-	void (*set_timer_period)(struct _timer_device *const device, const uint32_t clock_cycles);
-	uint32_t (*get_period)(const struct _timer_device *const device);
-	bool (*is_timer_started)(const struct _timer_device *const device);
-	void (*set_timer_irq)(struct _timer_device *const device);
+    int32_t (*init)(struct _timer_device *const device, void *const hw);
+    void (*deinit)(struct _timer_device *const device);
+    void (*start_timer)(struct _timer_device *const device);
+    void (*stop_timer)(struct _timer_device *const device);
+    void (*set_timer_period)(struct _timer_device *const device, const uint32_t clock_cycles);
+    uint32_t (*get_period)(const struct _timer_device *const device);
+    bool (*is_timer_started)(const struct _timer_device *const device);
+    void (*set_timer_irq)(struct _timer_device *const device);
 };
 /**
  * \brief Initialize TCC

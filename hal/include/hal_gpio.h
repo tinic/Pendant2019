@@ -51,7 +51,7 @@ extern "C" {
  */
 static inline void gpio_set_pin_pull_mode(const uint8_t pin, const enum gpio_pull_mode pull_mode)
 {
-	_gpio_set_pin_pull_mode((enum gpio_port)GPIO_PORT(pin), pin & 0x1F, pull_mode);
+    _gpio_set_pin_pull_mode((enum gpio_port)GPIO_PORT(pin), pin & 0x1F, pull_mode);
 }
 
 /**
@@ -66,7 +66,7 @@ static inline void gpio_set_pin_pull_mode(const uint8_t pin, const enum gpio_pul
  */
 static inline void gpio_set_pin_function(const uint32_t pin, uint32_t function)
 {
-	_gpio_set_pin_function(pin, function);
+    _gpio_set_pin_function(pin, function);
 }
 
 /**
@@ -87,7 +87,7 @@ static inline void gpio_set_pin_function(const uint32_t pin, uint32_t function)
 static inline void gpio_set_port_direction(const enum gpio_port port, const uint32_t mask,
                                            const enum gpio_direction direction)
 {
-	_gpio_set_direction(port, mask, direction);
+    _gpio_set_direction(port, mask, direction);
 }
 
 /**
@@ -104,7 +104,7 @@ static inline void gpio_set_port_direction(const enum gpio_port port, const uint
  */
 static inline void gpio_set_pin_direction(const uint8_t pin, const enum gpio_direction direction)
 {
-	_gpio_set_direction((enum gpio_port)GPIO_PORT(pin), 1U << GPIO_PIN(pin), direction);
+    _gpio_set_direction((enum gpio_port)GPIO_PORT(pin), 1U << GPIO_PIN(pin), direction);
 }
 
 /**
@@ -121,7 +121,7 @@ static inline void gpio_set_pin_direction(const uint8_t pin, const enum gpio_dir
  */
 static inline void gpio_set_port_level(const enum gpio_port port, const uint32_t mask, const bool level)
 {
-	_gpio_set_level(port, mask, level);
+    _gpio_set_level(port, mask, level);
 }
 
 /**
@@ -135,7 +135,7 @@ static inline void gpio_set_port_level(const enum gpio_port port, const uint32_t
  */
 static inline void gpio_set_pin_level(const uint8_t pin, const bool level)
 {
-	_gpio_set_level((enum gpio_port)GPIO_PORT(pin), 1U << GPIO_PIN(pin), level);
+    _gpio_set_level((enum gpio_port)GPIO_PORT(pin), 1U << GPIO_PIN(pin), level);
 }
 
 /**
@@ -150,7 +150,7 @@ static inline void gpio_set_pin_level(const uint8_t pin, const bool level)
  */
 static inline void gpio_toggle_port_level(const enum gpio_port port, const uint32_t mask)
 {
-	_gpio_toggle_level(port, mask);
+    _gpio_toggle_level(port, mask);
 }
 
 /**
@@ -162,7 +162,7 @@ static inline void gpio_toggle_port_level(const enum gpio_port port, const uint3
  */
 static inline void gpio_toggle_pin_level(const uint8_t pin)
 {
-	_gpio_toggle_level((enum gpio_port)GPIO_PORT(pin), 1U << GPIO_PIN(pin));
+    _gpio_toggle_level((enum gpio_port)GPIO_PORT(pin), 1U << GPIO_PIN(pin));
 }
 
 /**
@@ -175,7 +175,7 @@ static inline void gpio_toggle_pin_level(const uint8_t pin)
  */
 static inline uint32_t gpio_get_port_level(const enum gpio_port port)
 {
-	return _gpio_get_level(port);
+    return _gpio_get_level(port);
 }
 
 /**
@@ -187,7 +187,7 @@ static inline uint32_t gpio_get_port_level(const enum gpio_port port)
  */
 static inline bool gpio_get_pin_level(const uint8_t pin)
 {
-	return (bool)(_gpio_get_level((enum gpio_port)GPIO_PORT(pin)) & (0x01U << GPIO_PIN(pin)));
+    return (bool)(_gpio_get_level((enum gpio_port)GPIO_PORT(pin)) & (0x01U << GPIO_PIN(pin)));
 }
 /**
  * \brief Get current driver version

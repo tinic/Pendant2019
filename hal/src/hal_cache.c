@@ -42,7 +42,7 @@
  */
 int32_t cache_init(void)
 {
-	return _cmcc_init();
+    return _cmcc_init();
 }
 
 /**
@@ -50,7 +50,7 @@ int32_t cache_init(void)
  */
 int32_t cache_enable(const void *hw)
 {
-	return _cmcc_enable(hw);
+    return _cmcc_enable(hw);
 }
 
 /**
@@ -58,7 +58,7 @@ int32_t cache_enable(const void *hw)
  */
 int32_t cache_disable(const void *hw)
 {
-	return _cmcc_disable(hw);
+    return _cmcc_disable(hw);
 }
 
 /**
@@ -66,7 +66,7 @@ int32_t cache_disable(const void *hw)
  */
 int32_t cache_configure(const void *hw, struct _cache_cfg *cache)
 {
-	return _cmcc_configure(hw, cache);
+    return _cmcc_configure(hw, cache);
 }
 
 /**
@@ -74,5 +74,5 @@ int32_t cache_configure(const void *hw, struct _cache_cfg *cache)
  */
 int32_t cache_invalidate_all(const void *hw)
 {
-	return _cmcc_invalidate_all(hw);
+    return _cmcc_invalidate_all(hw);
 }

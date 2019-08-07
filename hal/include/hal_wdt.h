@@ -53,7 +53,7 @@ struct wdt_descriptor;
  *
  */
 struct wdt_descriptor {
-	struct wdt_dev dev;
+    struct wdt_dev dev;
 };
 
 /**
@@ -69,11 +69,11 @@ struct wdt_descriptor {
  */
 static inline int32_t wdt_init(struct wdt_descriptor *const wdt, const void *hw)
 {
-	ASSERT(wdt && hw);
+    ASSERT(wdt && hw);
 
-	wdt->dev.hw = (void *)hw;
+    wdt->dev.hw = (void *)hw;
 
-	return _wdt_init(&wdt->dev);
+    return _wdt_init(&wdt->dev);
 }
 
 /**
@@ -88,9 +88,9 @@ static inline int32_t wdt_init(struct wdt_descriptor *const wdt, const void *hw)
  */
 static inline int32_t wdt_deinit(struct wdt_descriptor *const wdt)
 {
-	ASSERT(wdt);
+    ASSERT(wdt);
 
-	return _wdt_deinit(&wdt->dev);
+    return _wdt_deinit(&wdt->dev);
 }
 /**
  * \brief Config the timeout period for WDT HAL instance and hardware
@@ -108,9 +108,9 @@ static inline int32_t wdt_deinit(struct wdt_descriptor *const wdt)
 static inline int32_t wdt_set_timeout_period(struct wdt_descriptor *const wdt, const uint32_t clk_rate,
                                              const uint16_t timeout_period)
 {
-	ASSERT(wdt && wdt->dev.hw);
+    ASSERT(wdt && wdt->dev.hw);
 
-	return _wdt_set_timeout_period(&wdt->dev, clk_rate, timeout_period);
+    return _wdt_set_timeout_period(&wdt->dev, clk_rate, timeout_period);
 }
 
 /**
@@ -123,9 +123,9 @@ static inline int32_t wdt_set_timeout_period(struct wdt_descriptor *const wdt, c
  */
 static inline uint32_t wdt_get_timeout_period(struct wdt_descriptor *const wdt, const uint32_t clk_rate)
 {
-	ASSERT(wdt && wdt->dev.hw);
+    ASSERT(wdt && wdt->dev.hw);
 
-	return _wdt_get_timeout_period(&wdt->dev, clk_rate);
+    return _wdt_get_timeout_period(&wdt->dev, clk_rate);
 }
 
 /**
@@ -137,9 +137,9 @@ static inline uint32_t wdt_get_timeout_period(struct wdt_descriptor *const wdt, 
  */
 static inline int32_t wdt_enable(struct wdt_descriptor *const wdt)
 {
-	ASSERT(wdt && wdt->dev.hw);
+    ASSERT(wdt && wdt->dev.hw);
 
-	return _wdt_enable(&wdt->dev);
+    return _wdt_enable(&wdt->dev);
 }
 
 /**
@@ -152,9 +152,9 @@ static inline int32_t wdt_enable(struct wdt_descriptor *const wdt)
  */
 static inline int32_t wdt_disable(struct wdt_descriptor *const wdt)
 {
-	ASSERT(wdt && wdt->dev.hw);
+    ASSERT(wdt && wdt->dev.hw);
 
-	return _wdt_disable(&wdt->dev);
+    return _wdt_disable(&wdt->dev);
 }
 
 /**
@@ -166,9 +166,9 @@ static inline int32_t wdt_disable(struct wdt_descriptor *const wdt)
  */
 static inline int32_t wdt_feed(struct wdt_descriptor *const wdt)
 {
-	ASSERT(wdt && wdt->dev.hw);
+    ASSERT(wdt && wdt->dev.hw);
 
-	return _wdt_feed(&wdt->dev);
+    return _wdt_feed(&wdt->dev);
 }
 
 /**

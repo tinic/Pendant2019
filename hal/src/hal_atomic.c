@@ -43,9 +43,9 @@
  */
 void atomic_enter_critical(hal_atomic_t volatile *atomic)
 {
-	*atomic = __get_PRIMASK();
-	__disable_irq();
-	__DMB();
+    *atomic = __get_PRIMASK();
+    __disable_irq();
+    __DMB();
 }
 
 /**
@@ -53,8 +53,8 @@ void atomic_enter_critical(hal_atomic_t volatile *atomic)
  */
 void atomic_leave_critical(hal_atomic_t volatile *atomic)
 {
-	__DMB();
-	__set_PRIMASK(*atomic);
+    __DMB();
+    __set_PRIMASK(*atomic);
 }
 
 /**
@@ -62,5 +62,5 @@ void atomic_leave_critical(hal_atomic_t volatile *atomic)
  */
 uint32_t atomic_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }

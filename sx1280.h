@@ -9,9 +9,9 @@ public:
     enum {
         REG_LR_FIRMWARE_VERSION_MSB = 0x0153,
         REG_LNA_REGIME = 0x0891,
-		REG_DEMOD_DETECTION = 0x0895,
-		REG_ENABLE_MANUAL_GAIN_CONTROL = 0x089F,
-		REG_MANUAL_GAIN_VALUE = 0x089E,
+        REG_DEMOD_DETECTION = 0x0895,
+        REG_ENABLE_MANUAL_GAIN_CONTROL = 0x089F,
+        REG_MANUAL_GAIN_VALUE = 0x089E,
         REG_LR_PAYLOADLENGTH = 0x0901,
         REG_LR_PACKETPARAMS = 0x0903,
         REG_LR_REQUESTRANGINGADDR = 0x0912,
@@ -23,7 +23,7 @@ public:
         REG_LR_RANGINGIDCHECKLENGTH = 0x0931,
         REG_LR_ESTIMATED_FREQUENCY_ERROR_MSB = 0x0954,
         REG_LR_RANGINGRESULTBASEADDR = 0x0961,
-		REG_RANGING_RSSI = 0x0964,
+        REG_RANGING_RSSI = 0x0964,
         REG_LR_RANGINGRESULTSFREEZE = 0x097F,
         REG_LR_PREAMBLELENGTH = 0x09C1,
         REG_LR_WHITSEEDBASEADDR = 0x09C5,
@@ -521,8 +521,8 @@ public:
         struct
         {
             /*!
-			 * \brief Holds the GFSK packet parameters
-			 */
+             * \brief Holds the GFSK packet parameters
+             */
             struct
             {
                 RadioPreambleLengths PreambleLength; //!< The preamble length for GFSK packet type
@@ -534,8 +534,8 @@ public:
                 RadioWhiteningModes Whitening; //!< Usage of whitening on payload and CRC blocks plus header block if header type is variable
             } Gfsk;
             /*!
-			 * \brief Holds the LORA packet parameters
-			 */
+             * \brief Holds the LORA packet parameters
+             */
             struct
             {
                 uint8_t PreambleLength; //!< The preamble length is the number of LORA symbols in the preamble. To set it, use the following formula @code Number of symbols = PreambleLength[3:0] * ( 2^PreambleLength[7:4] ) @endcode
@@ -545,8 +545,8 @@ public:
                 RadioLoRaIQModes InvertIQ; //!< Allows to swap IQ for LORA packet
             } LoRa;
             /*!
-			 * \brief Holds the FLRC packet parameters
-			 */
+             * \brief Holds the FLRC packet parameters
+             */
             struct
             {
                 RadioPreambleLengths PreambleLength; //!< The preamble length for FLRC packet type
@@ -558,8 +558,8 @@ public:
                 RadioWhiteningModes Whitening; //!< Usage of whitening on payload and CRC blocks plus header block if header type is variable
             } Flrc;
             /*!
-			 * \brief Holds the BLE packet parameters
-			 */
+             * \brief Holds the BLE packet parameters
+             */
             struct
             {
                 RadioBleConnectionStates ConnectionState; //!< The BLE state
@@ -576,10 +576,10 @@ public:
         struct
         {
             /*!
-			 * \brief Holds the GFSK modulation parameters
-			 *
-			 * In GFSK modulation, the bit-rate and bandwidth are linked together. In this structure, its values are set using the same token.
-			 */
+             * \brief Holds the GFSK modulation parameters
+             *
+             * In GFSK modulation, the bit-rate and bandwidth are linked together. In this structure, its values are set using the same token.
+             */
             struct
             {
                 RadioGfskBleBitrates BitrateBandwidth; //!< The bandwidth and bit-rate values for BLE and GFSK modulations
@@ -587,10 +587,10 @@ public:
                 RadioModShapings ModulationShaping; //!< The modulation shaping for BLE and GFSK modulations
             } Gfsk;
             /*!
-			 * \brief Holds the LORA modulation parameters
-			 *
-			 * LORA modulation is defined by Spreading Factor (SF), Bandwidth and Coding Rate
-			 */
+             * \brief Holds the LORA modulation parameters
+             *
+             * LORA modulation is defined by Spreading Factor (SF), Bandwidth and Coding Rate
+             */
             struct
             {
                 RadioLoRaSpreadingFactors SpreadingFactor; //!< Spreading Factor for the LORA modulation
@@ -598,10 +598,10 @@ public:
                 RadioLoRaCodingRates CodingRate; //!< Coding rate for the LORA modulation
             } LoRa;
             /*!
-			 * \brief Holds the FLRC modulation parameters
-			 *
-			 * In FLRC modulation, the bit-rate and bandwidth are linked together. In this structure, its values are set using the same token.
-			 */
+             * \brief Holds the FLRC modulation parameters
+             *
+             * In FLRC modulation, the bit-rate and bandwidth are linked together. In this structure, its values are set using the same token.
+             */
             struct
             {
                 RadioFlrcBitrates BitrateBandwidth; //!< The bandwidth and bit-rate values for FLRC modulation
@@ -609,10 +609,10 @@ public:
                 RadioModShapings ModulationShaping; //!< The modulation shaping for FLRC modulation
             } Flrc;
             /*!
-			 * \brief Holds the BLE modulation parameters
-			 *
-			 * In BLE modulation, the bit-rate and bandwidth are linked together. In this structure, its values are set using the same token.
-			 */
+             * \brief Holds the BLE modulation parameters
+             *
+             * In BLE modulation, the bit-rate and bandwidth are linked together. In this structure, its values are set using the same token.
+             */
             struct
             {
                 RadioGfskBleBitrates BitrateBandwidth; //!< The bandwidth and bit-rate values for BLE and GFSK modulations
@@ -625,41 +625,41 @@ public:
     typedef struct TickTime_s {
         RadioTickSizes PeriodBase; //!< The base time of ticktime
         /*!
-		 * \brief The number of periodBase for ticktime
-		 * Special values are:
-		 *     - 0x0000 for single mode
-		 *     - 0xFFFF for continuous mode
-		 */
+         * \brief The number of periodBase for ticktime
+         * Special values are:
+         *     - 0x0000 for single mode
+         *     - 0xFFFF for continuous mode
+         */
         uint16_t PeriodBaseCount;
     } TickTime;
 
     SX1280();
 
-	static SX1280 &instance();
+    static SX1280 &instance();
 
     bool DevicePresent();
     uint16_t GetFirmwareVersion(void);
     RadioStatus GetStatus(void);
     RadioOperatingModes GetOperatingMode(void) { return OperatingMode; }
 
-	// Perform a transfer
+    // Perform a transfer
     void LoraTxStart(const uint8_t *payload, uint8_t size, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE }, uint8_t offset = 0);
 
-	// Callbacks
-	void SetTxDoneCallback(std::function<void (void)> callback) { txDone = callback; };
-	void SetRxDoneCallback(std::function<void (const uint8_t *payload, uint8_t size, PacketStatus packetStatus)> callback) { rxDone = callback; };
+    // Callbacks
+    void SetTxDoneCallback(std::function<void (void)> callback) { txDone = callback; };
+    void SetRxDoneCallback(std::function<void (const uint8_t *payload, uint8_t size, PacketStatus packetStatus)> callback) { rxDone = callback; };
 
-	void SetRxErrorCallback(std::function<void (IrqErrorCode errCode)> callback) { rxError = callback; };
+    void SetRxErrorCallback(std::function<void (IrqErrorCode errCode)> callback) { rxError = callback; };
 
-	void SetTxTimeoutCallback(std::function<void (void)> callback) { txTimeout = callback; };
-	void SetRxTimeoutCallback(std::function<void (void)> callback) { rxTimeout = callback; };
+    void SetTxTimeoutCallback(std::function<void (void)> callback) { txTimeout = callback; };
+    void SetRxTimeoutCallback(std::function<void (void)> callback) { rxTimeout = callback; };
 
-	void SetRxSyncWordDoneCallback(std::function<void (void)> callback) { rxSyncWordDone = callback; };
-	void SetRxHeaderDoneCallback(std::function<void (void)> callback) { rxHeaderDone = callback; };
-	void SetRangingDoneCallback(std::function<void (IrqRangingCode errCode, float value)> callback) { rangingDone = callback; };
-	void SetCadDoneCallback(std::function<void (bool cadFlag)> callback) { cadDone = callback; };
+    void SetRxSyncWordDoneCallback(std::function<void (void)> callback) { rxSyncWordDone = callback; };
+    void SetRxHeaderDoneCallback(std::function<void (void)> callback) { rxHeaderDone = callback; };
+    void SetRangingDoneCallback(std::function<void (IrqRangingCode errCode, float value)> callback) { rangingDone = callback; };
+    void SetCadDoneCallback(std::function<void (bool cadFlag)> callback) { cadDone = callback; };
 
-	// Set operating modes
+    // Set operating modes
     void SetTx(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
     void SetRx(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, RX_TIMEOUT_VALUE });
     void SetCad(void);
@@ -667,11 +667,11 @@ public:
     void SetStandby(RadioStandbyModes standbyConfig);
     void SetFs(void);
 
-	// Use IRQ mode or poll for status
+    // Use IRQ mode or poll for status
     void SetPollingMode(void);
     void SetInterruptMode(void);
 
-	// Misc
+    // Misc
     void Calibrate(CalibrationParams calibParam);
     void ForcePreambleLength(RadioPreambleLengths preambleLength);
     float GetFrequencyError();
@@ -700,22 +700,22 @@ public:
     void RangingClearFilterResult(void);
     void RangingSetFilterNumSamples(uint8_t num);
     void SetRangingRole(RadioRangingRoles role);
-	void SetHighSensitivity();
-	void SetLowPowerMode();
-	void EnableManualGain();
-	void DisableManualGain();
-	void SetManualGainValue(uint8_t gain);
-	uint8_t GetRangingPowerDeltaThresholdIndicator();
+    void SetHighSensitivity();
+    void SetLowPowerMode();
+    void EnableManualGain();
+    void DisableManualGain();
+    void SetManualGainValue(uint8_t gain);
+    uint8_t GetRangingPowerDeltaThresholdIndicator();
     
     uint8_t SetSyncWord(uint8_t syncWordIdx, const uint8_t *syncWord);
     uint8_t SetCrcSeed(const uint8_t *seed);
 
 
-	void SetRangingRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	void SetRangingTX(uint32_t targetAddress, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	void SetLoraRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	void SetLoraTX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	 
+    void SetRangingRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+    void SetRangingTX(uint32_t targetAddress, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+    void SetLoraRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+    void SetLoraTX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+     
 #ifdef MCP
     void OnMCPTimer();
 #endif  // #ifdef MCP
@@ -775,16 +775,16 @@ private:
     void OnBusyIrq(void);
     void ProcessIrqs(void);
 
-	std::function<void (void)> txDone;
-	std::function<void (const uint8_t *payload, uint8_t size, PacketStatus packetStatus)> rxDone;
-	std::function<void (void)> rxSyncWordDone;
-	std::function<void (void)> rxHeaderDone;
-	std::function<void (void)> txTimeout;
-	std::function<void (void)> rxTimeout;
-	std::function<void (IrqErrorCode errCode)> rxError;
-	std::function<void (IrqRangingCode errCode, float value)> rangingDone;
-	std::function<void (bool cadFlag)> cadDone;
-	
+    std::function<void (void)> txDone;
+    std::function<void (const uint8_t *payload, uint8_t size, PacketStatus packetStatus)> rxDone;
+    std::function<void (void)> rxSyncWordDone;
+    std::function<void (void)> rxHeaderDone;
+    std::function<void (void)> txTimeout;
+    std::function<void (void)> rxTimeout;
+    std::function<void (IrqErrorCode errCode)> rxError;
+    std::function<void (IrqRangingCode errCode, float value)> rangingDone;
+    std::function<void (bool cadFlag)> cadDone;
+    
     void init();
     void disableIRQ();
     void enableIRQ();
@@ -795,16 +795,16 @@ private:
     void ReturnRange(float range);
 #endif  // #ifdef MCP
 
-	void do_wait_for_busy_pin();
-	void do_pin_reset();
-	void pins_init();
-	void pin_irq_init();
-	void spi_csel_low();
-	void spi_csel_high();
+    void do_wait_for_busy_pin();
+    void do_pin_reset();
+    void pins_init();
+    void pin_irq_init();
+    void spi_csel_low();
+    void spi_csel_high();
     uint8_t spi_write(uint8_t val);
 
-	static void OnDioIrq_C();
-	static void OnBusyIrq_C();
+    static void OnDioIrq_C();
+    static void OnBusyIrq_C();
 
     RadioOperatingModes OperatingMode = MODE_SLEEP;
     RadioPacketTypes PacketType = PACKET_TYPE_NONE;

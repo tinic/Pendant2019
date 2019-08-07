@@ -50,7 +50,7 @@ extern "C" {
  * \brief QSPI descriptor structure
  */
 struct qspi_sync_descriptor {
-	struct _qspi_sync_dev dev;
+    struct _qspi_sync_dev dev;
 };
 
 /**

@@ -48,19 +48,19 @@ extern "C" {
 
 /** USB device endpoint status structure. */
 struct usb_d_ep_status {
-	/** Endpoint address, including direction. */
-	uint8_t ep;
-	/** Endpoint transfer status code that triggers the callback.
-	 *  \ref usb_xfer_code. */
-	uint8_t code;
-	/** Endpoint error, if \c code is \ref USB_TRANS_ERROR. */
-	uint8_t error;
-	/** Transfer state, \ref usb_ep_state. */
-	uint8_t state;
-	/** Transfer count. */
-	uint32_t count;
-	/** Transfer size. */
-	uint32_t size;
+    /** Endpoint address, including direction. */
+    uint8_t ep;
+    /** Endpoint transfer status code that triggers the callback.
+     *  \ref usb_xfer_code. */
+    uint8_t code;
+    /** Endpoint error, if \c code is \ref USB_TRANS_ERROR. */
+    uint8_t error;
+    /** Transfer state, \ref usb_ep_state. */
+    uint8_t state;
+    /** Transfer count. */
+    uint32_t count;
+    /** Transfer size. */
+    uint32_t size;
 };
 
 /** Prototype function for callback that is invoked on USB device SOF. */
@@ -71,10 +71,10 @@ typedef void (*usb_d_event_cb_t)(const enum usb_event event, const uint32_t para
 
 /** USB device callbacks. */
 struct usb_d_callbacks {
-	/** Callback that is invoked on SOF. */
-	usb_d_sof_cb_t sof;
-	/** Callback that is invoked on USB RESET/WAKEUP/RESUME/SUSPEND. */
-	usb_d_event_cb_t event;
+    /** Callback that is invoked on SOF. */
+    usb_d_sof_cb_t sof;
+    /** Callback that is invoked on USB RESET/WAKEUP/RESUME/SUSPEND. */
+    usb_d_event_cb_t event;
 };
 
 /** Callback that is invoked when setup packet is received.

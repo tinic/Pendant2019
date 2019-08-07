@@ -65,9 +65,9 @@
 /* This macro is used for repeat macro: i - unused, n - amount of channels.
  * It contains channel configuration. */
 #define CHANNEL_CONF(i, n)                                                                                             \
-	(CONF_ONDEMAND_##n << EVSYS_CHANNEL_ONDEMAND_Pos) | (CONF_RUNSTDBY_##n << EVSYS_CHANNEL_RUNSTDBY_Pos)              \
-	    | EVSYS_CHANNEL_EDGSEL(CONF_EDGSEL_##n) | EVSYS_CHANNEL_PATH(CONF_PATH_##n)                                    \
-	    | EVSYS_CHANNEL_EVGEN(CONF_EVGEN_##n),
+    (CONF_ONDEMAND_##n << EVSYS_CHANNEL_ONDEMAND_Pos) | (CONF_RUNSTDBY_##n << EVSYS_CHANNEL_RUNSTDBY_Pos)              \
+        | EVSYS_CHANNEL_EDGSEL(CONF_EDGSEL_##n) | EVSYS_CHANNEL_PATH(CONF_PATH_##n)                                    \
+        | EVSYS_CHANNEL_EVGEN(CONF_EVGEN_##n),
 
 /* This macro is used for repeat macro: i - unused, n - amount of channels
  * It contains interrupts configuration. */
@@ -84,19 +84,19 @@ static const uint32_t interrupt_cfg[] = {REPEAT_MACRO(INT_CFG, i, EVSYS_CHANNELS
  */
 int32_t _event_system_init(void)
 {
-	uint8_t i;
-	/* configure user multiplexers */
-	for (i = 0; i < EVSYS_USERS; i++) {
-		hri_evsys_write_USER_reg(EVSYS, i, user_mux_confs[i]);
-	}
+    uint8_t i;
+    /* configure user multiplexers */
+    for (i = 0; i < EVSYS_USERS; i++) {
+        hri_evsys_write_USER_reg(EVSYS, i, user_mux_confs[i]);
+    }
 
-	/* configure channels */
-	for (i = 0; i < EVSYS_CHANNELS; i++) {
-		hri_evsys_write_CHANNEL_reg(EVSYS, i, channel_confs[i]);
-		hri_evsys_write_CHINTEN_reg(EVSYS, i, interrupt_cfg[i]);
-	}
+    /* configure channels */
+    for (i = 0; i < EVSYS_CHANNELS; i++) {
+        hri_evsys_write_CHANNEL_reg(EVSYS, i, channel_confs[i]);
+        hri_evsys_write_CHINTEN_reg(EVSYS, i, interrupt_cfg[i]);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -104,9 +104,9 @@ int32_t _event_system_init(void)
  */
 int32_t _event_system_deinit()
 {
-	hri_evsys_write_CTRLA_reg(EVSYS, EVSYS_CTRLA_SWRST);
+    hri_evsys_write_CTRLA_reg(EVSYS, EVSYS_CTRLA_SWRST);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -115,13 +115,13 @@ int32_t _event_system_deinit()
  */
 int32_t _event_system_enable_user(const uint16_t user, const uint16_t channel, const bool on)
 {
-	if (on) {
-		hri_evsys_write_USER_reg(EVSYS, user, channel);
-	} else {
-		hri_evsys_write_USER_reg(EVSYS, user, 0);
-	}
+    if (on) {
+        hri_evsys_write_USER_reg(EVSYS, user, channel);
+    } else {
+        hri_evsys_write_USER_reg(EVSYS, user, 0);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -130,11 +130,11 @@ int32_t _event_system_enable_user(const uint16_t user, const uint16_t channel, c
  */
 int32_t _event_system_enable_generator(const uint16_t generator, const uint16_t channel, const bool on)
 {
-	if (on) {
-		hri_evsys_write_CHANNEL_EVGEN_bf(EVSYS, channel, generator);
-	} else {
-		hri_evsys_write_CHANNEL_EVGEN_bf(EVSYS, channel, 0);
-	}
+    if (on) {
+        hri_evsys_write_CHANNEL_EVGEN_bf(EVSYS, channel, generator);
+    } else {
+        hri_evsys_write_CHANNEL_EVGEN_bf(EVSYS, channel, 0);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }

@@ -74,29 +74,29 @@ typedef void (*i2c_error_cb_t)(struct i2c_m_async_desc *const i2c, int32_t error
  *  Status descriptor holds the current status of transfer.
  */
 struct i2c_m_async_status {
-	/** Status flags */
-	uint16_t flags;
-	/** The number of characters left in the message buffer*/
-	int32_t left;
+    /** Status flags */
+    uint16_t flags;
+    /** The number of characters left in the message buffer*/
+    int32_t left;
 };
 
 /**
  * \brief I2C master callback pointers structure
  */
 struct i2c_m_async_callback {
-	i2c_error_cb_t    error;
-	i2c_complete_cb_t tx_complete;
-	i2c_complete_cb_t rx_complete;
+    i2c_error_cb_t    error;
+    i2c_complete_cb_t tx_complete;
+    i2c_complete_cb_t rx_complete;
 };
 
 /**
  * \brief I2C descriptor structure, embed i2c_device & i2c_interface
  */
 struct i2c_m_async_desc {
-	struct _i2c_m_async_device  device;
-	struct io_descriptor        io;
-	struct i2c_m_async_callback i2c_cb;
-	uint16_t                    slave_addr;
+    struct _i2c_m_async_device  device;
+    struct io_descriptor        io;
+    struct i2c_m_async_callback i2c_cb;
+    uint16_t                    slave_addr;
 };
 
 /**

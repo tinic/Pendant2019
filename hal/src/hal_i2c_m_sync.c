@@ -44,22 +44,22 @@
  */
 static int32_t i2c_m_sync_read(struct io_descriptor *io, uint8_t *buf, const uint16_t n)
 {
-	struct i2c_m_sync_desc *i2c = CONTAINER_OF(io, struct i2c_m_sync_desc, io);
-	struct _i2c_m_msg       msg;
-	int32_t                 ret;
+    struct i2c_m_sync_desc *i2c = CONTAINER_OF(io, struct i2c_m_sync_desc, io);
+    struct _i2c_m_msg       msg;
+    int32_t                 ret;
 
-	msg.addr   = i2c->slave_addr;
-	msg.len    = n;
-	msg.flags  = I2C_M_STOP | I2C_M_RD;
-	msg.buffer = buf;
+    msg.addr   = i2c->slave_addr;
+    msg.len    = n;
+    msg.flags  = I2C_M_STOP | I2C_M_RD;
+    msg.buffer = buf;
 
-	ret = _i2c_m_sync_transfer(&i2c->device, &msg);
+    ret = _i2c_m_sync_transfer(&i2c->device, &msg);
 
-	if (ret) {
-		return ret;
-	}
+    if (ret) {
+        return ret;
+    }
 
-	return n;
+    return n;
 }
 
 /**
@@ -67,22 +67,22 @@ static int32_t i2c_m_sync_read(struct io_descriptor *io, uint8_t *buf, const uin
  */
 static int32_t i2c_m_sync_write(struct io_descriptor *io, const uint8_t *buf, const uint16_t n)
 {
-	struct i2c_m_sync_desc *i2c = CONTAINER_OF(io, struct i2c_m_sync_desc, io);
-	struct _i2c_m_msg       msg;
-	int32_t                 ret;
+    struct i2c_m_sync_desc *i2c = CONTAINER_OF(io, struct i2c_m_sync_desc, io);
+    struct _i2c_m_msg       msg;
+    int32_t                 ret;
 
-	msg.addr   = i2c->slave_addr;
-	msg.len    = n;
-	msg.flags  = I2C_M_STOP;
-	msg.buffer = (uint8_t *)buf;
+    msg.addr   = i2c->slave_addr;
+    msg.len    = n;
+    msg.flags  = I2C_M_STOP;
+    msg.buffer = (uint8_t *)buf;
 
-	ret = _i2c_m_sync_transfer(&i2c->device, &msg);
+    ret = _i2c_m_sync_transfer(&i2c->device, &msg);
 
-	if (ret) {
-		return ret;
-	}
+    if (ret) {
+        return ret;
+    }
 
-	return n;
+    return n;
 }
 
 /**
@@ -90,19 +90,19 @@ static int32_t i2c_m_sync_write(struct io_descriptor *io, const uint8_t *buf, co
  */
 int32_t i2c_m_sync_init(struct i2c_m_sync_desc *i2c, void *hw)
 {
-	int32_t init_status;
-	ASSERT(i2c);
+    int32_t init_status;
+    ASSERT(i2c);
 
-	init_status = _i2c_m_sync_init(&i2c->device, hw);
-	if (init_status) {
-		return init_status;
-	}
+    init_status = _i2c_m_sync_init(&i2c->device, hw);
+    if (init_status) {
+        return init_status;
+    }
 
-	/* Init I/O */
-	i2c->io.read  = i2c_m_sync_read;
-	i2c->io.write = i2c_m_sync_write;
+    /* Init I/O */
+    i2c->io.read  = i2c_m_sync_read;
+    i2c->io.write = i2c_m_sync_write;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -110,18 +110,18 @@ int32_t i2c_m_sync_init(struct i2c_m_sync_desc *i2c, void *hw)
  */
 int32_t i2c_m_sync_deinit(struct i2c_m_sync_desc *i2c)
 {
-	int32_t status;
-	ASSERT(i2c);
+    int32_t status;
+    ASSERT(i2c);
 
-	status = _i2c_m_sync_deinit(&i2c->device);
-	if (status) {
-		return status;
-	}
+    status = _i2c_m_sync_deinit(&i2c->device);
+    if (status) {
+        return status;
+    }
 
-	i2c->io.read  = NULL;
-	i2c->io.write = NULL;
+    i2c->io.read  = NULL;
+    i2c->io.write = NULL;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -129,7 +129,7 @@ int32_t i2c_m_sync_deinit(struct i2c_m_sync_desc *i2c)
  */
 int32_t i2c_m_sync_enable(struct i2c_m_sync_desc *i2c)
 {
-	return _i2c_m_sync_enable(&i2c->device);
+    return _i2c_m_sync_enable(&i2c->device);
 }
 
 /**
@@ -137,7 +137,7 @@ int32_t i2c_m_sync_enable(struct i2c_m_sync_desc *i2c)
  */
 int32_t i2c_m_sync_disable(struct i2c_m_sync_desc *i2c)
 {
-	return _i2c_m_sync_disable(&i2c->device);
+    return _i2c_m_sync_disable(&i2c->device);
 }
 
 /**
@@ -145,7 +145,7 @@ int32_t i2c_m_sync_disable(struct i2c_m_sync_desc *i2c)
  */
 int32_t i2c_m_sync_set_slaveaddr(struct i2c_m_sync_desc *i2c, int16_t addr, int32_t addr_len)
 {
-	return i2c->slave_addr = (addr & 0x3ff) | (addr_len & I2C_M_TEN);
+    return i2c->slave_addr = (addr & 0x3ff) | (addr_len & I2C_M_TEN);
 }
 
 /**
@@ -153,7 +153,7 @@ int32_t i2c_m_sync_set_slaveaddr(struct i2c_m_sync_desc *i2c, int16_t addr, int3
  */
 int32_t i2c_m_sync_set_baudrate(struct i2c_m_sync_desc *i2c, uint32_t clkrate, uint32_t baudrate)
 {
-	return _i2c_m_sync_set_baudrate(&i2c->device, clkrate, baudrate);
+    return _i2c_m_sync_set_baudrate(&i2c->device, clkrate, baudrate);
 }
 
 /**
@@ -161,33 +161,33 @@ int32_t i2c_m_sync_set_baudrate(struct i2c_m_sync_desc *i2c, uint32_t clkrate, u
  */
 int32_t i2c_m_sync_cmd_write(struct i2c_m_sync_desc *i2c, uint8_t reg, uint8_t *buffer, uint8_t length)
 {
-	struct _i2c_m_msg msg;
-	int32_t           ret;
+    struct _i2c_m_msg msg;
+    int32_t           ret;
 
-	msg.addr   = i2c->slave_addr;
-	msg.len    = 1;
-	msg.flags  = 0;
-	msg.buffer = &reg;
+    msg.addr   = i2c->slave_addr;
+    msg.len    = 1;
+    msg.flags  = 0;
+    msg.buffer = &reg;
 
-	ret = _i2c_m_sync_transfer(&i2c->device, &msg);
+    ret = _i2c_m_sync_transfer(&i2c->device, &msg);
 
-	if (ret != 0) {
-		/* error occurred */
-		return ret;
-	}
+    if (ret != 0) {
+        /* error occurred */
+        return ret;
+    }
 
-	msg.flags  = I2C_M_STOP;
-	msg.buffer = buffer;
-	msg.len    = length;
+    msg.flags  = I2C_M_STOP;
+    msg.buffer = buffer;
+    msg.len    = length;
 
-	ret = _i2c_m_sync_transfer(&i2c->device, &msg);
+    ret = _i2c_m_sync_transfer(&i2c->device, &msg);
 
-	if (ret != 0) {
-		/* error occurred */
-		return ret;
-	}
+    if (ret != 0) {
+        /* error occurred */
+        return ret;
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -195,33 +195,33 @@ int32_t i2c_m_sync_cmd_write(struct i2c_m_sync_desc *i2c, uint8_t reg, uint8_t *
  */
 int32_t i2c_m_sync_cmd_read(struct i2c_m_sync_desc *i2c, uint8_t reg, uint8_t *buffer, uint8_t length)
 {
-	struct _i2c_m_msg msg;
-	int32_t           ret;
+    struct _i2c_m_msg msg;
+    int32_t           ret;
 
-	msg.addr   = i2c->slave_addr;
-	msg.len    = 1;
-	msg.flags  = 0;
-	msg.buffer = &reg;
+    msg.addr   = i2c->slave_addr;
+    msg.len    = 1;
+    msg.flags  = 0;
+    msg.buffer = &reg;
 
-	ret = _i2c_m_sync_transfer(&i2c->device, &msg);
+    ret = _i2c_m_sync_transfer(&i2c->device, &msg);
 
-	if (ret != 0) {
-		/* error occurred */
-		return ret;
-	}
+    if (ret != 0) {
+        /* error occurred */
+        return ret;
+    }
 
-	msg.flags  = I2C_M_STOP | I2C_M_RD;
-	msg.buffer = buffer;
-	msg.len    = length;
+    msg.flags  = I2C_M_STOP | I2C_M_RD;
+    msg.buffer = buffer;
+    msg.len    = length;
 
-	ret = _i2c_m_sync_transfer(&i2c->device, &msg);
+    ret = _i2c_m_sync_transfer(&i2c->device, &msg);
 
-	if (ret != 0) {
-		/* error occurred */
-		return ret;
-	}
+    if (ret != 0) {
+        /* error occurred */
+        return ret;
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -229,7 +229,7 @@ int32_t i2c_m_sync_cmd_read(struct i2c_m_sync_desc *i2c, uint8_t reg, uint8_t *b
  */
 int32_t i2c_m_sync_transfer(struct i2c_m_sync_desc *const i2c, struct _i2c_m_msg *msg)
 {
-	return _i2c_m_sync_transfer(&i2c->device, msg);
+    return _i2c_m_sync_transfer(&i2c->device, msg);
 }
 
 /**
@@ -237,7 +237,7 @@ int32_t i2c_m_sync_transfer(struct i2c_m_sync_desc *const i2c, struct _i2c_m_msg
  */
 int32_t i2c_m_sync_send_stop(struct i2c_m_sync_desc *const i2c)
 {
-	return _i2c_m_sync_send_stop(&i2c->device);
+    return _i2c_m_sync_send_stop(&i2c->device);
 }
 
 /**
@@ -245,8 +245,8 @@ int32_t i2c_m_sync_send_stop(struct i2c_m_sync_desc *const i2c)
  */
 int32_t i2c_m_sync_get_io_descriptor(struct i2c_m_sync_desc *const i2c, struct io_descriptor **io)
 {
-	*io = &i2c->io;
-	return ERR_NONE;
+    *io = &i2c->io;
+    return ERR_NONE;
 }
 
 /**
@@ -254,5 +254,5 @@ int32_t i2c_m_sync_get_io_descriptor(struct i2c_m_sync_desc *const i2c, struct i
  */
 uint32_t i2c_m_sync_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }

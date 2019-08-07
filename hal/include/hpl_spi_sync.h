@@ -54,12 +54,12 @@ extern "C" {
 
 /** SPI driver to support sync HAL */
 struct _spi_sync_dev {
-	/** Pointer to the hardware base or private data for special device. */
-	void *prvt;
-	/** Data size, number of bytes for each character */
-	uint8_t char_size;
-	/** Dummy byte used in master mode when reading the slave */
-	uint16_t dummy_byte;
+    /** Pointer to the hardware base or private data for special device. */
+    void *prvt;
+    /** Data size, number of bytes for each character */
+    uint8_t char_size;
+    /** Dummy byte used in master mode when reading the slave */
+    uint16_t dummy_byte;
 };
 
 #ifdef __cplusplus

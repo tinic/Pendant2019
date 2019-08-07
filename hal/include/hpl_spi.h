@@ -57,12 +57,12 @@ extern "C" {
  */
 //@{
 struct spi_msg {
-	/** Pointer to the output data buffer */
-	uint8_t *txbuf;
-	/** Pointer to the input data buffer */
-	uint8_t *rxbuf;
-	/** Size of the message data in SPI characters */
-	uint32_t size;
+    /** Pointer to the output data buffer */
+    uint8_t *txbuf;
+    /** Pointer to the input data buffer */
+    uint8_t *rxbuf;
+    /** Size of the message data in SPI characters */
+    uint32_t size;
 };
 //@}
 
@@ -75,14 +75,14 @@ struct spi_msg {
  *  Mode 3: leading edge is falling edge, data sample on trailing edge.
  */
 enum spi_transfer_mode {
-	/** Leading edge is rising edge, data sample on leading edge. */
-	SPI_MODE_0,
-	/** Leading edge is rising edge, data sample on trailing edge. */
-	SPI_MODE_1,
-	/** Leading edge is falling edge, data sample on leading edge. */
-	SPI_MODE_2,
-	/** Leading edge is falling edge, data sample on trailing edge. */
-	SPI_MODE_3
+    /** Leading edge is rising edge, data sample on leading edge. */
+    SPI_MODE_0,
+    /** Leading edge is rising edge, data sample on trailing edge. */
+    SPI_MODE_1,
+    /** Leading edge is falling edge, data sample on leading edge. */
+    SPI_MODE_2,
+    /** Leading edge is falling edge, data sample on trailing edge. */
+    SPI_MODE_3
 };
 
 /**
@@ -94,54 +94,54 @@ enum spi_transfer_mode {
  *  supported by all system.
  */
 enum spi_char_size {
-	/** Character size is 8 bit. */
-	SPI_CHAR_SIZE_8 = 0,
-	/** Character size is 9 bit. */
-	SPI_CHAR_SIZE_9 = 1,
-	/** Character size is 10 bit. */
-	SPI_CHAR_SIZE_10 = 2,
-	/** Character size is 11 bit. */
-	SPI_CHAR_SIZE_11 = 3,
-	/** Character size is 12 bit. */
-	SPI_CHAR_SIZE_12 = 4,
-	/** Character size is 13 bit. */
-	SPI_CHAR_SIZE_13 = 5,
-	/** Character size is 14 bit. */
-	SPI_CHAR_SIZE_14 = 6,
-	/** Character size is 15 bit. */
-	SPI_CHAR_SIZE_15 = 7,
-	/** Character size is 16 bit. */
-	SPI_CHAR_SIZE_16 = 8
+    /** Character size is 8 bit. */
+    SPI_CHAR_SIZE_8 = 0,
+    /** Character size is 9 bit. */
+    SPI_CHAR_SIZE_9 = 1,
+    /** Character size is 10 bit. */
+    SPI_CHAR_SIZE_10 = 2,
+    /** Character size is 11 bit. */
+    SPI_CHAR_SIZE_11 = 3,
+    /** Character size is 12 bit. */
+    SPI_CHAR_SIZE_12 = 4,
+    /** Character size is 13 bit. */
+    SPI_CHAR_SIZE_13 = 5,
+    /** Character size is 14 bit. */
+    SPI_CHAR_SIZE_14 = 6,
+    /** Character size is 15 bit. */
+    SPI_CHAR_SIZE_15 = 7,
+    /** Character size is 16 bit. */
+    SPI_CHAR_SIZE_16 = 8
 };
 
 /**
  *  \brief SPI data order
  */
 enum spi_data_order {
-	/** MSB goes first. */
-	SPI_DATA_ORDER_MSB_1ST = 0,
-	/** LSB goes first. */
-	SPI_DATA_ORDER_LSB_1ST = 1
+    /** MSB goes first. */
+    SPI_DATA_ORDER_MSB_1ST = 0,
+    /** LSB goes first. */
+    SPI_DATA_ORDER_LSB_1ST = 1
 };
 
 /** \brief Transfer descriptor for SPI
  *  Transfer descriptor holds TX and RX buffers
  */
 struct spi_xfer {
-	/** Pointer to data buffer to TX */
-	uint8_t *txbuf;
-	/** Pointer to data buffer to RX */
-	uint8_t *rxbuf;
-	/** Size of data characters to TX & RX */
-	uint32_t size;
+    /** Pointer to data buffer to TX */
+    uint8_t *txbuf;
+    /** Pointer to data buffer to RX */
+    uint8_t *rxbuf;
+    /** Size of data characters to TX & RX */
+    uint32_t size;
 };
 
 /** SPI generic driver. */
 struct spi_dev {
-	/** Pointer to the hardware base or private data for special device. */
-	void *prvt;
-	/** Reference start of sync/async variables */
-	uint32_t sync_async_misc[1];
+    /** Pointer to the hardware base or private data for special device. */
+    void *prvt;
+    /** Reference start of sync/async variables */
+    uint32_t sync_async_misc[1];
 };
 
 /**

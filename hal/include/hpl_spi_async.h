@@ -53,16 +53,16 @@ extern "C" {
 //@{
 /** The callback types */
 enum _spi_async_dev_cb_type {
-	/** Callback type for transmit, see \ref _spi_async_dev_cb_xfer_t. */
-	SPI_DEV_CB_TX,
-	/** Callback type for receive, see \ref _spi_async_dev_cb_xfer_t. */
-	SPI_DEV_CB_RX,
-	/** Callback type for \ref _spi_async_dev_cb_complete_t. */
-	SPI_DEV_CB_COMPLETE,
-	/** Callback type for error */
-	SPI_DEV_CB_ERROR,
-	/** Number of callbacks. */
-	SPI_DEV_CB_N
+    /** Callback type for transmit, see \ref _spi_async_dev_cb_xfer_t. */
+    SPI_DEV_CB_TX,
+    /** Callback type for receive, see \ref _spi_async_dev_cb_xfer_t. */
+    SPI_DEV_CB_RX,
+    /** Callback type for \ref _spi_async_dev_cb_complete_t. */
+    SPI_DEV_CB_COMPLETE,
+    /** Callback type for error */
+    SPI_DEV_CB_ERROR,
+    /** Number of callbacks. */
+    SPI_DEV_CB_N
 };
 
 struct _spi_async_dev;
@@ -88,14 +88,14 @@ typedef void (*_spi_async_dev_cb_xfer_t)(struct _spi_async_dev *dev);
  *  \brief The callbacks offered by SPI driver
  */
 struct _spi_async_dev_callbacks {
-	/** TX callback, see \ref _spi_async_dev_cb_xfer_t. */
-	_spi_async_dev_cb_xfer_t tx;
-	/** RX callback, see \ref _spi_async_dev_cb_xfer_t. */
-	_spi_async_dev_cb_xfer_t rx;
-	/** Complete or complete callback, see \ref _spi_async_dev_cb_complete_t. */
-	_spi_async_dev_cb_xfer_t complete;
-	/** Error callback, see \ref */
-	_spi_async_dev_cb_error_t err;
+    /** TX callback, see \ref _spi_async_dev_cb_xfer_t. */
+    _spi_async_dev_cb_xfer_t tx;
+    /** RX callback, see \ref _spi_async_dev_cb_xfer_t. */
+    _spi_async_dev_cb_xfer_t rx;
+    /** Complete or complete callback, see \ref _spi_async_dev_cb_complete_t. */
+    _spi_async_dev_cb_xfer_t complete;
+    /** Error callback, see \ref */
+    _spi_async_dev_cb_error_t err;
 };
 //@}
 
@@ -106,20 +106,20 @@ struct _spi_async_dev_callbacks {
 
 /** SPI driver to support async HAL */
 struct _spi_async_dev {
-	/** Pointer to the hardware base or private data for special device. */
-	void *prvt;
-	/** Data size, number of bytes for each character */
-	uint8_t char_size;
-	/** Dummy byte used in master mode when reading the slave */
-	uint16_t dummy_byte;
+    /** Pointer to the hardware base or private data for special device. */
+    void *prvt;
+    /** Data size, number of bytes for each character */
+    uint8_t char_size;
+    /** Dummy byte used in master mode when reading the slave */
+    uint16_t dummy_byte;
 
-	/** \brief Pointer to callback functions, ignored for polling mode
-	 *  Pointer to the callback functions so that initialize the driver to
-	 *  handle interrupts.
-	 */
-	struct _spi_async_dev_callbacks callbacks;
-	/** IRQ instance for SPI device. */
-	struct _irq_descriptor irq;
+    /** \brief Pointer to callback functions, ignored for polling mode
+     *  Pointer to the callback functions so that initialize the driver to
+     *  handle interrupts.
+     */
+    struct _spi_async_dev_callbacks callbacks;
+    /** IRQ instance for SPI device. */
+    struct _irq_descriptor irq;
 };
 //@}
 

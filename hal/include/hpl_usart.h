@@ -53,13 +53,13 @@ extern "C" {
  * \brief USART flow control state
  */
 union usart_flow_control_state {
-	struct {
-		uint8_t cts : 1;
-		uint8_t rts : 1;
-		uint8_t unavailable : 1;
-		uint8_t reserved : 5;
-	} bit;
-	uint8_t value;
+    struct {
+        uint8_t cts : 1;
+        uint8_t rts : 1;
+        uint8_t unavailable : 1;
+        uint8_t reserved : 5;
+    } bit;
+    uint8_t value;
 };
 
 /**
@@ -81,11 +81,11 @@ enum usart_mode { USART_MODE_ASYNCHRONOUS = 0, USART_MODE_SYNCHRONOUS = 1 };
  * \brief USART parity
  */
 enum usart_parity {
-	USART_PARITY_EVEN  = 0,
-	USART_PARITY_ODD   = 1,
-	USART_PARITY_NONE  = 2,
-	USART_PARITY_SPACE = 3,
-	USART_PARITY_MARK  = 4
+    USART_PARITY_EVEN  = 0,
+    USART_PARITY_ODD   = 1,
+    USART_PARITY_NONE  = 2,
+    USART_PARITY_SPACE = 3,
+    USART_PARITY_MARK  = 4
 };
 
 /**
@@ -97,11 +97,11 @@ enum usart_stop_bits { USART_STOP_BITS_ONE = 0, USART_STOP_BITS_TWO = 1, USART_S
  * \brief USART character size
  */
 enum usart_character_size {
-	USART_CHARACTER_SIZE_8BITS = 0,
-	USART_CHARACTER_SIZE_9BITS = 1,
-	USART_CHARACTER_SIZE_5BITS = 5,
-	USART_CHARACTER_SIZE_6BITS = 6,
-	USART_CHARACTER_SIZE_7BITS = 7
+    USART_CHARACTER_SIZE_8BITS = 0,
+    USART_CHARACTER_SIZE_9BITS = 1,
+    USART_CHARACTER_SIZE_5BITS = 5,
+    USART_CHARACTER_SIZE_6BITS = 6,
+    USART_CHARACTER_SIZE_7BITS = 7
 };
 
 //@}

@@ -55,83 +55,83 @@ typedef uint8_t hri_rstc_rcause_reg_t;
 
 static inline bool hri_rstc_get_RCAUSE_POR_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_POR) >> RSTC_RCAUSE_POR_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_POR) >> RSTC_RCAUSE_POR_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_BODCORE_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_BODCORE) >> RSTC_RCAUSE_BODCORE_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_BODCORE) >> RSTC_RCAUSE_BODCORE_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_BODVDD_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_BODVDD) >> RSTC_RCAUSE_BODVDD_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_BODVDD) >> RSTC_RCAUSE_BODVDD_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_NVM_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_NVM) >> RSTC_RCAUSE_NVM_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_NVM) >> RSTC_RCAUSE_NVM_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_EXT_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_EXT) >> RSTC_RCAUSE_EXT_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_EXT) >> RSTC_RCAUSE_EXT_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_WDT_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_WDT) >> RSTC_RCAUSE_WDT_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_WDT) >> RSTC_RCAUSE_WDT_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_SYST_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_SYST) >> RSTC_RCAUSE_SYST_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_SYST) >> RSTC_RCAUSE_SYST_Pos;
 }
 
 static inline bool hri_rstc_get_RCAUSE_BACKUP_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_BACKUP) >> RSTC_RCAUSE_BACKUP_Pos;
+    return (((Rstc *)hw)->RCAUSE.reg & RSTC_RCAUSE_BACKUP) >> RSTC_RCAUSE_BACKUP_Pos;
 }
 
 static inline hri_rstc_rcause_reg_t hri_rstc_get_RCAUSE_reg(const void *const hw, hri_rstc_rcause_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Rstc *)hw)->RCAUSE.reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Rstc *)hw)->RCAUSE.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline hri_rstc_rcause_reg_t hri_rstc_read_RCAUSE_reg(const void *const hw)
 {
-	return ((Rstc *)hw)->RCAUSE.reg;
+    return ((Rstc *)hw)->RCAUSE.reg;
 }
 
 static inline bool hri_rstc_get_BKUPEXIT_RTC_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->BKUPEXIT.reg & RSTC_BKUPEXIT_RTC) >> RSTC_BKUPEXIT_RTC_Pos;
+    return (((Rstc *)hw)->BKUPEXIT.reg & RSTC_BKUPEXIT_RTC) >> RSTC_BKUPEXIT_RTC_Pos;
 }
 
 static inline bool hri_rstc_get_BKUPEXIT_BBPS_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->BKUPEXIT.reg & RSTC_BKUPEXIT_BBPS) >> RSTC_BKUPEXIT_BBPS_Pos;
+    return (((Rstc *)hw)->BKUPEXIT.reg & RSTC_BKUPEXIT_BBPS) >> RSTC_BKUPEXIT_BBPS_Pos;
 }
 
 static inline bool hri_rstc_get_BKUPEXIT_HIB_bit(const void *const hw)
 {
-	return (((Rstc *)hw)->BKUPEXIT.reg & RSTC_BKUPEXIT_HIB) >> RSTC_BKUPEXIT_HIB_Pos;
+    return (((Rstc *)hw)->BKUPEXIT.reg & RSTC_BKUPEXIT_HIB) >> RSTC_BKUPEXIT_HIB_Pos;
 }
 
 static inline hri_rstc_bkupexit_reg_t hri_rstc_get_BKUPEXIT_reg(const void *const hw, hri_rstc_bkupexit_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Rstc *)hw)->BKUPEXIT.reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Rstc *)hw)->BKUPEXIT.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline hri_rstc_bkupexit_reg_t hri_rstc_read_BKUPEXIT_reg(const void *const hw)
 {
-	return ((Rstc *)hw)->BKUPEXIT.reg;
+    return ((Rstc *)hw)->BKUPEXIT.reg;
 }
 
 #ifdef __cplusplus

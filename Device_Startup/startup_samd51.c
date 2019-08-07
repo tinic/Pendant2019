@@ -501,30 +501,30 @@ const DeviceVectors exception_table = {
 void Reset_Handler(void)
 {
 #if 0
-		if (hri_rstc_get_RCAUSE_POR_bit(RSTC)) {
-			while(1) { }
-		}
-		if (hri_rstc_get_RCAUSE_BODCORE_bit(RSTC)) {
-			while(1) { }
-		}
-		if (hri_rstc_get_RCAUSE_BODVDD_bit(RSTC)) {
-			while(1) { }
-		}
-		if (hri_rstc_get_RCAUSE_NVM_bit(RSTC)) {
-			while(1) { }
-		}
-		if (hri_rstc_get_RCAUSE_EXT_bit(RSTC)) {
-			while(1) { }
-		}
-		if (hri_rstc_get_RCAUSE_WDT_bit(RSTC)) {
-			while(1) { }
-		}
-//		if (hri_rstc_get_RCAUSE_SYST_bit(RSTC)) {
-//			while(1) { }
-//		}
-		if (hri_rstc_get_RCAUSE_BACKUP_bit(RSTC)) {
-			while(1) { }
-		}
+        if (hri_rstc_get_RCAUSE_POR_bit(RSTC)) {
+            while(1) { }
+        }
+        if (hri_rstc_get_RCAUSE_BODCORE_bit(RSTC)) {
+            while(1) { }
+        }
+        if (hri_rstc_get_RCAUSE_BODVDD_bit(RSTC)) {
+            while(1) { }
+        }
+        if (hri_rstc_get_RCAUSE_NVM_bit(RSTC)) {
+            while(1) { }
+        }
+        if (hri_rstc_get_RCAUSE_EXT_bit(RSTC)) {
+            while(1) { }
+        }
+        if (hri_rstc_get_RCAUSE_WDT_bit(RSTC)) {
+            while(1) { }
+        }
+//      if (hri_rstc_get_RCAUSE_SYST_bit(RSTC)) {
+//          while(1) { }
+//      }
+        if (hri_rstc_get_RCAUSE_BACKUP_bit(RSTC)) {
+            while(1) { }
+        }
 #endif  // #if 0
 
         uint32_t *pSrc, *pDest;

@@ -54,20 +54,20 @@ struct calendar_dev;
  * Available mask options for alarms.
  */
 enum calendar_alarm_option {
-	/** Alarm disabled. */
-	CALENDAR_ALARM_MATCH_DISABLED = 0,
-	/** Alarm match on second. */
-	CALENDAR_ALARM_MATCH_SEC,
-	/** Alarm match on second and minute. */
-	CALENDAR_ALARM_MATCH_MIN,
-	/** Alarm match on second, minute, and hour. */
-	CALENDAR_ALARM_MATCH_HOUR,
-	/** Alarm match on second, minute, hour, and day. */
-	CALENDAR_ALARM_MATCH_DAY,
-	/** Alarm match on second, minute, hour, day, and month. */
-	CALENDAR_ALARM_MATCH_MONTH,
-	/** Alarm match on second, minute, hour, day, month and year. */
-	CALENDAR_ALARM_MATCH_YEAR
+    /** Alarm disabled. */
+    CALENDAR_ALARM_MATCH_DISABLED = 0,
+    /** Alarm match on second. */
+    CALENDAR_ALARM_MATCH_SEC,
+    /** Alarm match on second and minute. */
+    CALENDAR_ALARM_MATCH_MIN,
+    /** Alarm match on second, minute, and hour. */
+    CALENDAR_ALARM_MATCH_HOUR,
+    /** Alarm match on second, minute, hour, and day. */
+    CALENDAR_ALARM_MATCH_DAY,
+    /** Alarm match on second, minute, hour, day, and month. */
+    CALENDAR_ALARM_MATCH_MONTH,
+    /** Alarm match on second, minute, hour, day, month and year. */
+    CALENDAR_ALARM_MATCH_YEAR
 };
 
 /**
@@ -88,64 +88,64 @@ typedef void (*tamper_drv_cb_t)(struct calendar_dev *const dev);
  * \brief Structure of Calendar instance
  */
 struct calendar_dev {
-	/** Pointer to the hardware base */
-	void *hw;
-	/** Alarm match callback */
-	calendar_drv_cb_alarm_t callback;
-	/** Tamper callback */
-	tamper_drv_cb_t callback_tamper;
-	/** IRQ struct */
-	struct _irq_descriptor irq;
+    /** Pointer to the hardware base */
+    void *hw;
+    /** Alarm match callback */
+    calendar_drv_cb_alarm_t callback;
+    /** Tamper callback */
+    tamper_drv_cb_t callback_tamper;
+    /** IRQ struct */
+    struct _irq_descriptor irq;
 };
 /**
  * \brief Time struct for calendar
  */
 struct calendar_time {
-	/*range from 0 to 59*/
-	uint8_t sec;
-	/*range from 0 to 59*/
-	uint8_t min;
-	/*range from 0 to 23*/
-	uint8_t hour;
+    /*range from 0 to 59*/
+    uint8_t sec;
+    /*range from 0 to 59*/
+    uint8_t min;
+    /*range from 0 to 23*/
+    uint8_t hour;
 };
 
 /**
  * \brief Time struct for calendar
  */
 struct calendar_date {
-	/*range from 1 to 28/29/30/31*/
-	uint8_t day;
-	/*range from 1 to 12*/
-	uint8_t month;
-	/*absolute year>= 1970(such as 2000)*/
-	uint16_t year;
+    /*range from 1 to 28/29/30/31*/
+    uint8_t day;
+    /*range from 1 to 12*/
+    uint8_t month;
+    /*absolute year>= 1970(such as 2000)*/
+    uint16_t year;
 };
 
 /** \brief Calendar driver struct
  *
  */
 struct calendar_descriptor {
-	struct calendar_dev    device;
-	struct list_descriptor alarms;
-	/*base date/time = base_year/1/1/0/0/0(year/month/day/hour/min/sec)*/
-	uint32_t base_year;
-	uint8_t  flags;
+    struct calendar_dev    device;
+    struct list_descriptor alarms;
+    /*base date/time = base_year/1/1/0/0/0(year/month/day/hour/min/sec)*/
+    uint32_t base_year;
+    uint8_t  flags;
 };
 
 /** \brief Date&Time struct for calendar
  */
 struct calendar_date_time {
-	struct calendar_time time;
-	struct calendar_date date;
+    struct calendar_time time;
+    struct calendar_date date;
 };
 
 /** \brief struct for alarm time
  */
 struct _calendar_alarm {
-	struct calendar_date_time  datetime;
-	uint32_t                   timestamp;
-	enum calendar_alarm_option option;
-	enum calendar_alarm_mode   mode;
+    struct calendar_date_time  datetime;
+    uint32_t                   timestamp;
+    enum calendar_alarm_option option;
+    enum calendar_alarm_mode   mode;
 };
 
 /** \enum for tamper detection mode

@@ -55,7 +55,7 @@ extern "C" {
  * The WDT device structure
  */
 struct wdt_dev {
-	void *hw;
+    void *hw;
 };
 
 /**

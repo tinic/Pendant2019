@@ -42,10 +42,10 @@ extern "C" {
 
 /** Random Number Generator polling device. */
 struct _rand_sync_dev {
-	/** Pointer to private data or hardware base */
-	void *prvt;
-	/** Number of bits generated for each read operation */
-	uint8_t n_bits;
+    /** Pointer to private data or hardware base */
+    void *prvt;
+    /** Number of bits generated for each read operation */
+    uint8_t n_bits;
 };
 
 /**

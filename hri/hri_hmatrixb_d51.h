@@ -57,176 +57,176 @@ typedef uint32_t hri_hmatrixbprs_prbs_reg_t;
 
 static inline void hri_hmatrixbprs_set_PRAS_reg(const void *const hw, hri_hmatrixb_pras_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRAS.reg |= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRAS.reg |= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_pras_reg_t hri_hmatrixbprs_get_PRAS_reg(const void *const hw, hri_hmatrixb_pras_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((HmatrixbPrs *)hw)->PRAS.reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((HmatrixbPrs *)hw)->PRAS.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_hmatrixbprs_write_PRAS_reg(const void *const hw, hri_hmatrixb_pras_reg_t data)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRAS.reg = data;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRAS.reg = data;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixbprs_clear_PRAS_reg(const void *const hw, hri_hmatrixb_pras_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRAS.reg &= ~mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRAS.reg &= ~mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixbprs_toggle_PRAS_reg(const void *const hw, hri_hmatrixb_pras_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRAS.reg ^= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRAS.reg ^= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_pras_reg_t hri_hmatrixbprs_read_PRAS_reg(const void *const hw)
 {
-	return ((HmatrixbPrs *)hw)->PRAS.reg;
+    return ((HmatrixbPrs *)hw)->PRAS.reg;
 }
 
 static inline void hri_hmatrixbprs_set_PRBS_reg(const void *const hw, hri_hmatrixb_prbs_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRBS.reg |= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRBS.reg |= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_prbs_reg_t hri_hmatrixbprs_get_PRBS_reg(const void *const hw, hri_hmatrixb_prbs_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((HmatrixbPrs *)hw)->PRBS.reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((HmatrixbPrs *)hw)->PRBS.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_hmatrixbprs_write_PRBS_reg(const void *const hw, hri_hmatrixb_prbs_reg_t data)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRBS.reg = data;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRBS.reg = data;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixbprs_clear_PRBS_reg(const void *const hw, hri_hmatrixb_prbs_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRBS.reg &= ~mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRBS.reg &= ~mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixbprs_toggle_PRBS_reg(const void *const hw, hri_hmatrixb_prbs_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((HmatrixbPrs *)hw)->PRBS.reg ^= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((HmatrixbPrs *)hw)->PRBS.reg ^= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_prbs_reg_t hri_hmatrixbprs_read_PRBS_reg(const void *const hw)
 {
-	return ((HmatrixbPrs *)hw)->PRBS.reg;
+    return ((HmatrixbPrs *)hw)->PRBS.reg;
 }
 
 static inline void hri_hmatrixb_set_PRAS_reg(const void *const hw, uint8_t submodule_index,
                                              hri_hmatrixb_pras_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg |= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg |= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_pras_reg_t hri_hmatrixb_get_PRAS_reg(const void *const hw, uint8_t submodule_index,
                                                                 hri_hmatrixb_pras_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_hmatrixb_write_PRAS_reg(const void *const hw, uint8_t submodule_index,
                                                hri_hmatrixb_pras_reg_t data)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg = data;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg = data;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixb_clear_PRAS_reg(const void *const hw, uint8_t submodule_index,
                                                hri_hmatrixb_pras_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg &= ~mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg &= ~mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixb_toggle_PRAS_reg(const void *const hw, uint8_t submodule_index,
                                                 hri_hmatrixb_pras_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg ^= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg ^= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_pras_reg_t hri_hmatrixb_read_PRAS_reg(const void *const hw, uint8_t submodule_index)
 {
-	return ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg;
+    return ((Hmatrixb *)hw)->Prs[submodule_index].PRAS.reg;
 }
 
 static inline void hri_hmatrixb_set_PRBS_reg(const void *const hw, uint8_t submodule_index,
                                              hri_hmatrixb_prbs_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg |= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg |= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_prbs_reg_t hri_hmatrixb_get_PRBS_reg(const void *const hw, uint8_t submodule_index,
                                                                 hri_hmatrixb_prbs_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_hmatrixb_write_PRBS_reg(const void *const hw, uint8_t submodule_index,
                                                hri_hmatrixb_prbs_reg_t data)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg = data;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg = data;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixb_clear_PRBS_reg(const void *const hw, uint8_t submodule_index,
                                                hri_hmatrixb_prbs_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg &= ~mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg &= ~mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_hmatrixb_toggle_PRBS_reg(const void *const hw, uint8_t submodule_index,
                                                 hri_hmatrixb_prbs_reg_t mask)
 {
-	HMATRIXB_CRITICAL_SECTION_ENTER();
-	((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg ^= mask;
-	HMATRIXB_CRITICAL_SECTION_LEAVE();
+    HMATRIXB_CRITICAL_SECTION_ENTER();
+    ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg ^= mask;
+    HMATRIXB_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_hmatrixb_prbs_reg_t hri_hmatrixb_read_PRBS_reg(const void *const hw, uint8_t submodule_index)
 {
-	return ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg;
+    return ((Hmatrixb *)hw)->Prs[submodule_index].PRBS.reg;
 }
 
 #ifdef __cplusplus

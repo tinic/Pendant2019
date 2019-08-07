@@ -48,19 +48,19 @@ static int32_t usart_sync_read(struct io_descriptor *const io_descr, uint8_t *co
  */
 int32_t usart_sync_init(struct usart_sync_descriptor *const descr, void *const hw, void *const func)
 {
-	(void)func;
-	
-	int32_t init_status;
-	ASSERT(descr && hw);
-	init_status = _usart_sync_init(&descr->device, hw);
-	if (init_status) {
-		return init_status;
-	}
+    (void)func;
+    
+    int32_t init_status;
+    ASSERT(descr && hw);
+    init_status = _usart_sync_init(&descr->device, hw);
+    if (init_status) {
+        return init_status;
+    }
 
-	descr->io.read  = usart_sync_read;
-	descr->io.write = usart_sync_write;
+    descr->io.read  = usart_sync_read;
+    descr->io.write = usart_sync_write;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -68,13 +68,13 @@ int32_t usart_sync_init(struct usart_sync_descriptor *const descr, void *const h
  */
 int32_t usart_sync_deinit(struct usart_sync_descriptor *const descr)
 {
-	ASSERT(descr);
-	_usart_sync_deinit(&descr->device);
+    ASSERT(descr);
+    _usart_sync_deinit(&descr->device);
 
-	descr->io.read  = NULL;
-	descr->io.write = NULL;
+    descr->io.read  = NULL;
+    descr->io.write = NULL;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -82,10 +82,10 @@ int32_t usart_sync_deinit(struct usart_sync_descriptor *const descr)
  */
 int32_t usart_sync_enable(struct usart_sync_descriptor *const descr)
 {
-	ASSERT(descr);
-	_usart_sync_enable(&descr->device);
+    ASSERT(descr);
+    _usart_sync_enable(&descr->device);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -93,10 +93,10 @@ int32_t usart_sync_enable(struct usart_sync_descriptor *const descr)
  */
 int32_t usart_sync_disable(struct usart_sync_descriptor *const descr)
 {
-	ASSERT(descr);
-	_usart_sync_disable(&descr->device);
+    ASSERT(descr);
+    _usart_sync_disable(&descr->device);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -104,10 +104,10 @@ int32_t usart_sync_disable(struct usart_sync_descriptor *const descr)
  */
 int32_t usart_sync_get_io_descriptor(struct usart_sync_descriptor *const descr, struct io_descriptor **io)
 {
-	ASSERT(descr && io);
+    ASSERT(descr && io);
 
-	*io = &descr->io;
-	return ERR_NONE;
+    *io = &descr->io;
+    return ERR_NONE;
 }
 
 /**
@@ -116,10 +116,10 @@ int32_t usart_sync_get_io_descriptor(struct usart_sync_descriptor *const descr, 
 int32_t usart_sync_set_flow_control(struct usart_sync_descriptor *const  descr,
                                     const union usart_flow_control_state state)
 {
-	ASSERT(descr);
-	_usart_sync_set_flow_control_state(&descr->device, state);
+    ASSERT(descr);
+    _usart_sync_set_flow_control_state(&descr->device, state);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -127,10 +127,10 @@ int32_t usart_sync_set_flow_control(struct usart_sync_descriptor *const  descr,
  */
 int32_t usart_sync_set_baud_rate(struct usart_sync_descriptor *const descr, const uint32_t baud_rate)
 {
-	ASSERT(descr);
-	_usart_sync_set_baud_rate(&descr->device, baud_rate);
+    ASSERT(descr);
+    _usart_sync_set_baud_rate(&descr->device, baud_rate);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -138,10 +138,10 @@ int32_t usart_sync_set_baud_rate(struct usart_sync_descriptor *const descr, cons
  */
 int32_t usart_sync_set_data_order(struct usart_sync_descriptor *const descr, const enum usart_data_order data_order)
 {
-	ASSERT(descr);
-	_usart_sync_set_data_order(&descr->device, data_order);
+    ASSERT(descr);
+    _usart_sync_set_data_order(&descr->device, data_order);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -149,10 +149,10 @@ int32_t usart_sync_set_data_order(struct usart_sync_descriptor *const descr, con
  */
 int32_t usart_sync_set_mode(struct usart_sync_descriptor *const descr, const enum usart_mode mode)
 {
-	ASSERT(descr);
-	_usart_sync_set_mode(&descr->device, mode);
+    ASSERT(descr);
+    _usart_sync_set_mode(&descr->device, mode);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -160,10 +160,10 @@ int32_t usart_sync_set_mode(struct usart_sync_descriptor *const descr, const enu
  */
 int32_t usart_sync_set_parity(struct usart_sync_descriptor *const descr, const enum usart_parity parity)
 {
-	ASSERT(descr);
-	_usart_sync_set_parity(&descr->device, parity);
+    ASSERT(descr);
+    _usart_sync_set_parity(&descr->device, parity);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -171,10 +171,10 @@ int32_t usart_sync_set_parity(struct usart_sync_descriptor *const descr, const e
  */
 int32_t usart_sync_set_stopbits(struct usart_sync_descriptor *const descr, const enum usart_stop_bits stop_bits)
 {
-	ASSERT(descr);
-	_usart_sync_set_stop_bits(&descr->device, stop_bits);
+    ASSERT(descr);
+    _usart_sync_set_stop_bits(&descr->device, stop_bits);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -182,10 +182,10 @@ int32_t usart_sync_set_stopbits(struct usart_sync_descriptor *const descr, const
  */
 int32_t usart_sync_set_character_size(struct usart_sync_descriptor *const descr, const enum usart_character_size size)
 {
-	ASSERT(descr);
-	_usart_sync_set_character_size(&descr->device, size);
+    ASSERT(descr);
+    _usart_sync_set_character_size(&descr->device, size);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -194,10 +194,10 @@ int32_t usart_sync_set_character_size(struct usart_sync_descriptor *const descr,
 int32_t usart_sync_flow_control_status(const struct usart_sync_descriptor *const descr,
                                        union usart_flow_control_state *const     state)
 {
-	ASSERT(descr && state);
-	*state = _usart_sync_get_flow_control_state(&descr->device);
+    ASSERT(descr && state);
+    *state = _usart_sync_get_flow_control_state(&descr->device);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -205,8 +205,8 @@ int32_t usart_sync_flow_control_status(const struct usart_sync_descriptor *const
  */
 int32_t usart_sync_is_tx_empty(const struct usart_sync_descriptor *const descr)
 {
-	ASSERT(descr);
-	return _usart_sync_is_ready_to_send(&descr->device);
+    ASSERT(descr);
+    return _usart_sync_is_ready_to_send(&descr->device);
 }
 
 /**
@@ -214,8 +214,8 @@ int32_t usart_sync_is_tx_empty(const struct usart_sync_descriptor *const descr)
  */
 int32_t usart_sync_is_rx_not_empty(const struct usart_sync_descriptor *const descr)
 {
-	ASSERT(descr);
-	return _usart_sync_is_byte_received(&descr->device);
+    ASSERT(descr);
+    return _usart_sync_is_byte_received(&descr->device);
 }
 
 /**
@@ -223,7 +223,7 @@ int32_t usart_sync_is_rx_not_empty(const struct usart_sync_descriptor *const des
  */
 uint32_t usart_sync_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }
 
 /*
@@ -237,20 +237,20 @@ uint32_t usart_sync_get_version(void)
  */
 static int32_t usart_sync_write(struct io_descriptor *const io_descr, const uint8_t *const buf, const uint16_t length)
 {
-	uint32_t                      offset = 0;
-	struct usart_sync_descriptor *descr  = CONTAINER_OF(io_descr, struct usart_sync_descriptor, io);
+    uint32_t                      offset = 0;
+    struct usart_sync_descriptor *descr  = CONTAINER_OF(io_descr, struct usart_sync_descriptor, io);
 
-	ASSERT(io_descr && buf && length);
-	while (!_usart_sync_is_ready_to_send(&descr->device))
-		;
-	do {
-		_usart_sync_write_byte(&descr->device, buf[offset]);
-		while (!_usart_sync_is_ready_to_send(&descr->device))
-			;
-	} while (++offset < length);
-	while (!_usart_sync_is_transmit_done(&descr->device))
-		;
-	return (int32_t)offset;
+    ASSERT(io_descr && buf && length);
+    while (!_usart_sync_is_ready_to_send(&descr->device))
+        ;
+    do {
+        _usart_sync_write_byte(&descr->device, buf[offset]);
+        while (!_usart_sync_is_ready_to_send(&descr->device))
+            ;
+    } while (++offset < length);
+    while (!_usart_sync_is_transmit_done(&descr->device))
+        ;
+    return (int32_t)offset;
 }
 
 /*
@@ -264,15 +264,15 @@ static int32_t usart_sync_write(struct io_descriptor *const io_descr, const uint
  */
 static int32_t usart_sync_read(struct io_descriptor *const io_descr, uint8_t *const buf, const uint16_t length)
 {
-	uint32_t                      offset = 0;
-	struct usart_sync_descriptor *descr  = CONTAINER_OF(io_descr, struct usart_sync_descriptor, io);
+    uint32_t                      offset = 0;
+    struct usart_sync_descriptor *descr  = CONTAINER_OF(io_descr, struct usart_sync_descriptor, io);
 
-	ASSERT(io_descr && buf && length);
-	do {
-		while (!_usart_sync_is_byte_received(&descr->device))
-			;
-		buf[offset] = _usart_sync_read_byte(&descr->device);
-	} while (++offset < length);
+    ASSERT(io_descr && buf && length);
+    do {
+        while (!_usart_sync_is_byte_received(&descr->device))
+            ;
+        buf[offset] = _usart_sync_read_byte(&descr->device);
+    } while (++offset < length);
 
-	return (int32_t)offset;
+    return (int32_t)offset;
 }

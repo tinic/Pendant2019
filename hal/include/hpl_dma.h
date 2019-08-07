@@ -61,16 +61,16 @@ enum _dma_callback_type { DMA_TRANSFER_COMPLETE_CB, DMA_TRANSFER_ERROR_CB };
  * \brief DMA interrupt callbacks
  */
 struct _dma_callbacks {
-	void (*transfer_done)(struct _dma_resource *resource);
-	void (*error)(struct _dma_resource *resource);
+    void (*transfer_done)(struct _dma_resource *resource);
+    void (*error)(struct _dma_resource *resource);
 };
 
 /**
  * \brief DMA resource structure
  */
 struct _dma_resource {
-	struct _dma_callbacks dma_cb;
-	void *                back;
+    struct _dma_callbacks dma_cb;
+    void *                back;
 };
 
 /**

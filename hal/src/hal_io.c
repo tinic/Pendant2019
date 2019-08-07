@@ -41,7 +41,7 @@
 
 uint32_t io_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }
 
 /**
@@ -49,8 +49,8 @@ uint32_t io_get_version(void)
  */
 int32_t io_write(struct io_descriptor *const io_descr, const uint8_t *const buf, const uint16_t length)
 {
-	ASSERT(io_descr && buf);
-	return io_descr->write(io_descr, buf, length);
+    ASSERT(io_descr && buf);
+    return io_descr->write(io_descr, buf, length);
 }
 
 /**
@@ -58,6 +58,6 @@ int32_t io_write(struct io_descriptor *const io_descr, const uint8_t *const buf,
  */
 int32_t io_read(struct io_descriptor *const io_descr, uint8_t *const buf, const uint16_t length)
 {
-	ASSERT(io_descr && buf);
-	return io_descr->read(io_descr, buf, length);
+    ASSERT(io_descr && buf);
+    return io_descr->read(io_descr, buf, length);
 }

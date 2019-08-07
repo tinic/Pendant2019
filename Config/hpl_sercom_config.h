@@ -277,12 +277,12 @@
 // BAUD:    register value low  [7:0]
 // BAUDLOW: register value high [15:8], only used for odd BAUD + BAUDLOW
 #define CONF_SERCOM_2_I2CM_BAUD_BAUDLOW                                                                                \
-	(((CONF_GCLK_SERCOM2_CORE_FREQUENCY - (CONF_SERCOM_2_I2CM_BAUD * 10U)                                              \
-	   - (CONF_SERCOM_2_I2CM_TRISE * (CONF_SERCOM_2_I2CM_BAUD / 100U) * (CONF_GCLK_SERCOM2_CORE_FREQUENCY / 10000U)    \
-	      / 1000U))                                                                                                    \
-	      * 10U                                                                                                        \
-	  + 5U)                                                                                                            \
-	 / (CONF_SERCOM_2_I2CM_BAUD * 10U))
+    (((CONF_GCLK_SERCOM2_CORE_FREQUENCY - (CONF_SERCOM_2_I2CM_BAUD * 10U)                                              \
+       - (CONF_SERCOM_2_I2CM_TRISE * (CONF_SERCOM_2_I2CM_BAUD / 100U) * (CONF_GCLK_SERCOM2_CORE_FREQUENCY / 10000U)    \
+          / 1000U))                                                                                                    \
+          * 10U                                                                                                        \
+      + 5U)                                                                                                            \
+     / (CONF_SERCOM_2_I2CM_BAUD * 10U))
 #ifndef CONF_SERCOM_2_I2CM_BAUD_RATE
 #if CONF_SERCOM_2_I2CM_BAUD_BAUDLOW > (0xFF * 2)
 #warning Requested I2C baudrate too low, please check
@@ -292,9 +292,9 @@
 #define CONF_SERCOM_2_I2CM_BAUD_RATE 1
 #else
 #define CONF_SERCOM_2_I2CM_BAUD_RATE                                                                                   \
-	((CONF_SERCOM_2_I2CM_BAUD_BAUDLOW & 0x1)                                                                           \
-	     ? (CONF_SERCOM_2_I2CM_BAUD_BAUDLOW / 2) + ((CONF_SERCOM_2_I2CM_BAUD_BAUDLOW / 2 + 1) << 8)                    \
-	     : (CONF_SERCOM_2_I2CM_BAUD_BAUDLOW / 2))
+    ((CONF_SERCOM_2_I2CM_BAUD_BAUDLOW & 0x1)                                                                           \
+         ? (CONF_SERCOM_2_I2CM_BAUD_BAUDLOW / 2) + ((CONF_SERCOM_2_I2CM_BAUD_BAUDLOW / 2 + 1) << 8)                    \
+         : (CONF_SERCOM_2_I2CM_BAUD_BAUDLOW / 2))
 #endif
 #endif
 
@@ -528,7 +528,7 @@
 #if CONF_SERCOM_3_USART_SAMPR == 0
 #ifndef CONF_SERCOM_3_USART_BAUD_RATE
 #define CONF_SERCOM_3_USART_BAUD_RATE                                                                                  \
-	65536 - ((65536 * 16.0f * CONF_SERCOM_3_USART_BAUD) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
+    65536 - ((65536 * 16.0f * CONF_SERCOM_3_USART_BAUD) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
 #endif
 #ifndef CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH
 #define CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH 0
@@ -536,7 +536,7 @@
 #elif CONF_SERCOM_3_USART_SAMPR == 1
 #ifndef CONF_SERCOM_3_USART_BAUD_RATE
 #define CONF_SERCOM_3_USART_BAUD_RATE                                                                                  \
-	((CONF_GCLK_SERCOM3_CORE_FREQUENCY) / (CONF_SERCOM_3_USART_BAUD * 16)) - (CONF_SERCOM_3_USART_FRACTIONAL / 8)
+    ((CONF_GCLK_SERCOM3_CORE_FREQUENCY) / (CONF_SERCOM_3_USART_BAUD * 16)) - (CONF_SERCOM_3_USART_FRACTIONAL / 8)
 #endif
 #ifndef CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH
 #define CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH 0
@@ -544,7 +544,7 @@
 #elif CONF_SERCOM_3_USART_SAMPR == 2
 #ifndef CONF_SERCOM_3_USART_BAUD_RATE
 #define CONF_SERCOM_3_USART_BAUD_RATE                                                                                  \
-	65536 - ((65536 * 8.0f * CONF_SERCOM_3_USART_BAUD) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
+    65536 - ((65536 * 8.0f * CONF_SERCOM_3_USART_BAUD) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
 #endif
 #ifndef CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH
 #define CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH 0
@@ -552,7 +552,7 @@
 #elif CONF_SERCOM_3_USART_SAMPR == 3
 #ifndef CONF_SERCOM_3_USART_BAUD_RATE
 #define CONF_SERCOM_3_USART_BAUD_RATE                                                                                  \
-	((CONF_GCLK_SERCOM3_CORE_FREQUENCY) / (CONF_SERCOM_3_USART_BAUD * 8)) - (CONF_SERCOM_3_USART_FRACTIONAL / 8)
+    ((CONF_GCLK_SERCOM3_CORE_FREQUENCY) / (CONF_SERCOM_3_USART_BAUD * 8)) - (CONF_SERCOM_3_USART_FRACTIONAL / 8)
 #endif
 #ifndef CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH
 #define CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH 0
@@ -560,7 +560,7 @@
 #elif CONF_SERCOM_3_USART_SAMPR == 4
 #ifndef CONF_SERCOM_3_USART_BAUD_RATE
 #define CONF_SERCOM_3_USART_BAUD_RATE                                                                                  \
-	65536 - ((65536 * 3.0f * CONF_SERCOM_3_USART_BAUD) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
+    65536 - ((65536 * 3.0f * CONF_SERCOM_3_USART_BAUD) / CONF_GCLK_SERCOM3_CORE_FREQUENCY)
 #endif
 #ifndef CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH
 #define CONF_SERCOM_3_USART_RECEIVE_PULSE_LENGTH 0

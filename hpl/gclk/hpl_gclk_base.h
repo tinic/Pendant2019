@@ -68,7 +68,7 @@ extern "C" {
 static inline void _gclk_enable_channel(const uint8_t channel, const uint8_t source)
 {
 
-	hri_gclk_write_PCHCTRL_reg(GCLK, channel, source | GCLK_PCHCTRL_CHEN);
+    hri_gclk_write_PCHCTRL_reg(GCLK, channel, source | GCLK_PCHCTRL_CHEN);
 }
 
 /**

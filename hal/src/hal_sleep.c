@@ -54,12 +54,12 @@
  */
 int sleep(const uint8_t mode)
 {
-	if (ERR_NONE != _set_sleep_mode(mode))
-		return ERR_INVALID_ARG;
+    if (ERR_NONE != _set_sleep_mode(mode))
+        return ERR_INVALID_ARG;
 
-	_go_to_sleep();
+    _go_to_sleep();
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -69,5 +69,5 @@ int sleep(const uint8_t mode)
  */
 uint32_t sleep_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }

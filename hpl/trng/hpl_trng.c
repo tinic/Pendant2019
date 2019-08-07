@@ -38,73 +38,73 @@
 
 static inline int32_t _trng_init(void *hw)
 {
-	if (hri_trng_get_CTRLA_reg(hw, TRNG_CTRLA_ENABLE)) {
-		return ERR_DENIED;
-	}
-	if (CONF_TRNG_RUNSTDBY) {
-		hri_trng_set_CTRLA_RUNSTDBY_bit(hw);
-	} else {
-		hri_trng_clear_CTRLA_RUNSTDBY_bit(hw);
-	}
-	if (CONF_TRNG_DATARDYEO) {
-		hri_trng_set_EVCTRL_DATARDYEO_bit(hw);
-	} else {
-		hri_trng_clear_EVCTRL_DATARDYEO_bit(hw);
-	}
-	return ERR_NONE;
+    if (hri_trng_get_CTRLA_reg(hw, TRNG_CTRLA_ENABLE)) {
+        return ERR_DENIED;
+    }
+    if (CONF_TRNG_RUNSTDBY) {
+        hri_trng_set_CTRLA_RUNSTDBY_bit(hw);
+    } else {
+        hri_trng_clear_CTRLA_RUNSTDBY_bit(hw);
+    }
+    if (CONF_TRNG_DATARDYEO) {
+        hri_trng_set_EVCTRL_DATARDYEO_bit(hw);
+    } else {
+        hri_trng_clear_EVCTRL_DATARDYEO_bit(hw);
+    }
+    return ERR_NONE;
 }
 
 int32_t _rand_sync_init(struct _rand_sync_dev *const dev, void *const hw)
 {
-	int32_t rc;
+    int32_t rc;
 
-	ASSERT(dev && hw);
+    ASSERT(dev && hw);
 
-	rc = _trng_init(hw);
-	if (rc == ERR_NONE) {
-		dev->prvt   = hw;
-		dev->n_bits = 32;
-	}
-	return rc;
+    rc = _trng_init(hw);
+    if (rc == ERR_NONE) {
+        dev->prvt   = hw;
+        dev->n_bits = 32;
+    }
+    return rc;
 }
 
 void _rand_sync_deinit(struct _rand_sync_dev *const dev)
 {
-	_rand_sync_disable(dev);
+    _rand_sync_disable(dev);
 }
 
 int32_t _rand_sync_enable(struct _rand_sync_dev *const dev)
 {
-	ASSERT(dev);
-	ASSERT(dev->prvt);
+    ASSERT(dev);
+    ASSERT(dev->prvt);
 
-	hri_trng_set_CTRLA_ENABLE_bit(dev->prvt);
-	return ERR_NONE;
+    hri_trng_set_CTRLA_ENABLE_bit(dev->prvt);
+    return ERR_NONE;
 }
 
 void _rand_sync_disable(struct _rand_sync_dev *const dev)
 {
-	ASSERT(dev);
-	ASSERT(dev->prvt);
+    ASSERT(dev);
+    ASSERT(dev->prvt);
 
-	hri_trng_clear_CTRLA_ENABLE_bit(dev->prvt);
+    hri_trng_clear_CTRLA_ENABLE_bit(dev->prvt);
 }
 
 int32_t _rand_sync_set_seed(struct _rand_sync_dev *const dev, const uint32_t seed)
 {
-	(void)dev;
-	(void)seed;
-	return ERR_UNSUPPORTED_OP;
+    (void)dev;
+    (void)seed;
+    return ERR_UNSUPPORTED_OP;
 }
 
 uint32_t _rand_sync_read_one(const struct _rand_sync_dev *const dev)
 {
-	ASSERT(dev);
-	ASSERT(dev->prvt);
-	ASSERT(hri_trng_get_CTRLA_reg(dev->prvt, TRNG_CTRLA_ENABLE));
+    ASSERT(dev);
+    ASSERT(dev->prvt);
+    ASSERT(hri_trng_get_CTRLA_reg(dev->prvt, TRNG_CTRLA_ENABLE));
 
-	while (!hri_trng_get_INTFLAG_reg(dev->prvt, TRNG_INTFLAG_DATARDY)) {
-		/* Wait until data ready. */
-	}
-	return hri_trng_read_DATA_reg(dev->prvt);
+    while (!hri_trng_get_INTFLAG_reg(dev->prvt, TRNG_INTFLAG_DATARDY)) {
+        /* Wait until data ready. */
+    }
+    return hri_trng_read_DATA_reg(dev->prvt);
 }

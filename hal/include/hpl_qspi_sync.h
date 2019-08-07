@@ -48,8 +48,8 @@ extern "C" {
 
 /** Quad SPI polling driver instance. */
 struct _qspi_sync_dev {
-	/** Pointer to private data or hardware base */
-	void *prvt;
+    /** Pointer to private data or hardware base */
+    void *prvt;
 };
 
 /**

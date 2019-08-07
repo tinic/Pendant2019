@@ -52,7 +52,7 @@ static void *hardware;
  */
 void delay_init(void *const hw)
 {
-	_delay_init(hardware = hw);
+    _delay_init(hardware = hw);
 }
 
 /**
@@ -60,7 +60,7 @@ void delay_init(void *const hw)
  */
 void delay_us(const uint16_t us)
 {
-	_delay_cycles(hardware, _get_cycles_for_us(us));
+    _delay_cycles(hardware, _get_cycles_for_us(us));
 }
 
 /**
@@ -68,7 +68,7 @@ void delay_us(const uint16_t us)
  */
 void delay_ms(const uint16_t ms)
 {
-	_delay_cycles(hardware, _get_cycles_for_ms(ms));
+    _delay_cycles(hardware, _get_cycles_for_ms(ms));
 }
 
 /**
@@ -76,5 +76,5 @@ void delay_ms(const uint16_t ms)
  */
 uint32_t delay_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }

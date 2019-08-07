@@ -42,84 +42,84 @@ static uint8_t                subscribed[EVENT_MASK_SIZE];
 
 int32_t event_subscribe(struct event *const event, const event_id_t id, event_cb_t cb)
 {
-	/* get byte and bit number of the given event in the event mask */
-	const uint8_t position = id >> 3;
-	const uint8_t mask     = 1 << (id & 0x7);
+    /* get byte and bit number of the given event in the event mask */
+    const uint8_t position = id >> 3;
+    const uint8_t mask     = 1 << (id & 0x7);
 
-	ASSERT(event && cb && (id < EVENT_MAX_AMOUNT));
+    ASSERT(event && cb && (id < EVENT_MAX_AMOUNT));
 
-	if (event->mask[position] & mask) {
-		return ERR_NO_CHANGE; /* Already subscribed */
-	}
+    if (event->mask[position] & mask) {
+        return ERR_NO_CHANGE; /* Already subscribed */
+    }
 
-	if (!is_list_element(&events, event)) {
-		memset(event->mask, 0, EVENT_MASK_SIZE);
-		list_insert_as_head(&events, event);
-	}
-	event->cb = cb;
-	event->mask[position] |= mask;
+    if (!is_list_element(&events, event)) {
+        memset(event->mask, 0, EVENT_MASK_SIZE);
+        list_insert_as_head(&events, event);
+    }
+    event->cb = cb;
+    event->mask[position] |= mask;
 
-	subscribed[position] |= mask;
+    subscribed[position] |= mask;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 int32_t event_unsubscribe(struct event *const event, const event_id_t id)
 {
-	/* get byte and bit number of the given event in the event mask */
-	const uint8_t       position = id >> 3;
-	const uint8_t       mask     = 1 << (id & 0x7);
-	const struct event *current;
-	uint8_t             i;
+    /* get byte and bit number of the given event in the event mask */
+    const uint8_t       position = id >> 3;
+    const uint8_t       mask     = 1 << (id & 0x7);
+    const struct event *current;
+    uint8_t             i;
 
-	ASSERT(event && (id < EVENT_MAX_AMOUNT));
+    ASSERT(event && (id < EVENT_MAX_AMOUNT));
 
-	if (!(event->mask[position] & mask)) {
-		return ERR_NO_CHANGE; /* Already unsubscribed */
-	}
+    if (!(event->mask[position] & mask)) {
+        return ERR_NO_CHANGE; /* Already unsubscribed */
+    }
 
-	event->mask[position] &= ~mask;
+    event->mask[position] &= ~mask;
 
-	/* Check if there are more subscribers */
-	for ((current = (const struct event *)list_get_head(&events)); current;
-	     current = (const struct event *)list_get_next_element(current)) {
-		if (current->mask[position] & mask) {
-			break;
-		}
-	}
-	if (!current) {
-		subscribed[position] &= ~mask;
-	}
+    /* Check if there are more subscribers */
+    for ((current = (const struct event *)list_get_head(&events)); current;
+         current = (const struct event *)list_get_next_element(current)) {
+        if (current->mask[position] & mask) {
+            break;
+        }
+    }
+    if (!current) {
+        subscribed[position] &= ~mask;
+    }
 
-	/* Remove event from the list. Can be unsave, document it! */
-	for (i = 0; i < ARRAY_SIZE(event->mask); i++) {
-		if (event->mask[i]) {
-			return ERR_NONE;
-		}
-	}
-	list_delete_element(&events, event);
+    /* Remove event from the list. Can be unsave, document it! */
+    for (i = 0; i < ARRAY_SIZE(event->mask); i++) {
+        if (event->mask[i]) {
+            return ERR_NONE;
+        }
+    }
+    list_delete_element(&events, event);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 void event_post(const event_id_t id, const event_data_t data)
 {
-	/* get byte and bit number of the given event in the event mask */
-	const uint8_t       position = id >> 3;
-	const uint8_t       mask     = 1 << (id & 0x7);
-	const struct event *current;
+    /* get byte and bit number of the given event in the event mask */
+    const uint8_t       position = id >> 3;
+    const uint8_t       mask     = 1 << (id & 0x7);
+    const struct event *current;
 
-	ASSERT((id < EVENT_MAX_AMOUNT));
+    ASSERT((id < EVENT_MAX_AMOUNT));
 
-	if (!(subscribed[position] & mask)) {
-		return; /* No subscribers */
-	}
+    if (!(subscribed[position] & mask)) {
+        return; /* No subscribers */
+    }
 
-	/* Find all subscribers */
-	for ((current = (const struct event *)list_get_head(&events)); current;
-	     current = (const struct event *)list_get_next_element(current)) {
-		if (current->mask[position] & mask) {
-			current->cb(id, data);
-		}
-	}
+    /* Find all subscribers */
+    for ((current = (const struct event *)list_get_head(&events)); current;
+         current = (const struct event *)list_get_next_element(current)) {
+        if (current->mask[position] & mask) {
+            current->cb(id, data);
+        }
+    }
 }

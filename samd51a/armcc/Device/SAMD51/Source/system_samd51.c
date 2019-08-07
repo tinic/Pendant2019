@@ -51,9 +51,9 @@ void SystemInit(void)
     __ISB();
 #endif
 
-	// Keep the default device state after reset
-	SystemCoreClock = __SYSTEM_CLOCK;
-	return;
+    // Keep the default device state after reset
+    SystemCoreClock = __SYSTEM_CLOCK;
+    return;
 }
 
 /**
@@ -64,7 +64,7 @@ void SystemInit(void)
  */
 void SystemCoreClockUpdate(void)
 {
-	// Not implemented
-	SystemCoreClock = __SYSTEM_CLOCK;
-	return;
+    // Not implemented
+    SystemCoreClock = __SYSTEM_CLOCK;
+    return;
 }

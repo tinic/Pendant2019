@@ -66,19 +66,19 @@ struct _usart_async_device;
  * \brief USART interrupt callbacks
  */
 struct _usart_async_callbacks {
-	void (*tx_byte_sent)(struct _usart_async_device *device);
-	void (*rx_done_cb)(struct _usart_async_device *device, uint8_t data);
-	void (*tx_done_cb)(struct _usart_async_device *device);
-	void (*error_cb)(struct _usart_async_device *device);
+    void (*tx_byte_sent)(struct _usart_async_device *device);
+    void (*rx_done_cb)(struct _usart_async_device *device, uint8_t data);
+    void (*tx_done_cb)(struct _usart_async_device *device);
+    void (*error_cb)(struct _usart_async_device *device);
 };
 
 /**
  * \brief USART descriptor device structure
  */
 struct _usart_async_device {
-	struct _usart_async_callbacks usart_cb;
-	struct _irq_descriptor        irq;
-	void *                        hw;
+    struct _usart_async_callbacks usart_cb;
+    struct _irq_descriptor        irq;
+    void *                        hw;
 };
 /**
  * \name HPL functions

@@ -81,12 +81,12 @@ typedef uint32_t be32_t;
  */
 #if (defined __GNUC__)
 #define swap_u32(u32)                                                                                                  \
-	(is_constant(u32)                                                                                                  \
-	     ? ((uint32_t)(((uint32_t)swap_u16((uint32_t)(u32) >> 16)) | ((uint32_t)swap_u16((uint32_t)(u32)) << 16)))     \
-	     : ((uint32_t)__builtin_bswap32((uint32_t)(u32))))
+    (is_constant(u32)                                                                                                  \
+         ? ((uint32_t)(((uint32_t)swap_u16((uint32_t)(u32) >> 16)) | ((uint32_t)swap_u16((uint32_t)(u32)) << 16)))     \
+         : ((uint32_t)__builtin_bswap32((uint32_t)(u32))))
 #else
 #define swap_u32(u32)                                                                                                  \
-	((uint32_t)(((uint32_t)swap_u16((uint32_t)(u32) >> 16)) | ((uint32_t)swap_u16((uint32_t)(u32)) << 16)))
+    ((uint32_t)(((uint32_t)swap_u16((uint32_t)(u32) >> 16)) | ((uint32_t)swap_u16((uint32_t)(u32)) << 16)))
 #endif
 
 /** Get a value from/to LE16 data */

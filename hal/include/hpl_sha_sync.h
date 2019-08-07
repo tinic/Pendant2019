@@ -41,8 +41,8 @@ extern "C" {
 #endif
 
 struct _sha_sync_device {
-	void *              hw;  /*!< Hardware module instance handler */
-	struct sha_context *ctx; /*!< SHA context structure */
+    void *              hw;  /*!< Hardware module instance handler */
+    struct sha_context *ctx; /*!< SHA context structure */
 };
 
 /**

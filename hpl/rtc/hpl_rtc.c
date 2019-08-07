@@ -45,33 +45,33 @@ static struct _timer_device *_rtc_dev = NULL;
  */
 int32_t _timer_init(struct _timer_device *const dev, void *const hw)
 {
-	ASSERT(dev);
+    ASSERT(dev);
 
-	dev->hw = hw;
+    dev->hw = hw;
 
-	hri_rtcmode0_write_CTRLA_reg(dev->hw, RTC_MODE0_CTRLA_SWRST);
-	hri_rtcmode0_wait_for_sync(dev->hw, RTC_MODE0_SYNCBUSY_SWRST);
+    hri_rtcmode0_write_CTRLA_reg(dev->hw, RTC_MODE0_CTRLA_SWRST);
+    hri_rtcmode0_wait_for_sync(dev->hw, RTC_MODE0_SYNCBUSY_SWRST);
 
 #if CONF_RTC_EVENT_CONTROL_ENABLE == 1
-	hri_rtcmode0_write_EVCTRL_reg(
-	    dev->hw,
-	    (CONF_RTC_PEREO0 << RTC_MODE0_EVCTRL_PEREO0_Pos) | (CONF_RTC_PEREO1 << RTC_MODE0_EVCTRL_PEREO1_Pos)
-	        | (CONF_RTC_PEREO2 << RTC_MODE0_EVCTRL_PEREO2_Pos) | (CONF_RTC_PEREO3 << RTC_MODE0_EVCTRL_PEREO3_Pos)
-	        | (CONF_RTC_PEREO4 << RTC_MODE0_EVCTRL_PEREO4_Pos) | (CONF_RTC_PEREO5 << RTC_MODE0_EVCTRL_PEREO5_Pos)
-	        | (CONF_RTC_PEREO6 << RTC_MODE0_EVCTRL_PEREO6_Pos) | (CONF_RTC_PEREO7 << RTC_MODE0_EVCTRL_PEREO7_Pos)
-	        | (CONF_RTC_COMPE0 << RTC_MODE0_EVCTRL_CMPEO_Pos) | (CONF_RTC_COMPE1 << RTC_MODE0_EVCTRL_CMPEO1_Pos)
-	        | (CONF_RTC_TAMPEREO << RTC_MODE0_EVCTRL_TAMPEREO_Pos)
-	        | (CONF_RTC_TAMPEVEI << RTC_MODE0_EVCTRL_TAMPEVEI_Pos) | (CONF_RTC_OVFEO << RTC_MODE0_EVCTRL_OVFEO_Pos));
+    hri_rtcmode0_write_EVCTRL_reg(
+        dev->hw,
+        (CONF_RTC_PEREO0 << RTC_MODE0_EVCTRL_PEREO0_Pos) | (CONF_RTC_PEREO1 << RTC_MODE0_EVCTRL_PEREO1_Pos)
+            | (CONF_RTC_PEREO2 << RTC_MODE0_EVCTRL_PEREO2_Pos) | (CONF_RTC_PEREO3 << RTC_MODE0_EVCTRL_PEREO3_Pos)
+            | (CONF_RTC_PEREO4 << RTC_MODE0_EVCTRL_PEREO4_Pos) | (CONF_RTC_PEREO5 << RTC_MODE0_EVCTRL_PEREO5_Pos)
+            | (CONF_RTC_PEREO6 << RTC_MODE0_EVCTRL_PEREO6_Pos) | (CONF_RTC_PEREO7 << RTC_MODE0_EVCTRL_PEREO7_Pos)
+            | (CONF_RTC_COMPE0 << RTC_MODE0_EVCTRL_CMPEO_Pos) | (CONF_RTC_COMPE1 << RTC_MODE0_EVCTRL_CMPEO1_Pos)
+            | (CONF_RTC_TAMPEREO << RTC_MODE0_EVCTRL_TAMPEREO_Pos)
+            | (CONF_RTC_TAMPEVEI << RTC_MODE0_EVCTRL_TAMPEVEI_Pos) | (CONF_RTC_OVFEO << RTC_MODE0_EVCTRL_OVFEO_Pos));
 #endif
 
-	hri_rtcmode0_write_CTRLA_reg(
-	    dev->hw, RTC_MODE0_CTRLA_PRESCALER(CONF_RTC_PRESCALER) | RTC_MODE0_CTRLA_COUNTSYNC | RTC_MODE0_CTRLA_MATCHCLR);
-	hri_rtcmode0_write_COMP_reg(dev->hw, 0, CONF_RTC_COMP_VAL);
-	hri_rtcmode0_set_INTEN_CMP0_bit(dev->hw);
+    hri_rtcmode0_write_CTRLA_reg(
+        dev->hw, RTC_MODE0_CTRLA_PRESCALER(CONF_RTC_PRESCALER) | RTC_MODE0_CTRLA_COUNTSYNC | RTC_MODE0_CTRLA_MATCHCLR);
+    hri_rtcmode0_write_COMP_reg(dev->hw, 0, CONF_RTC_COMP_VAL);
+    hri_rtcmode0_set_INTEN_CMP0_bit(dev->hw);
 
-	_rtc_dev = dev;
+    _rtc_dev = dev;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -79,11 +79,11 @@ int32_t _timer_init(struct _timer_device *const dev, void *const hw)
  */
 void _timer_deinit(struct _timer_device *const dev)
 {
-	ASSERT(dev && dev->hw);
+    ASSERT(dev && dev->hw);
 
-	NVIC_DisableIRQ(RTC_IRQn);
+    NVIC_DisableIRQ(RTC_IRQn);
 
-	hri_rtcmode0_write_CTRLA_reg(dev->hw, RTC_MODE0_CTRLA_SWRST);
+    hri_rtcmode0_write_CTRLA_reg(dev->hw, RTC_MODE0_CTRLA_SWRST);
 }
 
 /**
@@ -91,12 +91,12 @@ void _timer_deinit(struct _timer_device *const dev)
  */
 void _timer_start(struct _timer_device *const dev)
 {
-	ASSERT(dev && dev->hw);
+    ASSERT(dev && dev->hw);
 
-	NVIC_EnableIRQ(RTC_IRQn);
-	hri_rtcmode0_write_COUNT_reg(dev->hw, 0);
-	hri_rtcmode0_wait_for_sync(dev->hw, RTC_MODE0_SYNCBUSY_COUNT);
-	hri_rtcmode0_set_CTRLA_ENABLE_bit(dev->hw);
+    NVIC_EnableIRQ(RTC_IRQn);
+    hri_rtcmode0_write_COUNT_reg(dev->hw, 0);
+    hri_rtcmode0_wait_for_sync(dev->hw, RTC_MODE0_SYNCBUSY_COUNT);
+    hri_rtcmode0_set_CTRLA_ENABLE_bit(dev->hw);
 }
 
 /**
@@ -104,9 +104,9 @@ void _timer_start(struct _timer_device *const dev)
  */
 void _timer_stop(struct _timer_device *const dev)
 {
-	ASSERT(dev && dev->hw);
+    ASSERT(dev && dev->hw);
 
-	hri_rtcmode0_clear_CTRLA_ENABLE_bit(dev->hw);
+    hri_rtcmode0_clear_CTRLA_ENABLE_bit(dev->hw);
 }
 
 /**
@@ -114,7 +114,7 @@ void _timer_stop(struct _timer_device *const dev)
  */
 void _timer_set_period(struct _timer_device *const dev, const uint32_t clock_cycles)
 {
-	hri_rtcmode0_write_COMP_reg(dev->hw, 0, clock_cycles);
+    hri_rtcmode0_write_COMP_reg(dev->hw, 0, clock_cycles);
 }
 
 /**
@@ -122,7 +122,7 @@ void _timer_set_period(struct _timer_device *const dev, const uint32_t clock_cyc
  */
 uint32_t _timer_get_period(const struct _timer_device *const dev)
 {
-	return hri_rtcmode0_read_COMP_reg(dev->hw, 0);
+    return hri_rtcmode0_read_COMP_reg(dev->hw, 0);
 }
 
 /**
@@ -130,7 +130,7 @@ uint32_t _timer_get_period(const struct _timer_device *const dev)
  */
 bool _timer_is_started(const struct _timer_device *const dev)
 {
-	return hri_rtcmode0_get_CTRLA_ENABLE_bit(dev->hw);
+    return hri_rtcmode0_get_CTRLA_ENABLE_bit(dev->hw);
 }
 
 /**
@@ -138,7 +138,7 @@ bool _timer_is_started(const struct _timer_device *const dev)
  */
 void _timer_set_irq(struct _timer_device *const dev)
 {
-	(void)dev;
+    (void)dev;
 }
 
 /**
@@ -148,16 +148,16 @@ void _timer_set_irq(struct _timer_device *const dev)
  */
 static void _rtc_timer_interrupt_handler(struct _timer_device *dev)
 {
-	/* Read and mask interrupt flag register */
-	uint16_t flag = hri_rtcmode0_read_INTFLAG_reg(dev->hw);
+    /* Read and mask interrupt flag register */
+    uint16_t flag = hri_rtcmode0_read_INTFLAG_reg(dev->hw);
 
-	if (flag & RTC_MODE0_INTFLAG_CMP0) {
-		if (dev->timer_cb.period_expired) {
-			dev->timer_cb.period_expired(dev);
-		}
-		/* Clear interrupt flag */
-		hri_rtcmode0_clear_interrupt_CMP0_bit(dev->hw);
-	}
+    if (flag & RTC_MODE0_INTFLAG_CMP0) {
+        if (dev->timer_cb.period_expired) {
+            dev->timer_cb.period_expired(dev);
+        }
+        /* Clear interrupt flag */
+        hri_rtcmode0_clear_interrupt_CMP0_bit(dev->hw);
+    }
 }
 
 /**
@@ -165,7 +165,7 @@ static void _rtc_timer_interrupt_handler(struct _timer_device *dev)
  */
 struct _timer_hpl_interface *_rtc_get_timer(void)
 {
-	return NULL;
+    return NULL;
 }
 
 /**
@@ -173,5 +173,5 @@ struct _timer_hpl_interface *_rtc_get_timer(void)
  */
 void RTC_Handler(void)
 {
-	_rtc_timer_interrupt_handler(_rtc_dev);
+    _rtc_timer_interrupt_handler(_rtc_dev);
 }

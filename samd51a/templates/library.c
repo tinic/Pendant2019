@@ -11,5 +11,5 @@
 /* Replace with your library code */
 int myfunc(void)
 {
-	return 0;
+    return 0;
 }

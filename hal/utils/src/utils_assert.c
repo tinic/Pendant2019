@@ -38,9 +38,9 @@
  */
 void assert(const bool condition, const char *const file, const int line)
 {
-	if (!(condition)) {
-		__asm("BKPT #0");
-	}
-	(void)file;
-	(void)line;
+    if (!(condition)) {
+        __asm("BKPT #0");
+    }
+    (void)file;
+    (void)line;
 }

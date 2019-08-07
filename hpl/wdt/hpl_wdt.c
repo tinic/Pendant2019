@@ -76,38 +76,38 @@
  */
 int32_t _wdt_init(struct wdt_dev *const dev)
 {
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw) || hri_wdt_get_CTRLA_ENABLE_bit(dev->hw)) {
-		return ERR_DENIED;
-	} else {
-		if (CONF_WDT_WINDOW_EN) {
-			hri_wdt_write_CONFIG_WINDOW_bf(dev->hw, CONF_WDT_WINDOW);
-		} else {
-			hri_wdt_clear_CTRLA_WEN_bit(dev->hw);
-		}
+    if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw) || hri_wdt_get_CTRLA_ENABLE_bit(dev->hw)) {
+        return ERR_DENIED;
+    } else {
+        if (CONF_WDT_WINDOW_EN) {
+            hri_wdt_write_CONFIG_WINDOW_bf(dev->hw, CONF_WDT_WINDOW);
+        } else {
+            hri_wdt_clear_CTRLA_WEN_bit(dev->hw);
+        }
 
-		hri_wdt_write_CONFIG_PER_bf(dev->hw, CONF_WDT_PER);
-	}
+        hri_wdt_write_CONFIG_PER_bf(dev->hw, CONF_WDT_PER);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 /**
  * \brief De-initialize WDT
  */
 int32_t _wdt_deinit(struct wdt_dev *const dev)
 {
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw)) {
-		return ERR_DENIED;
-	} else {
-		hri_wdt_clear_CTRLA_ENABLE_bit(dev->hw);
-	}
+    if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw)) {
+        return ERR_DENIED;
+    } else {
+        hri_wdt_clear_CTRLA_ENABLE_bit(dev->hw);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -115,70 +115,70 @@ int32_t _wdt_deinit(struct wdt_dev *const dev)
  */
 int32_t _wdt_set_timeout_period(struct wdt_dev *const dev, const uint32_t clk_rate, const uint16_t timeout_period)
 {
-	uint64_t            tmp;
-	uint32_t            period_cycles;
-	enum wdt_period_reg timeout_period_reg;
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    uint64_t            tmp;
+    uint32_t            period_cycles;
+    enum wdt_period_reg timeout_period_reg;
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw) || hri_wdt_get_CTRLA_ENABLE_bit(dev->hw)) {
-		return ERR_DENIED;
-	} else {
-		/* calc the period cycles corresponding to timeout period */
-		tmp = (uint64_t)timeout_period * clk_rate;
+    if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw) || hri_wdt_get_CTRLA_ENABLE_bit(dev->hw)) {
+        return ERR_DENIED;
+    } else {
+        /* calc the period cycles corresponding to timeout period */
+        tmp = (uint64_t)timeout_period * clk_rate;
 
-		/* check whether overflow*/
-		if (tmp >> 32) {
-			return ERR_INVALID_ARG;
-		}
+        /* check whether overflow*/
+        if (tmp >> 32) {
+            return ERR_INVALID_ARG;
+        }
 
-		period_cycles = (uint32_t)tmp;
-		/* calc the register value corresponding to period cysles */
-		switch (period_cycles) {
-		case WDT_CLK_8CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_8CYCLE;
-			break;
-		case WDT_CLK_16CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_16CYCLE;
-			break;
-		case WDT_CLK_32CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_32CYCLE;
-			break;
-		case WDT_CLK_64CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_64CYCLE;
-			break;
-		case WDT_CLK_128CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_128CYCLE;
-			break;
-		case WDT_CLK_256CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_256CYCLE;
-			break;
-		case WDT_CLK_512CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_512CYCLE;
-			break;
-		case WDT_CLK_1024CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_1024CYCLE;
-			break;
-		case WDT_CLK_2048CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_2048CYCLE;
-			break;
-		case WDT_CLK_4096CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_4096CYCLE;
-			break;
-		case WDT_CLK_8192CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_8192CYCLE;
-			break;
-		case WDT_CLK_16384CYCLE *WDT_PERIOD_RATE:
-			timeout_period_reg = WDT_PERIOD_16384CYCLE;
-			break;
-		default:
-			return ERR_INVALID_ARG;
-		}
-	}
+        period_cycles = (uint32_t)tmp;
+        /* calc the register value corresponding to period cysles */
+        switch (period_cycles) {
+        case WDT_CLK_8CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_8CYCLE;
+            break;
+        case WDT_CLK_16CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_16CYCLE;
+            break;
+        case WDT_CLK_32CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_32CYCLE;
+            break;
+        case WDT_CLK_64CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_64CYCLE;
+            break;
+        case WDT_CLK_128CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_128CYCLE;
+            break;
+        case WDT_CLK_256CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_256CYCLE;
+            break;
+        case WDT_CLK_512CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_512CYCLE;
+            break;
+        case WDT_CLK_1024CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_1024CYCLE;
+            break;
+        case WDT_CLK_2048CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_2048CYCLE;
+            break;
+        case WDT_CLK_4096CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_4096CYCLE;
+            break;
+        case WDT_CLK_8192CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_8192CYCLE;
+            break;
+        case WDT_CLK_16384CYCLE *WDT_PERIOD_RATE:
+            timeout_period_reg = WDT_PERIOD_16384CYCLE;
+            break;
+        default:
+            return ERR_INVALID_ARG;
+        }
+    }
 
-	hri_wdt_write_CONFIG_PER_bf(dev->hw, (uint8_t)timeout_period_reg);
+    hri_wdt_write_CONFIG_PER_bf(dev->hw, (uint8_t)timeout_period_reg);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -186,60 +186,60 @@ int32_t _wdt_set_timeout_period(struct wdt_dev *const dev, const uint32_t clk_ra
  */
 uint32_t _wdt_get_timeout_period(const struct wdt_dev *const dev, const uint32_t clk_rate)
 {
-	uint32_t period_cycles;
-	uint32_t timeout_period;
-	uint8_t  timeout_period_reg;
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    uint32_t period_cycles;
+    uint32_t timeout_period;
+    uint8_t  timeout_period_reg;
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	/* get the register value */
-	timeout_period_reg = hri_wdt_read_CONFIG_PER_bf(dev->hw);
-	/* convert register value to period cycles(clock cycles) */
-	switch (timeout_period_reg) {
-	case WDT_PERIOD_8CYCLE:
-		period_cycles = WDT_CLK_8CYCLE;
-		break;
-	case WDT_PERIOD_16CYCLE:
-		period_cycles = WDT_CLK_16CYCLE;
-		break;
-	case WDT_PERIOD_32CYCLE:
-		period_cycles = WDT_CLK_32CYCLE;
-		break;
-	case WDT_PERIOD_64CYCLE:
-		period_cycles = WDT_CLK_64CYCLE;
-		break;
-	case WDT_PERIOD_128CYCLE:
-		period_cycles = WDT_CLK_128CYCLE;
-		break;
-	case WDT_PERIOD_256CYCLE:
-		period_cycles = WDT_CLK_256CYCLE;
-		break;
-	case WDT_PERIOD_512CYCLE:
-		period_cycles = WDT_CLK_512CYCLE;
-		break;
-	case WDT_PERIOD_1024CYCLE:
-		period_cycles = WDT_CLK_1024CYCLE;
-		break;
-	case WDT_PERIOD_2048CYCLE:
-		period_cycles = WDT_CLK_2048CYCLE;
-		break;
-	case WDT_PERIOD_4096CYCLE:
-		period_cycles = WDT_CLK_4096CYCLE;
-		break;
-	case WDT_PERIOD_8192CYCLE:
-		period_cycles = WDT_CLK_8192CYCLE;
-		break;
-	case WDT_PERIOD_16384CYCLE:
-		period_cycles = WDT_CLK_16384CYCLE;
-		break;
-	default:
-		return (uint32_t)-1;
-	}
+    /* get the register value */
+    timeout_period_reg = hri_wdt_read_CONFIG_PER_bf(dev->hw);
+    /* convert register value to period cycles(clock cycles) */
+    switch (timeout_period_reg) {
+    case WDT_PERIOD_8CYCLE:
+        period_cycles = WDT_CLK_8CYCLE;
+        break;
+    case WDT_PERIOD_16CYCLE:
+        period_cycles = WDT_CLK_16CYCLE;
+        break;
+    case WDT_PERIOD_32CYCLE:
+        period_cycles = WDT_CLK_32CYCLE;
+        break;
+    case WDT_PERIOD_64CYCLE:
+        period_cycles = WDT_CLK_64CYCLE;
+        break;
+    case WDT_PERIOD_128CYCLE:
+        period_cycles = WDT_CLK_128CYCLE;
+        break;
+    case WDT_PERIOD_256CYCLE:
+        period_cycles = WDT_CLK_256CYCLE;
+        break;
+    case WDT_PERIOD_512CYCLE:
+        period_cycles = WDT_CLK_512CYCLE;
+        break;
+    case WDT_PERIOD_1024CYCLE:
+        period_cycles = WDT_CLK_1024CYCLE;
+        break;
+    case WDT_PERIOD_2048CYCLE:
+        period_cycles = WDT_CLK_2048CYCLE;
+        break;
+    case WDT_PERIOD_4096CYCLE:
+        period_cycles = WDT_CLK_4096CYCLE;
+        break;
+    case WDT_PERIOD_8192CYCLE:
+        period_cycles = WDT_CLK_8192CYCLE;
+        break;
+    case WDT_PERIOD_16384CYCLE:
+        period_cycles = WDT_CLK_16384CYCLE;
+        break;
+    default:
+        return (uint32_t)-1;
+    }
 
-	/* convert period cycles(clock cycles) to timeout period(ms) */
-	timeout_period = period_cycles * 1000 / clk_rate;
+    /* convert period cycles(clock cycles) to timeout period(ms) */
+    timeout_period = period_cycles * 1000 / clk_rate;
 
-	return timeout_period;
+    return timeout_period;
 }
 
 /**
@@ -247,12 +247,12 @@ uint32_t _wdt_get_timeout_period(const struct wdt_dev *const dev, const uint32_t
  */
 int32_t _wdt_enable(struct wdt_dev *const dev)
 {
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	hri_wdt_set_CTRLA_ENABLE_bit(dev->hw);
+    hri_wdt_set_CTRLA_ENABLE_bit(dev->hw);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -260,16 +260,16 @@ int32_t _wdt_enable(struct wdt_dev *const dev)
  */
 int32_t _wdt_disable(struct wdt_dev *const dev)
 {
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw)) {
-		return ERR_DENIED;
-	} else {
-		hri_wdt_clear_CTRLA_ENABLE_bit(dev->hw);
-	}
+    if (hri_wdt_get_CTRLA_ALWAYSON_bit(dev->hw)) {
+        return ERR_DENIED;
+    } else {
+        hri_wdt_clear_CTRLA_ENABLE_bit(dev->hw);
+    }
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -277,10 +277,10 @@ int32_t _wdt_disable(struct wdt_dev *const dev)
  */
 int32_t _wdt_feed(struct wdt_dev *const dev)
 {
-	/* Sanity check arguments */
-	ASSERT(dev && dev->hw);
+    /* Sanity check arguments */
+    ASSERT(dev && dev->hw);
 
-	hri_wdt_write_CLEAR_reg(dev->hw, WDT_CLEAR_CLEAR_KEY);
+    hri_wdt_write_CLEAR_reg(dev->hw, WDT_CLEAR_CLEAR_KEY);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }

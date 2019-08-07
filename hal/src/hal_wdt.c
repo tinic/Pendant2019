@@ -40,5 +40,5 @@
 
 uint32_t wdt_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }

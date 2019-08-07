@@ -50,14 +50,14 @@ extern "C" {
  * \brief List element type
  */
 struct list_element {
-	struct list_element *next;
+    struct list_element *next;
 };
 
 /**
  * \brief List head type
  */
 struct list_descriptor {
-	struct list_element *head;
+    struct list_element *head;
 };
 
 /**
@@ -67,7 +67,7 @@ struct list_descriptor {
  */
 static inline void list_reset(struct list_descriptor *const list)
 {
-	list->head = NULL;
+    list->head = NULL;
 }
 
 /**
@@ -80,7 +80,7 @@ static inline void list_reset(struct list_descriptor *const list)
  */
 static inline void *list_get_head(const struct list_descriptor *const list)
 {
-	return (void *)list->head;
+    return (void *)list->head;
 }
 
 /**
@@ -93,7 +93,7 @@ static inline void *list_get_head(const struct list_descriptor *const list)
  */
 static inline void *list_get_next_element(const void *const element)
 {
-	return element ? ((struct list_element *)element)->next : NULL;
+    return element ? ((struct list_element *)element)->next : NULL;
 }
 
 /**

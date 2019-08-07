@@ -2027,7 +2027,7 @@ public:
                 random.get(0.0f,1.0f));
         }
 
-        calc_outer([=](geom::float4 pos, int32_t index) {
+        calc_outer([=](geom::float4 pos) {
             float dist = pos.dist(ledpos()[which]) * (next - now);
             if (dist > 1.0f) dist = 1.0f;
             return geom::float4::lerp(color, prev_color, dist);

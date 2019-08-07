@@ -45,9 +45,9 @@ extern "C" {
  * \brief i2c master callback names
  */
 enum _i2c_m_async_callback_type {
-	I2C_M_ASYNC_DEVICE_ERROR,
-	I2C_M_ASYNC_DEVICE_TX_COMPLETE,
-	I2C_M_ASYNC_DEVICE_RX_COMPLETE
+    I2C_M_ASYNC_DEVICE_ERROR,
+    I2C_M_ASYNC_DEVICE_TX_COMPLETE,
+    I2C_M_ASYNC_DEVICE_RX_COMPLETE
 };
 
 struct _i2c_m_async_device;
@@ -59,19 +59,19 @@ typedef void (*_i2c_error_cb_t)(struct _i2c_m_async_device *i2c_dev, int32_t err
  * \brief i2c callback pointers structure
  */
 struct _i2c_m_async_callback {
-	_i2c_error_cb_t    error;
-	_i2c_complete_cb_t tx_complete;
-	_i2c_complete_cb_t rx_complete;
+    _i2c_error_cb_t    error;
+    _i2c_complete_cb_t tx_complete;
+    _i2c_complete_cb_t rx_complete;
 };
 
 /**
  * \brief i2c device structure
  */
 struct _i2c_m_async_device {
-	struct _i2c_m_service        service;
-	void *                       hw;
-	struct _i2c_m_async_callback cb;
-	struct _irq_descriptor       irq;
+    struct _i2c_m_service        service;
+    void *                       hw;
+    struct _i2c_m_async_callback cb;
+    struct _irq_descriptor       irq;
 };
 
 /**

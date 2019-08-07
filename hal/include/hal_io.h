@@ -67,8 +67,8 @@ typedef int32_t (*io_read_t)(struct io_descriptor *const io_descr, uint8_t *cons
  * \brief I/O descriptor
  */
 struct io_descriptor {
-	io_write_t write; /*! The write function pointer. */
-	io_read_t  read;  /*! The read function pointer. */
+    io_write_t write; /*! The write function pointer. */
+    io_read_t  read;  /*! The read function pointer. */
 };
 
 /**

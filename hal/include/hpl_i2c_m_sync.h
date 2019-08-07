@@ -72,27 +72,27 @@ extern "C" {
  * \brief i2c master message structure
  */
 struct _i2c_m_msg {
-	uint16_t          addr;
-	volatile uint16_t flags;
-	int32_t           len;
-	uint8_t *         buffer;
+    uint16_t          addr;
+    volatile uint16_t flags;
+    int32_t           len;
+    uint8_t *         buffer;
 };
 
 /**
  * \brief i2c master service
  */
 struct _i2c_m_service {
-	struct _i2c_m_msg msg;
-	uint16_t          mode;
-	uint16_t          trise;
+    struct _i2c_m_msg msg;
+    uint16_t          mode;
+    uint16_t          trise;
 };
 
 /**
  * \brief i2c sync master device structure
  */
 struct _i2c_m_sync_device {
-	struct _i2c_m_service service;
-	void *                hw;
+    struct _i2c_m_service service;
+    void *                hw;
 };
 
 /**

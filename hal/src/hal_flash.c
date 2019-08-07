@@ -51,19 +51,19 @@ static int32_t flash_is_address_aligned(struct flash_descriptor *flash, const ui
  */
 int32_t flash_init(struct flash_descriptor *flash, void *const hw)
 {
-	int32_t rc;
+    int32_t rc;
 
-	ASSERT(flash && hw);
+    ASSERT(flash && hw);
 
-	rc = _flash_init(&flash->dev, hw);
-	if (rc) {
-		return rc;
-	}
+    rc = _flash_init(&flash->dev, hw);
+    if (rc) {
+        return rc;
+    }
 
-	flash->dev.flash_cb.ready_cb = flash_ready;
-	flash->dev.flash_cb.error_cb = flash_error;
+    flash->dev.flash_cb.ready_cb = flash_ready;
+    flash->dev.flash_cb.error_cb = flash_error;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -71,11 +71,11 @@ int32_t flash_init(struct flash_descriptor *flash, void *const hw)
  */
 int32_t flash_deinit(struct flash_descriptor *flash)
 {
-	ASSERT(flash);
+    ASSERT(flash);
 
-	_flash_deinit(&flash->dev);
+    _flash_deinit(&flash->dev);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -83,19 +83,19 @@ int32_t flash_deinit(struct flash_descriptor *flash)
  */
 int32_t flash_read(struct flash_descriptor *flash, uint32_t src_addr, uint8_t *buffer, uint32_t length)
 {
-	ASSERT(flash && buffer && length);
+    ASSERT(flash && buffer && length);
 
-	uint32_t page_size   = _flash_get_page_size(&flash->dev);
-	uint32_t total_pages = _flash_get_total_pages(&flash->dev);
+    uint32_t page_size   = _flash_get_page_size(&flash->dev);
+    uint32_t total_pages = _flash_get_total_pages(&flash->dev);
 
-	/* Check if the address is valid */
-	if ((src_addr > page_size * total_pages) || (src_addr + length > page_size * total_pages)) {
-		return ERR_BAD_ADDRESS;
-	}
+    /* Check if the address is valid */
+    if ((src_addr > page_size * total_pages) || (src_addr + length > page_size * total_pages)) {
+        return ERR_BAD_ADDRESS;
+    }
 
-	_flash_read(&flash->dev, src_addr, buffer, length);
+    _flash_read(&flash->dev, src_addr, buffer, length);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -103,23 +103,23 @@ int32_t flash_read(struct flash_descriptor *flash, uint32_t src_addr, uint8_t *b
  */
 int32_t flash_write(struct flash_descriptor *flash, uint32_t dst_addr, uint8_t *buffer, uint32_t length)
 {
-	ASSERT(flash && buffer && length);
+    ASSERT(flash && buffer && length);
 
-	uint32_t page_size   = _flash_get_page_size(&flash->dev);
-	uint32_t total_pages = _flash_get_total_pages(&flash->dev);
+    uint32_t page_size   = _flash_get_page_size(&flash->dev);
+    uint32_t total_pages = _flash_get_total_pages(&flash->dev);
 
-	/* Check if the address is valid */
-	if ((dst_addr > page_size * total_pages) || (dst_addr + length > page_size * total_pages)) {
-		return ERR_BAD_ADDRESS;
-	}
+    /* Check if the address is valid */
+    if ((dst_addr > page_size * total_pages) || (dst_addr + length > page_size * total_pages)) {
+        return ERR_BAD_ADDRESS;
+    }
 
-	if (_flash_is_locked(&flash->dev, dst_addr)) {
-		return ERR_DENIED;
-	}
+    if (_flash_is_locked(&flash->dev, dst_addr)) {
+        return ERR_DENIED;
+    }
 
-	_flash_write(&flash->dev, dst_addr, buffer, length);
+    _flash_write(&flash->dev, dst_addr, buffer, length);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -127,23 +127,23 @@ int32_t flash_write(struct flash_descriptor *flash, uint32_t dst_addr, uint8_t *
  */
 int32_t flash_append(struct flash_descriptor *flash, uint32_t dst_addr, uint8_t *buffer, uint32_t length)
 {
-	ASSERT(flash && buffer && length);
+    ASSERT(flash && buffer && length);
 
-	uint32_t page_size   = _flash_get_page_size(&flash->dev);
-	uint32_t total_pages = _flash_get_total_pages(&flash->dev);
+    uint32_t page_size   = _flash_get_page_size(&flash->dev);
+    uint32_t total_pages = _flash_get_total_pages(&flash->dev);
 
-	/* Check if the address is valid */
-	if ((dst_addr > page_size * total_pages) || (dst_addr + length > page_size * total_pages)) {
-		return ERR_BAD_ADDRESS;
-	}
+    /* Check if the address is valid */
+    if ((dst_addr > page_size * total_pages) || (dst_addr + length > page_size * total_pages)) {
+        return ERR_BAD_ADDRESS;
+    }
 
-	if (_flash_is_locked(&flash->dev, dst_addr)) {
-		return ERR_DENIED;
-	}
+    if (_flash_is_locked(&flash->dev, dst_addr)) {
+        return ERR_DENIED;
+    }
 
-	_flash_append(&flash->dev, dst_addr, buffer, length);
+    _flash_append(&flash->dev, dst_addr, buffer, length);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -151,23 +151,23 @@ int32_t flash_append(struct flash_descriptor *flash, uint32_t dst_addr, uint8_t 
  */
 int32_t flash_erase(struct flash_descriptor *flash, const uint32_t dst_addr, const uint32_t page_nums)
 {
-	ASSERT(flash && page_nums);
-	uint32_t page_size   = _flash_get_page_size(&flash->dev);
-	uint32_t total_pages = _flash_get_total_pages(&flash->dev);
-	int32_t  rc;
+    ASSERT(flash && page_nums);
+    uint32_t page_size   = _flash_get_page_size(&flash->dev);
+    uint32_t total_pages = _flash_get_total_pages(&flash->dev);
+    int32_t  rc;
 
-	rc = flash_is_address_aligned(flash, dst_addr);
-	if (rc) {
-		return rc;
-	}
+    rc = flash_is_address_aligned(flash, dst_addr);
+    if (rc) {
+        return rc;
+    }
 
-	if ((page_nums > total_pages) || (dst_addr / page_size + page_nums > total_pages)) {
-		return ERR_INVALID_ARG;
-	}
+    if ((page_nums > total_pages) || (dst_addr / page_size + page_nums > total_pages)) {
+        return ERR_INVALID_ARG;
+    }
 
-	_flash_erase(&flash->dev, dst_addr, page_nums);
+    _flash_erase(&flash->dev, dst_addr, page_nums);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -175,24 +175,24 @@ int32_t flash_erase(struct flash_descriptor *flash, const uint32_t dst_addr, con
  */
 int32_t flash_register_callback(struct flash_descriptor *flash, const enum flash_cb_type type, flash_cb_t func)
 {
-	ASSERT(flash);
+    ASSERT(flash);
 
-	switch (type) {
-	case FLASH_CB_READY:
-		flash->callbacks.cb_ready = func;
-		break;
+    switch (type) {
+    case FLASH_CB_READY:
+        flash->callbacks.cb_ready = func;
+        break;
 
-	case FLASH_CB_ERROR:
-		flash->callbacks.cb_error = func;
-		break;
+    case FLASH_CB_ERROR:
+        flash->callbacks.cb_error = func;
+        break;
 
-	default:
-		return ERR_INVALID_ARG;
-	}
+    default:
+        return ERR_INVALID_ARG;
+    }
 
-	_flash_set_irq_state(&flash->dev, (enum _flash_cb_type)type, NULL != func);
+    _flash_set_irq_state(&flash->dev, (enum _flash_cb_type)type, NULL != func);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -200,21 +200,21 @@ int32_t flash_register_callback(struct flash_descriptor *flash, const enum flash
  */
 int32_t flash_lock(struct flash_descriptor *flash, const uint32_t dst_addr, const uint32_t page_nums)
 {
-	ASSERT(flash && page_nums);
-	uint32_t page_size   = _flash_get_page_size(&flash->dev);
-	uint32_t total_pages = _flash_get_total_pages(&flash->dev);
-	int32_t  rc;
+    ASSERT(flash && page_nums);
+    uint32_t page_size   = _flash_get_page_size(&flash->dev);
+    uint32_t total_pages = _flash_get_total_pages(&flash->dev);
+    int32_t  rc;
 
-	rc = flash_is_address_aligned(flash, dst_addr);
-	if (rc) {
-		return rc;
-	}
+    rc = flash_is_address_aligned(flash, dst_addr);
+    if (rc) {
+        return rc;
+    }
 
-	if ((page_nums > total_pages) || (dst_addr / page_size + page_nums > total_pages)) {
-		return ERR_INVALID_ARG;
-	}
+    if ((page_nums > total_pages) || (dst_addr / page_size + page_nums > total_pages)) {
+        return ERR_INVALID_ARG;
+    }
 
-	return _flash_lock(&flash->dev, dst_addr, page_nums);
+    return _flash_lock(&flash->dev, dst_addr, page_nums);
 }
 
 /**
@@ -222,21 +222,21 @@ int32_t flash_lock(struct flash_descriptor *flash, const uint32_t dst_addr, cons
  */
 int32_t flash_unlock(struct flash_descriptor *flash, const uint32_t dst_addr, const uint32_t page_nums)
 {
-	ASSERT(flash && page_nums);
-	uint32_t page_size   = _flash_get_page_size(&flash->dev);
-	uint32_t total_pages = _flash_get_total_pages(&flash->dev);
-	int32_t  rc;
+    ASSERT(flash && page_nums);
+    uint32_t page_size   = _flash_get_page_size(&flash->dev);
+    uint32_t total_pages = _flash_get_total_pages(&flash->dev);
+    int32_t  rc;
 
-	rc = flash_is_address_aligned(flash, dst_addr);
-	if (rc) {
-		return rc;
-	}
+    rc = flash_is_address_aligned(flash, dst_addr);
+    if (rc) {
+        return rc;
+    }
 
-	if ((page_nums > total_pages) || (dst_addr / page_size + page_nums > total_pages)) {
-		return ERR_INVALID_ARG;
-	}
+    if ((page_nums > total_pages) || (dst_addr / page_size + page_nums > total_pages)) {
+        return ERR_INVALID_ARG;
+    }
 
-	return _flash_unlock(&flash->dev, dst_addr, page_nums);
+    return _flash_unlock(&flash->dev, dst_addr, page_nums);
 }
 
 /**
@@ -244,8 +244,8 @@ int32_t flash_unlock(struct flash_descriptor *flash, const uint32_t dst_addr, co
  */
 uint32_t flash_get_page_size(struct flash_descriptor *flash)
 {
-	ASSERT(flash);
-	return _flash_get_page_size(&flash->dev);
+    ASSERT(flash);
+    return _flash_get_page_size(&flash->dev);
 }
 
 /**
@@ -253,8 +253,8 @@ uint32_t flash_get_page_size(struct flash_descriptor *flash)
  */
 uint32_t flash_get_total_pages(struct flash_descriptor *flash)
 {
-	ASSERT(flash);
-	return _flash_get_total_pages(&flash->dev);
+    ASSERT(flash);
+    return _flash_get_total_pages(&flash->dev);
 }
 
 /**
@@ -262,7 +262,7 @@ uint32_t flash_get_total_pages(struct flash_descriptor *flash)
  */
 uint32_t flash_get_version(void)
 {
-	return DRIVER_VERSION;
+    return DRIVER_VERSION;
 }
 
 /**
@@ -276,15 +276,15 @@ uint32_t flash_get_version(void)
  */
 static int32_t flash_is_address_aligned(struct flash_descriptor *flash, const uint32_t flash_addr)
 {
-	ASSERT(flash);
+    ASSERT(flash);
 
-	uint32_t page_size = _flash_get_page_size(&flash->dev);
+    uint32_t page_size = _flash_get_page_size(&flash->dev);
 
-	/* Check if the read address not aligned to the start of a page */
-	if (flash_addr & (page_size - 1)) {
-		return ERR_BAD_ADDRESS;
-	}
-	return ERR_NONE;
+    /* Check if the read address not aligned to the start of a page */
+    if (flash_addr & (page_size - 1)) {
+        return ERR_BAD_ADDRESS;
+    }
+    return ERR_NONE;
 }
 
 /**
@@ -294,10 +294,10 @@ static int32_t flash_is_address_aligned(struct flash_descriptor *flash, const ui
  */
 static void flash_ready(struct _flash_device *device)
 {
-	struct flash_descriptor *const descr = CONTAINER_OF(device, struct flash_descriptor, dev);
-	if (descr->callbacks.cb_ready) {
-		descr->callbacks.cb_ready(descr);
-	}
+    struct flash_descriptor *const descr = CONTAINER_OF(device, struct flash_descriptor, dev);
+    if (descr->callbacks.cb_ready) {
+        descr->callbacks.cb_ready(descr);
+    }
 }
 
 /**
@@ -307,8 +307,8 @@ static void flash_ready(struct _flash_device *device)
  */
 static void flash_error(struct _flash_device *device)
 {
-	struct flash_descriptor *const descr = CONTAINER_OF(device, struct flash_descriptor, dev);
-	if (descr->callbacks.cb_error) {
-		descr->callbacks.cb_error(descr);
-	}
+    struct flash_descriptor *const descr = CONTAINER_OF(device, struct flash_descriptor, dev);
+    if (descr->callbacks.cb_error) {
+        descr->callbacks.cb_error(descr);
+    }
 }

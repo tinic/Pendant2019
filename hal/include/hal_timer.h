@@ -68,22 +68,22 @@ typedef void (*timer_cb_t)(const struct timer_task *const timer_task);
  * \brief Timer task structure
  */
 struct timer_task {
-	struct list_element elem;       /*! List element. */
-	uint32_t            time_label; /*! Absolute timer start time. */
+    struct list_element elem;       /*! List element. */
+    uint32_t            time_label; /*! Absolute timer start time. */
 
-	uint32_t             interval; /*! Number of timer ticks before calling the task. */
-	timer_cb_t           cb;       /*! Function pointer to the task. */
-	enum timer_task_mode mode;     /*! Task mode: one shot or repeat. */
+    uint32_t             interval; /*! Number of timer ticks before calling the task. */
+    timer_cb_t           cb;       /*! Function pointer to the task. */
+    enum timer_task_mode mode;     /*! Task mode: one shot or repeat. */
 };
 
 /**
  * \brief Timer structure
  */
 struct timer_descriptor {
-	struct _timer_device   device;
-	uint32_t               time;
-	struct list_descriptor tasks; /*! Timer tasks list. */
-	volatile uint8_t       flags;
+    struct _timer_device   device;
+    uint32_t               time;
+    struct list_descriptor tasks; /*! Timer tasks list. */
+    volatile uint8_t       flags;
 };
 
 /**

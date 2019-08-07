@@ -66,9 +66,9 @@ typedef uint32_t hal_atomic_t;
  * \endcode
  */
 #define CRITICAL_SECTION_ENTER()                                                                                       \
-	{                                                                                                                  \
-		volatile hal_atomic_t __atomic;                                                                                \
-		atomic_enter_critical(&__atomic);
+    {                                                                                                                  \
+        volatile hal_atomic_t __atomic;                                                                                \
+        atomic_enter_critical(&__atomic);
 
 /**
  * \brief Helper macro for leaving critical sections
@@ -78,8 +78,8 @@ typedef uint32_t hal_atomic_t;
  * sections. No semicolon is required after the macro.
  */
 #define CRITICAL_SECTION_LEAVE()                                                                                       \
-	atomic_leave_critical(&__atomic);                                                                                  \
-	}
+    atomic_leave_critical(&__atomic);                                                                                  \
+    }
 
 /**
  * \brief Disable interrupts, enter critical section

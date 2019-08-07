@@ -53,8 +53,8 @@ extern "C" {
  * \brief IRQ descriptor
  */
 struct _irq_descriptor {
-	void (*handler)(void *parameter);
-	void *parameter;
+    void (*handler)(void *parameter);
+    void *parameter;
 };
 
 /**

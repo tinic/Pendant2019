@@ -49,84 +49,84 @@ extern "C" {
  * @brief      USB HCD callback types
  */
 enum usb_h_cb_type {
-	/** SOF generated */
-	USB_H_CB_SOF,
-	/** Root Hub change detected */
-	USB_H_CB_ROOTHUB_CHANGE,
-	/** Number of USB HCD callback types */
-	USB_H_CB_N
+    /** SOF generated */
+    USB_H_CB_SOF,
+    /** Root Hub change detected */
+    USB_H_CB_ROOTHUB_CHANGE,
+    /** Number of USB HCD callback types */
+    USB_H_CB_N
 };
 
 /**
  * @brief      USB HCD resource strategy
  */
 enum usb_h_rsc_strategy {
-	/** Normal resource allocation, e.g.,
-	 *  1 bank for interrupt endpoint,
-	 *  2 bank for bulk endpoint and normal iso endpoint,
-	 *  3 bank for iso high bandwidth endpoint.
-	 */
-	USB_H_RSC_NORMAL = false,
-	/** Minimal resource allocation, e.g., only 1 bank for bulk endpoints */
-	USB_H_RSC_MINIMAL = true
+    /** Normal resource allocation, e.g.,
+     *  1 bank for interrupt endpoint,
+     *  2 bank for bulk endpoint and normal iso endpoint,
+     *  3 bank for iso high bandwidth endpoint.
+     */
+    USB_H_RSC_NORMAL = false,
+    /** Minimal resource allocation, e.g., only 1 bank for bulk endpoints */
+    USB_H_RSC_MINIMAL = true
 };
 
 /**
  * @brief      USB HCD pipe states
  */
 enum usb_h_pipe_state {
-	/** Pipe is free to allocate */
-	USB_H_PIPE_S_FREE = 0x00,
-	/** Pipe is in configuration */
-	USB_H_PIPE_S_CFG = 0x01,
-	/** Pipe is allocated and idle */
-	USB_H_PIPE_S_IDLE = 0x02,
-	/** Pipe in control setup stage */
-	USB_H_PIPE_S_SETUP = 0x03,
-	/** Pipe in data IN stage */
-	USB_H_PIPE_S_DATI = 0x05,
-	/** Pipe in data OUT stage */
-	USB_H_PIPE_S_DATO = 0x06,
-	/** Pipe in data IN ZLP stage */
-	USB_H_PIPE_S_ZLPI = 0x07,
-	/** Pipe in data OUT ZLP stage */
-	USB_H_PIPE_S_ZLPO = 0x08,
-	/** Pipe in control status IN stage */
-	USB_H_PIPE_S_STATI = 0x09,
-	/** Pipe in control status OUT stage */
-	USB_H_PIPE_S_STATO = 0x0A,
-	/** Taken by physical pipe (in process) */
-	USB_H_PIPE_S_TAKEN = 0x10
+    /** Pipe is free to allocate */
+    USB_H_PIPE_S_FREE = 0x00,
+    /** Pipe is in configuration */
+    USB_H_PIPE_S_CFG = 0x01,
+    /** Pipe is allocated and idle */
+    USB_H_PIPE_S_IDLE = 0x02,
+    /** Pipe in control setup stage */
+    USB_H_PIPE_S_SETUP = 0x03,
+    /** Pipe in data IN stage */
+    USB_H_PIPE_S_DATI = 0x05,
+    /** Pipe in data OUT stage */
+    USB_H_PIPE_S_DATO = 0x06,
+    /** Pipe in data IN ZLP stage */
+    USB_H_PIPE_S_ZLPI = 0x07,
+    /** Pipe in data OUT ZLP stage */
+    USB_H_PIPE_S_ZLPO = 0x08,
+    /** Pipe in control status IN stage */
+    USB_H_PIPE_S_STATI = 0x09,
+    /** Pipe in control status OUT stage */
+    USB_H_PIPE_S_STATO = 0x0A,
+    /** Taken by physical pipe (in process) */
+    USB_H_PIPE_S_TAKEN = 0x10
 };
 
 /**
  * @brief      USB HCD status code
  */
 enum usb_h_status {
-	/** OK */
-	USB_H_OK = ERR_NONE,
-	/** Busy */
-	USB_H_BUSY = ERR_BUSY,
-	/** Denied */
-	USB_H_DENIED = ERR_DENIED,
-	/** Timeout */
-	USB_H_TIMEOUT = ERR_TIMEOUT,
-	/** Abort */
-	USB_H_ABORT = ERR_ABORTED,
-	/** Stall protocol */
-	USB_H_STALL = ERR_PROTOCOL,
-	/** Transfer reset by pipe re-configure */
-	USB_H_RESET = ERR_REQ_FLUSHED,
-	/** Argument error */
-	USB_H_ERR_ARG = ERR_INVALID_ARG,
-	/** Operation not supported */
-	USB_H_ERR_UNSP_OP = ERR_UNSUPPORTED_OP,
-	/** No resource */
-	USB_H_ERR_NO_RSC = ERR_NO_RESOURCE,
-	/** Not initialized */
-	USB_H_ERR_NOT_INIT = ERR_NOT_INITIALIZED,
-	/** Some general error */
-	USB_H_ERR = ERR_IO
+    /** OK */
+    USB_H_OK = ERR_NONE,
+    /** Busy */
+    USB_H_BUSY = ERR_BUSY,
+    /** Denied */
+    USB_H_DENIED = ERR_DENIED,
+    /** Timeout */
+    USB_H_TIMEOUT = ERR_TIMEOUT,
+    /** Abort */
+    USB_H_ABORT = ERR_ABORTED,
+    /** Stall protocol */
+    USB_H_STALL = ERR_PROTOCOL,
+    /** Transfer reset by pipe re-configure */
+    USB_H_RESET = ERR_REQ_FLUSHED,
+    /** Argument error */
+    USB_H_ERR_ARG = ERR_INVALID_ARG,
+    /** Operation not supported */
+    USB_H_ERR_UNSP_OP = ERR_UNSUPPORTED_OP,
+    /** No resource */
+    USB_H_ERR_NO_RSC = ERR_NO_RESOURCE,
+    /** Not initialized */
+    USB_H_ERR_NOT_INIT = ERR_NOT_INITIALIZED,
+    /** Some general error */
+    USB_H_ERR = ERR_IO
 };
 
 /** Forward declare for pipe structure */
@@ -172,19 +172,19 @@ typedef void (*usb_h_pipe_cb_xfer_t)(struct usb_h_pipe *pipe);
  * @brief      USB Host Controller device structure
  */
 struct usb_h_desc {
-	/** Pointer to hardware base */
-	void *hw;
-	/** Pointer to private data for Host Controller driver */
-	void *prvt;
-	/** Interrupt handling descriptor */
-	struct _irq_descriptor irq;
-	/** Callback of SOF */
-	usb_h_cb_sof_t sof_cb;
-	/** Callback of root hub change */
-	usb_h_cb_roothub_t rh_cb;
+    /** Pointer to hardware base */
+    void *hw;
+    /** Pointer to private data for Host Controller driver */
+    void *prvt;
+    /** Interrupt handling descriptor */
+    struct _irq_descriptor irq;
+    /** Callback of SOF */
+    usb_h_cb_sof_t sof_cb;
+    /** Callback of root hub change */
+    usb_h_cb_roothub_t rh_cb;
 #if CONF_USB_H_INST_OWNER_SP
-	/** Extension for the driver owner (upper layer user) */
-	void *owner;
+    /** Extension for the driver owner (upper layer user) */
+    void *owner;
 #endif
 };
 
@@ -227,131 +227,131 @@ struct usb_h_desc {
  * 3. Data packets: 500 ms
  */
 struct usb_h_ctrl_xfer {
-	/** Pointer to transfer data */
-	uint8_t *data;
-	/** Pointer to setup packet */
-	uint8_t *setup;
-	/** Expected transfer size */
-	uint16_t size;
-	/** Transfer count */
-	uint16_t count;
-	/** Timeout for request, -1 if disable timeout */
-	int16_t req_timeout;
-	/** Timeout between packets
-	 *  (500ms for data and 50ms for status), -1 if disabled */
-	int16_t pkt_timeout;
-	/** Packet size during transfer (<= allocate max packet size) */
-	uint16_t pkt_size;
+    /** Pointer to transfer data */
+    uint8_t *data;
+    /** Pointer to setup packet */
+    uint8_t *setup;
+    /** Expected transfer size */
+    uint16_t size;
+    /** Transfer count */
+    uint16_t count;
+    /** Timeout for request, -1 if disable timeout */
+    int16_t req_timeout;
+    /** Timeout between packets
+     *  (500ms for data and 50ms for status), -1 if disabled */
+    int16_t pkt_timeout;
+    /** Packet size during transfer (<= allocate max packet size) */
+    uint16_t pkt_size;
 
-	/** Transfer state */
-	uint8_t state;
-	/** Last transfer status */
-	int8_t status;
+    /** Transfer state */
+    uint8_t state;
+    /** Last transfer status */
+    int8_t status;
 };
 
 /**
  * @brief      Transfer descriptor for bulk / interrupt / iso transfer
  */
 struct usb_h_bulk_int_iso_xfer {
-	/** Expected transfer size */
-	uint32_t size;
-	/** Transfer count */
-	uint32_t count;
-	/** Pointer to transfer data */
-	uint8_t *data;
-	/** Reserved */
-	uint16_t reserved[3];
+    /** Expected transfer size */
+    uint32_t size;
+    /** Transfer count */
+    uint32_t count;
+    /** Pointer to transfer data */
+    uint8_t *data;
+    /** Reserved */
+    uint16_t reserved[3];
 
-	/** Transfer state */
-	uint8_t state;
-	/** Last transfer status */
-	int8_t status;
+    /** Transfer state */
+    uint8_t state;
+    /** Last transfer status */
+    int8_t status;
 };
 
 /**
  * @brief      Transfer descriptor for periodic high bandwidth transfer
  */
 struct usb_h_high_bw_xfer {
-	/** Expected transfer size */
-	uint32_t size;
-	/** Transfer count */
-	uint32_t count;
-	/** Pointer to transfer data */
-	uint8_t *data;
-	/** Micro frame packet sizes */
-	uint16_t pkt_size[3];
+    /** Expected transfer size */
+    uint32_t size;
+    /** Transfer count */
+    uint32_t count;
+    /** Pointer to transfer data */
+    uint8_t *data;
+    /** Micro frame packet sizes */
+    uint16_t pkt_size[3];
 
-	/** Transfer state */
-	uint8_t state;
-	/** Last transfer status */
-	int8_t status;
+    /** Transfer state */
+    uint8_t state;
+    /** Last transfer status */
+    int8_t status;
 };
 
 /**
  * @brief General transfer descriptor
  */
 struct usb_h_xfer {
-	/** Reserved for different transfer */
-	union {
-		uint16_t u16[9];
-		uint8_t  u8[18];
-	} reserved;
-	/** Transfer state */
-	uint8_t state;
-	/** Last transfer status */
-	int8_t status;
+    /** Reserved for different transfer */
+    union {
+        uint16_t u16[9];
+        uint8_t  u8[18];
+    } reserved;
+    /** Transfer state */
+    uint8_t state;
+    /** Last transfer status */
+    int8_t status;
 };
 
 /**
  * @brief      USB Host Controller Driver Pipe structure
  */
 struct usb_h_pipe {
-	/** Pointer to the USB Host Controller Driver */
-	struct usb_h_desc *hcd;
-	/** Pointer to the callback for transfer done */
-	usb_h_pipe_cb_xfer_t done;
+    /** Pointer to the USB Host Controller Driver */
+    struct usb_h_desc *hcd;
+    /** Pointer to the callback for transfer done */
+    usb_h_pipe_cb_xfer_t done;
 #if CONF_USB_H_INST_OWNER_SP
-	/** Pointer to the pipe owner */
-	void *owner;
+    /** Pointer to the pipe owner */
+    void *owner;
 #endif
 
-	/** Endpoint max packet size (bits 10..0) */
-	uint16_t max_pkt_size;
-	/** Device address */
-	uint8_t dev;
-	/** Endpoint address */
-	uint8_t ep;
+    /** Endpoint max packet size (bits 10..0) */
+    uint16_t max_pkt_size;
+    /** Device address */
+    uint8_t dev;
+    /** Endpoint address */
+    uint8_t ep;
 
-	/** Endpoint interval */
-	uint8_t interval;
-	/** Endpoint type: Control, Isochronous, Bulk or Interrupt */
-	uint8_t type;
-	/** Current toggle (driver dependent) */
-	uint8_t toggle;
-	/** Endpoint number of banks (HW dependent) */
-	uint8_t bank : 2;
-	/** Transfer speed (HW dependent) */
-	uint8_t speed : 2;
-	/** High bandwidth periodic out */
-	uint8_t high_bw_out : 1;
-	/** Uses DMA (on transfer) */
-	uint8_t dma : 1;
-	/** Transfer ZLP support */
-	uint8_t zlp : 1;
-	/** Transfer periodic */
-	uint8_t periodic_start : 1;
+    /** Endpoint interval */
+    uint8_t interval;
+    /** Endpoint type: Control, Isochronous, Bulk or Interrupt */
+    uint8_t type;
+    /** Current toggle (driver dependent) */
+    uint8_t toggle;
+    /** Endpoint number of banks (HW dependent) */
+    uint8_t bank : 2;
+    /** Transfer speed (HW dependent) */
+    uint8_t speed : 2;
+    /** High bandwidth periodic out */
+    uint8_t high_bw_out : 1;
+    /** Uses DMA (on transfer) */
+    uint8_t dma : 1;
+    /** Transfer ZLP support */
+    uint8_t zlp : 1;
+    /** Transfer periodic */
+    uint8_t periodic_start : 1;
 
-	/** Transfer status */
-	union {
-		/** General transfer info */
-		struct usb_h_xfer general;
-		/** Control transfer status */
-		struct usb_h_ctrl_xfer ctrl;
-		/** Bulk interrupt iso transfer status */
-		struct usb_h_bulk_int_iso_xfer bii;
-		/** Periodic high bandwidth transfer status */
-		struct usb_h_high_bw_xfer hbw;
-	} x;
+    /** Transfer status */
+    union {
+        /** General transfer info */
+        struct usb_h_xfer general;
+        /** Control transfer status */
+        struct usb_h_ctrl_xfer ctrl;
+        /** Bulk interrupt iso transfer status */
+        struct usb_h_bulk_int_iso_xfer bii;
+        /** Periodic high bandwidth transfer status */
+        struct usb_h_high_bw_xfer hbw;
+    } x;
 };
 
 /**

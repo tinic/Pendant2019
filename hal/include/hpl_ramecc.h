@@ -64,16 +64,16 @@ enum _ramecc_callback_type { RAMECC_DUAL_ERROR_CB, RAMECC_SINGLE_ERROR_CB };
  * \brief RAMECC interrupt callbacks
  */
 struct _ramecc_callbacks {
-	ramecc_cb_t dual_bit_err;
-	ramecc_cb_t single_bit_err;
+    ramecc_cb_t dual_bit_err;
+    ramecc_cb_t single_bit_err;
 };
 
 /**
  * \brief RAMECC device structure
  */
 struct _ramecc_device {
-	struct _ramecc_callbacks ramecc_cb;
-	struct _irq_descriptor   irq;
+    struct _ramecc_callbacks ramecc_cb;
+    struct _irq_descriptor   irq;
 };
 
 /**

@@ -44,17 +44,17 @@
  */
 void _system_time_init(void *const hw)
 {
-	(void)hw;
-	SysTick->LOAD = (0xFFFFFF << SysTick_LOAD_RELOAD_Pos);
-	SysTick->CTRL = (1 << SysTick_CTRL_ENABLE_Pos) | (CONF_SYSTICK_TICKINT << SysTick_CTRL_TICKINT_Pos)
-	                | (1 << SysTick_CTRL_CLKSOURCE_Pos);
+    (void)hw;
+    SysTick->LOAD = (0xFFFFFF << SysTick_LOAD_RELOAD_Pos);
+    SysTick->CTRL = (1 << SysTick_CTRL_ENABLE_Pos) | (CONF_SYSTICK_TICKINT << SysTick_CTRL_TICKINT_Pos)
+                    | (1 << SysTick_CTRL_CLKSOURCE_Pos);
 }
 /**
  * \brief Initialize delay functionality
  */
 void _delay_init(void *const hw)
 {
-	_system_time_init(hw);
+    _system_time_init(hw);
 }
 
 /**
@@ -62,8 +62,8 @@ void _delay_init(void *const hw)
  */
 void _system_time_deinit(void *const hw)
 {
-	(void)hw;
-	SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+    (void)hw;
+    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
 }
 
 /**
@@ -71,8 +71,8 @@ void _system_time_deinit(void *const hw)
  */
 system_time_t _system_time_get(const void *const hw)
 {
-	(void)hw;
-	return (system_time_t)SysTick->VAL;
+    (void)hw;
+    return (system_time_t)SysTick->VAL;
 }
 
 /**
@@ -80,28 +80,28 @@ system_time_t _system_time_get(const void *const hw)
  */
 system_time_t _system_time_get_max_time_value(const void *const hw)
 {
-	(void)hw;
-	return 0xFFFFFF;
+    (void)hw;
+    return 0xFFFFFF;
 }
 /**
  * \brief Delay loop to delay n number of cycles
  */
 void _delay_cycles(void *const hw, uint32_t cycles)
 {
-	(void)hw;
-	uint8_t  n   = cycles >> 24;
-	uint32_t buf = cycles;
+    (void)hw;
+    uint8_t  n   = cycles >> 24;
+    uint32_t buf = cycles;
 
-	while (n--) {
-		SysTick->LOAD = 0xFFFFFF;
-		SysTick->VAL  = 0xFFFFFF;
-		while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
-			;
-		buf -= 0xFFFFFF;
-	}
+    while (n--) {
+        SysTick->LOAD = 0xFFFFFF;
+        SysTick->VAL  = 0xFFFFFF;
+        while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
+            ;
+        buf -= 0xFFFFFF;
+    }
 
-	SysTick->LOAD = buf;
-	SysTick->VAL  = buf;
-	while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
-		;
+    SysTick->LOAD = buf;
+    SysTick->VAL  = buf;
+    while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))
+        ;
 }

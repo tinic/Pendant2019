@@ -40,12 +40,12 @@
 
 /** USB device states. */
 enum usbd_state {
-	USBD_S_OFF     = 0,
-	USBD_S_POWER   = 1,
-	USBD_S_DEFAULT = 2,
-	USBD_S_ADDRESS = 3,
-	USBD_S_CONFIG  = 4,
-	USBD_S_SUSPEND = 0x10
+    USBD_S_OFF     = 0,
+    USBD_S_POWER   = 1,
+    USBD_S_DEFAULT = 2,
+    USBD_S_ADDRESS = 3,
+    USBD_S_CONFIG  = 4,
+    USBD_S_SUSPEND = 0x10
 };
 
 /** USB device core handler type. */
@@ -53,14 +53,14 @@ enum usbdc_handler_type { USBDC_HDL_SOF, USBDC_HDL_REQ, USBDC_HDL_CHANGE };
 
 /** USB device core change notification type. */
 enum usbdc_change_type {
-	/** Change of connection, detected by vbus. */
-	USBDC_C_CONN,
-	/** Change of state, by RESET, SetAddress(), SetConfig(). */
-	USBDC_C_STATE,
-	/** Change of power. */
-	USBDC_C_POWER,
-	/** Change of remote wakeup setting. */
-	USBDC_C_REMOTE_WAKEUP
+    /** Change of connection, detected by vbus. */
+    USBDC_C_CONN,
+    /** Change of state, by RESET, SetAddress(), SetConfig(). */
+    USBDC_C_STATE,
+    /** Change of power. */
+    USBDC_C_POWER,
+    /** Change of remote wakeup setting. */
+    USBDC_C_REMOTE_WAKEUP
 };
 
 /** Power change. */
@@ -68,49 +68,49 @@ enum usbdc_power_type { USBDC_ACTIVE, USBDC_SLEEP, USBDC_SUSPEND };
 
 /** USB device general function control code. */
 enum usbdf_control {
-	/** Enable the function.
-	 *  int32_t ctrl(usbdf, USBDF_ENABLE, struct usbd_descriptors *desc);
-	 *  Parameter holds interface descriptor and
-	 *  configuration descriptor end position.
-	 */
-	USBDF_ENABLE,
-	/** Disable the function.
-	 *  int32_t ctrl(usbdf, USBDF_DISABLE, struct usbd_descriptors *desc);
-	 *  Parameter holds interface descriptor and
-	 *  configuration descriptor end position.
-	 *  Input NULL to force disable the function anyway.
-	 */
-	USBDF_DISABLE,
-	/** Get interface alternate setting.
-	 *  int32_t ctrl(usbdf, USBDF_GET_IFACE, struct usb_req *req);
-	 *  Parameter holds interface number who should return
-	 *  the alternate setting.
-	 */
-	USBDF_GET_IFACE
+    /** Enable the function.
+     *  int32_t ctrl(usbdf, USBDF_ENABLE, struct usbd_descriptors *desc);
+     *  Parameter holds interface descriptor and
+     *  configuration descriptor end position.
+     */
+    USBDF_ENABLE,
+    /** Disable the function.
+     *  int32_t ctrl(usbdf, USBDF_DISABLE, struct usbd_descriptors *desc);
+     *  Parameter holds interface descriptor and
+     *  configuration descriptor end position.
+     *  Input NULL to force disable the function anyway.
+     */
+    USBDF_DISABLE,
+    /** Get interface alternate setting.
+     *  int32_t ctrl(usbdf, USBDF_GET_IFACE, struct usb_req *req);
+     *  Parameter holds interface number who should return
+     *  the alternate setting.
+     */
+    USBDF_GET_IFACE
 };
 
 /** Describes a list of USB descriptors. */
 struct usbd_descriptors {
-	/** Pointer to Start of Descriptors. */
-	uint8_t *sod;
-	/** Pointer to End of Descriptors. */
-	uint8_t *eod;
+    /** Pointer to Start of Descriptors. */
+    uint8_t *sod;
+    /** Pointer to End of Descriptors. */
+    uint8_t *eod;
 };
 
 /** Describes the USB device core descriptors. */
 struct usbdc_descriptors {
-	struct usbd_descriptors *ls_fs;
+    struct usbd_descriptors *ls_fs;
 #if CONF_USBD_HS_SP
-	struct usbd_descriptors *hs;
+    struct usbd_descriptors *hs;
 #endif
 };
 
 /** Describes a list of core handler descriptor. */
 struct usbdc_handler {
-	/** Pointer to next handler. */
-	struct usbdc_handler *next;
-	/** Pointer to handler function. */
-	FUNC_PTR func;
+    /** Pointer to next handler. */
+    struct usbdc_handler *next;
+    /** Pointer to handler function. */
+    FUNC_PTR func;
 };
 
 /** Forward declaration for USB device function driver. */
@@ -130,12 +130,12 @@ typedef int32_t (*usbdf_control_cb_t)(struct usbdf_driver *drv, enum usbdf_contr
 
 /** USB device general function driver descriptor. */
 struct usbdf_driver {
-	/** Pointer to next function.*/
-	struct usbdf_driver *next;
-	/** Pointer to control function.*/
-	usbdf_control_cb_t ctrl;
-	/** Pointer to function driver specific data. */
-	void *func_data;
+    /** Pointer to next function.*/
+    struct usbdf_driver *next;
+    /** Pointer to control function.*/
+    usbdf_control_cb_t ctrl;
+    /** Pointer to function driver specific data. */
+    void *func_data;
 };
 
 /**

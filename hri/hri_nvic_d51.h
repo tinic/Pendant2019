@@ -60,255 +60,255 @@ typedef uint8_t  hri_nvic_ip_reg_t;
 
 static inline void hri_nvic_set_ISER_reg(const void *const hw, uint8_t index, hri_nvic_iser_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISER[index].reg |= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISER[index].reg |= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_iser_reg_t hri_nvic_get_ISER_reg(const void *const hw, uint8_t index, hri_nvic_iser_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Nvic *)hw)->ISER[index].reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Nvic *)hw)->ISER[index].reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_nvic_write_ISER_reg(const void *const hw, uint8_t index, hri_nvic_iser_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISER[index].reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISER[index].reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_clear_ISER_reg(const void *const hw, uint8_t index, hri_nvic_iser_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISER[index].reg &= ~mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISER[index].reg &= ~mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_toggle_ISER_reg(const void *const hw, uint8_t index, hri_nvic_iser_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISER[index].reg ^= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISER[index].reg ^= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_iser_reg_t hri_nvic_read_ISER_reg(const void *const hw, uint8_t index)
 {
-	return ((Nvic *)hw)->ISER[index].reg;
+    return ((Nvic *)hw)->ISER[index].reg;
 }
 
 static inline void hri_nvic_set_ICER_reg(const void *const hw, uint8_t index, hri_nvic_icer_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICER[index].reg |= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICER[index].reg |= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_icer_reg_t hri_nvic_get_ICER_reg(const void *const hw, uint8_t index, hri_nvic_icer_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Nvic *)hw)->ICER[index].reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Nvic *)hw)->ICER[index].reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_nvic_write_ICER_reg(const void *const hw, uint8_t index, hri_nvic_icer_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICER[index].reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICER[index].reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_clear_ICER_reg(const void *const hw, uint8_t index, hri_nvic_icer_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICER[index].reg &= ~mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICER[index].reg &= ~mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_toggle_ICER_reg(const void *const hw, uint8_t index, hri_nvic_icer_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICER[index].reg ^= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICER[index].reg ^= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_icer_reg_t hri_nvic_read_ICER_reg(const void *const hw, uint8_t index)
 {
-	return ((Nvic *)hw)->ICER[index].reg;
+    return ((Nvic *)hw)->ICER[index].reg;
 }
 
 static inline void hri_nvic_set_ISPR_reg(const void *const hw, uint8_t index, hri_nvic_ispr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISPR[index].reg |= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISPR[index].reg |= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_ispr_reg_t hri_nvic_get_ISPR_reg(const void *const hw, uint8_t index, hri_nvic_ispr_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Nvic *)hw)->ISPR[index].reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Nvic *)hw)->ISPR[index].reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_nvic_write_ISPR_reg(const void *const hw, uint8_t index, hri_nvic_ispr_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISPR[index].reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISPR[index].reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_clear_ISPR_reg(const void *const hw, uint8_t index, hri_nvic_ispr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISPR[index].reg &= ~mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISPR[index].reg &= ~mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_toggle_ISPR_reg(const void *const hw, uint8_t index, hri_nvic_ispr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ISPR[index].reg ^= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ISPR[index].reg ^= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_ispr_reg_t hri_nvic_read_ISPR_reg(const void *const hw, uint8_t index)
 {
-	return ((Nvic *)hw)->ISPR[index].reg;
+    return ((Nvic *)hw)->ISPR[index].reg;
 }
 
 static inline void hri_nvic_set_ICPR_reg(const void *const hw, uint8_t index, hri_nvic_icpr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICPR[index].reg |= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICPR[index].reg |= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_icpr_reg_t hri_nvic_get_ICPR_reg(const void *const hw, uint8_t index, hri_nvic_icpr_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Nvic *)hw)->ICPR[index].reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Nvic *)hw)->ICPR[index].reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_nvic_write_ICPR_reg(const void *const hw, uint8_t index, hri_nvic_icpr_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICPR[index].reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICPR[index].reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_clear_ICPR_reg(const void *const hw, uint8_t index, hri_nvic_icpr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICPR[index].reg &= ~mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICPR[index].reg &= ~mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_toggle_ICPR_reg(const void *const hw, uint8_t index, hri_nvic_icpr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->ICPR[index].reg ^= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->ICPR[index].reg ^= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_icpr_reg_t hri_nvic_read_ICPR_reg(const void *const hw, uint8_t index)
 {
-	return ((Nvic *)hw)->ICPR[index].reg;
+    return ((Nvic *)hw)->ICPR[index].reg;
 }
 
 static inline void hri_nvic_set_IABR_reg(const void *const hw, uint8_t index, hri_nvic_iabr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IABR[index].reg |= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IABR[index].reg |= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_iabr_reg_t hri_nvic_get_IABR_reg(const void *const hw, uint8_t index, hri_nvic_iabr_reg_t mask)
 {
-	uint32_t tmp;
-	tmp = ((Nvic *)hw)->IABR[index].reg;
-	tmp &= mask;
-	return tmp;
+    uint32_t tmp;
+    tmp = ((Nvic *)hw)->IABR[index].reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_nvic_write_IABR_reg(const void *const hw, uint8_t index, hri_nvic_iabr_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IABR[index].reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IABR[index].reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_clear_IABR_reg(const void *const hw, uint8_t index, hri_nvic_iabr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IABR[index].reg &= ~mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IABR[index].reg &= ~mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_toggle_IABR_reg(const void *const hw, uint8_t index, hri_nvic_iabr_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IABR[index].reg ^= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IABR[index].reg ^= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_iabr_reg_t hri_nvic_read_IABR_reg(const void *const hw, uint8_t index)
 {
-	return ((Nvic *)hw)->IABR[index].reg;
+    return ((Nvic *)hw)->IABR[index].reg;
 }
 
 static inline void hri_nvic_set_IP_reg(const void *const hw, uint8_t index, hri_nvic_ip_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IP[index].reg |= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IP[index].reg |= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_ip_reg_t hri_nvic_get_IP_reg(const void *const hw, uint8_t index, hri_nvic_ip_reg_t mask)
 {
-	uint8_t tmp;
-	tmp = ((Nvic *)hw)->IP[index].reg;
-	tmp &= mask;
-	return tmp;
+    uint8_t tmp;
+    tmp = ((Nvic *)hw)->IP[index].reg;
+    tmp &= mask;
+    return tmp;
 }
 
 static inline void hri_nvic_write_IP_reg(const void *const hw, uint8_t index, hri_nvic_ip_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IP[index].reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IP[index].reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_clear_IP_reg(const void *const hw, uint8_t index, hri_nvic_ip_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IP[index].reg &= ~mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IP[index].reg &= ~mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline void hri_nvic_toggle_IP_reg(const void *const hw, uint8_t index, hri_nvic_ip_reg_t mask)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->IP[index].reg ^= mask;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->IP[index].reg ^= mask;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 static inline hri_nvic_ip_reg_t hri_nvic_read_IP_reg(const void *const hw, uint8_t index)
 {
-	return ((Nvic *)hw)->IP[index].reg;
+    return ((Nvic *)hw)->IP[index].reg;
 }
 
 static inline void hri_nvic_write_STIR_reg(const void *const hw, hri_nvic_stir_reg_t data)
 {
-	NVIC_CRITICAL_SECTION_ENTER();
-	((Nvic *)hw)->STIR.reg = data;
-	NVIC_CRITICAL_SECTION_LEAVE();
+    NVIC_CRITICAL_SECTION_ENTER();
+    ((Nvic *)hw)->STIR.reg = data;
+    NVIC_CRITICAL_SECTION_LEAVE();
 }
 
 #ifdef __cplusplus

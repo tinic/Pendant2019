@@ -53,7 +53,7 @@
  */
 static inline bool _is_in_isr(void)
 {
-	return (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk);
+    return (SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk);
 }
 
 #endif /* !(defined(__ASSEMBLY__) || defined(__IAR_SYSTEMS_ASM__)) */

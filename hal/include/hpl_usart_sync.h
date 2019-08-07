@@ -53,7 +53,7 @@ extern "C" {
  * \brief USART descriptor device structure
  */
 struct _usart_sync_device {
-	void *hw;
+    void *hw;
 };
 
 /**

@@ -39,6 +39,6 @@
  */
 void _mclk_init(void)
 {
-	void *hw = (void *)MCLK;
-	hri_mclk_write_CPUDIV_reg(hw, MCLK_CPUDIV_DIV(CONF_MCLK_CPUDIV));
+    void *hw = (void *)MCLK;
+    hri_mclk_write_CPUDIV_reg(hw, MCLK_CPUDIV_DIV(CONF_MCLK_CPUDIV));
 }

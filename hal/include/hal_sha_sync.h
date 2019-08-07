@@ -48,7 +48,7 @@ extern "C" {
  */
 
 struct sha_sync_descriptor {
-	struct _sha_sync_device dev; /*!< SHA HPL device descriptor */
+    struct _sha_sync_device dev; /*!< SHA HPL device descriptor */
 };
 
 /**

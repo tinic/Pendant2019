@@ -41,30 +41,30 @@ extern "C" {
  * \brief The register value of PER which SAMD21/SAMR21 supports
  */
 enum wdt_period_reg {
-	/** Corresponding to 8 clock cycles */
-	WDT_PERIOD_8CYCLE,
-	/** Corresponding to 16 clock cycles */
-	WDT_PERIOD_16CYCLE,
-	/** Corresponding to 32 clock cycles */
-	WDT_PERIOD_32CYCLE,
-	/** Corresponding to 64 clock cycles */
-	WDT_PERIOD_64CYCLE,
-	/** Corresponding to 128 clock cycles */
-	WDT_PERIOD_128CYCLE,
-	/** Corresponding to 256 clock cycles */
-	WDT_PERIOD_256CYCLE,
-	/** Corresponding to 512 clock cycles */
-	WDT_PERIOD_512CYCLE,
-	/** Corresponding to 1024 clock cycles */
-	WDT_PERIOD_1024CYCLE,
-	/** Corresponding to 2048 clock cycles */
-	WDT_PERIOD_2048CYCLE,
-	/** Corresponding to 4096 clock cycles */
-	WDT_PERIOD_4096CYCLE,
-	/** Corresponding to 8192 clock cycles */
-	WDT_PERIOD_8192CYCLE,
-	/** Corresponding to 16384 clock cycles */
-	WDT_PERIOD_16384CYCLE
+    /** Corresponding to 8 clock cycles */
+    WDT_PERIOD_8CYCLE,
+    /** Corresponding to 16 clock cycles */
+    WDT_PERIOD_16CYCLE,
+    /** Corresponding to 32 clock cycles */
+    WDT_PERIOD_32CYCLE,
+    /** Corresponding to 64 clock cycles */
+    WDT_PERIOD_64CYCLE,
+    /** Corresponding to 128 clock cycles */
+    WDT_PERIOD_128CYCLE,
+    /** Corresponding to 256 clock cycles */
+    WDT_PERIOD_256CYCLE,
+    /** Corresponding to 512 clock cycles */
+    WDT_PERIOD_512CYCLE,
+    /** Corresponding to 1024 clock cycles */
+    WDT_PERIOD_1024CYCLE,
+    /** Corresponding to 2048 clock cycles */
+    WDT_PERIOD_2048CYCLE,
+    /** Corresponding to 4096 clock cycles */
+    WDT_PERIOD_4096CYCLE,
+    /** Corresponding to 8192 clock cycles */
+    WDT_PERIOD_8192CYCLE,
+    /** Corresponding to 16384 clock cycles */
+    WDT_PERIOD_16384CYCLE
 };
 #ifdef __cplusplus
 }

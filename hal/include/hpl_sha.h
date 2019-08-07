@@ -40,10 +40,10 @@
  * \brief          SHA context structure
  */
 struct sha_context {
-	uint8_t  digest[32]; /*!< intermediate digest state  */
-	uint64_t total_len;  /*!< number of bytes processed  */
-	uint8_t  buffer[64]; /*!< left data, that will be processed with next update */
-	bool     is_variant; /*!< if true, use SHA variant algorithm */
+    uint8_t  digest[32]; /*!< intermediate digest state  */
+    uint64_t total_len;  /*!< number of bytes processed  */
+    uint8_t  buffer[64]; /*!< left data, that will be processed with next update */
+    bool     is_variant; /*!< if true, use SHA variant algorithm */
 };
 
 #endif /* HPL_SHA_H_INCLUDED */

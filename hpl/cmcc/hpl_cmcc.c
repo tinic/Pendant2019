@@ -47,23 +47,23 @@
  */
 int32_t _cmcc_init(void)
 {
-	int32_t return_value;
+    int32_t return_value;
 
-	_cmcc_disable(CMCC);
+    _cmcc_disable(CMCC);
 
-	if (_is_cache_disabled(CMCC)) {
-		hri_cmcc_write_CFG_reg(
-		    CMCC,
-		    (CMCC_CFG_CSIZESW(CONF_CMCC_CACHE_SIZE) | (CONF_CMCC_DATA_CACHE_DISABLE << CMCC_CFG_DCDIS_Pos)
-		     | (CONF_CMCC_INST_CACHE_DISABLE << CMCC_CFG_ICDIS_Pos) | (CONF_CMCC_CLK_GATING_DISABLE)));
+    if (_is_cache_disabled(CMCC)) {
+        hri_cmcc_write_CFG_reg(
+            CMCC,
+            (CMCC_CFG_CSIZESW(CONF_CMCC_CACHE_SIZE) | (CONF_CMCC_DATA_CACHE_DISABLE << CMCC_CFG_DCDIS_Pos)
+             | (CONF_CMCC_INST_CACHE_DISABLE << CMCC_CFG_ICDIS_Pos) | (CONF_CMCC_CLK_GATING_DISABLE)));
 
-		_cmcc_enable(CMCC);
-		return_value = _is_cache_enabled(CMCC) == true ? ERR_NONE : ERR_FAILURE;
-	} else {
-		return_value = ERR_NOT_INITIALIZED;
-	}
+        _cmcc_enable(CMCC);
+        return_value = _is_cache_enabled(CMCC) == true ? ERR_NONE : ERR_FAILURE;
+    } else {
+        return_value = ERR_NOT_INITIALIZED;
+    }
 
-	return return_value;
+    return return_value;
 }
 
 /**
@@ -76,22 +76,22 @@ int32_t _cmcc_init(void)
  */
 int32_t _cmcc_configure(const void *hw, struct _cache_cfg *cache_ctrl)
 {
-	int32_t return_value;
+    int32_t return_value;
 
-	_cmcc_disable(hw);
+    _cmcc_disable(hw);
 
-	if (_is_cache_disabled(hw)) {
-		hri_cmcc_write_CFG_reg(
-		    hw,
-		    (CMCC_CFG_CSIZESW(cache_ctrl->cache_size) | (cache_ctrl->data_cache_disable << CMCC_CFG_DCDIS_Pos)
-		     | (cache_ctrl->inst_cache_disable << CMCC_CFG_ICDIS_Pos) | (cache_ctrl->gclk_gate_disable)));
+    if (_is_cache_disabled(hw)) {
+        hri_cmcc_write_CFG_reg(
+            hw,
+            (CMCC_CFG_CSIZESW(cache_ctrl->cache_size) | (cache_ctrl->data_cache_disable << CMCC_CFG_DCDIS_Pos)
+             | (cache_ctrl->inst_cache_disable << CMCC_CFG_ICDIS_Pos) | (cache_ctrl->gclk_gate_disable)));
 
-		return_value = ERR_NONE;
-	} else {
-		return_value = ERR_NOT_INITIALIZED;
-	}
+        return_value = ERR_NONE;
+    } else {
+        return_value = ERR_NOT_INITIALIZED;
+    }
 
-	return return_value;
+    return return_value;
 }
 
 /**
@@ -104,18 +104,18 @@ int32_t _cmcc_configure(const void *hw, struct _cache_cfg *cache_ctrl)
  */
 int32_t _cmcc_enable_data_cache(const void *hw, bool value)
 {
-	uint32_t tmp;
-	int32_t  ret;
+    uint32_t tmp;
+    int32_t  ret;
 
-	tmp = hri_cmcc_read_CFG_reg(hw);
-	tmp &= ~CMCC_CFG_DCDIS;
-	tmp |= ((!value) << CMCC_CFG_DCDIS_Pos);
+    tmp = hri_cmcc_read_CFG_reg(hw);
+    tmp &= ~CMCC_CFG_DCDIS;
+    tmp |= ((!value) << CMCC_CFG_DCDIS_Pos);
 
-	ret = _cmcc_disable(hw);
-	hri_cmcc_write_CFG_reg(hw, tmp);
-	ret = _cmcc_enable(hw);
+    ret = _cmcc_disable(hw);
+    hri_cmcc_write_CFG_reg(hw, tmp);
+    ret = _cmcc_enable(hw);
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -128,18 +128,18 @@ int32_t _cmcc_enable_data_cache(const void *hw, bool value)
  */
 int32_t _cmcc_enable_inst_cache(const void *hw, bool value)
 {
-	uint32_t tmp;
-	int32_t  ret;
+    uint32_t tmp;
+    int32_t  ret;
 
-	tmp = hri_cmcc_read_CFG_reg(hw);
-	tmp &= ~CMCC_CFG_ICDIS;
-	tmp |= ((!value) << CMCC_CFG_ICDIS_Pos);
+    tmp = hri_cmcc_read_CFG_reg(hw);
+    tmp &= ~CMCC_CFG_ICDIS;
+    tmp |= ((!value) << CMCC_CFG_ICDIS_Pos);
 
-	ret = _cmcc_disable(hw);
-	hri_cmcc_write_CFG_reg(hw, tmp);
-	ret = _cmcc_enable(hw);
+    ret = _cmcc_disable(hw);
+    hri_cmcc_write_CFG_reg(hw, tmp);
+    ret = _cmcc_enable(hw);
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -152,17 +152,17 @@ int32_t _cmcc_enable_inst_cache(const void *hw, bool value)
  */
 int32_t _cmcc_enable_clock_gating(const void *hw, bool value)
 {
-	uint32_t tmp;
-	int32_t  ret;
+    uint32_t tmp;
+    int32_t  ret;
 
-	tmp = hri_cmcc_read_CFG_reg(hw);
-	tmp |= value;
+    tmp = hri_cmcc_read_CFG_reg(hw);
+    tmp |= value;
 
-	ret = _cmcc_disable(hw);
-	hri_cmcc_write_CFG_reg(hw, tmp);
-	ret = _cmcc_enable(hw);
+    ret = _cmcc_disable(hw);
+    hri_cmcc_write_CFG_reg(hw, tmp);
+    ret = _cmcc_enable(hw);
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -170,24 +170,24 @@ int32_t _cmcc_enable_clock_gating(const void *hw, bool value)
  *
  * \param[in] pointer pointing to the starting address of CMCC module
  * \param[in] element from cache size configuration enumerator
- *				0->1K, 1->2K, 2->4K(default)
+ *              0->1K, 1->2K, 2->4K(default)
  *
  * \return status of operation
  */
 int32_t _cmcc_configure_cache_size(const void *hw, enum conf_cache_size size)
 {
-	uint32_t tmp;
-	int32_t  ret;
+    uint32_t tmp;
+    int32_t  ret;
 
-	tmp = hri_cmcc_read_CFG_reg(hw);
-	tmp &= (~CMCC_CFG_CSIZESW_Msk);
-	tmp |= (size << CMCC_CFG_CSIZESW_Pos);
+    tmp = hri_cmcc_read_CFG_reg(hw);
+    tmp &= (~CMCC_CFG_CSIZESW_Msk);
+    tmp |= (size << CMCC_CFG_CSIZESW_Pos);
 
-	ret = _cmcc_disable(hw);
-	hri_cmcc_write_CFG_reg(hw, tmp);
-	ret = _cmcc_enable(hw);
+    ret = _cmcc_disable(hw);
+    hri_cmcc_write_CFG_reg(hw, tmp);
+    ret = _cmcc_enable(hw);
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -200,17 +200,17 @@ int32_t _cmcc_configure_cache_size(const void *hw, enum conf_cache_size size)
  */
 int32_t _cmcc_lock_way(const void *hw, enum way_num_index num)
 {
-	uint32_t tmp;
-	int32_t  ret;
+    uint32_t tmp;
+    int32_t  ret;
 
-	tmp = hri_cmcc_read_LCKWAY_reg(hw);
-	tmp |= CMCC_LCKWAY_LCKWAY(num);
+    tmp = hri_cmcc_read_LCKWAY_reg(hw);
+    tmp |= CMCC_LCKWAY_LCKWAY(num);
 
-	ret = _cmcc_disable(hw);
-	hri_cmcc_write_LCKWAY_reg(hw, tmp);
-	ret = _cmcc_enable(hw);
+    ret = _cmcc_disable(hw);
+    hri_cmcc_write_LCKWAY_reg(hw, tmp);
+    ret = _cmcc_enable(hw);
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -223,17 +223,17 @@ int32_t _cmcc_lock_way(const void *hw, enum way_num_index num)
  */
 int32_t _cmcc_unlock_way(const void *hw, enum way_num_index num)
 {
-	uint32_t tmp;
-	int32_t  ret;
+    uint32_t tmp;
+    int32_t  ret;
 
-	tmp = hri_cmcc_read_LCKWAY_reg(hw);
-	tmp &= (~CMCC_LCKWAY_LCKWAY(num));
+    tmp = hri_cmcc_read_LCKWAY_reg(hw);
+    tmp &= (~CMCC_LCKWAY_LCKWAY(num));
 
-	ret = _cmcc_disable(hw);
-	hri_cmcc_write_LCKWAY_reg(hw, tmp);
-	ret = _cmcc_enable(hw);
+    ret = _cmcc_disable(hw);
+    hri_cmcc_write_LCKWAY_reg(hw, tmp);
+    ret = _cmcc_enable(hw);
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -247,19 +247,19 @@ int32_t _cmcc_unlock_way(const void *hw, enum way_num_index num)
  */
 int32_t _cmcc_invalidate_by_line(const void *hw, uint8_t way_num, uint8_t line_num)
 {
-	int32_t return_value;
+    int32_t return_value;
 
-	if ((way_num < CMCC_WAY_NOS) && (line_num < CMCC_LINE_NOS)) {
-		_cmcc_disable(hw);
-		while (!(_is_cache_disabled(hw)))
-			;
-		hri_cmcc_write_MAINT1_reg(hw, (CMCC_MAINT1_INDEX(line_num) | CMCC_MAINT1_WAY(way_num)));
-		return_value = ERR_NONE;
-	} else {
-		return_value = ERR_INVALID_ARG;
-	}
+    if ((way_num < CMCC_WAY_NOS) && (line_num < CMCC_LINE_NOS)) {
+        _cmcc_disable(hw);
+        while (!(_is_cache_disabled(hw)))
+            ;
+        hri_cmcc_write_MAINT1_reg(hw, (CMCC_MAINT1_INDEX(line_num) | CMCC_MAINT1_WAY(way_num)));
+        return_value = ERR_NONE;
+    } else {
+        return_value = ERR_INVALID_ARG;
+    }
 
-	return return_value;
+    return return_value;
 }
 
 /**
@@ -271,17 +271,17 @@ int32_t _cmcc_invalidate_by_line(const void *hw, uint8_t way_num, uint8_t line_n
  */
 int32_t _cmcc_invalidate_all(const void *hw)
 {
-	int32_t return_value;
+    int32_t return_value;
 
-	_cmcc_disable(hw);
-	if (_is_cache_disabled(hw)) {
-		hri_cmcc_write_MAINT0_reg(hw, CMCC_MAINT0_INVALL);
-		return_value = ERR_NONE;
-	} else {
-		return_value = ERR_FAILURE;
-	}
+    _cmcc_disable(hw);
+    if (_is_cache_disabled(hw)) {
+        hri_cmcc_write_MAINT0_reg(hw, CMCC_MAINT0_INVALL);
+        return_value = ERR_NONE;
+    } else {
+        return_value = ERR_FAILURE;
+    }
 
-	return return_value;
+    return return_value;
 }
 
 /**
@@ -294,9 +294,9 @@ int32_t _cmcc_invalidate_all(const void *hw)
  */
 int32_t _cmcc_configure_monitor(const void *hw, enum conf_cache_monitor monitor_cfg)
 {
-	hri_cmcc_write_MCFG_reg(hw, CMCC_MCFG_MODE(monitor_cfg));
+    hri_cmcc_write_MCFG_reg(hw, CMCC_MCFG_MODE(monitor_cfg));
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -308,9 +308,9 @@ int32_t _cmcc_configure_monitor(const void *hw, enum conf_cache_monitor monitor_
  */
 int32_t _cmcc_enable_monitor(const void *hw)
 {
-	hri_cmcc_write_MEN_reg(hw, CMCC_MEN_MENABLE);
+    hri_cmcc_write_MEN_reg(hw, CMCC_MEN_MENABLE);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -322,9 +322,9 @@ int32_t _cmcc_enable_monitor(const void *hw)
  */
 int32_t _cmcc_disable_monitor(const void *hw)
 {
-	hri_cmcc_write_MEN_reg(hw, (CMCC_MONITOR_DISABLE << CMCC_MEN_MENABLE_Pos));
+    hri_cmcc_write_MEN_reg(hw, (CMCC_MONITOR_DISABLE << CMCC_MEN_MENABLE_Pos));
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -336,9 +336,9 @@ int32_t _cmcc_disable_monitor(const void *hw)
  */
 int32_t _cmcc_reset_monitor(const void *hw)
 {
-	hri_cmcc_write_MCTRL_reg(hw, CMCC_MCTRL_SWRST);
+    hri_cmcc_write_MCTRL_reg(hw, CMCC_MCTRL_SWRST);
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -350,5 +350,5 @@ int32_t _cmcc_reset_monitor(const void *hw)
  */
 uint32_t _cmcc_get_monitor_event_count(const void *hw)
 {
-	return hri_cmcc_read_MSR_reg(hw);
+    return hri_cmcc_read_MSR_reg(hw);
 }

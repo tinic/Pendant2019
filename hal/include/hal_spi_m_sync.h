@@ -51,13 +51,13 @@ extern "C" {
  *
  */
 struct spi_m_sync_descriptor {
-	struct _spi_m_sync_hpl_interface *func;
-	/** SPI device instance */
-	struct _spi_sync_dev dev;
-	/** I/O read/write */
-	struct io_descriptor io;
-	/** Flags for HAL driver */
-	uint16_t flags;
+    struct _spi_m_sync_hpl_interface *func;
+    /** SPI device instance */
+    struct _spi_sync_dev dev;
+    /** I/O read/write */
+    struct io_descriptor io;
+    /** Flags for HAL driver */
+    uint16_t flags;
 };
 
 /** \brief Set the SPI HAL instance function pointer for HPL APIs.

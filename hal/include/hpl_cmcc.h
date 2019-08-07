@@ -74,10 +74,10 @@ enum conf_cache_monitor { CYCLE_COUNT = 0u, IHIT_COUNT, DHIT_COUNT };
  * \brief Cache configuration structure
  */
 struct _cache_cfg {
-	enum conf_cache_size cache_size;
-	bool                 data_cache_disable;
-	bool                 inst_cache_disable;
-	bool                 gclk_gate_disable;
+    enum conf_cache_size cache_size;
+    bool                 data_cache_disable;
+    bool                 inst_cache_disable;
+    bool                 gclk_gate_disable;
 };
 
 /**
@@ -85,7 +85,7 @@ struct _cache_cfg {
  */
 static inline bool _is_cache_enabled(const void *hw)
 {
-	return (hri_cmcc_get_SR_CSTS_bit(hw) == IS_CMCC_ENABLED ? true : false);
+    return (hri_cmcc_get_SR_CSTS_bit(hw) == IS_CMCC_ENABLED ? true : false);
 }
 
 /**
@@ -93,7 +93,7 @@ static inline bool _is_cache_enabled(const void *hw)
  */
 static inline bool _is_cache_disabled(const void *hw)
 {
-	return (hri_cmcc_get_SR_CSTS_bit(hw) == IS_CMCC_DISABLED ? true : false);
+    return (hri_cmcc_get_SR_CSTS_bit(hw) == IS_CMCC_DISABLED ? true : false);
 }
 
 /**
@@ -101,16 +101,16 @@ static inline bool _is_cache_disabled(const void *hw)
  */
 static inline int32_t _cmcc_enable(const void *hw)
 {
-	int32_t return_value;
+    int32_t return_value;
 
-	if (_is_cache_disabled(hw)) {
-		hri_cmcc_write_CTRL_reg(hw, CMCC_CTRL_CEN);
-		return_value = _is_cache_enabled(hw) == true ? ERR_NONE : ERR_FAILURE;
-	} else {
-		return_value = ERR_NO_CHANGE;
-	}
+    if (_is_cache_disabled(hw)) {
+        hri_cmcc_write_CTRL_reg(hw, CMCC_CTRL_CEN);
+        return_value = _is_cache_enabled(hw) == true ? ERR_NONE : ERR_FAILURE;
+    } else {
+        return_value = ERR_NO_CHANGE;
+    }
 
-	return return_value;
+    return return_value;
 }
 
 /**
@@ -118,11 +118,11 @@ static inline int32_t _cmcc_enable(const void *hw)
  */
 static inline int32_t _cmcc_disable(const void *hw)
 {
-	hri_cmcc_write_CTRL_reg(hw, (CMCC_DISABLE << CMCC_CTRL_CEN_Pos));
-	while (!(_is_cache_disabled(hw)))
-		;
+    hri_cmcc_write_CTRL_reg(hw, (CMCC_DISABLE << CMCC_CTRL_CEN_Pos));
+    while (!(_is_cache_disabled(hw)))
+        ;
 
-	return ERR_NONE;
+    return ERR_NONE;
 }
 
 /**
@@ -179,7 +179,7 @@ int32_t _cmcc_enable_clock_gating(const void *hw, bool value);
  *
  * \param[in] pointer pointing to the starting address of CMCC module
  * \param[in] element from cache size configuration enumerator
- *				0->1K, 1->2K, 2->4K(default)
+ *              0->1K, 1->2K, 2->4K(default)
  *
  * \return status of operation
  */

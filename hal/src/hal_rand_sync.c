@@ -38,33 +38,33 @@
 
 int32_t rand_sync_init(struct rand_sync_desc *const desc, void *const hw)
 {
-	ASSERT(desc);
+    ASSERT(desc);
 
-	return _rand_sync_init(&desc->dev, hw);
+    return _rand_sync_init(&desc->dev, hw);
 }
 
 void rand_sync_deinit(struct rand_sync_desc *const desc)
 {
-	ASSERT(desc);
-	_rand_sync_deinit(&desc->dev);
+    ASSERT(desc);
+    _rand_sync_deinit(&desc->dev);
 }
 
 int32_t rand_sync_enable(struct rand_sync_desc *const desc)
 {
-	ASSERT(desc);
-	return _rand_sync_enable(&desc->dev);
+    ASSERT(desc);
+    return _rand_sync_enable(&desc->dev);
 }
 
 void rand_sync_disable(struct rand_sync_desc *const desc)
 {
-	ASSERT(desc);
-	_rand_sync_disable(&desc->dev);
+    ASSERT(desc);
+    _rand_sync_disable(&desc->dev);
 }
 
 int32_t rand_sync_set_seed(struct rand_sync_desc *const desc, const uint32_t seed)
 {
-	ASSERT(desc);
-	return _rand_sync_set_seed(&desc->dev, seed);
+    ASSERT(desc);
+    return _rand_sync_set_seed(&desc->dev, seed);
 }
 
 /**
@@ -72,51 +72,51 @@ int32_t rand_sync_set_seed(struct rand_sync_desc *const desc, const uint32_t see
  */
 static uint32_t _rand_sync_read_data(const struct _rand_sync_dev *dev, const uint8_t n_bits)
 {
-	uint8_t r_bits = (dev->n_bits < 1) ? 32 : dev->n_bits;
-	if (r_bits < n_bits) {
-		uint8_t  i;
-		uint32_t d = 0;
-		/* Join read bits */
-		for (i = 0; i < n_bits; i += r_bits) {
-			d |= (uint32_t)(_rand_sync_read_one(dev) << i);
-		}
-		return d;
-	} else {
-		return _rand_sync_read_one(dev);
-	}
+    uint8_t r_bits = (dev->n_bits < 1) ? 32 : dev->n_bits;
+    if (r_bits < n_bits) {
+        uint8_t  i;
+        uint32_t d = 0;
+        /* Join read bits */
+        for (i = 0; i < n_bits; i += r_bits) {
+            d |= (uint32_t)(_rand_sync_read_one(dev) << i);
+        }
+        return d;
+    } else {
+        return _rand_sync_read_one(dev);
+    }
 }
 
 uint8_t rand_sync_read8(const struct rand_sync_desc *const desc)
 {
-	ASSERT(desc);
-	return (uint8_t)_rand_sync_read_data(&desc->dev, 8);
+    ASSERT(desc);
+    return (uint8_t)_rand_sync_read_data(&desc->dev, 8);
 }
 
 uint32_t rand_sync_read32(const struct rand_sync_desc *const desc)
 {
-	ASSERT(desc);
-	return (uint32_t)_rand_sync_read_data(&desc->dev, 32);
+    ASSERT(desc);
+    return (uint32_t)_rand_sync_read_data(&desc->dev, 32);
 }
 
 void rand_sync_read_buf8(const struct rand_sync_desc *const desc, uint8_t *buf, uint32_t len)
 {
-	uint32_t i;
-	ASSERT(desc && (buf && len));
-	for (i = 0; i < len; i++) {
-		buf[i] = (uint8_t)_rand_sync_read_data(&desc->dev, 8);
-	}
+    uint32_t i;
+    ASSERT(desc && (buf && len));
+    for (i = 0; i < len; i++) {
+        buf[i] = (uint8_t)_rand_sync_read_data(&desc->dev, 8);
+    }
 }
 
 void rand_sync_read_buf32(const struct rand_sync_desc *const desc, uint32_t *buf, uint32_t len)
 {
-	uint32_t i;
-	ASSERT(desc && (buf && len));
-	for (i = 0; i < len; i++) {
-		buf[i] = (uint32_t)_rand_sync_read_data(&desc->dev, 32);
-	}
+    uint32_t i;
+    ASSERT(desc && (buf && len));
+    for (i = 0; i < len; i++) {
+        buf[i] = (uint32_t)_rand_sync_read_data(&desc->dev, 32);
+    }
 }
 
 uint32_t rand_sync_get_version(void)
 {
-	return HAL_RNG_SYNC_VERSION;
+    return HAL_RNG_SYNC_VERSION;
 }

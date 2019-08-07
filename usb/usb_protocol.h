@@ -110,19 +110,19 @@ enum usb_ctrl_stage { USB_SETUP_STAGE = 0, USB_DATA_STAGE = 1, USB_STATUS_STAGE 
  * \brief Standard USB requests (bRequest)
  */
 enum usb_req_code {
-	USB_REQ_GET_STATUS    = 0,
-	USB_REQ_CLEAR_FTR     = 1,
-	USB_REQ_SET_FTR       = 3,
-	USB_REQ_SET_ADDRESS   = 5,
-	USB_REQ_GET_DESC      = 6,
-	USB_REQ_SET_DESC      = 7,
-	USB_REQ_GET_CONFIG    = 8,
-	USB_REQ_SET_CONFIG    = 9,
-	USB_REQ_GET_INTERFACE = 10,
-	USB_REQ_SET_INTERFACE = 11,
-	USB_REQ_SYNCH_FRAME   = 12,
-	USB_REQ_SET_SEL       = 48,
-	USB_REQ_ISOCH_DELAY   = 49
+    USB_REQ_GET_STATUS    = 0,
+    USB_REQ_CLEAR_FTR     = 1,
+    USB_REQ_SET_FTR       = 3,
+    USB_REQ_SET_ADDRESS   = 5,
+    USB_REQ_GET_DESC      = 6,
+    USB_REQ_SET_DESC      = 7,
+    USB_REQ_GET_CONFIG    = 8,
+    USB_REQ_SET_CONFIG    = 9,
+    USB_REQ_GET_INTERFACE = 10,
+    USB_REQ_SET_INTERFACE = 11,
+    USB_REQ_SYNCH_FRAME   = 12,
+    USB_REQ_SET_SEL       = 48,
+    USB_REQ_ISOCH_DELAY   = 49
 };
 
 /**
@@ -130,12 +130,12 @@ enum usb_req_code {
  *
  */
 enum usb_dev_status {
-	USB_DEV_STAT_BUS_POWERED  = 0,
-	USB_DEV_STAT_SELF_POWERED = 1,
-	USB_DEV_STAT_REMOTEWAKEUP = 2,
-	USB_DEV_STAT_U1_ENABLE    = 4,
-	USB_DEV_STAT_U2_ENABLE    = 8,
-	USB_DEV_STAT_LTM_ENABLE   = 16
+    USB_DEV_STAT_BUS_POWERED  = 0,
+    USB_DEV_STAT_SELF_POWERED = 1,
+    USB_DEV_STAT_REMOTEWAKEUP = 2,
+    USB_DEV_STAT_U1_ENABLE    = 4,
+    USB_DEV_STAT_U2_ENABLE    = 8,
+    USB_DEV_STAT_LTM_ENABLE   = 16
 };
 
 /**
@@ -143,9 +143,9 @@ enum usb_dev_status {
  *
  */
 enum usb_interface_status {
-	USB_IFACE_STAT_RESERVED       = 0,
-	USB_IFACE_STAT_REMOTEWAKE_CAP = 1,
-	USB_IFACE_STAT_REMOTEWAKE     = 2
+    USB_IFACE_STAT_RESERVED       = 0,
+    USB_IFACE_STAT_REMOTEWAKE_CAP = 1,
+    USB_IFACE_STAT_REMOTEWAKE     = 2
 };
 
 /**
@@ -160,14 +160,14 @@ enum usb_endpoint_status { USB_EP_STAT_HALT = 1 };
  * \note valid for SetFeature request.
  */
 enum usb_device_feature {
-	USB_DEV_FTR_REMOTE_WAKEUP    = 1, /*!< Remote wakeup enabled */
-	USB_DEV_FTR_TEST_MODE        = 2, /*!< USB test mode */
-	USB_DEV_FTR_OTG_B_HNP_ENABLE = 3,
-	USB_DEV_FTR_OTG_A_HNP_SP     = 4,
-	USB_DEV_FTR_OTG_A_ALT_HNP_SP = 5,
-	USB_DEV_FTR_U1_ENABLE        = 48,
-	USB_DEV_FTR_U2_ENABLE        = 49,
-	USB_DEV_FTR_LTM_ENABLE       = 50
+    USB_DEV_FTR_REMOTE_WAKEUP    = 1, /*!< Remote wakeup enabled */
+    USB_DEV_FTR_TEST_MODE        = 2, /*!< USB test mode */
+    USB_DEV_FTR_OTG_B_HNP_ENABLE = 3,
+    USB_DEV_FTR_OTG_A_HNP_SP     = 4,
+    USB_DEV_FTR_OTG_A_ALT_HNP_SP = 5,
+    USB_DEV_FTR_U1_ENABLE        = 48,
+    USB_DEV_FTR_U2_ENABLE        = 49,
+    USB_DEV_FTR_LTM_ENABLE       = 50
 };
 
 /**
@@ -176,11 +176,11 @@ enum usb_device_feature {
  * \note valid for USB_DEV_FTR_TEST_MODE request.
  */
 enum usb_device_hs_test_mode {
-	USB_DEV_TEST_MODE_J            = 1,
-	USB_DEV_TEST_MODE_K            = 2,
-	USB_DEV_TEST_MODE_SE0_NAK      = 3,
-	USB_DEV_TEST_MODE_PACKET       = 4,
-	USB_DEV_TEST_MODE_FORCE_ENABLE = 5
+    USB_DEV_TEST_MODE_J            = 1,
+    USB_DEV_TEST_MODE_K            = 2,
+    USB_DEV_TEST_MODE_SE0_NAK      = 3,
+    USB_DEV_TEST_MODE_PACKET       = 4,
+    USB_DEV_TEST_MODE_FORCE_ENABLE = 5
 };
 
 /**
@@ -197,41 +197,41 @@ enum usb_endpoint_feature { USB_EP_FTR_HALT = 0 };
  * \brief Standard USB Test Mode Selectors
  */
 enum usb_test_mode_selector {
-	USB_TEST_J            = 0x01,
-	USB_TEST_K            = 0x02,
-	USB_TEST_SE0_NAK      = 0x03,
-	USB_TEST_PACKET       = 0x04,
-	USB_TEST_FORCE_ENABLE = 0x05
+    USB_TEST_J            = 0x01,
+    USB_TEST_K            = 0x02,
+    USB_TEST_SE0_NAK      = 0x03,
+    USB_TEST_PACKET       = 0x04,
+    USB_TEST_FORCE_ENABLE = 0x05
 };
 
 /**
  * \brief Standard USB descriptor types
  */
 enum usb_descriptor_type {
-	USB_DT_DEVICE             = 1,
-	USB_DT_CONFIG             = 2,
-	USB_DT_STRING             = 3,
-	USB_DT_INTERFACE          = 4,
-	USB_DT_ENDPOINT           = 5,
-	USB_DT_DEVICE_QUALIFIER   = 6,
-	USB_DT_OTHER_SPEED_CONFIG = 7,
-	USB_DT_INTERFACE_POWER    = 8,
-	USB_DT_OTG                = 9,
-	USB_DT_DEBUG              = 10,
-	USB_DT_IAD                = 11,
-	USB_DT_BOS                = 15,
-	USB_DT_DEV_CAP            = 16,
-	USB_DT_SS_EP_COMPANION    = 48
+    USB_DT_DEVICE             = 1,
+    USB_DT_CONFIG             = 2,
+    USB_DT_STRING             = 3,
+    USB_DT_INTERFACE          = 4,
+    USB_DT_ENDPOINT           = 5,
+    USB_DT_DEVICE_QUALIFIER   = 6,
+    USB_DT_OTHER_SPEED_CONFIG = 7,
+    USB_DT_INTERFACE_POWER    = 8,
+    USB_DT_OTG                = 9,
+    USB_DT_DEBUG              = 10,
+    USB_DT_IAD                = 11,
+    USB_DT_BOS                = 15,
+    USB_DT_DEV_CAP            = 16,
+    USB_DT_SS_EP_COMPANION    = 48
 };
 
 /**
  * \brief Capability types
  */
 enum usb_capability_type {
-	USB_CAPT_WIRELESS     = 1,
-	USB_CAPT_2_0_EXT      = 2,
-	USB_CAPT_SUPER_SPEED  = 3,
-	USB_CAPT_CONTAINER_ID = 4
+    USB_CAPT_WIRELESS     = 1,
+    USB_CAPT_2_0_EXT      = 2,
+    USB_CAPT_SUPER_SPEED  = 3,
+    USB_CAPT_CONTAINER_ID = 4
 };
 
 /**
@@ -248,25 +248,25 @@ enum usb_ss_cap_attr { USB_SS_LTM_SP };
  * \brief USB Speed Supports
  */
 enum usb_speed_sp {
-	USB_SPEED_LOW_SP   = 1,
-	USB_SPEED_LS_SP    = 1,
-	USB_SPEED_FULL_SP  = 2,
-	USB_SPEED_FS_SP    = 2,
-	USB_SPEED_HIGH_SP  = 4,
-	USB_SPEED_HS_SP    = 4,
-	USB_SPEED_SUPER_SP = 8,
-	USB_SPEED_SS_SP    = 8
+    USB_SPEED_LOW_SP   = 1,
+    USB_SPEED_LS_SP    = 1,
+    USB_SPEED_FULL_SP  = 2,
+    USB_SPEED_FS_SP    = 2,
+    USB_SPEED_HIGH_SP  = 4,
+    USB_SPEED_HS_SP    = 4,
+    USB_SPEED_SUPER_SP = 8,
+    USB_SPEED_SS_SP    = 8
 };
 
 /**
  * \brief Standard USB endpoint transfer types
  */
 enum usb_ep_type {
-	USB_EP_TYPE_CONTROL     = 0x00,
-	USB_EP_TYPE_ISOCHRONOUS = 0x01,
-	USB_EP_TYPE_BULK        = 0x02,
-	USB_EP_TYPE_INTERRUPT   = 0x03,
-	USB_EP_TYPE_MASK        = 0x03u
+    USB_EP_TYPE_CONTROL     = 0x00,
+    USB_EP_TYPE_ISOCHRONOUS = 0x01,
+    USB_EP_TYPE_BULK        = 0x02,
+    USB_EP_TYPE_INTERRUPT   = 0x03,
+    USB_EP_TYPE_MASK        = 0x03u
 };
 
 /**
@@ -278,28 +278,28 @@ enum usb_ep_int_type { USB_EP_INT_T_PERIODIC = 0x00u, USB_EP_INT_T_NOTIFICATION 
  * \brief Standard USB endpoint synchronization types
  */
 enum usb_ep_sync_type {
-	USB_EP_SYNC_T_NO       = 0x00u,
-	USB_EP_SYNC_T_ASYNC    = 0x02u,
-	USB_EP_SYNC_T_ADAPTIVE = 0x02u,
-	USB_EP_SYNC_T_SYNC     = 0x03u,
-	USB_EP_SYNC_T_MASK     = 0x03u
+    USB_EP_SYNC_T_NO       = 0x00u,
+    USB_EP_SYNC_T_ASYNC    = 0x02u,
+    USB_EP_SYNC_T_ADAPTIVE = 0x02u,
+    USB_EP_SYNC_T_SYNC     = 0x03u,
+    USB_EP_SYNC_T_MASK     = 0x03u
 };
 
 /**
  * \brief Standard USB endpoint usage types
  */
 enum usb_ep_usage_type {
-	USB_EP_USAGE_T_DATA          = 0x00u,
-	USB_EP_USAGE_T_FEEDBACK      = 0x01u,
-	USB_EP_USAGE_T_FEEDBACK_DATA = 0x02u,
-	USB_EP_USAGE_T_MASK          = 0x03u
+    USB_EP_USAGE_T_DATA          = 0x00u,
+    USB_EP_USAGE_T_FEEDBACK      = 0x01u,
+    USB_EP_USAGE_T_FEEDBACK_DATA = 0x02u,
+    USB_EP_USAGE_T_MASK          = 0x03u
 };
 
 /**
  * \brief Standard USB language IDs for string descriptors
  */
 enum usb_langid {
-	USB_LANGID_EN_US = 0x0409 /*!< English (United States) */
+    USB_LANGID_EN_US = 0x0409 /*!< English (United States) */
 };
 
 /**
@@ -334,79 +334,79 @@ COMPILER_PACK_SET(1)
  * The data payload of SETUP packets always follows this structure.
  */
 typedef struct usb_req {
-	uint8_t bmRequestType;
-	uint8_t bRequest;
-	union {
-		le16_t wValue;
-		struct {
-			uint8_t l;
-			uint8_t h;
-		} wValueBytes;
-	};
-	union {
-		le16_t wIndex;
-		struct {
-			uint8_t l;
-			uint8_t h;
-		} wIndexBytes;
-	};
-	union {
-		le16_t wLength;
-		struct {
-			uint8_t l;
-			uint8_t h;
-		} wLengthBytes;
-	};
+    uint8_t bmRequestType;
+    uint8_t bRequest;
+    union {
+        le16_t wValue;
+        struct {
+            uint8_t l;
+            uint8_t h;
+        } wValueBytes;
+    };
+    union {
+        le16_t wIndex;
+        struct {
+            uint8_t l;
+            uint8_t h;
+        } wIndexBytes;
+    };
+    union {
+        le16_t wLength;
+        struct {
+            uint8_t l;
+            uint8_t h;
+        } wLengthBytes;
+    };
 } usb_req_t;
 
 /**
  * \brief Standard USB device descriptor structure
  */
 typedef struct usb_dev_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	le16_t  bcdUSB;
-	uint8_t bDeviceClass;
-	uint8_t bDeviceSubClass;
-	uint8_t bDeviceProtocol;
-	uint8_t bMaxPacketSize0;
-	le16_t  idVendor;
-	le16_t  idProduct;
-	le16_t  bcdDevice;
-	uint8_t iManufacturer;
-	uint8_t iProduct;
-	uint8_t iSerialNumber;
-	uint8_t bNumConfigurations;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    le16_t  bcdUSB;
+    uint8_t bDeviceClass;
+    uint8_t bDeviceSubClass;
+    uint8_t bDeviceProtocol;
+    uint8_t bMaxPacketSize0;
+    le16_t  idVendor;
+    le16_t  idProduct;
+    le16_t  bcdDevice;
+    uint8_t iManufacturer;
+    uint8_t iProduct;
+    uint8_t iSerialNumber;
+    uint8_t bNumConfigurations;
 } usb_dev_desc_t;
 
 /**
  * \brief Binary device Object Store (BOS) descriptor structure
  */
 typedef struct usb_bos_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	le16_t  wTotalLength;
-	uint8_t bNumDeviceCaps;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    le16_t  wTotalLength;
+    uint8_t bNumDeviceCaps;
 } usb_bos_desc_t;
 
 /**
  * \brief Device Capability Descriptor structure
  */
 typedef struct usb_cap_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	uint8_t bDevCapabilityType;
-	uint8_t Vars[1];
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDevCapabilityType;
+    uint8_t Vars[1];
 } usb_cap_desc_t;
 
 /**
  * \brief USB 2.0 Extension Descriptor structure
  */
 typedef struct usb_2_0_ext {
-	uint8_t  bLength;
-	uint8_t  bDescriptorType;
-	uint8_t  bDevCapabilityType;
-	uint32_t bmAttributes;
+    uint8_t  bLength;
+    uint8_t  bDescriptorType;
+    uint8_t  bDevCapabilityType;
+    uint32_t bmAttributes;
 } usb_2_0_ext_t;
 
 /**
@@ -418,25 +418,25 @@ typedef struct usb_2_0_ext usb_lpm_cap_desc_t;
  * \brief SuperSpeed USB Device Capability structure
  */
 typedef struct usb_ss_cap_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	uint8_t bDevCapabilityType;
-	uint8_t bmAttributes;
-	le16_t  wSpeedsSupported;
-	uint8_t bFunctionalitySupport;
-	uint8_t bU1DevExitLat;
-	uint8_t bU2DevExitLat;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDevCapabilityType;
+    uint8_t bmAttributes;
+    le16_t  wSpeedsSupported;
+    uint8_t bFunctionalitySupport;
+    uint8_t bU1DevExitLat;
+    uint8_t bU2DevExitLat;
 } usb_ss_cap_desc_t;
 
 /**
  * \brief USB Container ID Descriptor structure
  */
 typedef struct usb_container_id_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	uint8_t bDevCapabilityType;
-	uint8_t bReserved;
-	uint8_t ContainerID[16];
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bDevCapabilityType;
+    uint8_t bReserved;
+    uint8_t ContainerID[16];
 } usb_container_id_desc_t;
 
 /**
@@ -448,29 +448,29 @@ typedef struct usb_container_id_desc {
  * the device was operating at full speed.)
  */
 typedef struct usb_dev_qual_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	le16_t  bcdUSB;
-	uint8_t bDeviceClass;
-	uint8_t bDeviceSubClass;
-	uint8_t bDeviceProtocol;
-	uint8_t bMaxPacketSize0;
-	uint8_t bNumConfigurations;
-	uint8_t bReserved;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    le16_t  bcdUSB;
+    uint8_t bDeviceClass;
+    uint8_t bDeviceSubClass;
+    uint8_t bDeviceProtocol;
+    uint8_t bMaxPacketSize0;
+    uint8_t bNumConfigurations;
+    uint8_t bReserved;
 } usb_dev_qual_desc_t;
 
 /**
  * \brief Standard USB configuration descriptor structure
  */
 typedef struct usb_config_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	le16_t  wTotalLength;
-	uint8_t bNumInterfaces;
-	uint8_t bConfigurationValue;
-	uint8_t iConfiguration;
-	uint8_t bmAttributes;
-	uint8_t bMaxPower;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    le16_t  wTotalLength;
+    uint8_t bNumInterfaces;
+    uint8_t bConfigurationValue;
+    uint8_t iConfiguration;
+    uint8_t bmAttributes;
+    uint8_t bMaxPower;
 } usb_config_desc_t;
 
 #define USB_CONFIG_ATTR_MUST_SET (1 << 7)      /*!< Must always be set */
@@ -484,75 +484,75 @@ typedef struct usb_config_desc {
  * \brief Standard USB association descriptor structure
  */
 typedef struct usb_iad_desc {
-	uint8_t bLength;           /*!< Size of this descriptor in bytes */
-	uint8_t bDescriptorType;   /*!< Interface descriptor type */
-	uint8_t bFirstInterface;   /*!< Number of interface */
-	uint8_t bInterfaceCount;   /*!< value to select alternate setting */
-	uint8_t bFunctionClass;    /*!< Class code assigned by the USB */
-	uint8_t bFunctionSubClass; /*!< Sub-class code assigned by the USB */
-	uint8_t bFunctionProtocol; /*!< Protocol code assigned by the USB */
-	uint8_t iFunction;         /*!< Index of string descriptor */
+    uint8_t bLength;           /*!< Size of this descriptor in bytes */
+    uint8_t bDescriptorType;   /*!< Interface descriptor type */
+    uint8_t bFirstInterface;   /*!< Number of interface */
+    uint8_t bInterfaceCount;   /*!< value to select alternate setting */
+    uint8_t bFunctionClass;    /*!< Class code assigned by the USB */
+    uint8_t bFunctionSubClass; /*!< Sub-class code assigned by the USB */
+    uint8_t bFunctionProtocol; /*!< Protocol code assigned by the USB */
+    uint8_t iFunction;         /*!< Index of string descriptor */
 } usb_iad_desc_t;
 
 /**
  * \brief Standard USB interface descriptor structure
  */
 typedef struct usb_iface_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	uint8_t bInterfaceNumber;
-	uint8_t bAlternateSetting;
-	uint8_t bNumEndpoints;
-	uint8_t bInterfaceClass;
-	uint8_t bInterfaceSubClass;
-	uint8_t bInterfaceProtocol;
-	uint8_t iInterface;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bInterfaceNumber;
+    uint8_t bAlternateSetting;
+    uint8_t bNumEndpoints;
+    uint8_t bInterfaceClass;
+    uint8_t bInterfaceSubClass;
+    uint8_t bInterfaceProtocol;
+    uint8_t iInterface;
 } usb_iface_desc_t;
 
 /**
  * \brief Standard USB endpoint descriptor structure
  */
 typedef struct usb_ep_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	uint8_t bEndpointAddress;
-	uint8_t bmAttributes;
-	le16_t  wMaxPacketSize;
-	uint8_t bInterval;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bEndpointAddress;
+    uint8_t bmAttributes;
+    le16_t  wMaxPacketSize;
+    uint8_t bInterval;
 } usb_ep_desc_t;
 
 /**
  * \brief SuperSpeed Endpoint Companion descriptor structure
  */
 typedef struct usb_ss_ep_comp_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
-	uint8_t bMaxBurst;
-	uint8_t bmAttributes;
-	le16_t  wBytesPerInterval;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
+    uint8_t bMaxBurst;
+    uint8_t bmAttributes;
+    le16_t  wBytesPerInterval;
 } usb_ss_ep_comp_desc_t;
 
 /**
  * \brief LPM Token bmAttributes structure
  */
 typedef struct usb_lpm_attributes {
-	uint8_t bLinkState : 4;
-	uint8_t HIRD : 4;
-	uint8_t bRemoteWake : 1;
-	uint8_t Reserved : 2;
+    uint8_t bLinkState : 4;
+    uint8_t HIRD : 4;
+    uint8_t bRemoteWake : 1;
+    uint8_t Reserved : 2;
 } usb_lpm_attributes_t;
 
 /**
  * \brief A standard USB string descriptor structure
  */
 typedef struct usb_str_desc {
-	uint8_t bLength;
-	uint8_t bDescriptorType;
+    uint8_t bLength;
+    uint8_t bDescriptorType;
 } usb_str_desc_t;
 
 typedef struct usb_str_langid_desc {
-	usb_str_desc_t desc;
-	le16_t         string[1];
+    usb_str_desc_t desc;
+    le16_t         string[1];
 } usb_str_langid_desc_t;
 
 COMPILER_PACK_RESET()
@@ -573,44 +573,44 @@ COMPILER_PACK_RESET()
                            iProduct,                                                                                   \
                            iSerialNumber,                                                                              \
                            bNumConfigurations)                                                                         \
-	18,       /* bLength */                                                                                            \
-	    0x01, /* bDescriptorType: DEVICE */                                                                            \
-	    LE_BYTE0(bcdUSB), LE_BYTE1(bcdUSB), bDeviceClass, bDeviceSubClass, bDeviceProtocol, bMaxPacketSize0,           \
-	    LE_BYTE0(idVendor), LE_BYTE1(idVendor), LE_BYTE0(idProduct), LE_BYTE1(idProduct), LE_BYTE0(bcdDevice),         \
-	    LE_BYTE1(bcdDevice), iManufacturer, iProduct, iSerialNumber, bNumConfigurations
+    18,       /* bLength */                                                                                            \
+        0x01, /* bDescriptorType: DEVICE */                                                                            \
+        LE_BYTE0(bcdUSB), LE_BYTE1(bcdUSB), bDeviceClass, bDeviceSubClass, bDeviceProtocol, bMaxPacketSize0,           \
+        LE_BYTE0(idVendor), LE_BYTE1(idVendor), LE_BYTE0(idProduct), LE_BYTE1(idProduct), LE_BYTE0(bcdDevice),         \
+        LE_BYTE1(bcdDevice), iManufacturer, iProduct, iSerialNumber, bNumConfigurations
 
 #define USB_DEV_QUAL_DESC_BYTES(                                                                                       \
     bcdUSB, bDeviceClass, bDeviceSubClass, bDeviceProtocol, bMaxPacketSize0, bNumConfigurations)                       \
-	10,                          /* bLength */                                                                         \
-	    USB_DT_DEVICE_QUALIFIER, /* bDescriptorType: DEVICE_QUALIFIER */                                               \
-	    LE_BYTE0(bcdUSB), LE_BYTE1(bcdUSB), bDeviceClass, bDeviceSubClass, bDeviceProtocol, bMaxPacketSize0,           \
-	    bNumConfigurations, 0
+    10,                          /* bLength */                                                                         \
+        USB_DT_DEVICE_QUALIFIER, /* bDescriptorType: DEVICE_QUALIFIER */                                               \
+        LE_BYTE0(bcdUSB), LE_BYTE1(bcdUSB), bDeviceClass, bDeviceSubClass, bDeviceProtocol, bMaxPacketSize0,           \
+        bNumConfigurations, 0
 
 #define USB_DEV_DESC_LEN 18
 
 /** Build bytes for USB configuration descriptor. */
 #define USB_CONFIG_DESC_BYTES(                                                                                         \
     wTotalLength, bNumInterfaces, bConfigurationValue, iConfiguration, bmAttributes, bMaxPower)                        \
-	9,        /* bLength */                                                                                            \
-	    0x02, /* bDescriptorType: CONFIGURATION */                                                                     \
-	    LE_BYTE0(wTotalLength), LE_BYTE1(wTotalLength), bNumInterfaces, bConfigurationValue, iConfiguration,           \
-	    bmAttributes, bMaxPower
+    9,        /* bLength */                                                                                            \
+        0x02, /* bDescriptorType: CONFIGURATION */                                                                     \
+        LE_BYTE0(wTotalLength), LE_BYTE1(wTotalLength), bNumInterfaces, bConfigurationValue, iConfiguration,           \
+        bmAttributes, bMaxPower
 
 #define USB_OTH_SPD_CFG_DESC_BYTES(                                                                                    \
     wTotalLength, bNumInterfaces, bConfigurationValue, iConfiguration, bmAttributes, bMaxPower)                        \
-	9,                             /* bLength */                                                                       \
-	    USB_DT_OTHER_SPEED_CONFIG, /* bDescriptorType: OTH_SPD_CONFIGURATION */                                        \
-	    LE_BYTE0(wTotalLength), LE_BYTE1(wTotalLength), bNumInterfaces, bConfigurationValue, iConfiguration,           \
-	    bmAttributes, bMaxPower
+    9,                             /* bLength */                                                                       \
+        USB_DT_OTHER_SPEED_CONFIG, /* bDescriptorType: OTH_SPD_CONFIGURATION */                                        \
+        LE_BYTE0(wTotalLength), LE_BYTE1(wTotalLength), bNumInterfaces, bConfigurationValue, iConfiguration,           \
+        bmAttributes, bMaxPower
 
 #define USB_CONFIG_DESC_LEN 9
 
 /** Build bytes for USB IAD descriptor. */
 #define USB_IAD_DESC_BYTES(                                                                                            \
     bFirstInterface, bInterfaceCount, bFunctionClass, bFunctionSubClass, bFunctionProtocol, iFunction)                 \
-	8,              /* bLength */                                                                                      \
-	    USB_DT_IAD, /* bDescriptorType */                                                                              \
-	    bFirstInterface, bInterfaceCount, bFunctionClass, bFunctionSubClass, bFunctionProtocol, iFunction
+    8,              /* bLength */                                                                                      \
+        USB_DT_IAD, /* bDescriptorType */                                                                              \
+        bFirstInterface, bInterfaceCount, bFunctionClass, bFunctionSubClass, bFunctionProtocol, iFunction
 
 #define USB_IAD_DESC_LEN 8
 
@@ -622,18 +622,18 @@ COMPILER_PACK_RESET()
                              bInterfaceSubClass,                                                                       \
                              bInterfaceProtocol,                                                                       \
                              iInterface)                                                                               \
-	9,        /* bLength */                                                                                            \
-	    0x04, /* bDescriptorType: INTERFACE */                                                                         \
-	    bInterfaceNumber, bAlternateSetting, bNumEndpoints, bInterfaceClass, bInterfaceSubClass, bInterfaceProtocol,   \
-	    iInterface
+    9,        /* bLength */                                                                                            \
+        0x04, /* bDescriptorType: INTERFACE */                                                                         \
+        bInterfaceNumber, bAlternateSetting, bNumEndpoints, bInterfaceClass, bInterfaceSubClass, bInterfaceProtocol,   \
+        iInterface
 
 #define USB_IFACE_DESC_LEN 9
 
 /** Build bytes for USB endpoint descriptor. */
 #define USB_ENDP_DESC_BYTES(bEndpointAddress, bmAttributes, wMaxPacketSize, bInterval)                                 \
-	7,        /* bLength */                                                                                            \
-	    0x05, /* bDescriptorType: ENDPOINT */                                                                          \
-	    bEndpointAddress, bmAttributes, LE_BYTE0(wMaxPacketSize), LE_BYTE1(wMaxPacketSize), bInterval
+    7,        /* bLength */                                                                                            \
+        0x05, /* bDescriptorType: ENDPOINT */                                                                          \
+        bEndpointAddress, bmAttributes, LE_BYTE0(wMaxPacketSize), LE_BYTE1(wMaxPacketSize), bInterval
 
 #define USB_ENDP_DESC_LEN 7
 
@@ -645,7 +645,7 @@ COMPILER_PACK_RESET()
  */
 static inline uint16_t usb_get_u16(const uint8_t *ptr)
 {
-	return (ptr[0] + (ptr[1] << 8));
+    return (ptr[0] + (ptr[1] << 8));
 }
 
 /** \brief Get a double word (calculate by little endian 32-bit data)
@@ -654,7 +654,7 @@ static inline uint16_t usb_get_u16(const uint8_t *ptr)
  */
 static inline uint32_t usb_get_u32(const uint8_t *ptr)
 {
-	return (ptr[0] + (ptr[1] << 8) + (ptr[2] << 16) + (ptr[3] << 24));
+    return (ptr[0] + (ptr[1] << 8) + (ptr[2] << 16) + (ptr[3] << 24));
 }
 
 /** \brief Get descriptor length
@@ -663,7 +663,7 @@ static inline uint32_t usb_get_u32(const uint8_t *ptr)
  */
 static inline uint8_t usb_desc_len(const uint8_t *desc)
 {
-	return desc[0];
+    return desc[0];
 }
 
 /** \brief Get descriptor type
@@ -672,7 +672,7 @@ static inline uint8_t usb_desc_len(const uint8_t *desc)
  */
 static inline uint8_t usb_desc_type(const uint8_t *desc)
 {
-	return desc[1];
+    return desc[1];
 }
 
 /** \brief Get next USB descriptor
@@ -681,7 +681,7 @@ static inline uint8_t usb_desc_type(const uint8_t *desc)
  */
 static inline uint8_t *usb_desc_next(uint8_t *desc)
 {
-	return (desc + usb_desc_len(desc));
+    return (desc + usb_desc_len(desc));
 }
 
 /** \brief Get idVendor of USB Device Descriptor
@@ -690,7 +690,7 @@ static inline uint8_t *usb_desc_next(uint8_t *desc)
  */
 static inline uint16_t usb_dev_desc_vid(const uint8_t *dev_desc)
 {
-	return usb_get_u16(dev_desc + 8);
+    return usb_get_u16(dev_desc + 8);
 }
 
 /** \brief Get idProduct of USB Device Descriptor
@@ -699,7 +699,7 @@ static inline uint16_t usb_dev_desc_vid(const uint8_t *dev_desc)
  */
 static inline uint16_t usb_dev_desc_pid(const uint8_t *dev_desc)
 {
-	return usb_get_u16(dev_desc + 10);
+    return usb_get_u16(dev_desc + 10);
 }
 
 /** \brief Get wTotalLength of USB Configuration Descriptor
@@ -708,7 +708,7 @@ static inline uint16_t usb_dev_desc_pid(const uint8_t *dev_desc)
  */
 static inline uint16_t usb_cfg_desc_total_len(const uint8_t *cfg_desc)
 {
-	return usb_get_u16(cfg_desc + 2);
+    return usb_get_u16(cfg_desc + 2);
 }
 
 /** \brief Get Next USB Descriptor After the Configuration Descriptors list
@@ -717,7 +717,7 @@ static inline uint16_t usb_cfg_desc_total_len(const uint8_t *cfg_desc)
  */
 static inline uint8_t *usb_cfg_desc_next(uint8_t *cfg_desc)
 {
-	return (cfg_desc + usb_cfg_desc_total_len(cfg_desc));
+    return (cfg_desc + usb_cfg_desc_total_len(cfg_desc));
 }
 
 /** \brief Find specific USB Descriptor by its type

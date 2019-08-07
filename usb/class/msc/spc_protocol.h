@@ -66,7 +66,7 @@ COMPILER_PACK_SET(1)
  * \brief SCSI Standard Inquiry data structure
  */
 struct scsi_inquiry_data {
-	uint8_t pq_pdt;                      /**< Peripheral Qual / Peripheral Dev Type */
+    uint8_t pq_pdt;                      /**< Peripheral Qual / Peripheral Dev Type */
 #define SCSI_INQ_PQ_CONNECTED 0x00       /**< Peripheral connected */
 #define SCSI_INQ_PQ_NOT_CONN 0x20        /**< Peripheral not connected */
 #define SCSI_INQ_PQ_NOT_SUPP 0x60        /**< Peripheral not supported */
@@ -85,36 +85,36 @@ struct scsi_inquiry_data {
 #define SCSI_INQ_DT_BCC 0x10             /**< Bridge Controller Commands */
 #define SCSI_INQ_DT_OSD 0x11             /**< Object-based Storage */
 #define SCSI_INQ_DT_NONE 0x1f            /**< No Peripheral */
-	uint8_t flags1;                      /**< Flags (byte 1) */
+    uint8_t flags1;                      /**< Flags (byte 1) */
 #define SCSI_INQ_RMB 0x80                /**< Removable Medium */
-	uint8_t version;                     /**< Version */
+    uint8_t version;                     /**< Version */
 #define SCSI_INQ_VER_NONE 0x00           /**< No standards conformance */
 #define SCSI_INQ_VER_SPC 0x03            /**< SCSI Primary Commands     (link to SBC) */
 #define SCSI_INQ_VER_SPC2 0x04           /**< SCSI Primary Commands - 2 (link to SBC-2) */
 #define SCSI_INQ_VER_SPC3 0x05           /**< SCSI Primary Commands - 3 (link to SBC-2) */
 #define SCSI_INQ_VER_SPC4 0x06           /**< SCSI Primary Commands - 4 (link to SBC-3) */
-	uint8_t flags3;                      /**< Flags (byte 3) */
+    uint8_t flags3;                      /**< Flags (byte 3) */
 #define SCSI_INQ_NORMACA 0x20            /**< Normal ACA Supported */
 #define SCSI_INQ_HISUP 0x10              /**< Hierarchal LUN addressing */
 #define SCSI_INQ_RSP_SPC2 0x02           /**< SPC-2 / SPC-3 response format */
-	uint8_t addl_len;                    /**< Additional Length (n-4) */
+    uint8_t addl_len;                    /**< Additional Length (n-4) */
 #define SCSI_INQ_ADDL_LEN(tot) ((tot)-5) /**< Total length is \a tot */
-	uint8_t flags5;                      /**< Flags (byte 5) */
+    uint8_t flags5;                      /**< Flags (byte 5) */
 #define SCSI_INQ_SCCS 0x80
-	uint8_t flags6; /**< Flags (byte 6) */
+    uint8_t flags6; /**< Flags (byte 6) */
 #define SCSI_INQ_BQUE 0x80
 #define SCSI_INQ_ENCSERV 0x40
 #define SCSI_INQ_MULTIP 0x10
 #define SCSI_INQ_MCHGR 0x08
 #define SCSI_INQ_ADDR16 0x01
-	uint8_t flags7; /**< Flags (byte 7) */
+    uint8_t flags7; /**< Flags (byte 7) */
 #define SCSI_INQ_WBUS16 0x20
 #define SCSI_INQ_SYNC 0x10
 #define SCSI_INQ_LINKED 0x08
 #define SCSI_INQ_CMDQUE 0x02
-	uint8_t vendor_id[8];   /**< T10 Vendor Identification */
-	uint8_t product_id[16]; /**< Product Identification */
-	uint8_t product_rev[4]; /**< Product Revision Level */
+    uint8_t vendor_id[8];   /**< T10 Vendor Identification */
+    uint8_t product_id[16]; /**< Product Identification */
+    uint8_t product_rev[4]; /**< Product Revision Level */
 };
 
 /**
@@ -128,8 +128,8 @@ struct scsi_inquiry_data {
 #define SCSI_SENSE_FILEMARK 0x80 /**< Indicates that the current command has read a filemark or setmark. */
 #define SCSI_SENSE_EOM 0x40      /**< Indicates that an end-of-medium condition exists. */
 #define SCSI_SENSE_ILI                                                                                                 \
-	0x20 /**< Indicates that the requested logical block length did not match the logical block length of the data on  \
-	        the medium. */
+    0x20 /**< Indicates that the requested logical block length did not match the logical block length of the data on  \
+            the medium. */
 #define SCSI_SENSE_RESERVED 0x10     /**< Reserved */
 #define SCSI_SENSE_KEY(x) (x & 0x0F) /**< Sense Key */
 
@@ -138,39 +138,39 @@ struct scsi_inquiry_data {
 #define SCSI_SENSE_SKSV 0x80 /**< Indicates the SENSE-KEY SPECIFIC field contains valid information */
 
 struct scsi_request_sense_data {
-	/** 1st byte: REQUEST SENSE response flags*/
-	uint8_t valid_reponse_code;
-	/** 2nd byte */
-	uint8_t obsolete;
-	/** 3rd byte */
-	uint8_t sense_flag_key;
-	/** 4th to 7th bytes - INFORMATION field */
-	uint8_t information[4];
-	/** 8th byte  - ADDITIONAL SENSE LENGTH field */
-	uint8_t AddSenseLen;
-	/** 9th to 12th byte  - COMMAND-SPECIFIC INFORMATION field */
-	uint8_t CmdSpecINFO[4];
-	/** 13th to 14th byte  - ADDITIONAL SENSE CODE and QUALIFIER field */
-	union {
-		struct {
-			uint8_t code;      /**< ADDITIONAL SENSE CODE (ASC) */
-			uint8_t qualifier; /**< ADDITIONAL SENSE CODE QUALIFIER (ASCQ) */
-		} add_sense;
-		be16_t AddSense; /**< ASC | ASCQ */
-	};
-	/** 15th byte  - FIELD REPLACEABLE UNIT CODE field */
-	uint8_t FldReplUnitCode;
-	/** 16th byte */
-	uint8_t SenseKeySpec[3];
+    /** 1st byte: REQUEST SENSE response flags*/
+    uint8_t valid_reponse_code;
+    /** 2nd byte */
+    uint8_t obsolete;
+    /** 3rd byte */
+    uint8_t sense_flag_key;
+    /** 4th to 7th bytes - INFORMATION field */
+    uint8_t information[4];
+    /** 8th byte  - ADDITIONAL SENSE LENGTH field */
+    uint8_t AddSenseLen;
+    /** 9th to 12th byte  - COMMAND-SPECIFIC INFORMATION field */
+    uint8_t CmdSpecINFO[4];
+    /** 13th to 14th byte  - ADDITIONAL SENSE CODE and QUALIFIER field */
+    union {
+        struct {
+            uint8_t code;      /**< ADDITIONAL SENSE CODE (ASC) */
+            uint8_t qualifier; /**< ADDITIONAL SENSE CODE QUALIFIER (ASCQ) */
+        } add_sense;
+        be16_t AddSense; /**< ASC | ASCQ */
+    };
+    /** 15th byte  - FIELD REPLACEABLE UNIT CODE field */
+    uint8_t FldReplUnitCode;
+    /** 16th byte */
+    uint8_t SenseKeySpec[3];
 };
 
 COMPILER_PACK_RESET()
 
 /**< Vital Product Data page codes */
 enum scsi_vpd_page_code {
-	SCSI_VPD_SUPPORTED_PAGES       = 0x00,
-	SCSI_VPD_UNIT_SERIAL_NUMBER    = 0x80,
-	SCSI_VPD_DEVICE_IDENTIFICATION = 0x83
+    SCSI_VPD_SUPPORTED_PAGES       = 0x00,
+    SCSI_VPD_UNIT_SERIAL_NUMBER    = 0x80,
+    SCSI_VPD_DEVICE_IDENTIFICATION = 0x83
 };
 #define SCSI_VPD_HEADER_SIZE 4
 
@@ -185,35 +185,35 @@ enum scsi_vpd_page_code {
 
 /**< Sense keys */
 enum scsi_sense_key {
-	SCSI_SK_NO_SENSE        = 0x0,
-	SCSI_SK_RECOVERED_ERROR = 0x1,
-	SCSI_SK_NOT_READY       = 0x2,
-	SCSI_SK_MEDIUM_ERROR    = 0x3,
-	SCSI_SK_HARDWARE_ERROR  = 0x4,
-	SCSI_SK_ILLEGAL_REQUEST = 0x5,
-	SCSI_SK_UNIT_ATTENTION  = 0x6,
-	SCSI_SK_DATA_PROTECT    = 0x7,
-	SCSI_SK_BLANK_CHECK     = 0x8,
-	SCSI_SK_VENDOR_SPECIFIC = 0x9,
-	SCSI_SK_COPY_ABORTED    = 0xa,
-	SCSI_SK_ABORTED_COMMAND = 0xb,
-	SCSI_SK_VOLUME_OVERFLOW = 0xd,
-	SCSI_SK_MISCOMPARE      = 0xe
+    SCSI_SK_NO_SENSE        = 0x0,
+    SCSI_SK_RECOVERED_ERROR = 0x1,
+    SCSI_SK_NOT_READY       = 0x2,
+    SCSI_SK_MEDIUM_ERROR    = 0x3,
+    SCSI_SK_HARDWARE_ERROR  = 0x4,
+    SCSI_SK_ILLEGAL_REQUEST = 0x5,
+    SCSI_SK_UNIT_ATTENTION  = 0x6,
+    SCSI_SK_DATA_PROTECT    = 0x7,
+    SCSI_SK_BLANK_CHECK     = 0x8,
+    SCSI_SK_VENDOR_SPECIFIC = 0x9,
+    SCSI_SK_COPY_ABORTED    = 0xa,
+    SCSI_SK_ABORTED_COMMAND = 0xb,
+    SCSI_SK_VOLUME_OVERFLOW = 0xd,
+    SCSI_SK_MISCOMPARE      = 0xe
 };
 
 /**< Additional Sense Code | Additional Sense Code Qualifier pairs (BE16) */
 enum scsi_asc_ascq {
-	SCSI_ASC_NO_ADDITIONAL_SENSE_INFO         = 0x0000,
-	SCSI_ASC_LU_NOT_READY_REBUILD_IN_PROGRESS = 0x0405,
-	SCSI_ASC_WRITE_ERROR                      = 0x0c00,
-	SCSI_ASC_UNRECOVERED_READ_ERROR           = 0x1100,
-	SCSI_ASC_INVALID_COMMAND_OPERATION_CODE   = 0x2000,
-	SCSI_ASC_LBA_OUT_OF_RANGE                 = 0x2100,
-	SCSI_ASC_INVALID_FIELD_IN_CDB             = 0x2400,
-	SCSI_ASC_WRITE_PROTECTED                  = 0x2700,
-	SCSI_ASC_NOT_READY_TO_READY_CHANGE        = 0x2800,
-	SCSI_ASC_MEDIUM_NOT_PRESENT               = 0x3A00,
-	SCSI_ASC_INTERNAL_TARGET_FAILURE          = 0x4400
+    SCSI_ASC_NO_ADDITIONAL_SENSE_INFO         = 0x0000,
+    SCSI_ASC_LU_NOT_READY_REBUILD_IN_PROGRESS = 0x0405,
+    SCSI_ASC_WRITE_ERROR                      = 0x0c00,
+    SCSI_ASC_UNRECOVERED_READ_ERROR           = 0x1100,
+    SCSI_ASC_INVALID_COMMAND_OPERATION_CODE   = 0x2000,
+    SCSI_ASC_LBA_OUT_OF_RANGE                 = 0x2100,
+    SCSI_ASC_INVALID_FIELD_IN_CDB             = 0x2400,
+    SCSI_ASC_WRITE_PROTECTED                  = 0x2700,
+    SCSI_ASC_NOT_READY_TO_READY_CHANGE        = 0x2800,
+    SCSI_ASC_MEDIUM_NOT_PRESENT               = 0x3A00,
+    SCSI_ASC_INTERNAL_TARGET_FAILURE          = 0x4400
 };
 
 /**
@@ -223,9 +223,9 @@ enum scsi_asc_ascq {
  * that are applicable to all SCSI devices.
  */
 enum scsi_spc_mode {
-	SCSI_MS_MODE_VENDOR_SPEC = 0x00,
-	SCSI_MS_MODE_INFEXP      = 0x1C, /**< Informational exceptions control page */
-	SCSI_MS_MODE_ALL         = 0x3f
+    SCSI_MS_MODE_VENDOR_SPEC = 0x00,
+    SCSI_MS_MODE_INFEXP      = 0x1C, /**< Informational exceptions control page */
+    SCSI_MS_MODE_ALL         = 0x3f
 };
 
 /**
@@ -234,17 +234,17 @@ enum scsi_spc_mode {
  * \note Fields are MSB first (BE)
  */
 struct spc_control_page_info_execpt {
-	uint8_t page_code;
-	uint8_t page_length;
+    uint8_t page_code;
+    uint8_t page_length;
 #define SPC_MP_INFEXP_PAGE_LENGTH 0x0A
-	uint8_t flags1;
+    uint8_t flags1;
 #define SPC_MP_INFEXP_PERF (1 << 7)   /**< Initiator Control */
 #define SPC_MP_INFEXP_EBF (1 << 5)    /**< Caching Analysis Permitted */
 #define SPC_MP_INFEXP_EWASC (1 << 4)  /**< Discontinuity */
 #define SPC_MP_INFEXP_DEXCPT (1 << 3) /**< Size enable */
 #define SPC_MP_INFEXP_TEST (1 << 2)   /**< Write-back Cache Enable */
 #define SPC_MP_INFEXP_LOGERR (1 << 0) /**< Log errors bit */
-	uint8_t mrie;
+    uint8_t mrie;
 #define SPC_MP_INFEXP_MRIE_NO_REPORT 0x00
 #define SPC_MP_INFEXP_MRIE_ASYNC_EVENT 0x01
 #define SPC_MP_INFEXP_MRIE_GEN_UNIT 0x02
@@ -252,15 +252,15 @@ struct spc_control_page_info_execpt {
 #define SPC_MP_INFEXP_MRIE_UNCOND_RECOV_ERROR 0x04
 #define SPC_MP_INFEXP_MRIE_NO_SENSE 0x05
 #define SPC_MP_INFEXP_MRIE_ONLY_REPORT 0x06
-	be32_t interval_timer;
-	be32_t report_count;
+    be32_t interval_timer;
+    be32_t report_count;
 };
 
 enum scsi_spc_mode_sense_pc {
-	SCSI_MS_SENSE_PC_CURRENT    = 0,
-	SCSI_MS_SENSE_PC_CHANGEABLE = 1,
-	SCSI_MS_SENSE_PC_DEFAULT    = 2,
-	SCSI_MS_SENSE_PC_SAVED      = 3
+    SCSI_MS_SENSE_PC_CURRENT    = 0,
+    SCSI_MS_SENSE_PC_CHANGEABLE = 1,
+    SCSI_MS_SENSE_PC_DEFAULT    = 2,
+    SCSI_MS_SENSE_PC_SAVED      = 3
 };
 
 /**
@@ -270,7 +270,7 @@ enum scsi_spc_mode_sense_pc {
  */
 static inline bool scsi_mode_sense_dbd_is_set(const uint8_t *cdb)
 {
-	return (cdb[1] >> 3) & 1;
+    return (cdb[1] >> 3) & 1;
 }
 
 /**
@@ -280,7 +280,7 @@ static inline bool scsi_mode_sense_dbd_is_set(const uint8_t *cdb)
  */
 static inline uint8_t scsi_mode_sense_get_page_code(const uint8_t *cdb)
 {
-	return cdb[2] & 0x3f;
+    return cdb[2] & 0x3f;
 }
 
 /**
@@ -290,7 +290,7 @@ static inline uint8_t scsi_mode_sense_get_page_code(const uint8_t *cdb)
  */
 static inline uint8_t scsi_mode_sense_get_pc(const uint8_t *cdb)
 {
-	return cdb[2] >> 6;
+    return cdb[2] >> 6;
 }
 
 /**
@@ -298,10 +298,10 @@ static inline uint8_t scsi_mode_sense_get_pc(const uint8_t *cdb)
  * \note Fields are MSB first (BE)
  */
 struct scsi_mode_param_header6 {
-	uint8_t mode_data_length;          /**< Number of bytes after this */
-	uint8_t medium_type;               /**< Medium Type */
-	uint8_t device_specific_parameter; /**< Defined by command set */
-	uint8_t block_descriptor_length;   /**< Length of block descriptors */
+    uint8_t mode_data_length;          /**< Number of bytes after this */
+    uint8_t medium_type;               /**< Medium Type */
+    uint8_t device_specific_parameter; /**< Defined by command set */
+    uint8_t block_descriptor_length;   /**< Length of block descriptors */
 };
 
 /**
@@ -309,22 +309,22 @@ struct scsi_mode_param_header6 {
  * \note Fields are MSB first (BE)
  */
 struct scsi_mode_param_header10 {
-	le16_t  mode_data_length;          /**< Number of bytes after this */
-	uint8_t medium_type;               /**< Medium Type */
-	uint8_t device_specific_parameter; /**< Defined by command set */
-	uint8_t flags4;                    /**< LONGLBA in bit 0 */
-	uint8_t reserved;
-	le16_t  block_descriptor_length; /**< Length of block descriptors */
+    le16_t  mode_data_length;          /**< Number of bytes after this */
+    uint8_t medium_type;               /**< Medium Type */
+    uint8_t device_specific_parameter; /**< Defined by command set */
+    uint8_t flags4;                    /**< LONGLBA in bit 0 */
+    uint8_t reserved;
+    le16_t  block_descriptor_length; /**< Length of block descriptors */
 };
 
 /**
  * \brief SCSI Page_0 Mode Page header (SPF not set)
  */
 struct scsi_mode_page_0_header {
-	uint8_t page_code;
+    uint8_t page_code;
 #define SCSI_PAGE_CODE_PS (1 << 7)  /**< Parameters Savable */
 #define SCSI_PAGE_CODE_SPF (1 << 6) /**< SubPage Format */
-	uint8_t page_length;            /**< Number of bytes after this */
+    uint8_t page_length;            /**< Number of bytes after this */
 #define SCSI_MS_PAGE_LEN(total) ((total)-2)
 };
 
