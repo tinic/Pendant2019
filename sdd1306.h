@@ -39,7 +39,6 @@ public:
     void SetCenterFlip(int8_t progression);
 
     void PlaceUTF8String(uint32_t x, uint32_t y, const char *str);
-    void PlaceCustomChar(uint32_t x, uint32_t y, uint16_t code);
     void Invert();
     void SetAttr(uint32_t x, uint32_t y, uint8_t attr);
     void SetAsciiScrollMessage(const char *str, int32_t offset);

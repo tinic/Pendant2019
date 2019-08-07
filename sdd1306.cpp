@@ -148,11 +148,6 @@ void SDD1306::PlaceUTF8String(uint32_t x, uint32_t y, const char *str) {
     }
 }
 
-void SDD1306::PlaceCustomChar(uint32_t x, uint32_t y, uint16_t code) {
-    if (y>1 || x>11) return;
-    text_buffer_cache[y*12+x] = code;
-}
-    
 void SDD1306::Invert() {
     for (uint32_t c=0; c<12*2; c++) {
         text_attr_cache[c] ^= 1;
