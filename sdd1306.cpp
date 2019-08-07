@@ -125,8 +125,17 @@ void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
 	}
 }
 
-
 void SDD1306::Display() {
+
+#ifdef EMULATOR
+    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
+    printf("\x1b[17;1f┌────────────────────────────────────────────────────────────────────────────────────────────────┐");
+    for (int32_t y=0; y<16; y++) {
+		printf("\x1b[%d;%df│",18+y,1);
+		printf("\x1b[%d;%df│",18+y,98);
+	}
+    printf("\x1b[34;1f└────────────────────────────────────────────────────────────────────────────────────────────────┘");
+#endif  // #ifdef EMULATOR
 
 	bool display_center_flip = false;
 	if (center_flip_cache || center_flip_screen) {
@@ -186,18 +195,6 @@ void SDD1306::Display() {
 		DisplayCenterFlip();
 	}
 
-#ifdef EMULATOR
-    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
-	printf("\x1b[%d;%df.------------.",17,1);
-	printf("\x1b[%d;%df.------------.",20,1);
-	for (uint32_t y=0; y<2; y++) {
-		printf("\x1b[%d;%df|",18+y,1);
-		for (uint32_t x=0; x<12; x++) {
-			printf("%c",text_buffer_screen[y*12+x] + 0x20);
-		}
-		printf("|");
-	}
-#endif  // #ifdef EMULATOR
 }
 	
 void SDD1306::SetVerticalShift(int8_t val) {
@@ -312,12 +309,12 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 				for (uint32_t c=0; c<8; c++) {
 					buf[c+1] = ~rev_bits[duck_font_raw[ch*8+7-c]];
 				}
-				} else {
+			} else {
 				for (uint32_t c=0; c<8; c++) {
 					buf[c+1] = ~duck_font_raw[ch*8+7-c];
 				}
 			}
-			} else {
+		} else {
 			if ((attr & 2)) {
 				for (uint32_t c=0; c<8; c++) {
 					buf[c+1] =  rev_bits[duck_font_raw[ch*8+7-c]];
@@ -328,7 +325,7 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 				}
 			}
 		}
-		} else {
+	} else {
 		if ((attr & 1)) {
 			if ((attr & 2)) {
 				for (uint32_t c=0; c<8; c++) {
@@ -339,7 +336,7 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 					buf[c+1] = ~duck_font_raw[ch*8+c];
 				}
 			}
-			} else {
+		} else {
 			if ((attr & 2)) {
 				for (uint32_t c=0; c<8; c++) {
 					buf[c+1] =  rev_bits[duck_font_raw[ch*8+c]];
@@ -351,6 +348,21 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 			}
 		}
 	}
+
+#ifdef EMULATOR
+    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
+	for (int32_t py = 0; py < 8; py ++) {
+		for (int32_t px = 0; px < 8; px ++) {
+			printf("\x1b[%d;%df",18+y*8+py,2+x+px);
+			if (((buf[1+px] >> py) & 1) != 0) {
+				printf("\x1b[30;47m \x1b[0m");
+			} else {
+				printf(" ");
+			}
+		}
+	}
+#endif  // #ifdef EMULATOR
+
 	io_write(I2C_0_io, buf, 9);
 }
 

@@ -66,7 +66,7 @@ static std::vector<spi_byte> spiBuf;
 void display_debug_area(int32_t area) {
     std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
 
-	const int32_t sy = 22;
+	const int32_t sy = 35;
 
 	switch (area) {
 		case	0: {
