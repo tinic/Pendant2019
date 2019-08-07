@@ -2082,8 +2082,6 @@ public:
 	void gradient() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
-		float now = (float)Model::instance().Time();
-
 		colors::rgb ring(Model::instance().RingColor());
 
 		calc_outer([=](geom::float4 pos) {

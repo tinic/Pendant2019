@@ -1221,7 +1221,6 @@ void SX1280::ReturnRange(float range) {
 #endif  // #ifdef MCP
 
 void SX1280::ProcessIrqs( void ) {
-	RadioPacketTypes packetType = PACKET_TYPE_NONE;
 
 	if( PollingMode == true ) {
 		if( IrqState == true ) {
@@ -1233,7 +1232,7 @@ void SX1280::ProcessIrqs( void ) {
 		}
 	}
 
-	packetType = GetPacketType( true );
+	RadioPacketTypes packetType = GetPacketType( true );
 	uint16_t irqRegs = GetIrqStatus( );
 	ClearIrqStatus( IRQ_RADIO_ALL );
 
