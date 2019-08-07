@@ -1050,16 +1050,16 @@ public:
 						twinkly();
 					break;
 					case 17:
-						effect_17();
+						randomfader();
 					break;
 					case 18:
-						effect_18();
+						chaser();
 					break;
 					case 19:
-						effect_19();
+						brightchaser();
 					break;
 					case 20:
-						effect_20();
+						gradient();
 					break;
 					case 21:
 						effect_21();
@@ -1898,6 +1898,10 @@ public:
 		});
 	}
 
+	//
+	// MOVING RAINBOW
+	//
+
 	void moving_rainbow() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
@@ -1911,6 +1915,10 @@ public:
 			return geom::float4(colors::rgb(colors::hsv(pos.x, 1.0, 1.0f)));
 		});
 	}
+
+	//
+	// TWINKLE
+	//
 
 	void twinkle() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
@@ -1952,6 +1960,10 @@ public:
 		
 	}
 
+	//
+	// TWINKLY
+	//
+
 	void twinkly() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
@@ -1976,7 +1988,7 @@ public:
 			   geom::float4(0x000000, 0.00f),
 			   geom::float4(0xFFFFFF, 0.50f),
 			   geom::float4(0x000000, 1.00f)};
-			g.init(gg,5);
+			g.init(gg,3);
 		}
 		
 		colors::rgb ring(Model::instance().RingColor());
@@ -1991,51 +2003,91 @@ public:
 		});
 	}
 
-	void effect_17() {
+	//
+	// RANDOMFADER
+	//
+
+	void randomfader() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
-		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+		static float next = -1.0f;
+		static int which = 0;
+		static colors::rgb color;
+		static colors::rgb prev_color;
+		
+		if ((next - now) < 0.0f || next < 0.0f) {
+			next = now + 2.0f;
+			which = random.get(int32_t(0), leds_rings_n);
+			prev_color = color;
+			color = colors::rgb(
+				random.get(0.0f,1.0f),
+				random.get(0.0f,1.0f),
+				random.get(0.0f,1.0f));
+		}
+
+		calc_outer([=](geom::float4 pos, int32_t index) {
+			float dist = pos.dist(ledpos()[which]) * (next - now);
+			if (dist > 1.0f) dist = 1.0f;
+			return geom::float4::lerp(color, prev_color, dist);
 		});
 	}
 
-	void effect_18() {
+	//
+	// CHASER
+	//
+
+	void chaser() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
+		
+		colors::rgb ring(Model::instance().RingColor());
 
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			pos = pos.rotate2d(now);
+			return ring * pos.x;
 		});
 	}
 
-	void effect_19() {
+	//
+	// BRIGHT CHASER
+	//
+
+	void brightchaser() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
+		static colors::gradient g;
+		if (g.check_init()) {
+			const geom::float4 gg[] = {
+			   geom::float4(0x000000, 0.00f),
+			   geom::float4(Model::instance().RingColor().hex(), 0.50f),
+			   geom::float4(0xFFFFFF, 1.00f)};
+			g.init(gg,3);
+		}
+
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			pos = pos.rotate2d(now);
+			return g.clamp(pos.x);
 		});
 	}
 
-	void effect_20() {
+	//
+	// GRADIENT
+	//
+
+	void gradient() {
 		led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
 		float now = (float)Model::instance().Time();
 
+		colors::rgb ring(Model::instance().RingColor());
+
 		calc_outer([=](geom::float4 pos) {
-			pos.x *= sinf(now);
-			pos.y *= cosf(now);
-			return pos;
+			return ring * (1.0f - ( (pos.y + 1.0f) * 0.33f ) );
 		});
 	}
 
