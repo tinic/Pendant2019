@@ -160,6 +160,11 @@ void SDD1306::SetAttr(uint32_t x, uint32_t y, uint8_t attr) {
     if (y>1 || x>11) return;
     text_attr_cache[y*12+x] = attr;
 }
+
+void SDD1306::SetBootScreen(bool on, int32_t xpos) {
+	display_boot_screen = on;
+	boot_screen_offset = xpos;
+}
     
 void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
     if (str) {
@@ -201,7 +206,42 @@ void SDD1306::Display() {
         display_center_flip = true;
     }
     for (uint32_t y=0; y<2; y++) {
-        if (display_scroll_message && y < 2) {
+        if (display_boot_screen) {
+
+            {
+                WriteCommand(0xB0+0);
+                WriteCommand(0x0f&(0   )); // 0x20 offset
+                WriteCommand(0x10|(0>>4)); // 0x20 offset
+            }
+
+            uint8_t buf[97];
+            buf[0] = 0x40;
+                
+            // write first line
+            for (int32_t x = 0; x < 96; x++) {
+                int32_t rx = (boot_screen_offset + x ) % (27 * 8) ;
+                int32_t cx = rx >> 3;
+                buf[x+1] = duck_font_raw[0x0EA8 + cx * 8 + (rx & 0x07)];
+            }
+
+            io_write(I2C_0_io, buf, 0x61);
+
+            {
+                WriteCommand(0xB0+1);
+                WriteCommand(0x0f&(0   )); // 0x20 offset
+                WriteCommand(0x10|(0>>4)); // 0x20 offset
+            }
+
+            // write second line
+            for (int32_t x = 0; x < 96; x++) {
+                int32_t rx = (boot_screen_offset + x ) % (27 * 8) ;
+                int32_t cx = rx >> 3;
+                buf[x+1] = duck_font_raw[0x16A8 + cx * 8 + (rx & 0x07)];
+            }
+                
+            io_write(I2C_0_io, buf, 0x61);
+        
+        } else if (display_scroll_message) {
                 
             {
                 WriteCommand(0xB0+0);
@@ -227,7 +267,7 @@ void SDD1306::Display() {
                 WriteCommand(0x10|(0>>4)); // 0x20 offset
             }
 
-            // write first line
+            // write second line
             for (int32_t x = 0; x < 96; x++) {
                 int32_t rx = (scroll_message_offset + x ) % (scroll_message_len * 16) ;
                 int32_t cx = rx >> 4;

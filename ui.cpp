@@ -74,9 +74,9 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         if (currentMessage >= 0) {
-            char str[20];
+            char str[26];
             SDD1306::instance().PlaceUTF8String(0, 0, Model::instance().Message(size_t(currentMessage)));
-            snprintf(str, 20, "\xc2\x88%02d/%02d \xca\xeb\xca\xec\xca\xed\xca\xee\xca\xef", static_cast<int>(currentMessage), static_cast<int>(Model::instance().MessageCount()));
+            snprintf(str, 26, "\xc2\x88%02d/%02d \xca\xeb\xca\xec\xca\xed\xca\xee\xca\xef", static_cast<int>(currentMessage), static_cast<int>(Model::instance().MessageCount()));
             SDD1306::instance().PlaceUTF8String(0, 1, str);
         } else {
             SDD1306::instance().PlaceUTF8String(0, 0, "            ");
@@ -269,14 +269,14 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
     s.duration = 10.0; // timeout
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         if (currentMode == 0) {
-            char str[20];
-            snprintf(str, 20, "%s", Model::instance().Message(static_cast<size_t>(selectedMessage)));
+            char str[26];
+            snprintf(str, 26, "%s", Model::instance().Message(static_cast<size_t>(selectedMessage)));
             SDD1306::instance().PlaceUTF8String(0, 0, str);
-            snprintf(str, 20, "   %02d/%02d    ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
+            snprintf(str, 26, "   %02d/%02d    ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
             SDD1306::instance().PlaceUTF8String(0, 1, str);
         } else {
-            char str[20];
-            snprintf(str, 20, "%s", currentMessage);
+            char str[26];
+            snprintf(str, 26, "%s", currentMessage);
             SDD1306::instance().PlaceUTF8String(0, 0, str);
             if (currentChar == Model::MessageLength()) {
                 SDD1306::instance().PlaceUTF8String(0, 1, "  \xca\xd3\xca\xd4\xca\xd5\xca\xd6\xca\xd7\xca\xd8\xca\xd9\xca\xda  ");
@@ -353,7 +353,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
                 idx += 0x20;
                 currentMessage[currentChar] = static_cast<char>(idx);
                 char str[20];
-                snprintf(str, 20, "%s", currentMessage);
+                snprintf(str, 26, "%s", currentMessage);
                 SDD1306::instance().PlaceUTF8String(0, 0, str);
                 SDD1306::instance().Display();
             }
@@ -383,8 +383,8 @@ void UI::enterChangeName(Timeline::Span &parent) {
     s.time = Model::instance().Time();
     s.duration = 10.0; // timeout
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-        char str[20];
-        snprintf(str, 20, "%s", currentName);
+        char str[26];
+        snprintf(str, 26, "%s", currentName);
         SDD1306::instance().PlaceUTF8String(0, 0, str);
         if (currentChar == 12) {
             SDD1306::instance().PlaceUTF8String(0, 1, "  \xca\xd3\xca\xd4\xca\xd5\xca\xd6\xca\xd7\xca\xd8\xca\xd9\xca\xda  ");
@@ -437,8 +437,8 @@ void UI::enterChangeName(Timeline::Span &parent) {
             idx %= 0x40;
             idx += 0x20;
             currentName[currentChar] = static_cast<char>(idx);
-            char str[20];
-            snprintf(str, 20, "%s", currentName);
+            char str[26];
+            snprintf(str, 26, "%s", currentName);
             SDD1306::instance().PlaceUTF8String(0, 0, str);
             SDD1306::instance().Display();
         }
@@ -746,10 +746,10 @@ void UI::enterShowVersion(Timeline::Span &parent) {
     s.time = Model::instance().Time();
     s.duration = 10.0; // timeout
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-        char str[20];
-        snprintf(str, 20, "    %01d.%02d    ", static_cast<int>(version_number), static_cast<int>(build_number));
+        char str[26];
+        snprintf(str, 26, "    %01d.%02d    ", static_cast<int>(version_number), static_cast<int>(build_number));
         SDD1306::instance().PlaceUTF8String(0, 0, str);
-        snprintf(str, 20, "%s ", __DATE__);
+        snprintf(str, 26, "%s ", __DATE__);
         SDD1306::instance().PlaceUTF8String(0, 1, str);
     };
     s.commitFunc = [=](Timeline::Span &) {

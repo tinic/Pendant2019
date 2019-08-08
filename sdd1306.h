@@ -42,6 +42,7 @@ public:
     void Invert();
     void SetAttr(uint32_t x, uint32_t y, uint8_t attr);
     void SetAsciiScrollMessage(const char *str, int32_t offset);
+	void SetBootScreen(bool on, int32_t xpos);
     void Display();
     void SetVerticalShift(int8_t val);
 
@@ -74,6 +75,10 @@ private:
     uint8_t scroll_message[64];
     int32_t scroll_message_offset = 0;
     int32_t scroll_message_len = 0;
+
+    bool display_boot_screen = false;
+    int32_t boot_screen_offset = 0;
+
     bool initialized = false;
 
     struct io_descriptor *I2C_0_io = 0;
