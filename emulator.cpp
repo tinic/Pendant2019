@@ -119,7 +119,7 @@ void display_debug_area(int32_t area) {
                         printf("\x1b[42m");
                     }
                     char c = static_cast<char>(spiBuf[idx+static_cast<size_t>(y*x_len+x)].tx);
-                    if ( c < 0x20 || c > 0x7F ) {
+                    if ( c < 0x20 ) {
                         c = '.';
                     }
                     printf("%c", c);
@@ -143,7 +143,7 @@ void display_debug_area(int32_t area) {
                         printf("\x1b[42m");
                     }
                     char c = static_cast<char>(spiBuf[idx+static_cast<size_t>(y*x_len+x)].rx);
-                    if ( c < 0x20 || c > 0x7F ) {
+                    if ( c < 0x20 ) {
                         c = '.';
                     }
                     printf("%c", c);
@@ -164,7 +164,7 @@ void display_debug_area(int32_t area) {
                 printf("\x1b[%d;%df",sy+1+y,49);
                 for (int32_t x=0; x<16; x++) {
                     char c = static_cast<char>(flash_memory[y*16+x]);
-                    if ( c < 0x20 || c > 0x7F ) {
+                    if ( c < 0x20 ) {
                         c = '.';
                     }
                     printf("%c", c);
