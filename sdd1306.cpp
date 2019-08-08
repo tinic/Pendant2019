@@ -95,10 +95,12 @@ void SDD1306::SetCenterFlip(int8_t progression) {
     center_flip_cache = progression;
 }
 
-void SDD1306::PlaceUTF8String(uint32_t x, uint32_t y, const char *str) {
+void SDD1306::PlaceUTF8String(uint32_t x, uint32_t y, const char *s) {
     if (y>1 || x>11) {
     	return;
     }
+	
+	const uint8_t *str = reinterpret_cast<const uint8_t *>(s);
 
 	static uint8_t trailingBytesForUTF8[256] = {
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,

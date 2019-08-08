@@ -1012,67 +1012,117 @@ void UI::init() {
         s.time = Model::instance().Time();
         s.duration = std::numeric_limits<double>::infinity();
         s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-            char str[13];
-            snprintf(str, 13, "#%02d/%02d", static_cast<int>(Model::instance().Effect()), static_cast<int>(Model::instance().EffectCount()));
+            char str[13*2];
+            snprintf(str, 13, "\xc2\x88%02d/%02d", static_cast<int>(Model::instance().Effect()), static_cast<int>(Model::instance().EffectCount()));
             SDD1306::instance().PlaceUTF8String(0, 0, str);
             if (Model::instance().DateTime() >= 0.0) {
                 // display time
                 int64_t dateTime = static_cast<int64_t>(Model::instance().DateTime());
                 int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
                 int32_t min = ( ( dateTime / 1000 )      ) % 60;
-                snprintf(str, 13, "O%02d:%02d", static_cast<int>(hrs), static_cast<int>(min));
+                snprintf(str, 13, "\xc2\x91%02d:%02d", static_cast<int>(hrs), static_cast<int>(min));
             } else {
-                snprintf(str, 13, "$**__*");
+				auto gc = [](int32_t ch_index) {
+					switch (ch_index) {
+						case 0: {
+							if (BQ25895::instance().IsInFaultState()) {
+								return "\xca\xa9";
+							} else {
+								return "\xca\xa8";
+							}
+						} break;
+						case 1: {
+							if (BQ25895::instance().ADCActive()) {
+								return "\xca\xa9";
+							} else {
+								return "\xca\xa8";
+							}
+						} break;
+						case 2: {
+							if ((BQ25895::instance().GetStatus() & 0x18 ) != 0) {
+								return "\xca\xa9";
+							} else {
+								return "\xca\xa8";
+							}
+						} break;
+						case 3: {
+							if ((BQ25895::instance().GetStatus() & 0xb0 ) != 0) {
+								return "\xca\xa9";
+							} else {
+								return "\xca\xa8";
+							}
+						} break;
+						case 4: {
+							if ((BQ25895::instance().GetStatus() & 0x04) != 0) {
+								return "\xca\xa9";
+							} else {
+								return "\xca\xa8";
+							}
+						} break;
+					}
+					return "\xca\x88";
+				};
+                snprintf(str, 13, "\xc2\x9b%s%s%s%s%s", gc(0), gc(1), gc(2), gc(3), gc(4));
             }
             SDD1306::instance().PlaceUTF8String(6, 0, str);
             auto gc = [](int32_t ch_index, float val) {
-                val *= 6.0f;
+                val *= 11.0f;
                 switch (ch_index) {
                     case    0: {
-                        if (val >= 1.0f) {
-                            return '=';
+                        if (val >= 2.0f) {
+                            return "\xc2\x8e";
+                        } else if (val >= 1.0f) {
+                            return "\xc2\x8d";
                         } else {
-                            return ' ';
+                            return "\xc2\x8c";
                         }
                     } break;
                     case    1: {
-                        if (val >= 2.0f) {
-                            return '=';
+                        if (val >= 4.0f) {
+                            return "\xc2\x91";
+                        } else if (val >= 3.0f) {
+                            return "\xc2\x90";
                         } else {
-                            return ' ';
+                            return "\xc2\x8f";
                         }
                     } break;
                     case    2: {
-                        if (val >= 3.0f) {
-                            return '=';
+                        if (val >= 6.0f) {
+                            return "\xc2\x91";
+                        } else if (val >= 5.0f) {
+                            return "\xc2\x90";
                         } else {
-                            return ' ';
+                            return "\xc2\x8f";
                         }
                     } break;
                     case    3: {
-                        if (val >= 4.0f) {
-                            return '=';
+                        if (val >= 8.0f) {
+                            return "\xc2\x91";
+                        } else if (val >= 7.0f) {
+                            return "\xc2\x90";
                         } else {
-                            return ' ';
+                            return "\xc2\x8f";
                         }
                     } break;
                     case    4: {
-                        if (val >= 5.0f) {
-                            return '=';
+                        if (val >= 10.0f) {
+                            return "\xc2\x94";
+                        } else if (val >= 9.0f) {
+                            return "\xc2\x93";
                         } else {
-                            return ' ';
+                            return "\xc2\x92";
                         }
                     } break;
                 }
-                return ' ';
+                return " ";
             };
             float b = Model::instance().Brightness();
-            snprintf(str, 13, "*%c%c%c%c%c", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
+            snprintf(str, 13, "\xc2\x9e%s%s%s%s%s", gc(0,b), gc(1,b), gc(2,b), gc(3,b), gc(4,b));
             SDD1306::instance().PlaceUTF8String(0, 1, str);
             float l = ( Model::instance().BatteryVoltage() - Model::instance().MinBatteryVoltage() ) / 
                       ( Model::instance().MaxBatteryVoltage() - Model::instance().MinBatteryVoltage() );
             l = std::max(0.0f, std::min(1.0f, l));
-            snprintf(str, 13, "%%%c%c%c%c%c", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
+            snprintf(str, 13, "\xc2\x9f%s%s%s%s%s", gc(0,l), gc(1,l), gc(2,l), gc(3,l), gc(4,l));
             SDD1306::instance().PlaceUTF8String(6, 1, str);
         };
         s.commitFunc = [=](Timeline::Span &) {
@@ -1086,7 +1136,7 @@ void UI::init() {
         };
         s.switch2Func = [=](Timeline::Span &) {
             float newBrightness = Model::instance().Brightness() + 0.1f;
-            if (newBrightness > 1.0f) {
+            if (newBrightness > 1.05f) {
                 newBrightness = 0.0f;
             }
             Model::instance().SetBrightness(newBrightness);
