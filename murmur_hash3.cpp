@@ -38,7 +38,7 @@ static uint32_t fmix32 ( uint32_t h ) {
 }
 
 uint32_t MurmurHash3_32(const void *key, int len, uint32_t seed) {
-    const uint8_t * data = (const uint8_t *)key;
+    const uint8_t * data = reinterpret_cast<const uint8_t *>(key);
     const int nblocks = len / 4;
 
     uint32_t h1 = seed;
@@ -46,7 +46,7 @@ uint32_t MurmurHash3_32(const void *key, int len, uint32_t seed) {
     const uint32_t c1 = 0xcc9e2d51;
     const uint32_t c2 = 0x1b873593;
 
-    const uint32_t *blocks = (const uint32_t *)(data + nblocks*4);
+    const uint32_t *blocks = reinterpret_cast<const uint32_t *>(data + nblocks*4);
 
     for(int i = -nblocks; i; i++) {
         uint32_t k1 = blocks[i];
@@ -60,7 +60,7 @@ uint32_t MurmurHash3_32(const void *key, int len, uint32_t seed) {
         h1 = h1*5+0xe6546b64;
     }
 
-    const uint8_t *tail = (const uint8_t *)(data + nblocks*4);
+    const uint8_t *tail = reinterpret_cast<const uint8_t *>(data + nblocks*4);
 
     uint32_t k1 = 0;
 

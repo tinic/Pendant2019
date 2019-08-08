@@ -29,9 +29,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // Generate system time based on 32-bit cycle count
 #ifndef EMULATOR
 static uint64_t large_dwt_cyccnt() {
-    volatile uint32_t *DWT_CYCCNT  = (volatile uint32_t *)0xE0001004;
-    volatile uint32_t *DWT_CONTROL = (volatile uint32_t *)0xE0001000;
-    volatile uint32_t *SCB_DEMCR   = (volatile uint32_t *)0xE000EDFC;
+    volatile uint32_t *DWT_CYCCNT  = reinterpret_cast<volatile uint32_t *>(0xE0001004);
+    volatile uint32_t *DWT_CONTROL = reinterpret_cast<volatile uint32_t *>(0xE0001000);
+    volatile uint32_t *SCB_DEMCR   = reinterpret_cast<volatile uint32_t *>(0xE000EDFC);
 
     static uint32_t PREV_DWT_CYCCNT = 0;
     static uint64_t LARGE_DWT_CYCCNT = 0;

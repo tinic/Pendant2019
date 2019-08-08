@@ -105,7 +105,7 @@ void Commands::Boot() {
             } else if (size >= 24 && memcmp(payload, "UTC", 3) == 0) {
                 struct tm tm;
                 memset(&tm, 0, sizeof(tm));
-                sscanf((const char *)&payload[3],"%04d-%02d-%02dT%02d:%02d:%02dZ", &tm.tm_year, &tm.tm_mon, &tm.tm_mday, &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
+                sscanf(reinterpret_cast<const char *>(&payload[3]),"%04d-%02d-%02dT%02d:%02d:%02dZ", &tm.tm_year, &tm.tm_mon, &tm.tm_mday, &tm.tm_hour, &tm.tm_min, &tm.tm_sec);
                 tm.tm_year -= 1900;
 
                 if (tm.tm_year < 0) {
@@ -130,14 +130,14 @@ void Commands::Boot() {
                 double intPart = 0;
 
                 tm.tm_min += 60;
-                tm.tm_min += int(modf(Model::instance().TimeZoneOffset(), &intPart));
+                tm.tm_min += static_cast<int>(modf(Model::instance().TimeZoneOffset(), &intPart));
                 tm.tm_min %= 60;
 
                 tm.tm_hour += 24;
-                tm.tm_hour += int(intPart);
+                tm.tm_hour += static_cast<int>(intPart);
                 tm.tm_hour %= 24;
 
-                Model::instance().SetDateTime((double(tm.tm_hour) * 24.0 * 60.0 + double(tm.tm_min) * 60.0 + double(tm.tm_sec)));
+                Model::instance().SetDateTime((static_cast<double>(tm.tm_hour) * 24.0 * 60.0 + static_cast<double>(tm.tm_min) * 60.0 + static_cast<double>(tm.tm_sec)));
                 
             // Do V2 messages
             } else if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
@@ -164,7 +164,7 @@ void Commands::Boot() {
                             char str[64];
                             snprintf(str, 64, "%8.8s : %8.8s", &payload[16], &payload[8] );
                             const float speed = 128.0;
-                            float text_walk = static_cast<float>(Model::instance().Time() - static_cast<double>(span.time)) * speed - 96.0f;
+                            int32_t text_walk = static_cast<int32_t>(static_cast<float>(Model::instance().Time() - static_cast<double>(span.time)) * speed - 96.0f);
                             float interp = 0;
                             if (span.InBeginPeriod(interp, 0.5f)) {
                                 if (interp < 0.5f) {
@@ -329,8 +329,8 @@ void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col)
     buf[16] = (cnt >>  8 ) & 0xFF;
     buf[17] = (cnt >>  0 ) & 0xFF;
 
-    strncpy((char *)&buf[42-12-12], nam, 12);
-    strncpy((char *)&buf[42-12   ], msg, 12);
+    strncpy(reinterpret_cast<char *>(&buf[42-12-12]), nam, 12);
+    strncpy(reinterpret_cast<char *>(&buf[42-12   ]), msg, 12);
 
     SX1280::instance().LoraTxStart(buf, 42);
     
@@ -338,7 +338,7 @@ void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col)
 }
 
 void Commands::SendDateTimeRequest() {
-    SX1280::instance().LoraTxStart((const uint8_t *)"PLEASEPLEASEDATETIMENOW!",24);
+    SX1280::instance().LoraTxStart(reinterpret_cast<const uint8_t *>("PLEASEPLEASEDATETIMENOW!"),24);
 }
 
 void Commands::OnLEDTimer() {

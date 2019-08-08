@@ -191,7 +191,7 @@ SX1280::RadioStatus SX1280::GetStatus( void )
     uint8_t stat = 0;
     RadioStatus status;
 
-    ReadCommand( RADIO_GET_STATUS, ( uint8_t * )&stat, 1 );
+    ReadCommand( RADIO_GET_STATUS, reinterpret_cast<uint8_t *>(&stat), 1 );
     status.Value = stat;
     return( status );
 }
@@ -204,7 +204,7 @@ void SX1280::WriteCommand(RadioCommand command, const uint8_t *buffer, uint32_t 
     WaitOnBusy();
 
     spi_csel_low();
-    spi_write( ( uint8_t )command );
+    spi_write( static_cast<uint8_t>(command) );
     for( uint16_t i = 0; i < size; i++ ) {
         spi_write( buffer[i] );
     }
@@ -224,7 +224,7 @@ void SX1280::ReadCommand(RadioCommand command, uint8_t *buffer, uint32_t size ) 
         spi_write( 0 );
         spi_write( 0 );
     } else {
-        spi_write( ( uint8_t )command );
+        spi_write( static_cast<uint8_t>(command) );
         spi_write( 0 );
         for( uint16_t i = 0; i < size; i++ )
         {
@@ -317,7 +317,7 @@ void SX1280::SetSleep( SleepParams sleepConfig ) {
 }
 
 void SX1280::SetStandby( RadioStandbyModes standbyConfig ) {
-    WriteCommand( RADIO_SET_STANDBY, ( uint8_t* )&standbyConfig, 1 );
+    WriteCommand( RADIO_SET_STANDBY, reinterpret_cast<uint8_t *>(&standbyConfig), 1 );
     if( standbyConfig == STDBY_RC ) {
         OperatingMode = MODE_STDBY_RC;
     } else {
@@ -333,8 +333,8 @@ void SX1280::SetFs( void ) {
 void SX1280::SetTx( TickTime timeout ) {
     uint8_t buf[3];
     buf[0] = timeout.PeriodBase;
-    buf[1] = ( uint8_t )( ( timeout.PeriodBaseCount >> 8 ) & 0x00FF );
-    buf[2] = ( uint8_t )( timeout.PeriodBaseCount & 0x00FF );
+    buf[1] = static_cast<uint8_t>( ( timeout.PeriodBaseCount >> 8 ) & 0x00FF );
+    buf[2] = static_cast<uint8_t>( timeout.PeriodBaseCount & 0x00FF );
 
     ClearIrqStatus( IRQ_RADIO_ALL );
 
@@ -351,8 +351,8 @@ void SX1280::SetTx( TickTime timeout ) {
 void SX1280::SetRx( TickTime timeout ) {
     uint8_t buf[3];
     buf[0] = timeout.PeriodBase;
-    buf[1] = ( uint8_t )( ( timeout.PeriodBaseCount >> 8 ) & 0x00FF );
-    buf[2] = ( uint8_t )( timeout.PeriodBaseCount & 0x00FF );
+    buf[1] = static_cast<uint8_t>( ( timeout.PeriodBaseCount >> 8 ) & 0x00FF );
+    buf[2] = static_cast<uint8_t>( timeout.PeriodBaseCount & 0x00FF );
 
     ClearIrqStatus( IRQ_RADIO_ALL );
 
@@ -370,10 +370,10 @@ void SX1280::SetRxDutyCycle( RadioTickSizes periodBase, uint16_t periodBaseCount
     uint8_t buf[5];
 
     buf[0] = periodBase;
-    buf[1] = ( uint8_t )( ( periodBaseCountRx >> 8 ) & 0x00FF );
-    buf[2] = ( uint8_t )( periodBaseCountRx & 0x00FF );
-    buf[3] = ( uint8_t )( ( periodBaseCountSleep >> 8 ) & 0x00FF );
-    buf[4] = ( uint8_t )( periodBaseCountSleep & 0x00FF );
+    buf[1] = static_cast<uint8_t>( ( periodBaseCountRx >> 8 ) & 0x00FF );
+    buf[2] = static_cast<uint8_t>( periodBaseCountRx & 0x00FF );
+    buf[3] = static_cast<uint8_t>( ( periodBaseCountSleep >> 8 ) & 0x00FF );
+    buf[4] = static_cast<uint8_t>( periodBaseCountSleep & 0x00FF );
     WriteCommand( RADIO_SET_RXDUTYCYCLE, buf, 5 );
     OperatingMode = MODE_RX;
 }
@@ -395,14 +395,14 @@ void SX1280::SetPacketType( RadioPacketTypes packetType ) {
     // Save packet type internally to avoid questioning the radio
     PacketType = packetType;
 
-    WriteCommand( RADIO_SET_PACKETTYPE, ( uint8_t* )&packetType, 1 );
+    WriteCommand( RADIO_SET_PACKETTYPE, reinterpret_cast<uint8_t *>(&packetType), 1 );
 }
 
 SX1280::RadioPacketTypes SX1280::GetPacketType( bool returnLocalCopy ) {
     RadioPacketTypes packetType = PACKET_TYPE_NONE;
     if( returnLocalCopy == false )
     {
-        ReadCommand( RADIO_GET_PACKETTYPE, ( uint8_t* )&packetType, 1 );
+        ReadCommand( RADIO_GET_PACKETTYPE, reinterpret_cast<uint8_t *>(&packetType), 1 );
         if( PacketType != packetType )
         {
             PacketType = packetType;
@@ -420,11 +420,11 @@ void SX1280::SetRfFrequency( uint32_t rfFrequency ) {
     uint32_t freq = 0;
 
     const uint64_t XTAL_FREQ = 52000000;
-    freq = uint32_t( (uint64_t(rfFrequency) * uint64_t(262144)) / uint64_t(XTAL_FREQ) );
+    freq = static_cast<uint32_t>( (static_cast<uint64_t>(rfFrequency) * static_cast<uint64_t>(262144)) / static_cast<uint64_t>(XTAL_FREQ) );
 
-    buf[0] = ( uint8_t )( ( freq >> 16 ) & 0xFF );
-    buf[1] = ( uint8_t )( ( freq >> 8  ) & 0xFF );
-    buf[2] = ( uint8_t )( ( freq       ) & 0xFF );
+    buf[0] = static_cast<uint8_t>( ( freq >> 16 ) & 0xFF );
+    buf[1] = static_cast<uint8_t>( ( freq >> 8  ) & 0xFF );
+    buf[2] = static_cast<uint8_t>( ( freq       ) & 0xFF );
     WriteCommand( RADIO_SET_RFFREQUENCY, buf, 3 );
 }
 
@@ -434,12 +434,12 @@ void SX1280::SetTxParams( int8_t power, RadioRampTimes rampTime ) {
     // The power value to send on SPI/UART is in the range [0..31] and the
     // physical output power is in the range [-18..13]dBm
     buf[0] = power + 18;
-    buf[1] = ( uint8_t )rampTime;
+    buf[1] = static_cast<uint8_t>(rampTime);
     WriteCommand( RADIO_SET_TXPARAMS, buf, 2 );
 }
 
 void SX1280::SetCadParams( RadioLoRaCadSymbols cadSymbolNum ) {
-    WriteCommand( RADIO_SET_CADPARAMS, ( uint8_t* )&cadSymbolNum, 1 );
+    WriteCommand( RADIO_SET_CADPARAMS, reinterpret_cast<uint8_t *>(&cadSymbolNum), 1 );
     OperatingMode = MODE_CAD;
 }
 
@@ -667,7 +667,7 @@ void SX1280::GetPacketStatus( PacketStatus *packetStatus ) {
         case PACKET_TYPE_NONE:
             // In that specific case, we set everything in the packetStatus to zeros
             // and reset the packet type accordingly
-            for (uint32_t c=0; c<sizeof(PacketStatus); c++) { ((uint8_t*)packetStatus)[c] = 0; } 
+            for (uint32_t c=0; c<sizeof(PacketStatus); c++) { reinterpret_cast<uint8_t*>(packetStatus)[c] = 0; } 
             packetStatus->packetType = PACKET_TYPE_NONE;
             break;
     }
@@ -678,20 +678,20 @@ int8_t SX1280::GetRssiInst( void ) {
 
     ReadCommand( RADIO_GET_RSSIINST, &raw, 1 );
 
-    return ( int8_t ) ( -raw / 2 );
+    return static_cast<int8_t>( -raw / 2 );
 }
 
 void SX1280::SetDioIrqParams( uint16_t irqMask, uint16_t dio1Mask, uint16_t dio2Mask, uint16_t dio3Mask ) {
     uint8_t buf[8];
 
-    buf[0] = ( uint8_t )( ( irqMask >> 8 ) & 0x00FF );
-    buf[1] = ( uint8_t )( irqMask & 0x00FF );
-    buf[2] = ( uint8_t )( ( dio1Mask >> 8 ) & 0x00FF );
-    buf[3] = ( uint8_t )( dio1Mask & 0x00FF );
-    buf[4] = ( uint8_t )( ( dio2Mask >> 8 ) & 0x00FF );
-    buf[5] = ( uint8_t )( dio2Mask & 0x00FF );
-    buf[6] = ( uint8_t )( ( dio3Mask >> 8 ) & 0x00FF );
-    buf[7] = ( uint8_t )( dio3Mask & 0x00FF );
+    buf[0] = static_cast<uint8_t>( ( irqMask >> 8 ) & 0x00FF );
+    buf[1] = static_cast<uint8_t>( irqMask & 0x00FF );
+    buf[2] = static_cast<uint8_t>( ( dio1Mask >> 8 ) & 0x00FF );
+    buf[3] = static_cast<uint8_t>( dio1Mask & 0x00FF );
+    buf[4] = static_cast<uint8_t>( ( dio2Mask >> 8 ) & 0x00FF );
+    buf[5] = static_cast<uint8_t>( dio2Mask & 0x00FF );
+    buf[6] = static_cast<uint8_t>( ( dio3Mask >> 8 ) & 0x00FF );
+    buf[7] = static_cast<uint8_t>( dio3Mask & 0x00FF );
     WriteCommand( RADIO_SET_DIOIRQPARAMS, buf, 8 );
 }
 
@@ -704,8 +704,8 @@ uint16_t SX1280::GetIrqStatus( void ) {
 void SX1280::ClearIrqStatus( uint16_t irqMask ) {
     uint8_t buf[2];
 
-    buf[0] = ( uint8_t )( ( ( uint16_t )irqMask >> 8 ) & 0x00FF );
-    buf[1] = ( uint8_t )( ( uint16_t )irqMask & 0x00FF );
+    buf[0] = static_cast<uint8_t>( ( static_cast<uint16_t>(irqMask) >> 8 ) & 0x00FF );
+    buf[1] = static_cast<uint8_t>( static_cast<uint16_t>(irqMask) & 0x00FF );
     WriteCommand( RADIO_CLR_IRQSTATUS, buf, 2 );
 }
 
@@ -720,7 +720,7 @@ void SX1280::Calibrate( CalibrationParams calibParam ) {
 }
 
 void SX1280::SetRegulatorMode( RadioRegulatorModes mode ) {
-    WriteCommand( RADIO_SET_REGULATORMODE, ( uint8_t* )&mode, 1 );
+    WriteCommand( RADIO_SET_REGULATORMODE, reinterpret_cast<uint8_t *>(&mode), 1 );
 }
 
 void SX1280::SetSaveContext( void ) {
@@ -728,20 +728,20 @@ void SX1280::SetSaveContext( void ) {
 }
 
 void SX1280::SetAutoTx( uint16_t time ) {
-    uint16_t compensatedTime = time - ( uint16_t )AUTO_TX_OFFSET;
+    uint16_t compensatedTime = time - static_cast<uint16_t>(AUTO_TX_OFFSET);
     uint8_t buf[2];
 
-    buf[0] = ( uint8_t )( ( compensatedTime >> 8 ) & 0x00FF );
-    buf[1] = ( uint8_t )( compensatedTime & 0x00FF );
+    buf[0] = static_cast<uint8_t>( ( compensatedTime >> 8 ) & 0x00FF );
+    buf[1] = static_cast<uint8_t>( compensatedTime & 0x00FF );
     WriteCommand( RADIO_SET_AUTOTX, buf, 2 );
 }
 
 void SX1280::SetAutoFs( bool enableAutoFs ) {
-    WriteCommand( RADIO_SET_AUTOFS, ( uint8_t * )&enableAutoFs, 1 );
+    WriteCommand( RADIO_SET_AUTOFS, reinterpret_cast<uint8_t *>(&enableAutoFs), 1 );
 }
 
 void SX1280::SetLongPreamble( bool enable ) {
-    WriteCommand( RADIO_SET_LONGPREAMBLE, ( uint8_t * )&enable, 1 );
+    WriteCommand( RADIO_SET_LONGPREAMBLE, reinterpret_cast<uint8_t *>(&enable), 1 );
 }
 
 void SX1280::SetPayload(const uint8_t *buffer, uint8_t size, uint8_t offset) {
@@ -870,8 +870,8 @@ void SX1280::SetCrcPolynomial( uint16_t polynomial ) {
         case PACKET_TYPE_GFSK:
         case PACKET_TYPE_FLRC:
             uint8_t val[2];
-            val[0] = ( uint8_t )( polynomial >> 8 ) & 0xFF;
-            val[1] = ( uint8_t )( polynomial  & 0xFF );
+            val[0] = static_cast<uint8_t>( (polynomial >> 8 ) & 0xFF);
+            val[1] = static_cast<uint8_t>( polynomial  & 0xFF );
             WriteRegister( REG_LR_CRCPOLYBASEADDR, val, 2 );
             break;
         default:
@@ -896,7 +896,7 @@ void SX1280::SetRangingIdLength( RadioRangingIdCheckLengths length ) {
     switch( GetPacketType( true ) )
     {
         case PACKET_TYPE_RANGING:
-            WriteRegister( REG_LR_RANGINGIDCHECKLENGTH, ( ( ( ( uint8_t )length ) & 0x03 ) << 6 ) | ( ReadRegister( REG_LR_RANGINGIDCHECKLENGTH ) & 0x3F ) );
+            WriteRegister( REG_LR_RANGINGIDCHECKLENGTH, ( ( ( static_cast<uint8_t>(length) ) & 0x03 ) << 6 ) | ( ReadRegister( REG_LR_RANGINGIDCHECKLENGTH ) & 0x3F ) );
             break;
         default:
             break;
@@ -947,7 +947,7 @@ float SX1280::GetRangingResult( RadioRangingResultTypes resultType ) {
         case PACKET_TYPE_RANGING:
             SetStandby( STDBY_XOSC );
             WriteRegister( 0x97F, ReadRegister( 0x97F ) | ( 1 << 1 ) ); // enable LORA modem clock
-            WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( ( uint8_t )resultType ) & 0x03 ) << 4 ) );
+            WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( static_cast<uint8_t>(resultType) ) & 0x03 ) << 4 ) );
             valLsb = ( ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR ) << 16 ) | ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR + 1 ) << 8 ) | ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR + 2 ) ) );
             SetStandby( STDBY_RC );
 
@@ -960,13 +960,13 @@ float SX1280::GetRangingResult( RadioRangingResultTypes resultType ) {
                     // distance [m] = ( complement2( register ) * 150 ) / ( 2^12 * bandwidth[MHz] ) )
                     // The API provide BW in [Hz] so the implemented formula is complement2( register ) / bandwidth[Hz] * A,
                     // where A = 150 / (2^12 / 1e6) = 36621.09
-                    val = ( float )complement2( valLsb, 24 ) / ( float )GetLoRaBandwidth( ) * 36621.09375f;
+                    val = static_cast<float>(complement2( valLsb, 24 )) / static_cast<float>(GetLoRaBandwidth()) * 36621.09375f;
                     break;
 
                 case RANGING_RESULT_AVERAGED:
                 case RANGING_RESULT_DEBIASED:
                 case RANGING_RESULT_FILTERED:
-                    val = ( float )valLsb * 20.0f / 100.0f;
+                    val = static_cast<float>(valLsb) * 20.0f / 100.0f;
                     break;
                 default:
                     val = 0.0f;
@@ -982,8 +982,8 @@ void SX1280::SetRangingCalibration( uint16_t cal ) {
     switch( GetPacketType( true ) )
     {
         case PACKET_TYPE_RANGING:
-            WriteRegister( REG_LR_RANGINGRERXTXDELAYCAL, ( uint8_t )( ( cal >> 8 ) & 0xFF ) );
-            WriteRegister( REG_LR_RANGINGRERXTXDELAYCAL + 1, ( uint8_t )( ( cal ) & 0xFF ) );
+            WriteRegister( REG_LR_RANGINGRERXTXDELAYCAL, static_cast<uint8_t>( ( cal >> 8 ) & 0xFF ) );
+            WriteRegister( REG_LR_RANGINGRERXTXDELAYCAL + 1, static_cast<uint8_t>( ( cal ) & 0xFF ) );
             break;
         default:
             break;
@@ -1025,7 +1025,7 @@ float SX1280::GetFrequencyError( ) {
             efe = ( efeRaw[0]<<16 ) | ( efeRaw[1]<<8 ) | efeRaw[2];
             efe &= REG_LR_ESTIMATED_FREQUENCY_ERROR_MASK;
 
-            efeHz = 1.55f * ( float )complement2( efe, 20 ) / ( 1600.0f / ( float )GetLoRaBandwidth( ) * 1000.0f );
+            efeHz = 1.55f * static_cast<float>(complement2( efe, 20 )) / ( 1600.0f / static_cast<float>(GetLoRaBandwidth()) * 1000.0f );
             break;
         case PACKET_TYPE_NONE:
         case PACKET_TYPE_BLE:
@@ -1049,7 +1049,7 @@ uint8_t SX1280::GetRangingPowerDeltaThresholdIndicator()
 {
     SetStandby( STDBY_XOSC );
     WriteRegister( 0x97F, ReadRegister( 0x97F ) | ( 1 << 1 ) ); // enable LoRa modem clock
-    WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( ( uint8_t )RANGING_RESULT_RAW ) & 0x03 ) << 4 ) ); // Select raw results
+    WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( static_cast<uint8_t>(RANGING_RESULT_RAW) ) & 0x03 ) << 4 ) ); // Select raw results
     return ReadRegister( REG_RANGING_RSSI );
 }
 
@@ -1238,7 +1238,7 @@ void SX1280::ReturnRange(float range) {
     usart_sync_get_io_descriptor(&USART_0, &io);
     char str[32];
     snprintf(str, 32, "G%d\n", int(range * 1000000));
-    io_write(io, (const uint8_t *)str, strlen(str));
+    io_write(io, reinterpret_cast<const uint8_t *>(str), strlen(str));
 }
 #endif  // #ifdef MCP
 
@@ -1295,7 +1295,7 @@ void SX1280::ProcessIrqs( void ) {
                                 std::string str("P");
                                 str += base64_encode(rxBuffer, rxBufferSize);
                                 str += "\n";
-                                io_write(io, (const uint8_t *)str.c_str(), str.length());
+                                io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
 #endif  // #ifdef MCP
                             }
                         }
@@ -1365,7 +1365,7 @@ void SX1280::ProcessIrqs( void ) {
                                 std::string str("P");
                                 str += base64_encode(rxBuffer, rxBufferSize);
                                 str += "\n";
-                                io_write(io, (const uint8_t *)str.c_str(), str.length());
+                                io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
 #endif  // #ifdef MCP
                             }
                         }
@@ -1624,7 +1624,7 @@ void SX1280::OnMCPTimer()
                                             std::string str("R"); 
                                             str += base64_encode(buf, data[1]);
                                             str += "\n";
-                                            io_write(io, (const uint8_t *)str.c_str(), str.length());
+                                            io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
                                         } break;
                                         case    'R': {
                                             uint8_t buf[2];
@@ -1632,7 +1632,7 @@ void SX1280::OnMCPTimer()
                                             std::string str("R");
                                             str += base64_encode(buf, data[1]);
                                             str += "\n";
-                                            io_write(io, (const uint8_t *)str.c_str(), str.length());
+                                            io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
                                         } break;
                                     }
                                 }

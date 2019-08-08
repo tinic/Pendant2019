@@ -40,16 +40,16 @@ class Model {
 public:
     static Model &instance();
     
-    const char *Message(size_t index) { index %= messageCount; return (const char *)&messages[index][0]; }
-    void SetMessage(size_t index, const char *message) { index %= messageCount; strncpy((char *)&messages[index][0], message, messageLength); }
+    const char *Message(size_t index) { index %= messageCount; return reinterpret_cast<const char *>(&messages[index][0]); }
+    void SetMessage(size_t index, const char *message) { index %= messageCount; strncpy(reinterpret_cast<char *>(&messages[index][0]), message, messageLength); }
     static constexpr size_t MessageCount() { return messageCount; }
     static constexpr size_t MessageLength() { return messageLength; }
 
     colors::rgb8 MessageColor() const { return message_color; }
     void SetMessageColor(colors::rgb8 color) { message_color = color; }
 
-    const char *Name() const { return (const char *)name; }
-    void SetName(const char *newname) { strncpy((char *)name, newname, nameLength); }
+    const char *Name() const { return reinterpret_cast<const char *>(name); }
+    void SetName(const char *newname) { strncpy(reinterpret_cast<char *>(name), newname, nameLength); }
     static constexpr size_t NameLength() { return nameLength; }
     
     uint32_t Effect() { return effect; }

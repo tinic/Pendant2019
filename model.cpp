@@ -52,10 +52,10 @@ void Model::init() {
 #ifndef EMULATOR
     rand_sync_enable(&RAND_0);
 
-    uid128[0] = *((uint32_t *)(0x008061FC));
-    uid128[1] = *((uint32_t *)(0x00806010));
-    uid128[2] = *((uint32_t *)(0x00806014));
-    uid128[3] = *((uint32_t *)(0x00806018));
+    uid128[0] = *(reinterpret_cast<uint32_t *>(0x008061FC));
+    uid128[1] = *(reinterpret_cast<uint32_t *>(0x00806010));
+    uid128[2] = *(reinterpret_cast<uint32_t *>(0x00806014));
+    uid128[3] = *(reinterpret_cast<uint32_t *>(0x00806018));
 #else  // #ifndef EMULATOR
     memset(uid128, 0xCC, sizeof(uid128));
 #endif  // #ifndef EMULATOR
@@ -76,31 +76,31 @@ uint32_t Model::RandomUInt32() {
 
 std::string Model::BatteryVoltageString() {
     char str[8];
-    int32_t i = int32_t(BatteryVoltage());
-    int32_t f = int32_t(fmodf(BatteryVoltage(),1.0f)*100);
+    int32_t i = static_cast<int32_t>(BatteryVoltage());
+    int32_t f = static_cast<int32_t>(fmodf(BatteryVoltage(),1.0f)*100);
     sprintf(str,"%1d.%02d", int(i), int(f));
     return std::string(str);
 }
 
 std::string Model::SystemVoltageString() {
     char str[8];
-    int32_t i = int32_t(SystemVoltage());
-    int32_t f = int32_t(fmodf(SystemVoltage(),1.0f)*100);
+    int32_t i = static_cast<int32_t>(SystemVoltage());
+    int32_t f = static_cast<int32_t>(fmodf(SystemVoltage(),1.0f)*100);
     sprintf(str,"%1d.%02d", int(i), int(f));
     return std::string(str);
 }
 
 std::string Model::VbusVoltageString() {
     char str[8];
-    int32_t i = int32_t(VbusVoltage());
-    int32_t f = int32_t(fmodf(VbusVoltage(),1.0f)*100);
+    int32_t i = static_cast<int32_t>(VbusVoltage());
+    int32_t f = static_cast<int32_t>(fmodf(VbusVoltage(),1.0f)*100);
     sprintf(str,"%1d.%02d", int(i), int(f));
     return std::string(str);
 }
 
 std::string Model::ChargeCurrentString() {
     char str[8];
-    int32_t i = int32_t(ChargeCurrent());
+    int32_t i = static_cast<int32_t>(ChargeCurrent());
     sprintf(str,"%d", int(i));
     return std::string(str);
 }
@@ -113,26 +113,26 @@ void Model::load() {
     flash_read(&FLASH_0, model_page * page_size, buf, page_size);
 
     auto read_uint32 = [](uint8_t *b, size_t &bp) {
-        uint32_t ret = (uint32_t(b[bp+0]) << 24)|
-                       (uint32_t(b[bp+1]) << 16)|
-                       (uint32_t(b[bp+2]) <<  8)|
-                       (uint32_t(b[bp+3]) <<  0);
+        uint32_t ret = (static_cast<uint32_t>(b[bp+0]) << 24)|
+                       (static_cast<uint32_t>(b[bp+1]) << 16)|
+                       (static_cast<uint32_t>(b[bp+2]) <<  8)|
+                       (static_cast<uint32_t>(b[bp+3]) <<  0);
         bp += 4;
         return ret;
     };
 
     auto read_uint16 = [](uint8_t *b, size_t &bp) {
-        uint16_t ret = (uint32_t(b[bp+0]) <<  8)|
-                       (uint32_t(b[bp+1]) <<  0);
+        uint16_t ret = (static_cast<uint16_t>(b[bp+0]) <<  8)|
+                       (static_cast<uint16_t>(b[bp+1]) <<  0);
         bp += 2;
         return ret;
     };
 
     auto read_float = [](uint8_t *b, size_t &bp) {
-        uint32_t val = (uint32_t(b[bp+0]) << 24)|
-                       (uint32_t(b[bp+1]) << 16)|
-                       (uint32_t(b[bp+2]) <<  8)|
-                       (uint32_t(b[bp+3]) <<  0);
+        uint32_t val = (static_cast<uint32_t>(b[bp+0]) << 24)|
+                       (static_cast<uint32_t>(b[bp+1]) << 16)|
+                       (static_cast<uint32_t>(b[bp+2]) <<  8)|
+                       (static_cast<uint32_t>(b[bp+3]) <<  0);
         union {
             uint32_t int32;
             float float32;
@@ -143,14 +143,14 @@ void Model::load() {
     };
 
     auto read_double = [](uint8_t *b, size_t &bp) {
-        uint64_t val = (uint64_t(b[bp+0]) << 56)|
-                       (uint64_t(b[bp+1]) << 48)|
-                       (uint64_t(b[bp+2]) << 40)|
-                       (uint64_t(b[bp+3]) << 32)|
-                       (uint64_t(b[bp+4]) << 24)|
-                       (uint64_t(b[bp+5]) << 16)|
-                       (uint64_t(b[bp+6]) <<  8)|
-                       (uint64_t(b[bp+7]) <<  0);
+        uint64_t val = (static_cast<uint64_t>(b[bp+0]) << 56)|
+                       (static_cast<uint64_t>(b[bp+1]) << 48)|
+                       (static_cast<uint64_t>(b[bp+2]) << 40)|
+                       (static_cast<uint64_t>(b[bp+3]) << 32)|
+                       (static_cast<uint64_t>(b[bp+4]) << 24)|
+                       (static_cast<uint64_t>(b[bp+5]) << 16)|
+                       (static_cast<uint64_t>(b[bp+6]) <<  8)|
+                       (static_cast<uint64_t>(b[bp+7]) <<  0);
         union {
             uint64_t int64;
             double float64;

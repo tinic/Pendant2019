@@ -60,7 +60,7 @@ void BQ25895::SetBoostVoltage (uint32_t voltageMV) {
             codedValue++;
         }
         reg &= ~(0x0f << 4);
-        reg |= (uint8_t) ((codedValue & 0x0f) << 4);
+        reg |= static_cast<uint8_t>((codedValue & 0x0f) << 4);
         setRegister (0x0A, reg);
     }
 }
@@ -68,7 +68,7 @@ void BQ25895::SetBoostVoltage (uint32_t voltageMV) {
 uint32_t BQ25895::GetBoostVoltage () {
     uint8_t reg = getRegister(0x0A);
     reg = (reg >> 4) & 0x0f;
-    return 4550 + ((uint32_t) reg) * 64;
+    return 4550 + (static_cast<uint32_t>(reg)) * 64;
 }
 
 void BQ25895::SetInputCurrent(uint32_t currentMA) {
@@ -113,22 +113,22 @@ void BQ25895::OneShotADC() {
 
 float BQ25895::BatteryVoltage() {
     uint8_t reg = getRegister(0x0E) & 0x7F;
-    return 2.304f + ( float(reg) * 2.540f ) * ( 1.0f / 127.0f);
+    return 2.304f + ( static_cast<float>(reg) * 2.540f ) * ( 1.0f / 127.0f);
 }
 
 float BQ25895::SystemVoltage() {
     uint8_t reg = getRegister(0x0F) & 0x7F;
-    return 2.304f + ( float(reg) * 2.540f ) * ( 1.0f / 127.0f);
+    return 2.304f + ( static_cast<float>(reg) * 2.540f ) * ( 1.0f / 127.0f);
 }
 
 float BQ25895::VBUSVoltage() {
     uint8_t reg = getRegister(0x11) & 0x7F;
-    return 2.6f + ( float(reg) * 12.7f ) * ( 1.0f / 127.0f);
+    return 2.6f + ( static_cast<float>(reg) * 12.7f ) * ( 1.0f / 127.0f);
 }
 
 float BQ25895::ChargeCurrent() {
     uint8_t reg = getRegister(0x12) & 0x7F;
-    return ( float(reg) * 6350.0f ) * ( 1.0f / 127.0f);
+    return ( static_cast<float>(reg) * 6350.0f ) * ( 1.0f / 127.0f);
 }
 
 uint8_t BQ25895::GetStatus() {

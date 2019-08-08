@@ -1017,7 +1017,7 @@ void UI::init() {
             SDD1306::instance().PlaceUTF8String(0, 0, str);
             if (Model::instance().DateTime() >= 0.0) {
                 // display time
-                int64_t dateTime = Model::instance().DateTime();
+                int64_t dateTime = static_cast<int64_t>(Model::instance().DateTime());
                 int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
                 int32_t min = ( ( dateTime / 1000 )      ) % 60;
                 snprintf(str, 13, "O%02d:%02d", static_cast<int>(hrs), static_cast<int>(min));

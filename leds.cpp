@@ -620,16 +620,16 @@ namespace geom {
         }
         
         float dist(const float4 &b) {
-            float xd = fabs(this->x - b.x);
-            float yd = fabs(this->y - b.y);
-            float zd = fabs(this->z - b.z);
+            float xd = fabsf(this->x - b.x);
+            float yd = fabsf(this->y - b.y);
+            float zd = fabsf(this->z - b.z);
             return sqrtf(xd*xd + yd*yd + zd*zd);
         }
 
         static float dist(const float4 &a, const float4 &b) {
-            float xd = fabs(a.x - b.x);
-            float yd = fabs(a.y - b.y);
-            float zd = fabs(a.z - b.z);
+            float xd = fabsf(a.x - b.x);
+            float yd = fabsf(a.y - b.y);
+            float zd = fabsf(a.z - b.z);
             return sqrtf(xd*xd + yd*yd + zd*zd);
         }
 
@@ -662,17 +662,17 @@ namespace geom {
         }
         
         float4 abs() {
-            return float4(fabs(this->x),
-                          fabs(this->y),
-                          fabs(this->z),
-                          fabs(this->w));
+            return float4(fabsf(this->x),
+                          fabsf(this->y),
+                          fabsf(this->z),
+                          fabsf(this->w));
         }
 
         static float4 abs(const float4 &a) {
-            return float4(fabs(a.x),
-                          fabs(a.y),
-                          fabs(a.z),
-                          fabs(a.w));
+            return float4(fabsf(a.x),
+                          fabsf(a.y),
+                          fabsf(a.z),
+                          fabsf(a.w));
         }
 
         float4 xx00() {
@@ -800,11 +800,11 @@ namespace geom {
     private:
     
         float reflect(float i) {
-            i = fabs(i);
-            if (((int)i & 1) == 0) {
-                i = fmod(i, 1.0f);
+            i = fabsf(i);
+            if ((static_cast<int32_t>(i) & 1) == 0) {
+                i = fmodf(i, 1.0f);
             } else {
-                i = fmod(i, 1.0f);
+                i = fmodf(i, 1.0f);
                 i = 1.0f - i;
             }
             return i;
@@ -851,19 +851,19 @@ namespace colors {
         geom::float4 repeat(float i) {
             i = fmodf(i, 1.0f);
             i *= colors_mul;
-            return geom::float4::lerp(colors[((int32_t)(i))&colors_mask], colors[((int32_t)(i)+1)&colors_mask], fmodf(i, 1.0f));
+            return geom::float4::lerp(colors[(static_cast<int32_t>(i))&colors_mask], colors[(static_cast<int32_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
         }
 
         geom::float4 reflect(float i) {
-            i = fabs(i);
-            if (((int)i & 1) == 0) {
+            i = fabsf(i);
+            if ((static_cast<int32_t>(i) & 1) == 0) {
                 i = fmodf(i, 1.0f);
             } else {
                 i = fmodf(i, 1.0f);
                 i = 1.0f - i;
             }
             i *= colors_mul;
-            return geom::float4::lerp(colors[((int32_t)(i))&colors_mask], colors[((int32_t)(i)+1)&colors_mask], fmodf(i, 1.0f));
+            return geom::float4::lerp(colors[(static_cast<int32_t>(i))&colors_mask], colors[(static_cast<int32_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
         }
 
         geom::float4 clamp(float i) {
@@ -874,13 +874,13 @@ namespace colors {
                 return colors[colors_n-1];
             }
             i *= colors_mul;
-            return geom::float4::lerp(colors[((int32_t)(i))&colors_mask], colors[((int32_t)(i)+1)&colors_mask], fmodf(i, 1.0f));
+            return geom::float4::lerp(colors[(static_cast<int32_t>(i))&colors_mask], colors[(static_cast<int32_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
         }
     };
 };
 
 #ifndef EMULATOR
-static void _qspi_memcpy(uint8_t *dst, uint8_t *src, uint32_t count)
+static void _qspi_memcpy(volatile uint8_t *dst, uint8_t *src, uint32_t count)
 {
 	(void)dst;
 	(void)src;
@@ -958,41 +958,41 @@ public:
         static bool init = false;
         if (!init) {
             init = true;
-            leds[ 0] = geom::float4(-0.00000000,-1.00000000,+0.00000000,+0.00000000);
-            leds[ 1] = geom::float4(-0.38268343,-0.92387953,+0.00000000,+0.00000000);
-            leds[ 2] = geom::float4(-0.70710678,-0.70710678,+0.00000000,+0.00000000);
-            leds[ 3] = geom::float4(-0.92387953,-0.38268343,+0.00000000,+0.00000000);
-            leds[ 4] = geom::float4(-1.00000000,-0.00000000,+0.00000000,+0.00000000);
-            leds[ 5] = geom::float4(-0.92387953,+0.38268343,+0.00000000,+0.00000000);
-            leds[ 6] = geom::float4(-0.70710678,+0.70710678,+0.00000000,+0.00000000);
-            leds[ 7] = geom::float4(-0.38268343,+0.92387953,+0.00000000,+0.00000000);
-            leds[ 8] = geom::float4(-0.00000000,+1.00000000,+0.00000000,+0.00000000);
-            leds[ 9] = geom::float4(+0.38268343,+0.92387953,+0.00000000,+0.00000000);
-            leds[10] = geom::float4(+0.70710678,+0.70710678,+0.00000000,+0.00000000);
-            leds[11] = geom::float4(+0.92387953,+0.38268343,+0.00000000,+0.00000000);
-            leds[12] = geom::float4(+1.00000000,+0.00000000,+0.00000000,+0.00000000);
-            leds[13] = geom::float4(+0.92387953,-0.38268343,+0.00000000,+0.00000000);
-            leds[14] = geom::float4(+0.70710678,-0.70710678,+0.00000000,+0.00000000);
-            leds[15] = geom::float4(+0.38268343,-0.92387953,+0.00000000,+0.00000000);
+            leds[ 0] = geom::float4(-0.00000000f,-1.00000000f,+0.00000000f,+0.00000000f);
+            leds[ 1] = geom::float4(-0.38268343f,-0.92387953f,+0.00000000f,+0.00000000f);
+            leds[ 2] = geom::float4(-0.70710678f,-0.70710678f,+0.00000000f,+0.00000000f);
+            leds[ 3] = geom::float4(-0.92387953f,-0.38268343f,+0.00000000f,+0.00000000f);
+            leds[ 4] = geom::float4(-1.00000000f,-0.00000000f,+0.00000000f,+0.00000000f);
+            leds[ 5] = geom::float4(-0.92387953f,+0.38268343f,+0.00000000f,+0.00000000f);
+            leds[ 6] = geom::float4(-0.70710678f,+0.70710678f,+0.00000000f,+0.00000000f);
+            leds[ 7] = geom::float4(-0.38268343f,+0.92387953f,+0.00000000f,+0.00000000f);
+            leds[ 8] = geom::float4(-0.00000000f,+1.00000000f,+0.00000000f,+0.00000000f);
+            leds[ 9] = geom::float4(+0.38268343f,+0.92387953f,+0.00000000f,+0.00000000f);
+            leds[10] = geom::float4(+0.70710678f,+0.70710678f,+0.00000000f,+0.00000000f);
+            leds[11] = geom::float4(+0.92387953f,+0.38268343f,+0.00000000f,+0.00000000f);
+            leds[12] = geom::float4(+1.00000000f,+0.00000000f,+0.00000000f,+0.00000000f);
+            leds[13] = geom::float4(+0.92387953f,-0.38268343f,+0.00000000f,+0.00000000f);
+            leds[14] = geom::float4(+0.70710678f,-0.70710678f,+0.00000000f,+0.00000000f);
+            leds[15] = geom::float4(+0.38268343f,-0.92387953f,+0.00000000f,+0.00000000f);
 
-            leds[16] = geom::float4(-0.00000000,-0.50000000,+0.00000000,+0.00000000);
-            leds[17] = geom::float4(-0.19134172,-0.46193977,+0.00000000,+0.00000000);
-            leds[18] = geom::float4(-0.35355339,-0.35355339,+0.00000000,+0.00000000);
-            leds[19] = geom::float4(-0.46193977,-0.19134172,+0.00000000,+0.00000000);
-            leds[20] = geom::float4(-0.50000000,-0.00000000,+0.00000000,+0.00000000);
-            leds[21] = geom::float4(-0.46193977,+0.19134172,+0.00000000,+0.00000000);
-            leds[22] = geom::float4(-0.35355339,+0.35355339,+0.00000000,+0.00000000);
-            leds[23] = geom::float4(-0.19134172,+0.46193977,+0.00000000,+0.00000000);
-            leds[24] = geom::float4(-0.00000000,+0.50000000,+0.00000000,+0.00000000);
-            leds[25] = geom::float4(+0.19134172,+0.46193977,+0.00000000,+0.00000000);
-            leds[26] = geom::float4(+0.35355339,+0.35355339,+0.00000000,+0.00000000);
-            leds[27] = geom::float4(+0.46193977,+0.19134172,+0.00000000,+0.00000000);
-            leds[28] = geom::float4(+0.50000000,+0.00000000,+0.00000000,+0.00000000);
-            leds[29] = geom::float4(+0.46193977,-0.19134172,+0.00000000,+0.00000000);
-            leds[30] = geom::float4(+0.35355339,-0.35355339,+0.00000000,+0.00000000);
-            leds[31] = geom::float4(+0.19134172,-0.46193977,+0.00000000,+0.00000000);
+            leds[16] = geom::float4(-0.00000000f,-0.50000000f,+0.00000000f,+0.00000000f);
+            leds[17] = geom::float4(-0.19134172f,-0.46193977f,+0.00000000f,+0.00000000f);
+            leds[18] = geom::float4(-0.35355339f,-0.35355339f,+0.00000000f,+0.00000000f);
+            leds[19] = geom::float4(-0.46193977f,-0.19134172f,+0.00000000f,+0.00000000f);
+            leds[20] = geom::float4(-0.50000000f,-0.00000000f,+0.00000000f,+0.00000000f);
+            leds[21] = geom::float4(-0.46193977f,+0.19134172f,+0.00000000f,+0.00000000f);
+            leds[22] = geom::float4(-0.35355339f,+0.35355339f,+0.00000000f,+0.00000000f);
+            leds[23] = geom::float4(-0.19134172f,+0.46193977f,+0.00000000f,+0.00000000f);
+            leds[24] = geom::float4(-0.00000000f,+0.50000000f,+0.00000000f,+0.00000000f);
+            leds[25] = geom::float4(+0.19134172f,+0.46193977f,+0.00000000f,+0.00000000f);
+            leds[26] = geom::float4(+0.35355339f,+0.35355339f,+0.00000000f,+0.00000000f);
+            leds[27] = geom::float4(+0.46193977f,+0.19134172f,+0.00000000f,+0.00000000f);
+            leds[28] = geom::float4(+0.50000000f,+0.00000000f,+0.00000000f,+0.00000000f);
+            leds[29] = geom::float4(+0.46193977f,-0.19134172f,+0.00000000f,+0.00000000f);
+            leds[30] = geom::float4(+0.35355339f,-0.35355339f,+0.00000000f,+0.00000000f);
+            leds[31] = geom::float4(+0.19134172f,-0.46193977f,+0.00000000f,+0.00000000f);
 
-            leds[32] = geom::float4(+0.00000000,+0.00000000,+0.00000000,+0.00000000);
+            leds[32] = geom::float4(+0.00000000f,+0.00000000f,+0.00000000f,+0.00000000f);
         }
         return leds;
     }
@@ -1342,11 +1342,11 @@ public:
         }
 
         hri_qspi_write_INSTRFRAME_reg(QSPI, cmd.inst_frame.word);
-        volatile uint8_t *qspi_mem = (volatile uint8_t *)QSPI_AHB;
+        volatile uint8_t *qspi_mem = reinterpret_cast<volatile uint8_t *>(QSPI_AHB);
 
         __disable_irq();
         
-        _qspi_memcpy((uint8_t *)qspi_mem, buffer, buf_pos);
+        _qspi_memcpy(qspi_mem, buffer, buf_pos);
 
         __DSB();
         __ISB();
@@ -1617,8 +1617,8 @@ public:
 
         const double speed = 2.0;
 
-        float rgb_walk = (       static_cast<float>(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
-        float val_walk = (1.0f - static_cast<float>(fmodf(now               * speed, 1.0)));
+        float rgb_walk = (       static_cast<float>(fmodf(static_cast<float>(now * (1.0 / 5.0) * speed), 1.0)));
+        float val_walk = (1.0f - static_cast<float>(fmodf(static_cast<float>(now               * speed), 1.0)));
 
         colors::hsp col(rgb_walk, 1.0f, 1.0f);
         for (size_t c = 0; c < leds_rings_n; c++) {
@@ -1647,8 +1647,8 @@ public:
 
         const double speed = 2.0;
 
-        float rgb_walk = (       static_cast<float>(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
-        float val_walk = (1.0f - static_cast<float>(fmodf(now               * speed, 1.0)));
+        float rgb_walk = (       static_cast<float>(fmodf(static_cast<float>(now * (1.0 / 5.0) * speed), 1.0)));
+        float val_walk = (1.0f - static_cast<float>(fmodf(static_cast<float>(now               * speed), 1.0)));
     
         colors::hsv col(rgb_walk, 1.0f, 1.0f);
         for (size_t c = 0; c < leds_rings_n; c++) {
@@ -1678,7 +1678,7 @@ public:
 
         const double speed = 0.5;
 
-        float rgb_walk = (static_cast<float>(fmodf(now * (1.0 / 5.0) * speed, 1.0)));
+        float rgb_walk = (static_cast<float>(fmodf(static_cast<float>(now * (1.0 / 5.0) * speed), 1.0)));
     
         colors::hsv col(rgb_walk, 1.0f, 1.0f);
         colors::rgb8out out = colors::rgb8out(colors::rgb(col));        
@@ -1824,7 +1824,7 @@ public:
             pos = pos.rotate2d(dir);
             pos *= 0.50f;
             pos += (next - now) * 8.0f;
-            pos *= 0.05;
+            pos *= 0.05f;
             return bw.clamp(pos.x);
         });
     }
@@ -1880,12 +1880,12 @@ public:
         static colors::gradient g;
         if (g.check_init()) {
             const geom::float4 gg[] = {
-               geom::float4(0x968b3f, 0.00),
-               geom::float4(0x097916, 0.20),
-               geom::float4(0x00d4ff, 0.40),
-               geom::float4(0xffffff, 0.50),
-               geom::float4(0x8a0e45, 0.80),
-               geom::float4(0x968b3f, 1.00)};
+               geom::float4(0x968b3f, 0.00f),
+               geom::float4(0x097916, 0.20f),
+               geom::float4(0x00d4ff, 0.40f),
+               geom::float4(0xffffff, 0.50f),
+               geom::float4(0x8a0e45, 0.80f),
+               geom::float4(0x968b3f, 1.00f)};
             g.init(gg,6);
         }
 
@@ -1912,7 +1912,7 @@ public:
         if (g.check_init() || col != Model::instance().RingColor()) {
             col = Model::instance().RingColor();
             const geom::float4 gg[] = {
-               geom::float4(0x000000, 0.00),
+               geom::float4(0x000000, 0.00f),
                geom::float4(Model::instance().RingColor().hex(), 1.00)};
             g.init(gg,2);
         }
@@ -2300,7 +2300,7 @@ public:
         colors::rgb8out out = colors::rgb8out(colors::rgb(color));
         
         for (size_t c = 0; c < leds_rings_n; c++) {
-            if (blend) {
+            if (blend != 0.0f) {
                 leds_inner[0][c] = colors::ip(leds_inner[0][c], out, blend);
                 leds_inner[1][c] = colors::ip(leds_inner[1][c], out, blend);
             } else {
@@ -2308,7 +2308,7 @@ public:
                 leds_inner[1][c] = out;
             }
         }
-        if (blend) {
+        if (blend != 0.0f) {
             leds_centr[0] = colors::ip(leds_centr[0], out, blend);
             leds_centr[1] = colors::ip(leds_centr[1], out, blend);
         } else {
@@ -2335,7 +2335,7 @@ public:
         colors::rgb8out out = colors::rgb8out(colors::rgb(color));
         
         for (size_t c = 0; c < leds_rings_n; c++) {
-            if (blend) {
+            if (blend != 0.0f) {
                 leds_outer[0][c] = colors::ip(leds_outer[0][c], out, blend);
                 leds_outer[1][c] = colors::ip(leds_outer[1][c], out, blend);
             } else {
@@ -2363,7 +2363,7 @@ public:
 
         for (size_t c = 0; c < leds_rings_n; c++) {
 
-            if (blend) {
+            if (blend != 0.0f) {
                 leds_outer[0][c] = colors::ip(leds_outer[0][c], out, blend);
                 leds_outer[1][c] = colors::ip(leds_outer[1][c], out, blend);
 
@@ -2379,7 +2379,7 @@ public:
             }
         }
 
-        if (blend) {
+        if (blend != 0.0f) {
             leds_centr[0] = colors::ip(leds_centr[0], out, blend);
             leds_centr[1] = colors::ip(leds_centr[1], out, blend);
         } else {
@@ -2405,13 +2405,13 @@ public:
         const double speed = 3.0;
         double now = Model::instance().Time();
         int32_t direction = static_cast<int32_t>((now - span.time)  * speed) & 1;
-        float color_walk = fmodf((now - span.time) * speed, 1.0f);
+        float color_walk = fmodf(static_cast<float>((now - span.time) * speed), 1.0f);
 
         colors::rgb8out out = colors::rgb8out(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
 
         for (size_t c = 0; c < leds_rings_n; c++) {
 
-            if (blend) {
+            if (blend != 0.0f) {
                 leds_outer[0][c] = colors::ip(leds_outer[0][c], out, blend);
                 leds_outer[1][c] = colors::ip(leds_outer[1][c], out, blend);
 
@@ -2427,7 +2427,7 @@ public:
             }
         }
 
-        if (blend) {
+        if (blend != 0.0f) {
             leds_centr[0] = colors::ip(leds_centr[0], out, blend);
             leds_centr[1] = colors::ip(leds_centr[1], out, blend);
         } else {
