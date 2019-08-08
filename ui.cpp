@@ -75,9 +75,9 @@ void UI::enterSendMessage(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         if (currentMessage >= 0) {
             char str[20];
-            snprintf(str, 20, "%02d/%02d Send:", static_cast<int>(currentMessage), static_cast<int>(Model::instance().MessageCount()));
-            SDD1306::instance().PlaceUTF8String(0, 0, str);
-            SDD1306::instance().PlaceUTF8String(0, 1, Model::instance().Message(size_t(currentMessage)));
+            SDD1306::instance().PlaceUTF8String(0, 0, Model::instance().Message(size_t(currentMessage)));
+            snprintf(str, 20, "\xc2\x88%02d/%02d \xca\xeb\xca\xec\xca\xed\xca\xee\xca\xef", static_cast<int>(currentMessage), static_cast<int>(Model::instance().MessageCount()));
+            SDD1306::instance().PlaceUTF8String(0, 1, str);
         } else {
             SDD1306::instance().PlaceUTF8String(0, 0, "            ");
             SDD1306::instance().PlaceUTF8String(0, 1, "  \xca\xc3\xca\xc4\xca\xc5\xca\xc6\xca\xc7\xca\xc8\xca\xc9\xca\xca  ");
@@ -845,10 +845,10 @@ void UI::enterResetEverything(Timeline::Span &parent) {
         SDD1306::instance().PlaceUTF8String(6, 1, str);
         switch(currentSelection) {
             case 0: {
-                SDD1306::instance().PlaceUTF8String(0, 1, ">");
+                SDD1306::instance().PlaceUTF8String(0, 1, "\xc2\xd0");
             } break;
             case 1: {
-                SDD1306::instance().PlaceUTF8String(6, 1, ">");
+                SDD1306::instance().PlaceUTF8String(6, 1, "\xc2\xd0");
             } break;
         }       
     };
@@ -890,7 +890,7 @@ void UI::enterPrefs(Timeline::Span &) {
 
     static int32_t currentPage = 0;
     
-    const int32_t maxPage = 12;
+    const int32_t maxPage = 13;
     
     const char *pageText[] = {
         "01/13 Send  "      // 1
