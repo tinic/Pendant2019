@@ -35,11 +35,11 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./leds.h"
 #include "./commands.h"
 
-const int32_t version_number = 1;
+static constexpr int32_t version_number = 1;
 
 static constexpr size_t max_string_length = 25;
 
-const int32_t build_number =
+static constexpr int32_t build_number =
 #include "./build_number"
 ;
 

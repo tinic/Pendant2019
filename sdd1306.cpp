@@ -188,6 +188,22 @@ void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
     }
 }
 
+#ifdef EMULATOR
+static void draw_buffer(uint8_t *buf, int32_t x, int32_t y, int32_t len) {
+	std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
+	for (int32_t py = 0; py < 8; py ++) {
+		printf("\x1b[%d;%df",18+y*8+static_cast<uint32_t>(py),2+x);
+		for (int32_t px = 0; px < 8*len; px ++) {
+			if (((buf[1+px] >> py) & 1) != 0) {
+				printf("\x1b[30;47m \x1b[0m");
+			} else {
+				printf(" ");
+			}
+		}
+	}
+}
+#endif  // #ifdef EMULATOR
+
 void SDD1306::Display() {
 
 #ifdef EMULATOR
@@ -226,6 +242,10 @@ void SDD1306::Display() {
 
             io_write(I2C_0_io, buf, 0x61);
 
+#ifdef EMULATOR
+			draw_buffer(buf, 0, 0, 0x61);
+#endif  // #ifdef EMULATOR
+
             {
                 WriteCommand(0xB0+1);
                 WriteCommand(0x0f&(0   )); // 0x20 offset
@@ -240,6 +260,10 @@ void SDD1306::Display() {
             }
                 
             io_write(I2C_0_io, buf, 0x61);
+
+#ifdef EMULATOR
+			draw_buffer(buf, 0, 1, 0x61);
+#endif  // #ifdef EMULATOR
         
         } else if (display_scroll_message) {
                 
@@ -261,6 +285,10 @@ void SDD1306::Display() {
 
             io_write(I2C_0_io, buf, 0x61);
 
+#ifdef EMULATOR
+			draw_buffer(buf, 0, 0, 0x61);
+#endif  // #ifdef EMULATOR
+
             {
                 WriteCommand(0xB0+1);
                 WriteCommand(0x0f&(0   )); // 0x20 offset
@@ -273,8 +301,12 @@ void SDD1306::Display() {
                 int32_t cx = rx >> 4;
                 buf[x+1] = duck_font_raw[0x1800 + scroll_message[cx] * 16 + (rx & 0x0F)];
             }
-                
+
             io_write(I2C_0_io, buf, 0x61);
+
+#ifdef EMULATOR
+			draw_buffer(buf, 0, 1, 0x61);
+#endif  // #ifdef EMULATOR
                 
         } else {
             for (uint32_t x=0; x<12; x++) {
@@ -362,7 +394,7 @@ void SDD1306::DisplayCenterFlip() {
         
     uint8_t buf[0x61];
     buf[0] = 0x40;
-    for (uint32_t y=0; y<4; y++) {
+    for (uint32_t y=0; y<2; y++) {
         WriteCommand(static_cast<uint8_t>(0xB0+y));
         WriteCommand(0x0f&(0   ));
         WriteCommand(0x10|(0>>4));
@@ -388,6 +420,10 @@ void SDD1306::DisplayCenterFlip() {
             }
         }
         io_write(I2C_0_io, buf, 0x61);
+
+#ifdef EMULATOR
+		draw_buffer(buf, 0, y, 0x61);
+#endif  // #ifdef EMULATOR
     }
 }
     
@@ -447,21 +483,11 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
         }
     }
 
-#ifdef EMULATOR
-    std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
-    for (int32_t py = 0; py < 8; py ++) {
-        printf("\x1b[%d;%df",18+y*8+static_cast<uint32_t>(py),2+x);
-        for (int32_t px = 0; px < 8; px ++) {
-            if (((buf[1+px] >> py) & 1) != 0) {
-                printf("\x1b[30;47m \x1b[0m");
-            } else {
-                printf(" ");
-            }
-        }
-    }
-#endif  // #ifdef EMULATOR
-
     io_write(I2C_0_io, buf, 9);
+
+#ifdef EMULATOR
+	draw_buffer(buf, x, y, 0x09);
+#endif  // #ifdef EMULATOR
 }
 
 void SDD1306::WriteCommand(uint8_t cmd_val) const {
