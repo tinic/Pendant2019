@@ -87,7 +87,7 @@ void SDD1306::ClearAttr() {
     
 void SDD1306::DisplayBootScreen() {
     for (uint32_t c=0; c<12*2; c++) {
-        text_buffer_cache[c] = 0x80 + c;
+        text_buffer_cache[c] = static_cast<uint16_t>(0x80 + c);
     }
 }
     
@@ -173,7 +173,7 @@ void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
         }
         display_scroll_message = true;
         scroll_message_offset = offset;
-        scroll_message_len = strlen(str);
+        scroll_message_len = static_cast<uint16_t>(strlen(str));
     } else {
         memset(text_buffer_screen, 0, sizeof(text_buffer_screen));
         memset(text_attr_screen, 0, sizeof(text_attr_screen));
@@ -321,7 +321,7 @@ void SDD1306::DisplayCenterFlip() {
     uint8_t buf[0x61];
     buf[0] = 0x40;
     for (uint32_t y=0; y<4; y++) {
-        WriteCommand(0xB0+y);
+        WriteCommand(static_cast<uint8_t>(0xB0+y));
         WriteCommand(0x0f&(0   ));
         WriteCommand(0x10|(0>>4));
         for (uint32_t x = 0; x < 96; x++) {
@@ -332,9 +332,9 @@ void SDD1306::DisplayCenterFlip() {
                 if (rx < 0 || rx > 95) {
                     buf[x+1] = 0x00;
                 } else {
-                    uint8_t a = text_attr_screen[y*12+rx/8];
+                    uint8_t a = text_attr_screen[y*12+static_cast<uint32_t>(rx/8)];
                     uint8_t r = (a & 4) ? (7-(rx&7)) : (rx&7);
-                    uint8_t v = duck_font_raw[text_buffer_screen[y*12+rx/8]*8+r];
+                    uint8_t v = duck_font_raw[text_buffer_screen[y*12+static_cast<uint32_t>(rx/8)]*8+r];
                     if (a & 1) {
                         v = ~v;
                     }
@@ -353,9 +353,9 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 
     x = x * 8;
 
-    WriteCommand(0xB0 + y);
-    WriteCommand(0x0f&(x   ));
-    WriteCommand(0x10|(x>>4));
+    WriteCommand(static_cast<uint8_t>(0xB0 + y));
+    WriteCommand(static_cast<uint8_t>(0x0f&(x   )));
+    WriteCommand(static_cast<uint8_t>(0x10|(x>>4)));
         
     uint8_t buf[9];
     buf[0] = 0x40;
@@ -408,7 +408,7 @@ void SDD1306::DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr) {
 #ifdef EMULATOR
     std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
     for (int32_t py = 0; py < 8; py ++) {
-        printf("\x1b[%d;%df",18+y*8+py,2+x);
+        printf("\x1b[%d;%df",18+y*8+static_cast<uint32_t>(py),2+x);
         for (int32_t px = 0; px < 8; px ++) {
             if (((buf[1+px] >> py) & 1) != 0) {
                 printf("\x1b[30;47m \x1b[0m");

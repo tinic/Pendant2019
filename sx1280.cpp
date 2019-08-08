@@ -183,7 +183,7 @@ bool SX1280::DevicePresent()  {
 
 uint16_t SX1280::GetFirmwareVersion( void )
 {
-    return( ( ( ReadRegister( REG_LR_FIRMWARE_VERSION_MSB ) ) << 8 ) | ( ReadRegister( REG_LR_FIRMWARE_VERSION_MSB + 1 ) ) );
+    return static_cast<uint16_t>( ( ( ReadRegister( REG_LR_FIRMWARE_VERSION_MSB ) ) << 8 ) | ( ReadRegister( REG_LR_FIRMWARE_VERSION_MSB + 1 ) ) );
 }
 
 SX1280::RadioStatus SX1280::GetStatus( void )
@@ -308,10 +308,10 @@ void SX1280::ReadBuffer( uint8_t offset, uint8_t *buffer, uint8_t size ) {
 
 
 void SX1280::SetSleep( SleepParams sleepConfig ) {
-    uint8_t sleep = ( sleepConfig.WakeUpRTC << 3 ) |
-                    ( sleepConfig.InstructionRamRetention << 2 ) |
-                    ( sleepConfig.DataBufferRetention << 1 ) |
-                    ( sleepConfig.DataRamRetention );
+    uint8_t sleep = static_cast<uint8_t>(( sleepConfig.WakeUpRTC << 3 ) |
+                                         ( sleepConfig.InstructionRamRetention << 2 ) |
+                                         ( sleepConfig.DataBufferRetention << 1 ) |
+                                         ( sleepConfig.DataRamRetention ));
     OperatingMode = MODE_SLEEP;
     WriteCommand( RADIO_SET_SLEEP, &sleep, 1 );
 }
@@ -433,7 +433,7 @@ void SX1280::SetTxParams( int8_t power, RadioRampTimes rampTime ) {
 
     // The power value to send on SPI/UART is in the range [0..31] and the
     // physical output power is in the range [-18..13]dBm
-    buf[0] = power + 18;
+    buf[0] = static_cast<uint8_t>(power + 18);
     buf[1] = static_cast<uint8_t>(rampTime);
     WriteCommand( RADIO_SET_TXPARAMS, buf, 2 );
 }
@@ -564,16 +564,16 @@ void SX1280::ForcePreambleLength( RadioPreambleLengths preambleLength ) {
 
 void SX1280::EnableManualGain() {
     WriteRegister( REG_ENABLE_MANUAL_GAIN_CONTROL, ReadRegister( REG_ENABLE_MANUAL_GAIN_CONTROL ) | 0x80 );
-    WriteRegister( REG_DEMOD_DETECTION, ReadRegister( REG_DEMOD_DETECTION ) & 0xFE );
+    WriteRegister( REG_DEMOD_DETECTION, static_cast<uint8_t>(ReadRegister( REG_DEMOD_DETECTION ) & 0xFE) );
 }
 
 void SX1280::DisableManualGain() {
     WriteRegister( REG_ENABLE_MANUAL_GAIN_CONTROL, ReadRegister( REG_ENABLE_MANUAL_GAIN_CONTROL ) & (~0x80) );
-    WriteRegister( REG_DEMOD_DETECTION, ReadRegister( REG_DEMOD_DETECTION ) | (~0xFE) );
+    WriteRegister( REG_DEMOD_DETECTION, static_cast<uint8_t>(ReadRegister( REG_DEMOD_DETECTION ) | (~0xFE)) );
 }
 
 void SX1280::SetManualGainValue(uint8_t gain) {
-    WriteRegister( REG_MANUAL_GAIN_VALUE, ( ReadRegister( REG_MANUAL_GAIN_VALUE ) & 0xF0 ) | gain );
+    WriteRegister( REG_MANUAL_GAIN_VALUE, static_cast<uint8_t>(( ReadRegister( REG_MANUAL_GAIN_VALUE ) & 0xF0 ) | gain) );
 }
 
 void SX1280::GetRxBufferStatus( uint8_t *rxPayloadLength, uint8_t *rxStartBufferPointer ) {
@@ -591,7 +591,7 @@ void SX1280::GetRxBufferStatus( uint8_t *rxPayloadLength, uint8_t *rxStartBuffer
     {
         // In the case of BLE, the size returned in status[0] do not include the 2-byte length PDU header
         // so it is added there
-        *rxPayloadLength = std::min(255, int(status[0]) + 2);
+        *rxPayloadLength = static_cast<uint8_t>(std::min(255, (status[0]) + 2));
     }
     else
     {
@@ -698,7 +698,7 @@ void SX1280::SetDioIrqParams( uint16_t irqMask, uint16_t dio1Mask, uint16_t dio2
 uint16_t SX1280::GetIrqStatus( void ) {
     uint8_t irqStatus[2];
     ReadCommand( RADIO_GET_IRQSTATUS, irqStatus, 2 );
-    return ( irqStatus[0] << 8 ) | irqStatus[1];
+    return static_cast<uint16_t>(( irqStatus[0] << 8 ) | irqStatus[1]);
 }
 
 void SX1280::ClearIrqStatus( uint16_t irqMask ) {
@@ -710,12 +710,12 @@ void SX1280::ClearIrqStatus( uint16_t irqMask ) {
 }
 
 void SX1280::Calibrate( CalibrationParams calibParam ) {
-    uint8_t cal = ( calibParam.ADCBulkPEnable << 5 ) |
-                  ( calibParam.ADCBulkNEnable << 4 ) |
-                  ( calibParam.ADCPulseEnable << 3 ) |
-                  ( calibParam.PLLEnable << 2 ) |
-                  ( calibParam.RC13MEnable << 1 ) |
-                  ( calibParam.RC64KEnable );
+    uint8_t cal = static_cast<uint8_t>(( calibParam.ADCBulkPEnable << 5 ) |
+                                       ( calibParam.ADCBulkNEnable << 4 ) |
+                                       ( calibParam.ADCPulseEnable << 3 ) |
+                                       ( calibParam.PLLEnable << 2 ) |
+                                       ( calibParam.RC13MEnable << 1 ) |
+                                       ( calibParam.RC64KEnable ));
     WriteCommand( RADIO_CALIBRATE, &cal, 1 );
 }
 
@@ -896,7 +896,7 @@ void SX1280::SetRangingIdLength( RadioRangingIdCheckLengths length ) {
     switch( GetPacketType( true ) )
     {
         case PACKET_TYPE_RANGING:
-            WriteRegister( REG_LR_RANGINGIDCHECKLENGTH, ( ( ( static_cast<uint8_t>(length) ) & 0x03 ) << 6 ) | ( ReadRegister( REG_LR_RANGINGIDCHECKLENGTH ) & 0x3F ) );
+            WriteRegister( REG_LR_RANGINGIDCHECKLENGTH, static_cast<uint8_t>( ( ( ( static_cast<uint8_t>(length) ) & 0x03 ) << 6 ) | ( ReadRegister( REG_LR_RANGINGIDCHECKLENGTH ) & 0x3F ) ) );
             break;
         default:
             break;
@@ -947,8 +947,8 @@ float SX1280::GetRangingResult( RadioRangingResultTypes resultType ) {
         case PACKET_TYPE_RANGING:
             SetStandby( STDBY_XOSC );
             WriteRegister( 0x97F, ReadRegister( 0x97F ) | ( 1 << 1 ) ); // enable LORA modem clock
-            WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( static_cast<uint8_t>(resultType) ) & 0x03 ) << 4 ) );
-            valLsb = ( ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR ) << 16 ) | ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR + 1 ) << 8 ) | ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR + 2 ) ) );
+            WriteRegister( REG_LR_RANGINGRESULTCONFIG, static_cast<uint8_t>( ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | static_cast<uint32_t>( ( ( resultType ) & 0x03 ) << 4 ) ) );
+            valLsb = static_cast<uint32_t>( ( ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR ) << 16 ) | ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR + 1 ) << 8 ) | ( ReadRegister( REG_LR_RANGINGRESULTBASEADDR + 2 ) ) ) );
             SetStandby( STDBY_RC );
 
             // Convertion from LSB to distance. For explanation on the formula, refer to Datasheet of SX1280
@@ -1000,7 +1000,7 @@ void SX1280::RangingClearFilterResult( void ) {
 
 void SX1280::RangingSetFilterNumSamples( uint8_t num ) {
     // Silently set 8 as minimum value
-    WriteRegister( REG_LR_RANGINGFILTERWINDOWSIZE, ( num < DEFAULT_RANGING_FILTER_SIZE ) ? DEFAULT_RANGING_FILTER_SIZE : num );
+    WriteRegister( REG_LR_RANGINGFILTERWINDOWSIZE, static_cast<uint8_t>( ( num < DEFAULT_RANGING_FILTER_SIZE ) ? DEFAULT_RANGING_FILTER_SIZE : num ) );
 }
 
 void SX1280::SetRangingRole( RadioRangingRoles role ) {
@@ -1022,7 +1022,7 @@ float SX1280::GetFrequencyError( ) {
             efeRaw[0] = ReadRegister( REG_LR_ESTIMATED_FREQUENCY_ERROR_MSB );
             efeRaw[1] = ReadRegister( REG_LR_ESTIMATED_FREQUENCY_ERROR_MSB + 1 );
             efeRaw[2] = ReadRegister( REG_LR_ESTIMATED_FREQUENCY_ERROR_MSB + 2 );
-            efe = ( efeRaw[0]<<16 ) | ( efeRaw[1]<<8 ) | efeRaw[2];
+            efe = static_cast<uint32_t>( ( efeRaw[0]<<16 ) | ( efeRaw[1]<<8 ) | efeRaw[2] );
             efe &= REG_LR_ESTIMATED_FREQUENCY_ERROR_MASK;
 
             efeHz = 1.55f * static_cast<float>(complement2( efe, 20 )) / ( 1600.0f / static_cast<float>(GetLoRaBandwidth()) * 1000.0f );
@@ -1049,7 +1049,7 @@ uint8_t SX1280::GetRangingPowerDeltaThresholdIndicator()
 {
     SetStandby( STDBY_XOSC );
     WriteRegister( 0x97F, ReadRegister( 0x97F ) | ( 1 << 1 ) ); // enable LoRa modem clock
-    WriteRegister( REG_LR_RANGINGRESULTCONFIG, ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( static_cast<uint8_t>(RANGING_RESULT_RAW) ) & 0x03 ) << 4 ) ); // Select raw results
+    WriteRegister( REG_LR_RANGINGRESULTCONFIG, static_cast<uint8_t>( ( ReadRegister( REG_LR_RANGINGRESULTCONFIG ) & MASK_RANGINGMUXSEL ) | ( ( ( static_cast<uint8_t>(RANGING_RESULT_RAW) ) & 0x03 ) << 4 ) ) ); // Select raw results
     return ReadRegister( REG_RANGING_RSSI );
 }
 
@@ -1536,7 +1536,7 @@ void SX1280::enableIRQ() {
 }
 
 void SX1280::delayMS(uint32_t ms) {
-    delay_ms(ms);
+    delay_ms(static_cast<int32_t>(ms));
 }
 
 void SX1280::do_wait_for_busy_pin() {

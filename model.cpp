@@ -122,8 +122,8 @@ void Model::load() {
     };
 
     auto read_uint16 = [](uint8_t *b, size_t &bp) {
-        uint16_t ret = (static_cast<uint16_t>(b[bp+0]) <<  8)|
-                       (static_cast<uint16_t>(b[bp+1]) <<  0);
+        uint16_t ret = static_cast<uint16_t>((static_cast<uint16_t>(b[bp+0]) <<  8)|
+                                             (static_cast<uint16_t>(b[bp+1]) <<  0));
         bp += 2;
         return ret;
     };

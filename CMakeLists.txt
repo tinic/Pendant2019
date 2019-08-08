@@ -104,7 +104,7 @@ else (NOT EMULATOR_BUILD)
 
 endif (NOT EMULATOR_BUILD)
 
-set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -Werror -Wall -Wextra -Wdouble-promotion -Wshadow -Wfloat-conversion -std=c++17 -fno-rtti -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -Werror -Wall -Wextra -Wdouble-promotion -Wshadow -Wfloat-conversion -Wnull-dereference -Wformat=2 -std=c++17 -fno-rtti -fno-exceptions")
 SET(CMAKE_CXX_FLAGS_RELEASE "-Os")
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 

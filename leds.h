@@ -196,7 +196,7 @@ namespace colors {
         }
         
         uint32_t hex() const {
-            return ((r<<16) | (g<<8) | b);
+            return static_cast<uint32_t>((r<<16) | (g<<8) | b);
         }
         
         bool operator==(const rgb8 &c) const {

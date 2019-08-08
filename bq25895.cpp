@@ -76,12 +76,12 @@ void BQ25895::SetInputCurrent(uint32_t currentMA) {
         uint32_t codedValue = currentMA;
         codedValue = ((codedValue) / 50) - 1;
         codedValue |= (1 << 6);
-        setRegister (0x00, codedValue);
+        setRegister (0x00, static_cast<uint8_t>(codedValue));
     }
     if (currentMA == 0) {
         uint32_t codedValue = 0;
         codedValue |= (1 << 6);
-        setRegister (0x00, codedValue);
+        setRegister (0x00, static_cast<uint8_t>(codedValue));
     }
 }
      

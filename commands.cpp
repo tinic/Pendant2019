@@ -168,18 +168,18 @@ void Commands::Boot() {
                             float interp = 0;
                             if (span.InBeginPeriod(interp, 0.5f)) {
                                 if (interp < 0.5f) {
-                                    SDD1306::instance().SetVerticalShift(-static_cast<int32_t>(interp * 2.0f * 16));
+                                    SDD1306::instance().SetVerticalShift(-static_cast<int8_t>(interp * 2.0f * 16));
                                     below.Calc();
                                 } else {
-                                    SDD1306::instance().SetVerticalShift(16-static_cast<int32_t>((interp * 2.0f - 1.0f ) * 16.0f));
+                                    SDD1306::instance().SetVerticalShift(16-static_cast<int8_t>((interp * 2.0f - 1.0f ) * 16.0f));
                                     SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
                                 }
                             } else  if (span.InEndPeriod(interp, 0.5f)) {
                                 if (interp < 0.5f) {
-                                    SDD1306::instance().SetVerticalShift(-static_cast<int32_t>(interp * 2.0f * 16.0f));
+                                    SDD1306::instance().SetVerticalShift(-static_cast<int8_t>(interp * 2.0f * 16.0f));
                                     SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
                                 } else {
-                                    SDD1306::instance().SetVerticalShift(16-static_cast<int32_t>((interp * 2.0f - 1.0f ) * 16.0f));
+                                    SDD1306::instance().SetVerticalShift(16-static_cast<int8_t>((interp * 2.0f - 1.0f ) * 16.0f));
                                     SDD1306::instance().SetAsciiScrollMessage(0,0);
                                     below.Calc();
                                 }
@@ -208,17 +208,17 @@ void Commands::Boot() {
                           ( static_cast<uint32_t>(payload[ 6]) <<  8 )| 
                           ( static_cast<uint32_t>(payload[ 7]) <<  0 );
                           
-                msg.col.r = static_cast<uint32_t>(payload[ 8]);
-                msg.col.g = static_cast<uint32_t>(payload[ 9]);
-                msg.col.b = static_cast<uint32_t>(payload[10]);
+                msg.col.r = static_cast<uint8_t>(payload[ 8]);
+                msg.col.g = static_cast<uint8_t>(payload[ 9]);
+                msg.col.b = static_cast<uint8_t>(payload[10]);
                           
                 msg.flg = ( static_cast<uint32_t>(payload[12]) << 24 )|
                           ( static_cast<uint32_t>(payload[13]) << 16 )|
                           ( static_cast<uint32_t>(payload[14]) <<  8 )| 
                           ( static_cast<uint32_t>(payload[15]) <<  0 );
                           
-                msg.cnt = ( uint16_t(payload[16]) <<  8 )| 
-                          ( uint16_t(payload[17]) <<  0 );
+                msg.cnt = static_cast<uint16_t>(( static_cast<uint16_t>(payload[16]) <<  8 )| 
+                                                ( static_cast<uint16_t>(payload[17]) <<  0 ));
                           
                 memcpy(&msg.name[0], &payload[18], 12);
                 memcpy(&msg.message[0], &payload[30], 12);

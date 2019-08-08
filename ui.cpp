@@ -269,7 +269,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         if (currentMode == 0) {
             char str[20];
-            snprintf(str, 20, "%s", Model::instance().Message(selectedMessage));
+            snprintf(str, 20, "%s", Model::instance().Message(static_cast<size_t>(selectedMessage)));
             SDD1306::instance().PlaceUTF8String(0, 0, str);
             snprintf(str, 20, "   %02d/%02d    ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
             SDD1306::instance().PlaceUTF8String(0, 1, str);
@@ -282,9 +282,9 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
             } else {
                 for (int32_t c=0; c<static_cast<int32_t>(Model::MessageLength()); c++) {
                     if (c == currentChar) {
-                        SDD1306::instance().PlaceUTF8String(c, 1, "^");
+                        SDD1306::instance().PlaceUTF8String(static_cast<uint32_t>(c), 1, "^");
                     } else {
-                        SDD1306::instance().PlaceUTF8String(c, 1, " ");
+                        SDD1306::instance().PlaceUTF8String(static_cast<uint32_t>(c), 1, " ");
                     }
                 }
             }
@@ -327,7 +327,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
         span.time = Model::instance().Time(); // reset timeout
         if (currentMode == 0) {
             currentMode = 1;
-            strncpy(currentMessage, Model::instance().Message(selectedMessage), 12);
+            strncpy(currentMessage, Model::instance().Message(static_cast<size_t>(selectedMessage)), 12);
             for (int32_t c=0; c<12; c++) {
                 currentMessage[c] = std::min(static_cast<char>(0x5f), std::max(static_cast<char>(0x20), currentMessage[c])); 
             }
@@ -339,7 +339,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
                         currentMessage[c] = 0;
                     }
                 }
-                Model::instance().SetMessage(selectedMessage, currentMessage);
+                Model::instance().SetMessage(static_cast<size_t>(selectedMessage), currentMessage);
                 Model::instance().save();
                 Timeline::instance().Remove(span);
                 Timeline::instance().ProcessDisplay();
@@ -390,9 +390,9 @@ void UI::enterChangeName(Timeline::Span &parent) {
         } else {
             for (int32_t c=0; c<12; c++) {
                 if (c == currentChar) {
-                    SDD1306::instance().PlaceUTF8String(c, 1, "^");
+                    SDD1306::instance().PlaceUTF8String(static_cast<uint32_t>(c), 1, "^");
                 } else {
-                    SDD1306::instance().PlaceUTF8String(c, 1, " ");
+                    SDD1306::instance().PlaceUTF8String(static_cast<uint32_t>(c), 1, " ");
                 }
             }
         }
@@ -790,7 +790,7 @@ void UI::enterDebug(Timeline::Span &parent) {
             SDD1306::instance().PlaceUTF8String(5, 0, "BQ25895");
             snprintf(str, 20, "%02x b", static_cast<int>(currentSelection));
             SDD1306::instance().PlaceUTF8String(0, 1, str);
-            uint8_t val = BQ25895::instance().getRegister(currentSelection);
+            uint8_t val = BQ25895::instance().getRegister(static_cast<uint8_t>(currentSelection));
             snprintf(str, 20, BYTE_TO_BINARY_PATTERN, BYTE_TO_BINARY(val));
             SDD1306::instance().PlaceUTF8String(4, 1, str);
         }

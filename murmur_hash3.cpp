@@ -65,13 +65,13 @@ uint32_t MurmurHash3_32(const void *key, int len, uint32_t seed) {
     uint32_t k1 = 0;
 
     switch(len & 3) {
-    case 3: k1 ^= tail[2] << 16; // fallthrough
-    case 2: k1 ^= tail[1] << 8; // fallthrough
-    case 1: k1 ^= tail[0];
+    case 3: k1 ^= static_cast<uint32_t>(tail[2]) << 16; // fallthrough
+    case 2: k1 ^= static_cast<uint32_t>(tail[1]) << 8; // fallthrough
+    case 1: k1 ^= static_cast<uint32_t>(tail[0]);
           k1 *= c1; k1 = ROTL32(k1,15); k1 *= c2; h1 ^= k1;
     };
 
-    h1 ^= len;
+    h1 ^= static_cast<uint32_t>(len);
 
     h1 = fmix32(h1);
 

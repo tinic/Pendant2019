@@ -64,7 +64,7 @@ public:
     }
 
     int32_t get(int32_t lower, int32_t upper) {
-        return (get() % (upper-lower)) + lower;
+        return (static_cast<int32_t>(get()) % (upper-lower)) + lower;
     }
 
 private:
@@ -355,9 +355,9 @@ namespace colors {
         } else {
             int32_t ii = static_cast<int32_t>(i * 256.0f);
             return rgb8out(
-                ( ( a.r * ( 256 - ii ) ) + ( b.r * ii ) ) / 256,
-                ( ( a.g * ( 256 - ii ) ) + ( b.g * ii ) ) / 256,
-                ( ( a.b * ( 256 - ii ) ) + ( b.b * ii ) ) / 256
+                static_cast<uint8_t>(( ( a.r * ( 256 - ii ) ) + ( b.r * ii ) ) / 256),
+                static_cast<uint8_t>(( ( a.g * ( 256 - ii ) ) + ( b.g * ii ) ) / 256),
+                static_cast<uint8_t>(( ( a.b * ( 256 - ii ) ) + ( b.b * ii ) ) / 256)
             );
         }
     }
@@ -834,7 +834,7 @@ namespace colors {
                 geom::float4 a = stops[0];
                 geom::float4 b = stops[1];
                 if (n > 2) {
-                  for (int32_t d = (n-2); d >= 0 ; d--) {
+                  for (int32_t d = static_cast<int32_t>(n-2); d >= 0 ; d--) {
                       if ( f >= (stops[d].w) ) {
                         a = stops[d+0];
                         b = stops[d+1];
@@ -851,7 +851,7 @@ namespace colors {
         geom::float4 repeat(float i) {
             i = fmodf(i, 1.0f);
             i *= colors_mul;
-            return geom::float4::lerp(colors[(static_cast<int32_t>(i))&colors_mask], colors[(static_cast<int32_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
+            return geom::float4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
         }
 
         geom::float4 reflect(float i) {
@@ -863,7 +863,7 @@ namespace colors {
                 i = 1.0f - i;
             }
             i *= colors_mul;
-            return geom::float4::lerp(colors[(static_cast<int32_t>(i))&colors_mask], colors[(static_cast<int32_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
+            return geom::float4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
         }
 
         geom::float4 clamp(float i) {
@@ -874,7 +874,7 @@ namespace colors {
                 return colors[colors_n-1];
             }
             i *= colors_mul;
-            return geom::float4::lerp(colors[(static_cast<int32_t>(i))&colors_mask], colors[(static_cast<int32_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
+            return geom::float4::lerp(colors[(static_cast<size_t>(i))&colors_mask], colors[(static_cast<size_t>(i)+1)&colors_mask], fmodf(i, 1.0f));
         }
     };
 };
@@ -1252,10 +1252,10 @@ public:
         }
 
         auto transfer4 = [](uint8_t p0, uint8_t p1, uint8_t p2, uint8_t p3, uint8_t *buf, size_t &bp, int32_t bright) {
-            p0 = ( p0 * bright ) / 256;
-            p1 = ( p1 * bright ) / 256;
-            p2 = ( p2 * bright ) / 256;
-            p3 = ( p3 * bright ) / 256;
+            p0 = static_cast<uint8_t>(( p0 * bright ) / 256);
+            p1 = static_cast<uint8_t>(( p1 * bright ) / 256);
+            p2 = static_cast<uint8_t>(( p2 * bright ) / 256);
+            p3 = static_cast<uint8_t>(( p3 * bright ) / 256);
 
             for(int32_t d = 7; d >=0; d--) {
                 const uint8_t *src = conv_lookup[
@@ -1289,8 +1289,8 @@ public:
         }
 
         auto transfer2 = [](uint8_t p0, uint8_t p1, uint8_t *buf, size_t &bp, int32_t bright) {
-            p0 = ( p0 * bright ) / 256;
-            p1 = ( p1 * bright ) / 256;
+            p0 = static_cast<uint8_t>(( p0 * bright ) / 256);
+            p1 = static_cast<uint8_t>(( p1 * bright ) / 256);
             for(int32_t d = 7; d >=0; d--) {
                 const uint8_t *src = conv_lookup[
                 ((p0&(1<<d))?0x8:0x0)|
@@ -1398,14 +1398,14 @@ public:
                         if ( n >= 0 && n < int(leds.size())) {
 #if 0 // def __APPLE__
                             printf("\x1b[48;5;%dm  \x1b[0m", 16 + 
-                                int(std::min(std::max(leds[n].r, 0.0f), 1.0f) *   5.0f)*36+ 
-                                int(std::min(std::max(leds[n].g, 0.0f), 1.0f) *   5.0f)* 6+ 
-                                int(std::min(std::max(leds[n].b, 0.0f), 1.0f) *   5.0f)* 1);
+                                static_cast<int>(std::min(std::max(leds[static_cast<size_t>(n)].r, 0.0f), 1.0f) *   5.0f)*36+ 
+                                static_cast<int>(std::min(std::max(leds[static_cast<size_t>(n)].g, 0.0f), 1.0f) *   5.0f)* 6+ 
+                                static_cast<int>(std::min(std::max(leds[static_cast<size_t>(n)].b, 0.0f), 1.0f) *   5.0f)* 1);
 #else
                             printf("\x1b[48;2;%d;%d;%dm  \x1b[0m", 
-                                int(std::min(std::max(leds[n].r, 0.0f), 1.0f) * 255.0f), 
-                                int(std::min(std::max(leds[n].g, 0.0f), 1.0f) * 255.0f), 
-                                int(std::min(std::max(leds[n].b, 0.0f), 1.0f) * 255.0f));
+                                static_cast<int>(std::min(std::max(leds[static_cast<size_t>(n)].r, 0.0f), 1.0f) * 255.0f), 
+                                static_cast<int>(std::min(std::max(leds[static_cast<size_t>(n)].g, 0.0f), 1.0f) * 255.0f), 
+                                static_cast<int>(std::min(std::max(leds[static_cast<size_t>(n)].b, 0.0f), 1.0f) * 255.0f));
 #endif
                         }
                         x++;
@@ -1416,40 +1416,40 @@ public:
 
         std::vector<colors::rgb> leds_top;
         for (size_t c = 0; c < leds_rings_n; c++) {
-            uint32_t r = (leds_outer[0][c].r * brightness ) / 256;
-            uint32_t g = (leds_outer[0][c].g * brightness ) / 256;
-            uint32_t b = (leds_outer[0][c].b * brightness ) / 256;
+            uint8_t r = static_cast<uint8_t>((leds_outer[0][c].r * brightness ) / 256);
+            uint8_t g = static_cast<uint8_t>((leds_outer[0][c].g * brightness ) / 256);
+            uint8_t b = static_cast<uint8_t>((leds_outer[0][c].b * brightness ) / 256);
             leds_top.push_back(colors::rgb(colors::rgb8out(r,g,b)));
         }
         for (size_t c = 0; c < leds_rings_n; c++) {
-            uint32_t r = (leds_inner[0][c].r * brightness * disabled_inner_leds_top[c]) / 256;
-            uint32_t g = (leds_inner[0][c].g * brightness * disabled_inner_leds_top[c]) / 256;
-            uint32_t b = (leds_inner[0][c].b * brightness * disabled_inner_leds_top[c]) / 256;
+            uint8_t r = static_cast<uint8_t>((leds_inner[0][c].r * brightness * disabled_inner_leds_top[c]) / 256);
+            uint8_t g = static_cast<uint8_t>((leds_inner[0][c].g * brightness * disabled_inner_leds_top[c]) / 256);
+            uint8_t b = static_cast<uint8_t>((leds_inner[0][c].b * brightness * disabled_inner_leds_top[c]) / 256);
             leds_top.push_back(colors::rgb(colors::rgb8out(r,g,b)));
         }
         leds_top.push_back(colors::rgb(colors::rgb8out(
-                (leds_centr[0].r * brightness) / 256,
-                (leds_centr[0].g * brightness) / 256,
-                (leds_centr[0].b * brightness) / 256)));
+                static_cast<uint8_t>((leds_centr[0].r * brightness) / 256),
+                static_cast<uint8_t>((leds_centr[0].g * brightness) / 256),
+                static_cast<uint8_t>((leds_centr[0].b * brightness) / 256))));
         print_leds(0, 0, leds_top);
         
         std::vector<colors::rgb> leds_btm;
         for (size_t c = 0; c < leds_rings_n; c++) {
-            uint32_t r = (leds_outer[1][c].r * brightness ) / 256;
-            uint32_t g = (leds_outer[1][c].g * brightness ) / 256;
-            uint32_t b = (leds_outer[1][c].b * brightness ) / 256;
+            uint8_t r = static_cast<uint8_t>((leds_outer[1][c].r * brightness ) / 256);
+            uint8_t g = static_cast<uint8_t>((leds_outer[1][c].g * brightness ) / 256);
+            uint8_t b = static_cast<uint8_t>((leds_outer[1][c].b * brightness ) / 256);
             leds_btm.push_back(colors::rgb(colors::rgb8out(r,g,b)));
         }
         for (size_t c = 0; c < leds_rings_n; c++) {
-            uint32_t r = (leds_inner[0][c].r * brightness * disabled_inner_leds_bottom[c]) / 256;
-            uint32_t g = (leds_inner[0][c].g * brightness * disabled_inner_leds_bottom[c]) / 256;
-            uint32_t b = (leds_inner[0][c].b * brightness * disabled_inner_leds_bottom[c]) / 256;
+            uint8_t r = static_cast<uint8_t>((leds_inner[0][c].r * brightness * disabled_inner_leds_bottom[c]) / 256);
+            uint8_t g = static_cast<uint8_t>((leds_inner[0][c].g * brightness * disabled_inner_leds_bottom[c]) / 256);
+            uint8_t b = static_cast<uint8_t>((leds_inner[0][c].b * brightness * disabled_inner_leds_bottom[c]) / 256);
             leds_btm.push_back(colors::rgb(colors::rgb8out(r,g,b)));
         }
         leds_btm.push_back(colors::rgb(colors::rgb8out(
-                (leds_centr[1].r * brightness) / 256,
-                (leds_centr[1].g * brightness) / 256,
-                (leds_centr[1].b * brightness) / 256)));
+                static_cast<uint8_t>((leds_centr[1].r * brightness) / 256),
+                static_cast<uint8_t>((leds_centr[1].g * brightness) / 256),
+                static_cast<uint8_t>((leds_centr[1].b * brightness) / 256))));
         print_leds(30, 0, leds_btm);
 #endif  // #ifdef EMULATOR
     }
@@ -1475,7 +1475,7 @@ public:
         }
     }
 
-    void calc_outer(const std::function<geom::float4 (const geom::float4 &pos, const int32_t index)> &func) {
+    void calc_outer(const std::function<geom::float4 (const geom::float4 &pos, const size_t index)> &func) {
         for (size_t c = 0; c < 16; c++) {
             leds_outer[0][c] = colors::rgb8out(colors::rgb(func(ledpos()[c],c)));
             leds_outer[1][c] = colors::rgb8out(colors::rgb(func(ledpos()[c],c)));
@@ -1701,7 +1701,7 @@ public:
             leds_outer[1][c] = black;
         }
 
-        size_t index = random.get(static_cast<int32_t>(0),static_cast<int32_t>(16*2 * 16));
+        size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(16*2 * 16)));
         colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f));       
         if (index < 16) {
             leds_outer[0][index] = white;
@@ -1723,7 +1723,7 @@ public:
             leds_outer[1][c] = black;
         }
 
-        size_t index = random.get(static_cast<int32_t>(0),static_cast<int32_t>(leds_rings_n*2));
+        size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(leds_rings_n*2)));
         colors::rgb8out white = colors::rgb8out(colors::rgb(1.0f,1.0f,1.0f));       
         if (index < leds_rings_n) {
             leds_outer[0][index] = white;
@@ -1745,7 +1745,7 @@ public:
             leds_outer[1][c] = black;
         }
 
-        size_t index = random.get(static_cast<int32_t>(0),static_cast<int32_t>(leds_rings_n*2));
+        size_t index = static_cast<size_t>(random.get(static_cast<int32_t>(0),static_cast<int32_t>(leds_rings_n*2)));
         colors::rgb8out col = colors::rgb8out(colors::rgb(
             random.get(0.0f,1.0f),
             random.get(0.0f,1.0f),
@@ -1951,12 +1951,12 @@ public:
 
         static constexpr size_t many = 8;
         static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
-        static int which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+        static size_t which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
         
         for (size_t c = 0; c < many; c++) {
             if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
                 next[c] = now + random.get(0.5f, 4.0f);
-                which[c] = random.get(static_cast<int32_t>(0), leds_rings_n);
+                which[c] = static_cast<size_t>(random.get(static_cast<int32_t>(0), leds_rings_n));
             }
         }
 
@@ -1973,7 +1973,7 @@ public:
             g.init(gg,5);
         }
         
-        calc_outer([=](geom::float4, int32_t index) {
+        calc_outer([=](geom::float4, size_t index) {
             for (size_t c = 0; c < many; c++) {
                 if (which[c] == index) {
                     return g.clamp(next[c] - now);
@@ -1995,12 +1995,12 @@ public:
 
         static constexpr size_t many = 8;
         static float next[many] = { -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f };
-        static int which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+        static size_t which[many] = { 0, 0, 0, 0, 0, 0, 0, 0 };
         
         for (size_t c = 0; c < many; c++) {
             if ((next[c] - now) < 0.0f || next[c] < 0.0f) {
                 next[c] = now + random.get(0.5f, 4.0f);
-                which[c] = random.get(static_cast<int32_t>(0), leds_rings_n);
+                which[c] = static_cast<size_t>(random.get(static_cast<int32_t>(0), leds_rings_n));
             }
         }
 
@@ -2017,7 +2017,7 @@ public:
         
         colors::rgb ring(Model::instance().RingColor());
         
-        calc_outer([=](geom::float4, int32_t index) {
+        calc_outer([=](geom::float4, size_t index) {
             for (size_t c = 0; c < many; c++) {
                 if (which[c] == index) {
                     return g.clamp(next[c] - now) + geom::float4(ring);
@@ -2037,13 +2037,13 @@ public:
         float now = static_cast<float>(Model::instance().Time());
 
         static float next = -1.0f;
-        static int which = 0;
+        static size_t which = 0;
         static colors::rgb color;
         static colors::rgb prev_color;
         
         if ((next - now) < 0.0f || next < 0.0f) {
             next = now + 2.0f;
-            which = random.get(static_cast<int32_t>(0), leds_rings_n);
+            which = static_cast<size_t>(random.get(static_cast<int32_t>(0), leds_rings_n));
             prev_color = color;
             color = colors::rgb(
                 random.get(0.0f,1.0f),
