@@ -37,7 +37,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 const int32_t version_number = 1;
 
-static constexpr size_t max_string_length = 26;
+static constexpr size_t max_string_length = 25;
 
 const int32_t build_number =
 #include "./build_number"
