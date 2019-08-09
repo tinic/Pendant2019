@@ -38,6 +38,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./model.h"
 #include "./timeline.h"
 
+static float signf(float x) {
+	return (x > 0.0f) ? 1.0f : ( (x < 0.0f) ? -1.0f : 1.0f);
+}
+
 class pseudo_random {
 public:
     
@@ -785,6 +789,15 @@ namespace geom {
               a.w * (1.0f - v) + b.w * v);
         }
 
+		float4 clamp() {
+			return float4(
+				std::min(std::max(this->x, 0.0f), 1.0f),
+				std::min(std::max(this->y, 0.0f), 1.0f),
+				std::min(std::max(this->z, 0.0f), 1.0f),
+				std::min(std::max(this->w, 0.0f), 1.0f)
+			);
+		}
+
         static float4 zero() {
             return float4(0.0f, 0.0f, 0.0f, 0.0f);
         }
@@ -1089,37 +1102,34 @@ public:
                         gradient();
                     break;
                     case 22:
-                        effect_21();
+                        overdrive();
                     break;
                     case 23:
-                        effect_22();
+                        ironman();
                     break;
                     case 24:
-                        effect_23();
+                        sweep();
                     break;
                     case 25:
-                        effect_24();
+                        sweephighlight();
                     break;
                     case 26:
-                        effect_25();
+                        rainbow_circle();
                     break;
                     case 27:
-                        effect_26();
+                        rainbow_grow();
                     break;
                     case 28:
-                        effect_27();
+                        rotor();
                     break;
                     case 29:
-                        effect_28();
+                        rotor_sparse();
                     break;
                     case 30:
-                        effect_29();
+                        fullcolor();
                     break;
                     case 31:
-                        effect_30();
-                    break;
-                    case 32:
-                        effect_31();
+                        flip_colors();
                     break;
                 }
             };
@@ -2094,7 +2104,9 @@ public:
         float now = static_cast<float>(Model::instance().Time());
 
         static colors::gradient g;
-        if (g.check_init()) {
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
             const geom::float4 gg[] = {
                geom::float4(0x000000, 0.00f),
                geom::float4(Model::instance().RingColor().hex(), 0.50f),
@@ -2122,147 +2134,209 @@ public:
         });
     }
 
-    void effect_21() {
-        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
+    void overdrive() {
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(0x000000, 0.00f),
+               geom::float4(Model::instance().RingColor().hex(), 1.0f)
+            };
+            g.init(gg,2);
+        }
+
+        calc_inner([=](geom::float4 pos) {
+        	float x = sinf(pos.x + 1.0f + now * 1.77f);
+        	float y = cosf(pos.y + 1.0f + now * 2.01f);
+            return (g.reflect(x * y) * 8.0f).clamp();
+        });
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+        	float x = sinf(pos.x + 1.0f + now * 1.77f);
+        	float y = cosf(pos.y + 1.0f + now * 2.01f);
+            return (g.reflect(x * y) * 8.0f).clamp();
         });
     }
 
-    void effect_22() {
+    void ironman() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(0xffffff, 0.00f),
+               geom::float4(Model::instance().RingColor().hex(), 0.5f),
+               geom::float4(0x000000, 1.00f),
+            };
+            g.init(gg,3);
+        }
+
+        calc_inner([=](geom::float4 pos) {
+        	float len = pos.len();
+        	return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now))));
+        });
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+        	float len = pos.len();
+        	return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now))));
         });
     }
 
-    void effect_23() {
+    void sweep() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(0x000000, 0.00f),
+               geom::float4(Model::instance().RingColor().hex(), 1.0f),
+            };
+            g.init(gg,2);
+        }
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+        	pos = pos.rotate2d(-now * 0.5f);
+            return g.reflect(pos.y - now * 8.0f);
         });
     }
 
-    void effect_24() {
+    void sweephighlight() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(0x000000, 0.00f),
+               geom::float4(Model::instance().RingColor().hex(), 0.7f),
+               geom::float4(0xffffff, 1.00f),
+            };
+            g.init(gg,3);
+        }
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+        	pos = pos.rotate2d(-now * 0.25f);
+            return g.reflect(pos.y - now * 2.0f);
         });
     }
 
-    void effect_25() {
+    void rainbow_circle() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+            return geom::float4(colors::rgb(colors::hsv(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.5f, 1.0f), 1.0f, 1.0f)));
+        }); 
+    }
+
+    void rainbow_grow() {
+        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+        float now = static_cast<float>(Model::instance().Time());
+
+        calc_outer([=](geom::float4 pos) {
+            return geom::float4(colors::rgb(colors::hsv(fmodf(fabsf(pos.x * 0.25f + signf(pos.x) * now * 0.25f), 1.0f), 1.0f, 1.0f)));
         });
     }
 
-    void effect_26() {
+    void rotor() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(Model::instance().RingColor().hex(), 0.00f),
+               geom::float4(0xffffff, 0.50f),
+               geom::float4(Model::instance().RingColor().hex(), 1.00f)
+            };
+            g.init(gg,3);
+        }
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
-        });
+        	return g.repeat(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.5f, 1.0f) * 4.0f);
+        }); 
     }
 
-    void effect_27() {
+    void rotor_sparse() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(0x000000, 0.00f),
+               geom::float4(Model::instance().RingColor().hex(), 0.40f),
+               geom::float4(Model::instance().RingColor().hex(), 0.60f),
+               geom::float4(0x000000, 1.00f)
+            };
+            g.init(gg,5);
+        }
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
-        });
+        	return g.repeat(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.5f, 1.0f) * 3.0f);
+        }); 
     }
 
-    void effect_28() {
+    void fullcolor() {
         led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
 
         float now = static_cast<float>(Model::instance().Time());
 
+        static colors::gradient g;
+        static colors::rgb8 col;
+        if (g.check_init() || col != Model::instance().RingColor()) {
+            col = Model::instance().RingColor();
+            const geom::float4 gg[] = {
+               geom::float4(0x000000, 0.00f),
+               geom::float4(0xFFFFFF, 0.50f),
+               geom::float4(0x000000, 1.00f)
+            };
+            g.init(gg,3);
+        }
+
         calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
-        });
+        	return geom::float4(
+	        	g.repeat(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.50f, 1.0f)).x,
+	        	g.repeat(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.75f, 1.0f)).x,
+	        	g.repeat(fmodf((atan2f(pos.x, pos.y) + 3.14159f) / (3.14159f * 2.0f) + now * 0.33f, 1.0f)).x
+	        );
+        }); 
     }
 
-    void effect_29() {
-        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
+    void flip_colors() {
         float now = static_cast<float>(Model::instance().Time());
+        
+        geom::float4 bird(colors::rgb(Model::instance().BirdColor()));
+        geom::float4 ring(colors::rgb(Model::instance().RingColor()));
 
-        calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+        calc_inner([=](geom::float4) {
+        	return geom::float4::lerp(bird, ring, (sinf(now) + 1.0f) * 0.5f);
         });
-    }
 
-    void effect_30() {
-        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
-        float now = static_cast<float>(Model::instance().Time());
-
-        calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
-        });
-    }
-
-    void effect_31() {
-        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
-        float now = static_cast<float>(Model::instance().Time());
-
-        calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
-        });
-    }
-
-    void effect_32() {
-        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
-
-        float now = static_cast<float>(Model::instance().Time());
-
-        calc_outer([=](geom::float4 pos) {
-            pos.x *= sinf(now);
-            pos.y *= cosf(now);
-            return pos;
+        calc_outer([=](geom::float4) {
+        	return geom::float4::lerp(ring, bird, (sinf(now) + 1.0f) * 0.5f);
         });
     }
 

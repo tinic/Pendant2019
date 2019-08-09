@@ -163,7 +163,7 @@ private:
     float brightness = 1.0f;
     double time_zone_offset = -7.0;
 
-    uint32_t effect = 21;
+    uint32_t effect = 2;
     
     colors::rgb8 bird_color = colors::rgb8(0xFF, 0xFF, 0x00);
     colors::rgb8 ring_color = colors::rgb8(0x00, 0x2F, 0xFF);
