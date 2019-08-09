@@ -223,6 +223,51 @@ void Commands::Boot() {
                 memcpy(&msg.message[0], &payload[30], 12);
 
                 Model::instance().PushRecvMessage(msg);
+                Model::instance().save();
+
+				static Timeline::Span s;
+				if (!Timeline::instance().Scheduled(s)) {
+					s.type = Timeline::Span::Display;
+					s.time = Model::instance().Time();
+					s.duration = 8.0;
+					s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+						char str[64];
+						snprintf(str, 64, "%12.12s : %12.12s", Model::instance().CurrentRecvMessage().name, Model::instance().CurrentRecvMessage().message);
+						const float speed = 128.0;
+						int32_t text_walk = static_cast<int32_t>(static_cast<float>(Model::instance().Time() - static_cast<double>(span.time)) * speed - 96.0f);
+						float interp = 0;
+						if (span.InBeginPeriod(interp, 0.5f)) {
+							if (interp < 0.5f) {
+								SDD1306::instance().SetVerticalShift(-static_cast<int8_t>(interp * 2.0f * 16));
+								below.Calc();
+							} else {
+								SDD1306::instance().SetVerticalShift(16-static_cast<int8_t>((interp * 2.0f - 1.0f ) * 16.0f));
+								SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
+							}
+						} else  if (span.InEndPeriod(interp, 0.5f)) {
+							if (interp < 0.5f) {
+								SDD1306::instance().SetVerticalShift(-static_cast<int8_t>(interp * 2.0f * 16.0f));
+								SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
+							} else {
+								SDD1306::instance().SetVerticalShift(16-static_cast<int8_t>((interp * 2.0f - 1.0f ) * 16.0f));
+								SDD1306::instance().SetAsciiScrollMessage(0,0);
+								below.Calc();
+							}
+						} else {
+							SDD1306::instance().SetVerticalShift(0);
+							SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
+						}
+					};
+					s.commitFunc = [=](Timeline::Span &) {
+						SDD1306::instance().Display();
+					};
+					s.doneFunc = [=](Timeline::Span &) {
+						SDD1306::instance().SetVerticalShift(0);
+						SDD1306::instance().Display();
+					};
+					Timeline::instance().Add(s);
+				}
+				led_control::PerformV3MessageEffect(Model::instance().CurrentRecvMessage().col);
             }
         });
 

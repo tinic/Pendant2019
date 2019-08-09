@@ -142,7 +142,7 @@ public:
         uint8_t name[nameLength];
     };
 
-    const struct Message &RecvMessage(size_t index) { index %= messageRecvCount; return recv_messages[index]; }
+    const struct Message &CurrentRecvMessage() { uint32_t index = revc_messages_pos - 1; index %= messageRecvCount; return recv_messages[index]; }
     void PushRecvMessage(struct Message &msg) { recv_messages[revc_messages_pos++] = msg; revc_messages_pos %= messageRecvCount; }
 
     void save();

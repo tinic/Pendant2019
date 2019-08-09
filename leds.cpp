@@ -2519,6 +2519,55 @@ public:
         }
     
     }
+
+    //
+    // V3 MESSAGE
+    //
+    
+    void message_v3(colors::rgb8 color, Timeline::Span &span, Timeline::Span &below) {
+
+        float blend = 0.0f;
+        if (span.InBeginPeriod(blend, 0.25f)) {
+            below.Calc();
+        } else if (span.InEndPeriod(blend, 0.25f)) {
+            below.Calc();
+            blend = 1.0f - blend;
+        }
+
+        const double speed = 3.0;
+        double now = Model::instance().Time();
+        int32_t direction = static_cast<int32_t>((now - span.time)  * speed) & 1;
+        float color_walk = fmodf(static_cast<float>((now - span.time) * speed), 1.0f);
+
+        colors::rgb8out out = colors::rgb8out(colors::rgb(color) * (direction ? (1.0f - color_walk) : color_walk) * 1.6f );
+
+        for (size_t c = 0; c < leds_rings_n; c++) {
+
+            if (blend != 0.0f) {
+                leds_outer[0][c] = colors::ip(leds_outer[0][c], out, blend);
+                leds_outer[1][c] = colors::ip(leds_outer[1][c], out, blend);
+
+                leds_inner[0][c] = colors::ip(leds_inner[0][c], out, blend);
+                leds_inner[1][c] = colors::ip(leds_inner[1][c], out, blend);
+
+            } else {
+                leds_outer[0][c] = out;
+                leds_outer[1][c] = out;
+
+                leds_inner[0][c] = out;
+                leds_inner[1][c] = out;
+            }
+        }
+
+        if (blend != 0.0f) {
+            leds_centr[0] = colors::ip(leds_centr[0], out, blend);
+            leds_centr[1] = colors::ip(leds_centr[1], out, blend);
+        } else {
+            leds_centr[0] = out;
+            leds_centr[1] = out;
+        }
+    
+    }
 };
 
 void led_control::init () {
@@ -2543,6 +2592,32 @@ void led_control::PerformV2MessageEffect(uint32_t color, bool remove) {
     s.duration = 8.0;
     s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
         led_bank::instance().message_v2(color, span, below);
+    };
+    s.commitFunc = [=](Timeline::Span &) {
+        led_bank::instance().update_leds();
+    };
+
+    Timeline::instance().Add(s);
+}
+
+void led_control::PerformV3MessageEffect(colors::rgb8 color, bool remove) {
+    static Timeline::Span s;
+
+    if (Timeline::instance().Scheduled(s)) {
+        return;
+    }
+
+    if (remove) {
+        s.time = Model::instance().Time();
+        s.duration = 0.25;
+        return;
+    }
+
+    s.type = Timeline::Span::Effect;
+    s.time = Model::instance().Time();
+    s.duration = 8.0;
+    s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+        led_bank::instance().message_v3(color, span, below);
     };
     s.commitFunc = [=](Timeline::Span &) {
         led_bank::instance().update_leds();

@@ -737,6 +737,10 @@ public:
 	void SetRangingTX(uint32_t targetAddress, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
 	void SetLoraRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
 	void SetLoraTX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+
+#ifdef EMULATOR
+	void RxDone(const uint8_t *payload, uint8_t size, PacketStatus packetStatus);
+#endif  // #ifdef EMULATOR
 	 
 #ifdef MCP
     void OnMCPTimer();

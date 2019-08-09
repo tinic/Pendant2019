@@ -1646,6 +1646,12 @@ void SX1280::OnMCPTimer()
 }
 #endif  // #ifdef MCP
 
+#ifdef EMULATOR
+void SX1280::RxDone(const uint8_t *payload, uint8_t size, PacketStatus packetStatus) {
+	rxDone(payload, size, packetStatus);
+}
+#endif  // #ifdef EMULATOR
+
 void SX1280::pins_init()
 {
     spi_m_sync_enable(&SPI_0);

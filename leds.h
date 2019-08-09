@@ -317,6 +317,7 @@ class led_control {
 public:
     static void init();
     static void PerformV2MessageEffect(uint32_t color, bool remove = false);
+    static void PerformV3MessageEffect(colors::rgb8 color, bool remove = false);
 
     static void PerformMessageColorDisplay(colors::rgb8 color, bool remove = false);
     static void PerformColorBirdDisplay(colors::rgb8 color, bool remove = false);
