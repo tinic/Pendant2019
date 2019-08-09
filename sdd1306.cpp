@@ -193,7 +193,7 @@ static void draw_buffer(uint8_t *buf, int32_t x, int32_t y, int32_t len) {
 	std::lock_guard<std::recursive_mutex> lock(g_print_mutex);
 	for (int32_t py = 0; py < 8; py ++) {
 		printf("\x1b[%d;%df",18+y*8+static_cast<uint32_t>(py),2+x);
-		for (int32_t px = 0; px < 8*len; px ++) {
+		for (int32_t px = 0; px < (len-1); px ++) {
 			if (((buf[1+px] >> py) & 1) != 0) {
 				printf("\x1b[30;47m \x1b[0m");
 			} else {
@@ -224,11 +224,9 @@ void SDD1306::Display() {
     for (uint32_t y=0; y<2; y++) {
         if (display_boot_screen) {
 
-            {
-                WriteCommand(0xB0+0);
-                WriteCommand(0x0f&(0   )); // 0x20 offset
-                WriteCommand(0x10|(0>>4)); // 0x20 offset
-            }
+            WriteCommand(0xB0+0);
+			WriteCommand(0x00);
+			WriteCommand(0x10);
 
             uint8_t buf[97];
             buf[0] = 0x40;
@@ -246,11 +244,9 @@ void SDD1306::Display() {
 			draw_buffer(buf, 0, 0, 0x61);
 #endif  // #ifdef EMULATOR
 
-            {
-                WriteCommand(0xB0+1);
-                WriteCommand(0x0f&(0   )); // 0x20 offset
-                WriteCommand(0x10|(0>>4)); // 0x20 offset
-            }
+            WriteCommand(0xB0+1);
+			WriteCommand(0x00);
+			WriteCommand(0x10);
 
             // write second line
             for (int32_t x = 0; x < 96; x++) {
@@ -267,11 +263,9 @@ void SDD1306::Display() {
         
         } else if (display_scroll_message) {
                 
-            {
-                WriteCommand(0xB0+0);
-                WriteCommand(0x0f&(0   )); // 0x20 offset
-                WriteCommand(0x10|(0>>4)); // 0x20 offset
-            }
+            WriteCommand(0xB0+0);
+			WriteCommand(0x00);
+			WriteCommand(0x10);
 
             uint8_t buf[97];
             buf[0] = 0x40;
@@ -289,11 +283,9 @@ void SDD1306::Display() {
 			draw_buffer(buf, 0, 0, 0x61);
 #endif  // #ifdef EMULATOR
 
-            {
-                WriteCommand(0xB0+1);
-                WriteCommand(0x0f&(0   )); // 0x20 offset
-                WriteCommand(0x10|(0>>4)); // 0x20 offset
-            }
+            WriteCommand(0xB0+1);
+			WriteCommand(0x00);
+			WriteCommand(0x10);
 
             // write second line
             for (int32_t x = 0; x < 96; x++) {
@@ -332,7 +324,7 @@ void SDD1306::SetVerticalShift(int8_t val) {
     if (val < 0) {
         val = 64+val;
         WriteCommand(val&0x3F);
-        } else {
+    } else {
         WriteCommand(val&0x3F);
     }
 }
@@ -378,8 +370,8 @@ void SDD1306::Init() {
         0xA1,           // Set Segment Re-map
         0xC8,           // Set COM Output Scan Direction (flipped)
         0xDA, 0x02,     // Set Pins configuration
-        0x81, 0x00,     // Set Contrast (0x00-0xFF)
-        0xD9, 0xF1,     // Set Pre-Charge period
+        0x81, 0x80,     // Set Contrast (0x00-0xFF)
+        0xD9, 0x10,     // Set Pre-Charge period
         0xDB, 0x40,     // Adjust Vcomm regulator output
         0xAF            // Display on
     };
@@ -390,19 +382,17 @@ void SDD1306::Init() {
 }
 
 void SDD1306::DisplayCenterFlip() {
-    (void)duck_font_raw_len;
-        
     uint8_t buf[0x61];
     buf[0] = 0x40;
     for (uint32_t y=0; y<2; y++) {
         WriteCommand(static_cast<uint8_t>(0xB0+y));
-        WriteCommand(0x0f&(0   ));
-        WriteCommand(0x10|(0>>4));
+        WriteCommand(0x00);
+        WriteCommand(0x10);
         for (uint32_t x = 0; x < 96; x++) {
-            if (center_flip_screen == 32) {
+            if (center_flip_screen == 48) {
                 buf[x+1] = 0x00;
             } else {
-                int32_t rx = ( ( ( static_cast<int32_t>(x) - 32 ) * 32 ) / static_cast<int32_t>(32 - center_flip_screen) ) + 32;
+                int32_t rx = ( ( ( static_cast<int32_t>(x) - 48 ) * 48 ) / static_cast<int32_t>(48 - center_flip_screen) ) + 48;
                 if (rx < 0 || rx > 95) {
                     buf[x+1] = 0x00;
                 } else {
@@ -419,6 +409,7 @@ void SDD1306::DisplayCenterFlip() {
                 }
             }
         }
+
         io_write(I2C_0_io, buf, 0x61);
 
 #ifdef EMULATOR

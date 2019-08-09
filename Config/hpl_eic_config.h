@@ -119,7 +119,7 @@
 // <i> Indicates whether the external interrupt 1 filter is enabled or not
 // <id> eic_arch_filten1
 #ifndef CONF_EIC_FILTEN1
-#define CONF_EIC_FILTEN1 0
+#define CONF_EIC_FILTEN1 1
 #endif
 
 // <q> External Interrupt 1 Debounce Enable
@@ -146,7 +146,7 @@
 // <i> This defines input sense trigger
 // <id> eic_arch_sense1
 #ifndef CONF_EIC_SENSE1
-#define CONF_EIC_SENSE1 EIC_NMICTRL_NMISENSE_BOTH_Val
+#define CONF_EIC_SENSE1 EIC_NMICTRL_NMISENSE_RISE_Val
 #endif
 
 // <q> External Interrupt 1 Asynchronous Edge Detection Mode
@@ -168,7 +168,7 @@
 // <i> Indicates whether the external interrupt 2 filter is enabled or not
 // <id> eic_arch_filten2
 #ifndef CONF_EIC_FILTEN2
-#define CONF_EIC_FILTEN2 0
+#define CONF_EIC_FILTEN2 1
 #endif
 
 // <q> External Interrupt 2 Debounce Enable
@@ -195,7 +195,7 @@
 // <i> This defines input sense trigger
 // <id> eic_arch_sense2
 #ifndef CONF_EIC_SENSE2
-#define CONF_EIC_SENSE2 EIC_NMICTRL_NMISENSE_BOTH_Val
+#define CONF_EIC_SENSE2 EIC_NMICTRL_NMISENSE_RISE_Val
 #endif
 
 // <q> External Interrupt 2 Asynchronous Edge Detection Mode
@@ -217,7 +217,7 @@
 // <i> Indicates whether the external interrupt 3 filter is enabled or not
 // <id> eic_arch_filten3
 #ifndef CONF_EIC_FILTEN3
-#define CONF_EIC_FILTEN3 0
+#define CONF_EIC_FILTEN3 1
 #endif
 
 // <q> External Interrupt 3 Debounce Enable
@@ -244,7 +244,7 @@
 // <i> This defines input sense trigger
 // <id> eic_arch_sense3
 #ifndef CONF_EIC_SENSE3
-#define CONF_EIC_SENSE3 EIC_NMICTRL_NMISENSE_BOTH_Val
+#define CONF_EIC_SENSE3 EIC_NMICTRL_NMISENSE_RISE_Val
 #endif
 
 // <q> External Interrupt 3 Asynchronous Edge Detection Mode

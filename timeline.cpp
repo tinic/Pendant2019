@@ -30,6 +30,45 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./model.h"
 #include "./sdd1306.h"
 
+float Quad::easeIn (float t,float b , float c, float d) {
+	t /= d;
+	return c*t*t+b;
+}
+float Quad::easeOut(float t,float b , float c, float d) {
+	t /= d;
+	return -c*t*(t-2.0f)+b;
+}
+
+float Quad::easeInOut(float t,float b , float c, float d) {
+	t /= d/2.0f;
+	if (t < 1.0f) {
+		return ((c/2.0f)*t*t)+b;
+	} else {
+		t -= 1.0f;
+		return -c/2.0f*(((t-2)*t)-1.0f)+b;
+	}
+}
+
+float Cubic::easeIn (float t, float b, float c, float d) {
+	t /= d;
+	return c*t*t*t+b;
+}
+
+float Cubic::easeOut(float t, float b, float c, float d) {
+	t = t/d-1.0f;
+	return c*(t*t*t+1.0f)+b;
+}
+
+float Cubic::easeInOut(float t, float b, float c, float d) {
+	t /= d/2.0f;
+	if (t < 1.0f) {
+		return c/2.0f*t*t*t+b;
+	} else {
+		t -= 2.0f;
+		return c/2.0f*(t*t*t+2.0f)+b;	
+	}
+}
+
 Timeline &Timeline::instance() {
     static Timeline timeline;
     if (!timeline.initialized) {

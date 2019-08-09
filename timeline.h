@@ -26,6 +26,20 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 #include <functional>
 
+class Quad {
+public:
+	static float easeIn(float t, float b, float c, float d);
+	static float easeOut(float t, float b, float c, float d);
+	static float easeInOut(float t, float b, float c, float d);
+};
+
+class Cubic {
+public:
+	static float easeIn(float t, float b, float c, float d);
+	static float easeOut(float t, float b, float c, float d);
+	static float easeInOut(float t, float b, float c, float d);
+};
+
 class Timeline {
 public:
 

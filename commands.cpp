@@ -65,9 +65,8 @@ void Commands::Boot() {
 
     if (SDD1306::instance().DevicePresent()) {
         SDD1306::instance().Clear();
-        SDD1306::instance().PlaceUTF8String(0,0,".Pendant3.0.");
-        SDD1306::instance().PlaceUTF8String(0,1,"============");
-        SDD1306::instance().Display();
+		SDD1306::instance().SetBootScreen(true, 120);
+		SDD1306::instance().Display();
     }
 
     if (BQ25895::instance().DevicePresent()) {
@@ -254,9 +253,82 @@ void Commands::Boot() {
     led_control::init();
 
     delay_ms(50);
+
+
+    static Timeline::Span s0;
+    s0.type = Timeline::Span::Display;
+    s0.time = Model::instance().Time();
+    s0.duration = 1.0f; // timeout
+
+	static Timeline::Span s1;
+	s1.type = Timeline::Span::Display;
+	s1.time = s0.time + s0.duration;
+	s1.duration = 0.25f; // timeout
+
+	static Timeline::Span s2;
+	s2.type = Timeline::Span::Display;
+	s2.time = s1.time + s1.duration;
+	s2.duration = 0.25f; // timeout
+
+    s0.startFunc = [=](Timeline::Span &) {
+        SDD1306::instance().Clear();
+		SDD1306::instance().SetBootScreen(true, 120);
+		SDD1306::instance().Display();
+    };
+    s0.calcFunc = [=](Timeline::Span &span, Timeline::Span &) {
+		double now = Model::instance().Time();
+		double delta = (span.time + span.duration) - now;
+		SDD1306::instance().SetBootScreen(true, static_cast<int32_t>(120.0f * Cubic::easeIn(static_cast<float>(delta), 0.0f, 1.0f, 1.0f)));
+		SDD1306::instance().Display();
+    };
+    s0.doneFunc = [=](Timeline::Span &span) {
+		SDD1306::instance().SetBootScreen(true, 0);
+		SDD1306::instance().Display();
+		Timeline::instance().Add(s1);
+		Timeline::instance().Remove(span);
+    };
+
+	s1.startFunc = [=](Timeline::Span &) {
+	};
+
+	s1.calcFunc = [=](Timeline::Span &span, Timeline::Span &) {
+		double now = Model::instance().Time();
+		double delta = ( (span.time + span.duration) - now ) / span.duration;
+		SDD1306::instance().SetVerticalShift(-static_cast<int8_t>(16.0f * (1.0f - Cubic::easeOut(static_cast<float>(delta), 0.0f, 1.0f, 1.0f))));
+		SDD1306::instance().Display();
+	};
+	s1.doneFunc = [=](Timeline::Span &span) {
+		SDD1306::instance().SetVerticalShift(0);
+		SDD1306::instance().SetBootScreen(false, 0);
+		SDD1306::instance().SetCenterFlip(48);
+		SDD1306::instance().Display();
+		Timeline::instance().Add(s2);
+		Timeline::instance().Remove(span);
+	};
+
+	s2.startFunc = [=](Timeline::Span &) {
+		SDD1306::instance().SetVerticalShift(0);
+		SDD1306::instance().SetBootScreen(false, 0);
+		SDD1306::instance().Display();
+	};
+	s2.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		below.Calc();
+		double now = Model::instance().Time();
+		double delta = ( (span.time + span.duration) - now ) / span.duration;
+		SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * (delta)));
+		SDD1306::instance().Display();
+	};
+	s2.doneFunc = [=](Timeline::Span &span) {
+		SDD1306::instance().SetCenterFlip(0);
+		SDD1306::instance().Display();
+		Timeline::instance().Remove(span);
+	};
+
+	Timeline::instance().Add(s0);
 }
 
 void Commands::StartTimers() {
+
     update_leds_timer_task.interval = 10; // 100fps
     update_leds_timer_task.cb = &OnLEDTimer_C;
     update_leds_timer_task.mode = TIMER_TASK_REPEAT;
@@ -280,6 +352,7 @@ void Commands::StartTimers() {
 #endif  // #ifdef MCP
 
     timer_start(&TIMER_0);
+
 }
 
 void Commands::StopTimers() {
@@ -446,7 +519,7 @@ void Commands::Switch3_EXT_C() {
 }
 
 void Commands::init() {
-    ext_irq_register(PIN_PA17, Switch1_EXT_C);
+    ext_irq_register(PIN_PA17, Switch3_EXT_C);
     ext_irq_register(PIN_PA18, Switch2_EXT_C);
-    ext_irq_register(PIN_PA19, Switch3_EXT_C);
+    ext_irq_register(PIN_PA19, Switch1_EXT_C);
 }
