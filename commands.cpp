@@ -255,17 +255,17 @@ void Commands::Boot() {
     static Timeline::Span s0;
     s0.type = Timeline::Span::Display;
     s0.time = Model::instance().Time();
-    s0.duration = 1.0f; // timeout
+    s0.duration = 1.0; // timeout
 
 	static Timeline::Span s1;
 	s1.type = Timeline::Span::Display;
 	s1.time = s0.time + s0.duration;
-	s1.duration = 0.25f; // timeout
+	s1.duration = 0.25; // timeout
 
 	static Timeline::Span s2;
 	s2.type = Timeline::Span::Display;
 	s2.time = s1.time + s1.duration;
-	s2.duration = 0.25f; // timeout
+	s2.duration = 0.25; // timeout
 
     s0.startFunc = [=](Timeline::Span &) {
         SDD1306::instance().Clear();

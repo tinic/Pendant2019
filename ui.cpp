@@ -55,7 +55,40 @@ static constexpr int32_t build_number =
   (byte & 0x02 ? '1' : '0'), \
   (byte & 0x01 ? '1' : '0') 
 
-static Timeline::Span flipSpan;
+static void FlipAnimation(Timeline::Span *parent) {
+	static Timeline::Span flipSpan;
+	flipSpan.type = Timeline::Span::Display;
+	flipSpan.time = Model::instance().Time();
+	flipSpan.duration = 0.25; // timeout
+	flipSpan.startFunc = [=](Timeline::Span &) {
+		SDD1306::instance().SetVerticalShift(0);
+		SDD1306::instance().SetBootScreen(false, 0);
+		SDD1306::instance().Display();
+	};
+	flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+		double now = Model::instance().Time();
+		float delta = 1.0f - static_cast<float>( ( (span.time + span.duration) - now ) / span.duration );
+		if (delta > 0.5f) {
+			below.Calc();
+			delta = 1.0f - (2.0f * (delta - 0.5f));
+			delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
+			SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0f * delta));
+			SDD1306::instance().Display();
+		} else {
+			parent->Calc();
+			delta = 1.0f - (2.0f * (0.5f - delta));
+			delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
+			SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0f * delta));
+			SDD1306::instance().Display();
+		}
+	};
+	flipSpan.doneFunc = [=](Timeline::Span &span) {
+		SDD1306::instance().SetCenterFlip(0);
+		SDD1306::instance().Display();
+		Timeline::instance().Remove(span);
+	};
+	Timeline::instance().Add(flipSpan);
+}
 
 UI &UI::instance() {
     static UI ui;
@@ -91,37 +124,7 @@ void UI::enterSendMessage(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -198,37 +201,7 @@ void UI::enterChangeMessageColor(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
         led_control::PerformMessageColorDisplay(colors::rgb8(colors::rgb(currentColor)), true);
     };
     s.switch1Func = [=](Timeline::Span &span) {
@@ -298,37 +271,7 @@ void UI::enterShowHistory(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &) {
     };
@@ -392,37 +335,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -530,37 +443,7 @@ void UI::enterChangeName(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -652,37 +535,7 @@ void UI::enterChangeBirdColor(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
         led_control::PerformColorBirdDisplay(colors::rgb8(colors::rgb(currentColor)), true);
     };
     s.switch1Func = [=](Timeline::Span &span) {
@@ -786,37 +639,7 @@ void UI::enterChangeRingColor(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
         led_control::PerformColorRingDisplay(colors::rgb8(colors::rgb(currentColor)), true);
     };
     s.switch1Func = [=](Timeline::Span &span) {
@@ -885,37 +708,7 @@ void UI::enterRangeOthers(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+    	FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &) {
     };
@@ -940,37 +733,7 @@ void UI::enterShowStats(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &) {
     };
@@ -1000,37 +763,7 @@ void UI::enterTestDevice(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -1070,37 +803,7 @@ void UI::enterShowVersion(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         Timeline::instance().Remove(span);
@@ -1147,37 +850,7 @@ void UI::enterDebug(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -1232,37 +905,7 @@ void UI::enterResetEverything(Timeline::Span &parent) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -1353,37 +996,7 @@ void UI::enterPrefs(Timeline::Span &) {
         SDD1306::instance().Display();
     };
     s.doneFunc = [=](Timeline::Span &) {
-		flipSpan.type = Timeline::Span::Display;
-		flipSpan.time = Model::instance().Time();
-		flipSpan.duration = 0.25f; // timeout
-		flipSpan.startFunc = [=](Timeline::Span &) {
-			SDD1306::instance().SetVerticalShift(0);
-			SDD1306::instance().SetBootScreen(false, 0);
-			SDD1306::instance().Display();
-		};
-		flipSpan.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-			double now = Model::instance().Time();
-			double delta = 1.0f - ( (span.time + span.duration) - now ) / span.duration;
-			if (delta > 0.5f) {
-				below.Calc();
-				delta = 1.0f - (2.0f * (delta - 0.5f));
-				delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			} else {
-				s.Calc();
-				delta = 1.0f - (2.0f * (0.5f - delta));
-				delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
-				SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0 * delta));
-				SDD1306::instance().Display();
-			}
-		};
-		flipSpan.doneFunc = [=](Timeline::Span &span) {
-			SDD1306::instance().SetCenterFlip(0);
-			SDD1306::instance().Display();
-			Timeline::instance().Remove(span);
-		};
-	    Timeline::instance().Add(flipSpan);
+		FlipAnimation(&s);
     };
     s.switch1Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
