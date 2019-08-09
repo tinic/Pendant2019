@@ -260,31 +260,6 @@ void UI::enterChangeMessageColor(Timeline::Span &parent) {
     Timeline::instance().Add(s);
 }
 
-void UI::enterShowHistory(Timeline::Span &parent) {
-    static Timeline::Span s;
-    s.type = Timeline::Span::Display;
-    s.time = Model::instance().Time();
-    s.duration = 10.0; // timeout
-    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-    };
-    s.commitFunc = [=](Timeline::Span &) {
-        SDD1306::instance().Display();
-    };
-    s.doneFunc = [=](Timeline::Span &) {
-		FlipAnimation(&s);
-    };
-    s.switch1Func = [=](Timeline::Span &) {
-    };
-    s.switch2Func = [=](Timeline::Span &) {
-    };
-    s.switch3Func = [=](Timeline::Span &span) {
-        Timeline::instance().Remove(span);
-        Timeline::instance().ProcessDisplay();
-    };
-    Timeline::instance().Remove(parent);
-    Timeline::instance().Add(s);
-}
-
 void UI::enterChangeMessages(Timeline::Span &parent) {
     static Timeline::Span s;
 
@@ -697,96 +672,6 @@ void UI::enterChangeRingColor(Timeline::Span &parent) {
     Timeline::instance().Add(s);
 }
 
-void UI::enterRangeOthers(Timeline::Span &parent) {
-    static Timeline::Span s;
-    s.type = Timeline::Span::Display;
-    s.time = Model::instance().Time();
-    s.duration = 10.0; // timeout
-    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-    };
-    s.commitFunc = [=](Timeline::Span &) {
-        SDD1306::instance().Display();
-    };
-    s.doneFunc = [=](Timeline::Span &) {
-    	FlipAnimation(&s);
-    };
-    s.switch1Func = [=](Timeline::Span &) {
-    };
-    s.switch2Func = [=](Timeline::Span &) {
-    };
-    s.switch3Func = [=](Timeline::Span &span) {
-        Timeline::instance().Remove(span);
-        Timeline::instance().ProcessDisplay();
-    };
-    Timeline::instance().Remove(parent);
-    Timeline::instance().Add(s);
-}
-
-void UI::enterShowStats(Timeline::Span &parent) {
-    static Timeline::Span s;
-    s.type = Timeline::Span::Display;
-    s.time = Model::instance().Time();
-    s.duration = 10.0; // timeout
-    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-    };
-    s.commitFunc = [=](Timeline::Span &) {
-        SDD1306::instance().Display();
-    };
-    s.doneFunc = [=](Timeline::Span &) {
-		FlipAnimation(&s);
-    };
-    s.switch1Func = [=](Timeline::Span &) {
-    };
-    s.switch2Func = [=](Timeline::Span &) {
-    };
-    s.switch3Func = [=](Timeline::Span &span) {
-        Timeline::instance().Remove(span);
-        Timeline::instance().ProcessDisplay();
-    };
-    Timeline::instance().Remove(parent);
-    Timeline::instance().Add(s);
-}
-
-void UI::enterTestDevice(Timeline::Span &parent) {
-    static Timeline::Span s;
-
-    static int32_t currentSelection = 0;
-
-    currentSelection = 0;
-
-    s.type = Timeline::Span::Display;
-    s.time = Model::instance().Time();
-    s.duration = 10.0; // timeout
-    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-    };
-    s.commitFunc = [=](Timeline::Span &) {
-        SDD1306::instance().Display();
-    };
-    s.doneFunc = [=](Timeline::Span &) {
-		FlipAnimation(&s);
-    };
-    s.switch1Func = [=](Timeline::Span &span) {
-        span.time = Model::instance().Time(); // reset timeout
-        currentSelection --;
-        if (currentSelection < 0) {
-            currentSelection = 3;
-        }
-    };
-    s.switch2Func = [=](Timeline::Span &span) {
-        span.time = Model::instance().Time(); // reset timeout
-        currentSelection ++;
-        if (currentSelection > 3) {
-            currentSelection = 0;
-        }
-    };
-    s.switch3Func = [=](Timeline::Span &span) {
-        Timeline::instance().Remove(span);
-        Timeline::instance().ProcessDisplay();
-    };
-    Timeline::instance().Remove(parent);
-    Timeline::instance().Add(s);
-}
-
 void UI::enterShowVersion(Timeline::Span &parent) {
     static Timeline::Span s;
     s.type = Timeline::Span::Display;
@@ -940,46 +825,34 @@ void UI::enterPrefs(Timeline::Span &) {
 
     static int32_t currentPage = 0;
     
-    const int32_t maxPage = 13;
+    const int32_t maxPage = 9;
     
     const char *pageText[] = {
-        "01/13 Send  "      // 1
+        "01/09 Send  "      // 1
         "  Message!  ",
 
-        "02/13 Change"      // 2
+        "02/09 Change"      // 2
         "Message Col.",
 
-        "03/13 Change"      // 3
+        "03/09 Change"      // 3
         "  Messages  ",
 
-        "04/13 Change"      // 4
+        "04/09 Change"      // 4
         "    Name    ",
 
-        "05/13 Change"      // 5
+        "05/09 Change"      // 5
         " Bird Color ",
 
-        "06/13 Change"      // 6
+        "06/09 Change"      // 6
         " Ring Color ",
 
-        "07/13  Show "      // 7
-        "   History  ",
-
-        "08/13 Range "      // 8
-        "   Others   ",
-
-        "09/13 Show  "      // 9
-        " Statistics ",
-
-        "10/13 Test  "      // 10
-        "   Device   ",
-
-        "11/13 Show  "      // 11
+        "07/09 Show  "      // 11
         "  Version   ",
 
-        "12/13 Debug "      // 12
+        "08/09 Debug "      // 12
         "Information ",
 
-        "13/13 Reset "      // 13
+        "09/09 Reset "      // 13
         " Everything "
     };
 
@@ -1034,24 +907,12 @@ void UI::enterPrefs(Timeline::Span &) {
                 enterChangeRingColor(span);
             } break;
             case 6: {
-                enterShowHistory(span);
-            } break;
-            case 7: {
-                enterRangeOthers(span);
-            } break;
-            case 8: {
-                enterShowStats(span);
-            } break;
-            case 9: {
-                enterTestDevice(span);
-            } break;
-            case 10: {
                 enterShowVersion(span);
             } break;
-            case 11: {
+            case 7: {
                 enterDebug(span);
             } break;
-            case 12: {
+            case 8: {
                 enterResetEverything(span);
             } break;
         }
