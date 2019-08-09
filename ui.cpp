@@ -354,7 +354,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
                 idx %= 0x40;
                 idx += 0x20;
                 currentMessage[currentChar] = static_cast<char>(idx);
-                char str[20];
+                char str[max_string_length];
                 snprintf(str, max_string_length, "%s", currentMessage);
                 SDD1306::instance().PlaceUTF8String(0, 0, str);
                 SDD1306::instance().Display();
