@@ -287,7 +287,7 @@ void UI::enterChangeMessages(Timeline::Span &parent) {
             char str[max_string_length];
             snprintf(str, max_string_length, "%s", Model::instance().Message(static_cast<size_t>(selectedMessage)));
             SDD1306::instance().PlaceUTF8String(0, 0, str);
-            snprintf(str, max_string_length, "   %02d/%02d    ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
+            snprintf(str, max_string_length, "   \xc2\x88%02d/%02d   ", static_cast<int>(selectedMessage), static_cast<int>(Model::MessageCount()));
             SDD1306::instance().PlaceUTF8String(0, 1, str);
         } else {
             char str[max_string_length];
