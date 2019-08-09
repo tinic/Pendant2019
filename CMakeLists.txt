@@ -49,7 +49,7 @@ if (NOT EMULATOR_BUILD)
 	set(CMAKE_SIZE arm-none-eabi-size)
 	add_definitions(-D__${MCU_MODEL}__)
 
-	set(COMMON_FLAGS "-Werror -Wall -Wextra -mcpu=${MCU_ARCH} -ffunction-sections -ffast-math -mthumb -mfloat-abi=${MCU_FLOAT_ABI} -mlong-calls")
+	set(COMMON_FLAGS "-Werror -Wall -Wextra -Wno-strict-aliasing -mcpu=${MCU_ARCH} -ffunction-sections -ffast-math -mthumb -mfloat-abi=${MCU_FLOAT_ABI} -mlong-calls")
 
 	if(CMAKE_C_COMPILER STREQUAL clang)
 		set(COMMON_FLAGS "${COMMON_FLAGS} -target arm-none-eabi")
@@ -104,7 +104,7 @@ else (NOT EMULATOR_BUILD)
 
 endif (NOT EMULATOR_BUILD)
 
-set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -Werror -Wall -Wextra -Wdouble-promotion -Wshadow -Wfloat-conversion -Wnull-dereference -Wformat=2 -std=c++17 -fno-rtti -fno-exceptions")
+set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -Werror -Wall -Wextra -Wno-strict-aliasing -Wdouble-promotion -Wshadow -Wfloat-conversion -Wnull-dereference -Wformat=2 -std=c++17 -fno-rtti -fno-exceptions")
 SET(CMAKE_CXX_FLAGS_RELEASE "-Os")
 SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
 

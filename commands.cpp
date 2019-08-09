@@ -252,9 +252,6 @@ void Commands::Boot() {
 
     led_control::init();
 
-    delay_ms(50);
-
-
     static Timeline::Span s0;
     s0.type = Timeline::Span::Display;
     s0.time = Model::instance().Time();
@@ -325,6 +322,8 @@ void Commands::Boot() {
 	};
 
 	Timeline::instance().Add(s0);
+
+    delay_ms(50);
 }
 
 void Commands::StartTimers() {
