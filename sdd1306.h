@@ -57,6 +57,10 @@ private:
 
     static constexpr uint32_t i2caddr = 0x3C;
 
+#ifdef EMULATOR
+	void DrawBuffer(uint8_t *buf, int32_t x, int32_t y, int32_t len);
+#endif  // #ifdef EMULATOR
+
     void DisplayCenterFlip();
     void DisplayChar(uint32_t x, uint32_t y, uint16_t ch, uint8_t attr);
     void WriteCommand(uint8_t v) const;
@@ -78,6 +82,7 @@ private:
 
     bool display_boot_screen = false;
     int32_t boot_screen_offset = 0;
+    int32_t vertical_shift = 0;
 
     bool initialized = false;
 
