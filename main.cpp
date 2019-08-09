@@ -87,20 +87,9 @@ int main(void)
             case    0x33:
                     Commands::instance().Switch3_Pressed();
                     break;
-            case    0x34: {
-						const uint8_t msg[42] = {
-							'D', 'U', 'C', 'K', 		// header
-							0x00, 0x01, 0x02, 0x03, 	// uid
-							0xFF, 0x80, 0x00,			// col
-							0x00, 0x00, 0x00, 0x00,		// flags,
-							0x00, 0x01,					// cnt
-							'D', 'U', 'C', 'K', 'L', 'I', 'N', 'G', ' ', ' ', ' ', ' ',
-							'D', 'R', 'I', 'N', 'K', ' ', 'M', 'A', 'L', 'O', 'R', 'T'
-						};
-			
-						SX1280::PacketStatus status;
-						SX1280::instance().RxDone(msg, 42, status);
-                    } break;
+            case    0x34:
+            		Commands::instance().SendV3Message("DRINK MALORT", "DUCKLING", colors::rgb8(0xFF, 0x80, 0x00));
+            		break;
         }
     }
 #endif  // #ifndef EMULATOR

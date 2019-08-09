@@ -172,9 +172,9 @@ void SDD1306::SetAsciiScrollMessage(const char *str, int32_t offset) {
         memset(scroll_message, 0, sizeof(scroll_message));
         for (size_t c=0; c<len; c++) {
             uint8_t ch = static_cast<uint8_t>(str[c]);
-            if ((ch < 0x20) || (ch >= 0x7D)) {
-                scroll_message[c] = 0x20;
-                } else {
+            if ((ch < 0x20)) {
+                scroll_message[c] = 0;
+            } else {
                 scroll_message[c] = ch - 0x20;
             }
         }
@@ -286,8 +286,12 @@ void SDD1306::Display() {
             // write first line
             for (int32_t x = 0; x < 96; x++) {
                 int32_t rx = (scroll_message_offset + x ) % (scroll_message_len * 16) ;
-                int32_t cx = rx >> 4;
-                buf[x+1] = duck_font_raw[0x1000 + scroll_message[cx] * 16 + (rx & 0x0F)];
+                if (rx >= 0) {
+					int32_t cx = rx >> 4;
+					buf[x+1] = duck_font_raw[0x1000 + scroll_message[cx] * 16 + (rx & 0x0F)];
+				} else {
+					buf[x+1] = 0;
+				}
             }
 
             io_write(I2C_0_io, buf, 0x61);
@@ -304,7 +308,11 @@ void SDD1306::Display() {
             for (int32_t x = 0; x < 96; x++) {
                 int32_t rx = (scroll_message_offset + x ) % (scroll_message_len * 16) ;
                 int32_t cx = rx >> 4;
-                buf[x+1] = duck_font_raw[0x1800 + scroll_message[cx] * 16 + (rx & 0x0F)];
+                if (rx >= 0) {
+					buf[x+1] = duck_font_raw[0x1800 + scroll_message[cx] * 16 + (rx & 0x0F)];
+				} else {
+					buf[x+1] = 0;
+				}
             }
 
             io_write(I2C_0_io, buf, 0x61);

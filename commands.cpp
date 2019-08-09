@@ -229,10 +229,10 @@ void Commands::Boot() {
 				if (!Timeline::instance().Scheduled(s)) {
 					s.type = Timeline::Span::Display;
 					s.time = Model::instance().Time();
-					s.duration = 8.0;
+					s.duration = 15.0;
 					s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
-						char str[64];
-						snprintf(str, 64, "%12.12s : %12.12s", Model::instance().CurrentRecvMessage().name, Model::instance().CurrentRecvMessage().message);
+						char str[256];
+						snprintf(str, 256, " [%s] %s ", Model::instance().CurrentRecvMessage().NameStr(), Model::instance().CurrentRecvMessage().MessageStr());
 						const float speed = 128.0;
 						int32_t text_walk = static_cast<int32_t>(static_cast<float>(Model::instance().Time() - static_cast<double>(span.time)) * speed - 96.0f);
 						float interp = 0;
@@ -261,9 +261,10 @@ void Commands::Boot() {
 					s.commitFunc = [=](Timeline::Span &) {
 						SDD1306::instance().Display();
 					};
-					s.doneFunc = [=](Timeline::Span &) {
+					s.doneFunc = [=](Timeline::Span &span) {
 						SDD1306::instance().SetVerticalShift(0);
 						SDD1306::instance().Display();
+						Timeline::instance().Remove(span);
 					};
 					Timeline::instance().Add(s);
 				}
@@ -450,6 +451,12 @@ void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col)
     strncpy(reinterpret_cast<char *>(&buf[42-12   ]), msg, 12);
 
     SX1280::instance().LoraTxStart(buf, 42);
+
+#ifdef EMULATOR
+	SX1280::PacketStatus status;
+	memset(&status, 0, sizeof(status));
+	SX1280::instance().RxDone(buf, 42, status);
+#endif  // #ifdef EMULATOR
     
     Model::instance().IncSentMessageCount();
 }

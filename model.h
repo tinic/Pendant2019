@@ -140,6 +140,32 @@ public:
         uint16_t cnt;
         uint8_t message[messageLength];
         uint8_t name[nameLength];
+        
+        const char *MessageStr() const {
+        	static char str[messageLength+1];
+        	memset(str,0,sizeof(str));
+        	strncpy(str, (const char *)message, messageLength);
+        	for (int32_t c = messageLength-1; c >= 0; c++) {
+        		if (str[c] != ' ') {
+        			break;
+        		}
+        		str[c] = 0;
+        	}
+        	return str;
+        }
+
+        const char *NameStr() const {
+        	static char str[nameLength+1];
+        	memset(str,0,sizeof(str));
+        	strncpy(str, (const char *)name, nameLength);
+        	for (int32_t c = nameLength-1; c >= 0; c++) {
+        		if (str[c] != ' ') {
+        			break;
+        		}
+        		str[c] = 0;
+        	}
+        	return str;
+        }
     };
 
     const struct Message &CurrentRecvMessage() { uint32_t index = revc_messages_pos - 1; index %= messageRecvCount; return recv_messages[index]; }

@@ -2615,7 +2615,7 @@ void led_control::PerformV3MessageEffect(colors::rgb8 color, bool remove) {
 
     s.type = Timeline::Span::Effect;
     s.time = Model::instance().Time();
-    s.duration = 8.0;
+    s.duration = 15.0;
     s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
         led_bank::instance().message_v3(color, span, below);
     };
