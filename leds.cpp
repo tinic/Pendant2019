@@ -1026,103 +1026,100 @@ public:
                         black();
                     break;
                     case 1:
-                        rgb_band();
+                        static_color();
                     break;
                     case 2:
-                        color_walker();
+                        rgb_band();
                     break;
                     case 3:
-                        light_walker();
+                        color_walker();
                     break;
                     case 4:
-                        rgb_glow();
+                        light_walker();
                     break;
                     case 5:
-                        lightning();
+                        rgb_glow();
                     break;
                     case 6:
-                        lightning_crazy();
+                        lightning();
                     break;
                     case 7:
-                        sparkle();
+                        lightning_crazy();
                     break;
                     case 8:
-                        rando();
+                        sparkle();
                     break;
                     case 9:
-                        red_green();
+                        rando();
                     break;
                     case 10:
-                        brilliance();
+                        red_green();
                     break;
                     case 11:
-                        highlight();
+                        brilliance();
                     break;
                     case 12:
-                        autumn();
+                        highlight();
                     break;
                     case 13:
-                        heartbeat();
+                        autumn();
                     break;
                     case 14:
-                        moving_rainbow();
+                        heartbeat();
                     break;
                     case 15:
-                        twinkle();
+                        moving_rainbow();
                     break;
                     case 16:
-                        twinkly();
+                        twinkle();
                     break;
                     case 17:
-                        randomfader();
+                        twinkly();
                     break;
                     case 18:
-                        chaser();
+                        randomfader();
                     break;
                     case 19:
-                        brightchaser();
+                        chaser();
                     break;
                     case 20:
-                        gradient();
+                        brightchaser();
                     break;
                     case 21:
-                        effect_21();
+                        gradient();
                     break;
                     case 22:
-                        effect_22();
+                        effect_21();
                     break;
                     case 23:
-                        effect_23();
+                        effect_22();
                     break;
                     case 24:
-                        effect_24();
+                        effect_23();
                     break;
                     case 25:
-                        effect_25();
+                        effect_24();
                     break;
                     case 26:
-                        effect_26();
+                        effect_25();
                     break;
                     case 27:
-                        effect_27();
+                        effect_26();
                     break;
                     case 28:
-                        effect_28();
+                        effect_27();
                     break;
                     case 29:
-                        effect_29();
+                        effect_28();
                     break;
                     case 30:
-                        effect_30();
+                        effect_29();
                     break;
                     case 31:
-                        effect_31();
+                        effect_30();
                     break;
                     case 32:
-                        effect_32();
-                    break;
-                    case 33:
-                        burn_test();
+                        effect_31();
                     break;
                 }
             };
@@ -1502,6 +1499,18 @@ public:
         }
         leds_centr[0] = colors::rgb8out(colors::rgb(func(ledpos()[32])));
         leds_centr[1] = colors::rgb8out(colors::rgb(func(ledpos()[32])));
+    }
+    
+    //
+    // STATIC COLOR
+    //
+
+    void static_color() {
+        led_bank::set_bird_color(colors::rgb(Model::instance().BirdColor()));
+
+        calc_outer([=](geom::float4) {
+        	return geom::float4(colors::rgb(Model::instance().RingColor()));
+        });
     }
 
     //
