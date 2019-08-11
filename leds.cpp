@@ -895,43 +895,34 @@ namespace colors {
 #ifndef EMULATOR
 static void _qspi_memcpy(volatile uint8_t *dst, uint8_t *src, uint32_t count)
 {
-	(void)dst;
-	(void)src;
     if (count < 1) {
         return;
     }
-#if 0
-    if (count >= 64) {
-        __asm volatile (
-            "1:\n\t"
-            "vldm %[src]!, {s0-s15}\n\t"
-            "vstm %[dst]!, {s0-s15}\n\t"
-            "subs %[count], #64\n\t"
-            "bge 1b\n\t"
-            :
-            : [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
-            : "r1", 
-              "s0", "s1", "s2", "s3",
-              "s4", "s5", "s6", "s7",
-              "s8", "s9", "s10", "s11",
-              "s12", "s13", "s14", "s15",
-              "cc", "memory"
-        );
-        count &= ~0x3FUL;
+    if (count >= 4) {
+		__asm volatile (
+			"1:\n\t"
+			"ldr r0, [%[src]], #4\n\t"
+			"str r0, [%[dst]], #4\n\t"
+			"subs %[count], #4\n\t"
+			"bge 1b\n\t"
+			:
+			: [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
+			: "r0", "cc", "memory"
+		);
+        count &= ~0x3UL;
         if (count < 1) {
             return;
         }
     }
-#endif  // #if 0
     __asm volatile (
         "1:\n\t"
-        "ldrb r1, [%[src]], #1\n\t"
-        "strb r1, [%[dst]], #1\n\t"
+        "ldrb r0, [%[src]], #1\n\t"
+        "strb r0, [%[dst]], #1\n\t"
         "subs %[count], #1\n\t"
         "bge 1b\n\t"
         :
         : [dst] "r" (dst), [src] "r" (src), [count] "r" (count)
-        : "r1", "cc", "memory"
+        : "r0", "cc", "memory"
     );
 }
 #endif  // #ifndef EMULATOR

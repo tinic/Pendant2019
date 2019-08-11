@@ -48,6 +48,9 @@ public:
     colors::rgb8 MessageColor() const { return message_color; }
     void SetMessageColor(colors::rgb8 color) { message_color = color; }
 
+	uint32_t SelectedMessage() const { return selected_message; }
+	void SetSelectedMessage(uint32_t message) { selected_message = message; }
+
     const char *Name() const { return reinterpret_cast<const char *>(name); }
     void SetName(const char *newname) { strncpy(reinterpret_cast<char *>(name), newname, nameLength); }
     static constexpr size_t NameLength() { return nameLength; }
@@ -197,6 +200,8 @@ private:
 
     uint8_t messages[messageCount][messageLength];
     uint8_t name[nameLength];
+
+	uint32_t selected_message = 0;
 
     // Persistent
     uint32_t sent_message_count = 0;

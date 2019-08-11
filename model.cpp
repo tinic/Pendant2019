@@ -171,6 +171,7 @@ void Model::load() {
         ring_color.rgbx = read_uint32(buf, buf_pos);
         message_color.rgbx = read_uint32(buf, buf_pos);
         effect = read_uint32(buf, buf_pos);
+        selected_message = read_uint32(buf, buf_pos);
         sent_message_count = read_uint32(buf, buf_pos);
 
         brightness = read_float(buf, buf_pos);
@@ -268,6 +269,7 @@ void Model::save() {
     write_uint32(ring_color.rgbx, buf, buf_pos);
     write_uint32(message_color.rgbx, buf, buf_pos);
     write_uint32(effect, buf, buf_pos);
+    write_uint32(selected_message, buf, buf_pos);
     write_uint32(sent_message_count, buf, buf_pos);
 
     write_float(brightness, buf, buf_pos);

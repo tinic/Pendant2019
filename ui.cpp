@@ -107,7 +107,7 @@ void UI::enterSendMessage(Timeline::Span &parent) {
 
     static int32_t currentMessage = 0;
 
-    currentMessage = 0;
+    currentMessage = static_cast<int32_t>(Model::instance().SelectedMessage());
 
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         if (currentMessage >= 0) {
@@ -132,6 +132,8 @@ void UI::enterSendMessage(Timeline::Span &parent) {
         if (currentMessage < -1) {
             currentMessage = Model::instance().MessageCount() - 1;
         }
+		Model::instance().SetSelectedMessage(static_cast<uint32_t>(currentMessage));
+		Model::instance().save();
     };
     s.switch2Func = [=](Timeline::Span &span) {
         span.time = Model::instance().Time(); // reset timeout
@@ -139,6 +141,8 @@ void UI::enterSendMessage(Timeline::Span &parent) {
         if (currentMessage >= static_cast<int32_t>(Model::instance().MessageCount())) {
             currentMessage = -1;
         }
+		Model::instance().SetSelectedMessage(static_cast<uint32_t>(currentMessage));
+		Model::instance().save();
     };
     s.switch3Func = [=](Timeline::Span &span) {
         Timeline::instance().Remove(span);
