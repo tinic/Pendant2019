@@ -232,7 +232,7 @@ void Commands::Boot() {
 					s.type = Timeline::Span::Display;
 					s.time = Model::instance().Time();
 					s.duration = 15.0;
-					s.calcFunc = [=](Timeline::Span &span, Timeline::Span &below) {
+					s.calcFunc = [=](Timeline::Span &span, Timeline::Span &) {
 						char str[256];
 						snprintf(str, 256, " [%s] %s ", Model::instance().CurrentRecvMessage().NameStr(), Model::instance().CurrentRecvMessage().MessageStr());
 						const float speed = 128.0;
@@ -241,7 +241,6 @@ void Commands::Boot() {
 						if (span.InBeginPeriod(interp, 0.5f)) {
 							if (interp < 0.5f) {
 								SDD1306::instance().SetVerticalShift(-static_cast<int8_t>(interp * 2.0f * 16));
-								below.Calc();
 							} else {
 								SDD1306::instance().SetVerticalShift(16-static_cast<int8_t>((interp * 2.0f - 1.0f ) * 16.0f));
 								SDD1306::instance().SetAsciiScrollMessage(str,text_walk);
@@ -253,7 +252,6 @@ void Commands::Boot() {
 							} else {
 								SDD1306::instance().SetVerticalShift(16-static_cast<int8_t>((interp * 2.0f - 1.0f ) * 16.0f));
 								SDD1306::instance().SetAsciiScrollMessage(0,0);
-								below.Calc();
 							}
 						} else {
 							SDD1306::instance().SetVerticalShift(0);
@@ -456,12 +454,6 @@ void Commands::SendV3Message(const char *nam, const char *msg, colors::rgb8 col)
 
     SX1280::instance().LoraTxStart(buf, 42);
 
-#ifdef EMULATOR
-	SX1280::PacketStatus status;
-	memset(&status, 0, sizeof(status));
-	SX1280::instance().RxDone(buf, 42, status);
-#endif  // #ifdef EMULATOR
-    
     Model::instance().IncSentMessageCount();
 }
 

@@ -78,20 +78,22 @@ static void FlipAnimation(Timeline::Span *parent) {
 			delta = 1.0f - (2.0f * (delta - 0.5f));
 			delta = Cubic::easeOut(delta, 0.0f, 1.0f, 1.0f);
 			SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0f * delta));
-			SDD1306::instance().Display();
 		} else {
 			parent->Calc();
 			delta = 1.0f - (2.0f * (0.5f - delta));
 			delta = Cubic::easeIn(delta, 0.0f, 1.0f, 1.0f);
 			SDD1306::instance().SetCenterFlip(static_cast<int8_t>(48.0f * delta));
-			SDD1306::instance().Display();
 		}
+	};
+	flipSpan.commitFunc = [=](Timeline::Span &) {
+		SDD1306::instance().Display();
 	};
 	flipSpan.doneFunc = [=](Timeline::Span &span) {
 		SDD1306::instance().SetCenterFlip(0);
 		SDD1306::instance().Display();
 		Timeline::instance().Remove(span);
 	};
+    Timeline::instance().Add(flipSpan);
 }
 
 UI &UI::instance() {

@@ -90,6 +90,14 @@ int main(void)
             case    0x34:
             		Commands::instance().SendV3Message("DRINK MALORT", "DUCKLING", colors::rgb8(0xFF, 0x80, 0x00));
             		break;
+            case	0x35: {
+						uint8_t buf[42];
+						memset(&buf[0], 0, sizeof(buf));
+						memcpy(&buf[0], "DUCK", 4);
+						SX1280::PacketStatus status;
+						memset(&status, 0, sizeof(status));
+						SX1280::instance().RxDone(buf, 42, status);
+					} break;    
         }
     }
 #endif  // #ifndef EMULATOR
