@@ -2356,6 +2356,18 @@ public:
         }
     }
 
+	void flashlight(colors::rgb8 color) {
+        colors::rgb8out out = colors::rgb8out(color.r, color.g, color.b);
+        for (size_t c = 0; c < leds_rings_n; c++) {
+			leds_inner[0][c] = out;
+			leds_inner[1][c] = out;
+            leds_outer[0][c] = out;
+            leds_outer[1][c] = out;
+		}
+        leds_centr[0] = out;
+        leds_centr[1] = out;
+	}
+
     //
     // BIRD COLOR MODIFIER
     //
@@ -2643,6 +2655,38 @@ void led_control::PerformColorBirdDisplay(colors::rgb8 color, bool remove) {
     s.commitFunc = [=](Timeline::Span &) {
         led_bank::instance().update_leds();
     };
+
+    Timeline::instance().Add(s);
+}
+
+void led_control::PerformFlashlight(colors::rgb8 color, bool remove) {
+    static Timeline::Span s;
+
+    static colors::rgb8 passThroughColor;
+
+    passThroughColor = color;
+
+    if (remove) {
+        s.time = Model::instance().Time();
+        s.duration = 0.25;
+        return;
+    }
+
+    if (Timeline::instance().Scheduled(s)) {
+        return;
+    }
+
+    s.type = Timeline::Span::Effect;
+    s.time = Model::instance().Time();
+    s.duration = std::numeric_limits<double>::infinity();
+    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+        led_bank::instance().flashlight(passThroughColor);
+    };
+    s.commitFunc = [=](Timeline::Span &) {
+        led_bank::instance().update_leds(false);
+    };
+	s.doneFunc = [=](Timeline::Span &) {
+	};
 
     Timeline::instance().Add(s);
 }

@@ -42,6 +42,7 @@ private:
     void enterChangeBirdColor(Timeline::Span &parent);
     void enterChangeRingColor(Timeline::Span &parent);
     void enterRadioOnOff(Timeline::Span &parent);
+    void enterFlashlight(Timeline::Span &parent);
     void enterShowVersion(Timeline::Span &parent);
     void enterDebug(Timeline::Span &parent);
     void enterResetEverything(Timeline::Span &parent);

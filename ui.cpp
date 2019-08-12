@@ -730,6 +730,34 @@ void UI::enterRadioOnOff(Timeline::Span &parent) {
     Timeline::instance().Add(s);
 }
 
+void UI::enterFlashlight(Timeline::Span &parent) {
+    static Timeline::Span s;
+    s.type = Timeline::Span::Display;
+    s.time = Model::instance().Time();
+    s.duration = std::numeric_limits<double>::infinity(); // timeout
+	led_control::PerformFlashlight(colors::rgb8(255,255,255),false);
+    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+		SDD1306::instance().PlaceUTF8String(0, 0, " Flashlight ");
+    };
+    s.commitFunc = [=](Timeline::Span &) {
+        SDD1306::instance().Display();
+    };
+    s.doneFunc = [=](Timeline::Span &) {
+		FlipAnimation(&s);
+    };
+    s.switch1Func = [=](Timeline::Span &) {
+    };
+    s.switch2Func = [=](Timeline::Span &) {
+    };
+    s.switch3Func = [=](Timeline::Span &span) {
+		led_control::PerformFlashlight(colors::rgb8(0,0,0),true);
+        Timeline::instance().Remove(span);
+        Timeline::instance().ProcessDisplay();
+    };
+    Timeline::instance().Remove(parent);
+    Timeline::instance().Add(s);
+}
+
 
 void UI::enterShowVersion(Timeline::Span &parent) {
     static Timeline::Span s;
@@ -887,34 +915,37 @@ void UI::enterPrefs(Timeline::Span &) {
     const int32_t maxPage = 9;
     
     const char *pageText[] = {
-        "01/10 Send  "      // 1
+        "01/11 Send  "      // 1
         "  Message!  ",
 
-        "02/10 Change"      // 2
+        "02/11 Change"      // 2
         "Message Col.",
 
-        "03/10 Change"      // 3
+        "03/11 Change"      // 3
         "  Messages  ",
 
-        "04/10 Change"      // 4
+        "04/11 Change"      // 4
         "    Name    ",
 
-        "05/10 Change"      // 5
+        "05/11 Change"      // 5
         " Bird Color ",
 
-        "06/10 Change"      // 6
+        "06/11 Change"      // 6
         " Ring Color ",
 
-        "07/10 Radio "       // 7
+        "07/11 Radio "       // 7
         "   On/Off   ",
 
-        "08/10 Show  "      // 8
+        "08/11       "      // 8
+        " Flashlight ",
+
+        "09/11 Show  "      // 8
         "  Version   ",
 
-        "09/10 Debug "      // 9
+        "10/11 Debug "      // 9
         "Information ",
 
-        "10/10 Reset "      // 10
+        "11/11 Reset "      // 10
         " Everything "
     };
 
@@ -972,12 +1003,15 @@ void UI::enterPrefs(Timeline::Span &) {
                 enterRadioOnOff(span);
             } break;
             case 7: {
-                enterShowVersion(span);
+                enterFlashlight(span);
             } break;
             case 8: {
-                enterDebug(span);
+                enterShowVersion(span);
             } break;
             case 9: {
+                enterDebug(span);
+            } break;
+            case 10: {
                 enterResetEverything(span);
             } break;
         }

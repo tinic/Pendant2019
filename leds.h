@@ -322,6 +322,7 @@ public:
     static void PerformMessageColorDisplay(colors::rgb8 color, bool remove = false);
     static void PerformColorBirdDisplay(colors::rgb8 color, bool remove = false);
     static void PerformColorRingDisplay(colors::rgb8 color, bool remove = false);
+    static void PerformFlashlight(colors::rgb8 color, bool remove = false);
 };
 
 #endif /* LEDS_H_ */
