@@ -57,6 +57,11 @@ static constexpr int32_t build_number =
 
 static void FlipAnimation(Timeline::Span *parent) {
 	static Timeline::Span flipSpan;
+
+	if (Timeline::instance().Scheduled(flipSpan)) {
+		return;
+	}
+
 	flipSpan.type = Timeline::Span::Display;
 	flipSpan.time = Model::instance().Time();
 	flipSpan.duration = 0.25; // timeout
@@ -87,7 +92,6 @@ static void FlipAnimation(Timeline::Span *parent) {
 		SDD1306::instance().Display();
 		Timeline::instance().Remove(span);
 	};
-	Timeline::instance().Add(flipSpan);
 }
 
 UI &UI::instance() {
@@ -684,14 +688,14 @@ void UI::enterRadioOnOff(Timeline::Span &parent) {
 
 
     static int32_t currentSelection = 0;
-    currentSelection = Model::instance().RadioOn();
+    currentSelection = Model::instance().RadioOn() ? 0 : 1;
 
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         SDD1306::instance().PlaceUTF8String(0, 0, "   Radio    ");
         if (currentSelection == 0) {
-			SDD1306::instance().PlaceUTF8String(0, 1, "  \xc2\x8c\xc2\x8d\xc2\x8e\xc2\x8f\xc2\x90\xc2\x91\xc2\x92\xc2\x93  ");
+			SDD1306::instance().PlaceUTF8String(0, 1, "  \xc6\x8c\xc6\x8d\xc6\x8e\xc6\x8f\xc6\x90\xc6\x91\xc6\x92\xc6\x93  ");
         } else {
-			SDD1306::instance().PlaceUTF8String(0, 1, "  \xc2\x93\xc2\x94\xc2\x95\xc2\x96\xc2\x97\xc2\x98\xc2\x99\xc2\x9a  ");
+			SDD1306::instance().PlaceUTF8String(0, 1, "  \xc6\x93\xc6\x94\xc6\x95\xc6\x96\xc6\x97\xc6\x98\xc6\x99\xc6\x9a  ");
         }
     };
     s.commitFunc = [=](Timeline::Span &) {
