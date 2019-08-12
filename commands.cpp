@@ -196,7 +196,9 @@ void Commands::Boot() {
                         Timeline::instance().Add(s);
                     }
                 }
-                led_control::PerformV2MessageEffect(radio_colors[payload[7]]);
+                if (Model::instance().RadioOn()) {
+	                led_control::PerformV2MessageEffect(radio_colors[payload[7]]);
+	            }
             } else if (size >= 42 && memcmp(payload, "DUCK", 4) == 0) {
                 struct Model::Message msg;
                 
@@ -268,7 +270,9 @@ void Commands::Boot() {
 					};
 					Timeline::instance().Add(s);
 				}
-				led_control::PerformV3MessageEffect(Model::instance().CurrentRecvMessage().col);
+                if (Model::instance().RadioOn()) {
+					led_control::PerformV3MessageEffect(Model::instance().CurrentRecvMessage().col);
+				}
             }
         });
 

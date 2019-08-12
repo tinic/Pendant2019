@@ -78,6 +78,9 @@ public:
     float SystemVoltage() const  { return system_voltage; }
     void SetSystemVoltage(float voltage) { system_voltage = voltage; }
     std::string SystemVoltageString();
+    
+    bool RadioOn() const { return radio_on; }
+    void SetRadioOn(bool state) { radio_on = state; }
 
     static constexpr float MinBatteryVoltage() { return 3.5f; }
     static constexpr float MaxBatteryVoltage() { return 4.2f; }
@@ -202,6 +205,7 @@ private:
     uint8_t name[nameLength];
 
 	uint32_t selected_message = 0;
+	bool radio_on = true;
 
     // Persistent
     uint32_t sent_message_count = 0;

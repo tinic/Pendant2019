@@ -676,6 +676,54 @@ void UI::enterChangeRingColor(Timeline::Span &parent) {
     Timeline::instance().Add(s);
 }
 
+void UI::enterRadioOnOff(Timeline::Span &parent) {
+    static Timeline::Span s;
+    s.type = Timeline::Span::Display;
+    s.time = Model::instance().Time();
+    s.duration = 10.0; // timeout
+
+
+    static int32_t currentSelection = 0;
+    currentSelection = Model::instance().RadioOn();
+
+    s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
+        SDD1306::instance().PlaceUTF8String(0, 0, "   Radio    ");
+        if (currentSelection == 0) {
+			SDD1306::instance().PlaceUTF8String(0, 1, "            ");
+        } else {
+			SDD1306::instance().PlaceUTF8String(0, 1, "            ");
+        }
+    };
+    s.commitFunc = [=](Timeline::Span &) {
+        SDD1306::instance().Display();
+    };
+    s.doneFunc = [=](Timeline::Span &) {
+		FlipAnimation(&s);
+    };
+    s.switch1Func = [=](Timeline::Span &span) {
+        span.time = Model::instance().Time(); // reset timeout
+        currentSelection --;
+        if (currentSelection < 0) {
+            currentSelection = 1;
+        }
+    };
+    s.switch2Func = [=](Timeline::Span &span) {
+        span.time = Model::instance().Time(); // reset timeout
+        currentSelection ++;
+        if (currentSelection > 1) {
+            currentSelection = 0;
+        }
+    };
+    s.switch3Func = [=](Timeline::Span &span) {
+    	Model::instance().SetRadioOn(currentSelection == 0 ? true : false);
+        Timeline::instance().Remove(span);
+        Timeline::instance().ProcessDisplay();
+    };
+    Timeline::instance().Remove(parent);
+    Timeline::instance().Add(s);
+}
+
+
 void UI::enterShowVersion(Timeline::Span &parent) {
     static Timeline::Span s;
     s.type = Timeline::Span::Display;
@@ -832,31 +880,34 @@ void UI::enterPrefs(Timeline::Span &) {
     const int32_t maxPage = 9;
     
     const char *pageText[] = {
-        "01/09 Send  "      // 1
+        "01/10 Send  "      // 1
         "  Message!  ",
 
-        "02/09 Change"      // 2
+        "02/10 Change"      // 2
         "Message Col.",
 
-        "03/09 Change"      // 3
+        "03/10 Change"      // 3
         "  Messages  ",
 
-        "04/09 Change"      // 4
+        "04/10 Change"      // 4
         "    Name    ",
 
-        "05/09 Change"      // 5
+        "05/10 Change"      // 5
         " Bird Color ",
 
-        "06/09 Change"      // 6
+        "06/10 Change"      // 6
         " Ring Color ",
 
-        "07/09 Show  "      // 11
+        "07/10 Radio"       // 7
+        "  On/Off   ",
+
+        "08/10 Show  "      // 8
         "  Version   ",
 
-        "08/09 Debug "      // 12
+        "09/10 Debug "      // 9
         "Information ",
 
-        "09/09 Reset "      // 13
+        "10/10 Reset "      // 10
         " Everything "
     };
 
@@ -911,12 +962,15 @@ void UI::enterPrefs(Timeline::Span &) {
                 enterChangeRingColor(span);
             } break;
             case 6: {
-                enterShowVersion(span);
+                enterRadioOnOff(span);
             } break;
             case 7: {
-                enterDebug(span);
+                enterShowVersion(span);
             } break;
             case 8: {
+                enterDebug(span);
+            } break;
+            case 9: {
                 enterResetEverything(span);
             } break;
         }
