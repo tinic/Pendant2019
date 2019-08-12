@@ -689,9 +689,9 @@ void UI::enterRadioOnOff(Timeline::Span &parent) {
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
         SDD1306::instance().PlaceUTF8String(0, 0, "   Radio    ");
         if (currentSelection == 0) {
-			SDD1306::instance().PlaceUTF8String(0, 1, "            ");
+			SDD1306::instance().PlaceUTF8String(0, 1, "  \xc2\x8c\xc2\x8d\xc2\x8e\xc2\x8f\xc2\x90\xc2\x91\xc2\x92\xc2\x93  ");
         } else {
-			SDD1306::instance().PlaceUTF8String(0, 1, "            ");
+			SDD1306::instance().PlaceUTF8String(0, 1, "  \xc2\x93\xc2\x94\xc2\x95\xc2\x96\xc2\x97\xc2\x98\xc2\x99\xc2\x9a  ");
         }
     };
     s.commitFunc = [=](Timeline::Span &) {
@@ -716,6 +716,7 @@ void UI::enterRadioOnOff(Timeline::Span &parent) {
     };
     s.switch3Func = [=](Timeline::Span &span) {
     	Model::instance().SetRadioOn(currentSelection == 0 ? true : false);
+    	Model::instance().save();
         Timeline::instance().Remove(span);
         Timeline::instance().ProcessDisplay();
     };
@@ -898,8 +899,8 @@ void UI::enterPrefs(Timeline::Span &) {
         "06/10 Change"      // 6
         " Ring Color ",
 
-        "07/10 Radio"       // 7
-        "  On/Off   ",
+        "07/10 Radio "       // 7
+        "   On/Off   ",
 
         "08/10 Show  "      // 8
         "  Version   ",
