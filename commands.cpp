@@ -418,7 +418,7 @@ void Commands::SendV2Message(const char *name, const char *message, uint8_t colo
     SX1280::instance().LoraTxStart(buf,24);
 }
 
-void Commands::SendV3Message(const char *msg, const char *nam, colors::rgb8 col) {
+void Commands::SendV3Message(const char *nam, const char *msg, colors::rgb8 col) {
     uint8_t buf[42];
 
     memset(&buf[0], 0, sizeof(buf));

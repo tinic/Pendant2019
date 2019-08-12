@@ -682,7 +682,7 @@ public:
 	void SetCadDoneCallback(std::function<void (bool cadFlag)> callback) { cadDone = callback; };
 
 	// Set operating modes
-    void SetTx(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+    void SetTx(TickTime timeout = { TX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
     void SetRx(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, RX_TIMEOUT_VALUE });
     void SetCad(void);
     void SetSleep(SleepParams sleepConfig);
@@ -733,10 +733,10 @@ public:
     uint8_t SetCrcSeed(const uint8_t *seed);
 
 
-	void SetRangingRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	void SetRangingTX(uint32_t targetAddress, TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	void SetLoraRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
-	void SetLoraTX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+	void SetRangingRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, RX_TIMEOUT_VALUE });
+	void SetRangingTX(uint32_t targetAddress, TickTime timeout = { TX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
+	void SetLoraRX(TickTime timeout = { RX_TIMEOUT_TICK_SIZE, RX_TIMEOUT_VALUE });
+	void SetLoraTX(TickTime timeout = { TX_TIMEOUT_TICK_SIZE, TX_TIMEOUT_VALUE });
 
 #ifdef EMULATOR
 	void RxDone(const uint8_t *payload, uint8_t size, PacketStatus packetStatus);
@@ -758,6 +758,7 @@ private:
     static constexpr uint16_t TX_TIMEOUT_VALUE = 1000; // ms
     static constexpr uint16_t RX_TIMEOUT_VALUE = 0xffff; // ms
     static constexpr RadioTickSizes RX_TIMEOUT_TICK_SIZE = RADIO_TICK_SIZE_1000_US;
+    static constexpr RadioTickSizes TX_TIMEOUT_TICK_SIZE = RADIO_TICK_SIZE_1000_US;
 
     static constexpr uint16_t IrqMask = IRQ_TX_DONE | IRQ_RX_DONE | IRQ_RX_TX_TIMEOUT;
 

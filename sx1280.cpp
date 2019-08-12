@@ -761,7 +761,7 @@ uint8_t SX1280::GetPayload(uint8_t *buffer, uint8_t *size , uint8_t maxSize) {
 }
 
 void SX1280::LoraTxStart(const uint8_t *payload, uint8_t size, TickTime timeout, uint8_t offset) {
-    SetPayload( payload, size, offset );
+    SetPayload(payload, size, offset);
     SetLoraTX(timeout);
 }
 

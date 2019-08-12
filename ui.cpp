@@ -958,7 +958,8 @@ void UI::init() {
 							}
 						} break;
 						case 2: {
-							if ((BQ25895::instance().GetStatus() & 0x18 ) != 0) {
+							if ((BQ25895::instance().GetStatus() & 0x18 ) == 0x08 ||
+								(BQ25895::instance().GetStatus() & 0x18 ) == 0x10) {
 								return "\xca\xa9";
 							} else {
 								return "\xca\xa8";

@@ -141,8 +141,8 @@ public:
         colors::rgb8 col;
         uint32_t flg;
         uint16_t cnt;
-        uint8_t message[messageLength];
         uint8_t name[nameLength];
+        uint8_t message[messageLength];
         
         const char *MessageStr() const {
         	static char str[messageLength+1];
