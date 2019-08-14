@@ -392,9 +392,9 @@ void Commands::StartTimers() {
     timer_add_task(&TIMER_0, &update_adc_timer_task);
 
 #ifdef MCP
-    update_adc_timer_task.interval = 16; // 60fp
-    update_adc_timer_task.cb = &OnMCPTimer_C;
-    update_adc_timer_task.mode = TIMER_TASK_REPEAT;
+    update_mcp_timer_task.interval = 16; // 60fp
+    update_mcp_timer_task.cb = &OnMCPTimer_C;
+    update_mcp_timer_task.mode = TIMER_TASK_REPEAT;
     timer_add_task(&TIMER_0, &update_mcp_timer_task);
 #endif  // #ifdef MCP
 
