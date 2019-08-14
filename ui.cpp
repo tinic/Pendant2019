@@ -736,8 +736,10 @@ void UI::enterFlashlight(Timeline::Span &parent) {
     s.time = Model::instance().Time();
     s.duration = std::numeric_limits<double>::infinity(); // timeout
 	led_control::PerformFlashlight(colors::rgb8(255,255,255),false);
+ 	SDD1306::instance().Invert();
     s.calcFunc = [=](Timeline::Span &, Timeline::Span &) {
-		SDD1306::instance().PlaceUTF8String(0, 0, " Flashlight ");
+		SDD1306::instance().PlaceUTF8String(0, 0, "            ");
+		SDD1306::instance().PlaceUTF8String(0, 1, "            ");
     };
     s.commitFunc = [=](Timeline::Span &) {
         SDD1306::instance().Display();
@@ -745,11 +747,20 @@ void UI::enterFlashlight(Timeline::Span &parent) {
     s.doneFunc = [=](Timeline::Span &) {
 		FlipAnimation(&s);
     };
-    s.switch1Func = [=](Timeline::Span &) {
+    s.switch1Func = [=](Timeline::Span &span) {
+	 	SDD1306::instance().Clear();
+		led_control::PerformFlashlight(colors::rgb8(0,0,0),true);
+        Timeline::instance().Remove(span);
+        Timeline::instance().ProcessDisplay();
     };
-    s.switch2Func = [=](Timeline::Span &) {
+    s.switch2Func = [=](Timeline::Span &span) {
+	 	SDD1306::instance().Clear();
+		led_control::PerformFlashlight(colors::rgb8(0,0,0),true);
+        Timeline::instance().Remove(span);
+        Timeline::instance().ProcessDisplay();
     };
     s.switch3Func = [=](Timeline::Span &span) {
+	 	SDD1306::instance().Clear();
 		led_control::PerformFlashlight(colors::rgb8(0,0,0),true);
         Timeline::instance().Remove(span);
         Timeline::instance().ProcessDisplay();
@@ -936,7 +947,7 @@ void UI::enterPrefs(Timeline::Span &) {
         "07/11 Radio "       // 7
         "   On/Off   ",
 
-        "08/11       "      // 8
+        "08/11 Enable"      // 8
         " Flashlight ",
 
         "09/11 Show  "      // 8
