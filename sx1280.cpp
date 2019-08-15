@@ -1558,17 +1558,13 @@ void SX1280::StartMCP()
     struct io_descriptor *io;
     usart_sync_get_io_descriptor(&USART_0, &io);
     usart_sync_enable(&USART_0);
-
-	for (int32_t c=0; c<1024;c++) {
-		const char *str = "AAAAAAAAAAAAAAAAAAAA";
-		io_write(io, reinterpret_cast<const uint8_t *>(str), strlen(str));
-	}
 }
 
 void SX1280::OnMCPTimer()
 {
-    static int32_t s = 0;
-    static uint8_t cmd[64];
+    static size_t s = 0;
+    static constexpr size_t max_cmd_length = 256;
+    static uint8_t cmd[max_cmd_length];
 
     struct io_descriptor *io;
     usart_sync_get_io_descriptor(&USART_0, &io);
@@ -1576,68 +1572,87 @@ void SX1280::OnMCPTimer()
     while (usart_sync_is_rx_not_empty(&USART_0)) {
         uint8_t c;
         io_read(io, &c,1);
-        if (c == 'C') {
-            s = 0;
-        }
-        else if (s >= 64) {
+        if (s >= max_cmd_length) {
             s = 0;
         }
         else if (c == '\n') {
-            if (s > 1) {
-                switch(cmd[1]) {
-                    case    'G': {
-                                std::vector<uint8_t> data = base64_decode(std::string(&cmd[2], &cmd[s-1]));
-                                if (data.size() >= 4) {
-                                    SetRangingTX((data[0] << 24)|
-                                                 (data[1] << 16)|
-                                                 (data[2] <<  8)|
-                                                 (data[3] <<  0));
-                                }
-                            } break;
-                    case    'W': {
-                                if (s > 2) {
-                                    std::vector<uint8_t> data = base64_decode(std::string(&cmd[3], &cmd[s-1]));
-                                    switch(cmd[2]) {
-                                        case    'C': {
-                                            WriteCommand((RadioCommand)data.data()[0], data.data()+1, data.size()-1);
-                                        } break;
-                                        case    'R': {
-                                            WriteRegister(data.data()[0], data.data()+1, data.size()-1);
-                                        } break;
-                                        case    'M': {
-                                            LoraTxStart(data.data(), data.size());
-                                        } break;
-                                    }
-                                }
-                            } break;
-                    case    'R': {
-                                if (s > 2) {
-                                    std::vector<uint8_t> data = base64_decode(std::string(&cmd[3], &cmd[s-1]));
-                                    switch(cmd[2]) {
-                                        case    'C': {
-                                            uint8_t buf[2];
-                                            ReadCommand((RadioCommand)data[0], &buf[0], data[1]);
-                                            std::string str("R"); 
-                                            str += base64_encode(buf, data[1]);
-                                            str += "\n";
-                                            io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
-                                        } break;
-                                        case    'R': {
-                                            uint8_t buf[2];
-                                            ReadRegister((data[0]<<8)|data[1], &buf[0], data[2]);
-                                            std::string str("R");
-                                            str += base64_encode(buf, data[1]);
-                                            str += "\n";
-                                            io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
-                                        } break;
-                                    }
-                                }
-                            } break;
-                }
-            }
+            if (s > 3) {
+				if (cmd[0] == 'A' && cmd[1] == 'T') {
+					switch(cmd[2]) {
+						case    'P': { // Ping
+									//  01234
+									// "ATP\n"
+									const char *str = "PONG!\n";
+									io_write(io, reinterpret_cast<const uint8_t *>(str), strlen(str));
+								} break;
+						case    'G': { // Range command
+									//  01234567890
+									// "ATG{base64}\n"
+									if (s > 4) {
+										std::vector<uint8_t> data = base64_decode(std::string(&cmd[3], &cmd[s-1]));
+										if (data.size() >= 4) {
+											SetRangingTX((data[0] << 24)|
+														 (data[1] << 16)|
+														 (data[2] <<  8)|
+														 (data[3] <<  0));
+										}
+									}
+								} break;
+						case    'W': {
+									if (s > 5) {
+										std::vector<uint8_t> data = base64_decode(std::string(&cmd[4], &cmd[s-1]));
+										switch(cmd[3]) {
+											//  01234567890
+											// "ATWC{base64}\n"
+											case    'C': { // Radio command write + data
+												WriteCommand((RadioCommand)data.data()[0], data.data()+1, data.size()-1);
+											} break;
+											//  01234567890
+											// "ATWR{base64}\n"
+											case    'R': { // Radio register write
+												WriteRegister(data.data()[0], data.data()+1, data.size()-1);
+											} break;
+											//  01234567890
+											// "ATWM{base64}\n"
+											case    'M': { // Radio transmit Lora data
+												LoraTxStart(data.data(), data.size());
+											} break;
+										}
+									}
+								} break;
+						case    'R': {
+									if (s > 5) {
+										std::vector<uint8_t> data = base64_decode(std::string(&cmd[4], &cmd[s-1]));
+										switch(cmd[3]) {
+											//  01234567890
+											// "ATRC{base64}\n"
+											case    'C': { // Radio command read data
+												uint8_t buf[2];
+												ReadCommand((RadioCommand)data[0], &buf[0], data[1]);
+												std::string str("R"); 
+												str += base64_encode(buf, data[1]);
+												str += "\n";
+												io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
+											} break;
+											//  01234567890
+											// "ATRR{base64}\n"
+											case    'R': { // Radio register read
+												uint8_t buf[2];
+												ReadRegister((data[0]<<8)|data[1], &buf[0], data[2]);
+												std::string str("R");
+												str += base64_encode(buf, data[1]);
+												str += "\n";
+												io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
+											} break;
+										}
+									}
+								} break;
+					}
+				}
+			}
             s = 0;
         }
-        cmd[s] = c;
+        cmd[s++] = c;
     }
 }
 #endif  // #ifdef MCP
