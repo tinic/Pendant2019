@@ -1558,15 +1558,11 @@ void SX1280::StartMCP()
     struct io_descriptor *io;
     usart_sync_get_io_descriptor(&USART_0, &io);
     usart_sync_enable(&USART_0);
-    usart_sync_set_baud_rate(&USART_0, 115200);
-    usart_sync_set_data_order(&USART_0, USART_DATA_ORDER_LSB);
-    usart_sync_set_mode(&USART_0,USART_MODE_ASYNCHRONOUS);
-    usart_sync_set_parity(&USART_0,USART_PARITY_NONE);
-    usart_sync_set_stopbits(&USART_0,USART_STOP_BITS_ONE);
-    usart_sync_set_character_size(&USART_0,USART_CHARACTER_SIZE_8BITS);
-    usart_flow_control_state flow_control_state;
-    flow_control_state.value = 0;
-    usart_sync_set_flow_control(&USART_0, flow_control_state);
+
+	for (int32_t c=0; c<1024;c++) {
+		const char *str = "AAAAAAAAAAAAAAAAAAAA";
+		io_write(io, reinterpret_cast<const uint8_t *>(str), strlen(str));
+	}
 }
 
 void SX1280::OnMCPTimer()
