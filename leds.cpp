@@ -665,6 +665,13 @@ namespace geom {
                           std::max(a.w, b.w));
         }
         
+        float4 pow(float v) {
+            return float4(powf(this->x, v),
+                          powf(this->y, v),
+                          powf(this->z, v),
+                          powf(this->w, v));
+        }
+        
         float4 abs() {
             return float4(fabsf(this->x),
                           fabsf(this->y),
@@ -1986,7 +1993,7 @@ public:
         calc_outer([=](geom::float4, size_t index) {
             for (size_t c = 0; c < many; c++) {
                 if (which[c] == index) {
-                    return g.clamp(next[c] - now);
+                    return g.clamp(next[c] - now).pow(0.5);
                 }
             }
             return geom::float4();
@@ -2020,7 +2027,7 @@ public:
             col = Model::instance().RingColor();
             const geom::float4 gg[] = {
                geom::float4(0x000000, 0.00f),
-               geom::float4(0xFFFFFF, 0.50f),
+               geom::float4(0xFFFFFF, 0.80f),
                geom::float4(0x000000, 1.00f)};
             g.init(gg,3);
         }
@@ -2107,7 +2114,7 @@ public:
 
         calc_outer([=](geom::float4 pos) {
             pos = pos.rotate2d(now);
-            return g.clamp(pos.x);
+            return g.clamp(pos.x).pow(0.5);
         });
     }
 
@@ -2163,7 +2170,7 @@ public:
             col = Model::instance().RingColor();
             const geom::float4 gg[] = {
                geom::float4(0xffffff, 0.00f),
-               geom::float4(Model::instance().RingColor().hex(), 0.5f),
+               geom::float4(Model::instance().RingColor().hex(), 0.10f),
                geom::float4(0x000000, 1.00f),
             };
             g.init(gg,3);
@@ -2171,12 +2178,12 @@ public:
 
         calc_inner([=](geom::float4 pos) {
         	float len = pos.len();
-        	return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now))));
+        	return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now)))).pow(0.5);
         });
 
         calc_outer([=](geom::float4 pos) {
         	float len = pos.len();
-        	return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now))));
+        	return g.clamp(1.0f-((len!=0.0f)?1.0f/len:1000.0f)*(fabsf(sinf(now)))).pow(0.5);
         });
     }
 
