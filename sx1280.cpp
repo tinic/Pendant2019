@@ -23,6 +23,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "./sx1280.h"
 #include "./emulator.h"
 #include "./model.h"
+#include "./sdd1306.h"
 
 #include <atmel_start.h>
 
@@ -117,6 +118,7 @@ static std::vector<uint8_t> base64_decode(std::string const& encoded_string) {
     }
     return ret;
 }
+
 #endif  // make#ifdef MCP
             
 SX1280::SX1280() {
@@ -1581,13 +1583,13 @@ void SX1280::OnMCPTimer()
 					switch(cmd[2]) {
 						case    'P': { // Ping
 									//  01234
-									// "ATP\n"
-									const char *str = "PONG!\n";
+									// "ATP"
+									const char *str = "PONG!\n\r";
 									io_write(io, reinterpret_cast<const uint8_t *>(str), strlen(str));
 								} break;
 						case    'G': { // Range command
 									//  01234567890
-									// "ATG{base64}\n"
+									// "ATG{base64}"
 									if (s > 4) {
 										std::vector<uint8_t> data = base64_decode(std::string(&cmd[3], &cmd[s-1]));
 										if (data.size() >= 4) {
@@ -1603,17 +1605,17 @@ void SX1280::OnMCPTimer()
 										std::vector<uint8_t> data = base64_decode(std::string(&cmd[4], &cmd[s-1]));
 										switch(cmd[3]) {
 											//  01234567890
-											// "ATWC{base64}\n"
+											// "ATWC{base64}"
 											case    'C': { // Radio command write + data
 												WriteCommand((RadioCommand)data.data()[0], data.data()+1, data.size()-1);
 											} break;
 											//  01234567890
-											// "ATWR{base64}\n"
+											// "ATWR{base64}"
 											case    'R': { // Radio register write
 												WriteRegister(data.data()[0], data.data()+1, data.size()-1);
 											} break;
 											//  01234567890
-											// "ATWM{base64}\n"
+											// "ATWM{base64}"
 											case    'M': { // Radio transmit Lora data
 												LoraTxStart(data.data(), data.size());
 											} break;
@@ -1625,23 +1627,23 @@ void SX1280::OnMCPTimer()
 										std::vector<uint8_t> data = base64_decode(std::string(&cmd[4], &cmd[s-1]));
 										switch(cmd[3]) {
 											//  01234567890
-											// "ATRC{base64}\n"
+											// "ATRC{base64}"
 											case    'C': { // Radio command read data
 												uint8_t buf[2];
 												ReadCommand((RadioCommand)data[0], &buf[0], data[1]);
 												std::string str("R"); 
 												str += base64_encode(buf, data[1]);
-												str += "\n";
+												str += "\n\r";
 												io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
 											} break;
 											//  01234567890
-											// "ATRR{base64}\n"
+											// "ATRR{base64}"
 											case    'R': { // Radio register read
 												uint8_t buf[2];
 												ReadRegister((data[0]<<8)|data[1], &buf[0], data[2]);
 												std::string str("R");
 												str += base64_encode(buf, data[1]);
-												str += "\n";
+												str += "\n\r";
 												io_write(io, reinterpret_cast<const uint8_t *>(str.c_str()), str.length());
 											} break;
 										}
@@ -1652,8 +1654,16 @@ void SX1280::OnMCPTimer()
 			}
             s = 0;
         }
-        cmd[s++] = c;
+		if ( (c >= 'A' && c <= 'Z') ||
+		     (c >= 'a' && c <= 'z') ||
+			 (c >= '0' && c <= '9') || 
+			  c == '+' || c == '/') {
+	        cmd[s++] = c;
+			cmd[s] = 0;
+		}
     }
+	SDD1306::instance().PlaceUTF8String(0,0,reinterpret_cast<const char *>(cmd));
+	SDD1306::instance().Display();
 }
 #endif  // #ifdef MCP
 

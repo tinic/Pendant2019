@@ -23,6 +23,8 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef SX1280_H_
 #define SX1280_H_
 
+#include <atmel_start.h>
+
 #include <cstdint>
 #include <functional>
 
