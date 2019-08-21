@@ -1043,9 +1043,9 @@ void UI::init() {
             if (Model::instance().DateTime() >= 0.0) {
                 // display time
                 int64_t dateTime = static_cast<int64_t>(Model::instance().DateTime());
-                int32_t hrs = ( ( dateTime / 1000 ) / 60 ) % 24;
-                int32_t min = ( ( dateTime / 1000 )      ) % 60;
-                snprintf(str, max_string_length, "\xc2\x91%02d:%02d", static_cast<int>(hrs), static_cast<int>(min));
+                int32_t hrs = ( ( dateTime / 60 ) / 60 ) % 24;
+                int32_t min = ( ( dateTime / 60 )      ) % 60;
+                snprintf(str, max_string_length, "\xc2\x87%02d:%02d", static_cast<int>(hrs), static_cast<int>(min));
             } else {
 				auto gc = [](int32_t ch_index) {
 					switch (ch_index) {

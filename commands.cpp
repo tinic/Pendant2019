@@ -85,7 +85,7 @@ void Commands::Boot() {
 
         SX1280::instance().SetTxDoneCallback([=](void) {
         });
-        
+		
         SX1280::instance().SetRxDoneCallback([=](const uint8_t *payload, uint8_t size, SX1280::PacketStatus) {
             if (size >= 24 && memcmp(payload, "PLEASEPLEASERANGEMENOW!!", 24) == 0) {
                 static Timeline::Span s;
@@ -136,7 +136,7 @@ void Commands::Boot() {
                 tm.tm_hour += static_cast<int>(intPart);
                 tm.tm_hour %= 24;
 
-                Model::instance().SetDateTime((static_cast<double>(tm.tm_hour) * 24.0 * 60.0 + static_cast<double>(tm.tm_min) * 60.0 + static_cast<double>(tm.tm_sec)));
+                Model::instance().SetDateTime((static_cast<double>(tm.tm_hour) * 60.0 * 60.0 + static_cast<double>(tm.tm_min) * 60.0 + static_cast<double>(tm.tm_sec)));
                 
             // Do V2 messages
             } else if (size >= 24 && memcmp(payload, "DUCK!!", 6) == 0) {
